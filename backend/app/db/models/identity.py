@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy import ForeignKey, String, UniqueConstraint, CheckConstraint
-from sqlalchemy.dialects.mysql import BIGINT, DATETIME
+from sqlalchemy import BigInteger, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
 from app.db.base import Base, Mutable
 
@@ -24,8 +24,8 @@ class Class(Mutable, Base):
 
 class StudentProfile(Mutable, Base):
     __tablename__ = 'student_profiles'
-    user_id: Mapped[int] = mapped_column(BIGINT(unsigned=True), ForeignKey('users.id'), unique=True)
-    class_id: Mapped[int] = mapped_column(BIGINT(unsigned=True), ForeignKey('classes.id'), index=True)
+    user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('users.id'), unique=True)
+    class_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('classes.id'), index=True)
 
 
 class Course(Mutable, Base):
@@ -33,14 +33,14 @@ class Course(Mutable, Base):
     code: Mapped[str] = mapped_column(String(64), unique=True)
     name: Mapped[str] = mapped_column(String(100))
     term: Mapped[str] = mapped_column(String(32))
-    created_by: Mapped[int] = mapped_column(BIGINT(unsigned=True), ForeignKey('users.id'))
+    created_by: Mapped[int] = mapped_column(BigInteger, ForeignKey('users.id'))
     status: Mapped[str] = mapped_column(String(16), default='ACTIVE')
 
 
 class CourseMember(Mutable, Base):
     __tablename__ = 'course_members'
-    course_id: Mapped[int] = mapped_column(BIGINT(unsigned=True), ForeignKey('courses.id'))
-    user_id: Mapped[int] = mapped_column(BIGINT(unsigned=True), ForeignKey('users.id'), index=True)
+    course_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('courses.id'))
+    user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('users.id'), index=True)
     role: Mapped[str] = mapped_column(String(16))
     status: Mapped[str] = mapped_column(String(16), default='ACTIVE')
     __table_args__ = (UniqueConstraint('course_id', 'user_id'),
@@ -49,6 +49,6 @@ class CourseMember(Mutable, Base):
 
 class AuthSession(Base):
     __tablename__ = 'auth_sessions'
-    user_id: Mapped[int] = mapped_column(BIGINT(unsigned=True), ForeignKey('users.id'), index=True)
+    user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('users.id'), index=True)
     token_hash: Mapped[str] = mapped_column(String(64), unique=True)
-    expires_at: Mapped[datetime] = mapped_column(DATETIME(fsp=6), index=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)

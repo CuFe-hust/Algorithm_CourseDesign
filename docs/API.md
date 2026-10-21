@@ -37,11 +37,11 @@
 
 ### GET /health
 
-公开，返回 `{"status":"ok"}`；不检查MySQL。
+公开，返回 `{"status":"ok"}`；不检查PostgreSQL。
 
 ### GET /ready
 
-公开，数据库连接及迁移head一致返回 `{"status":"ready","migration":"0002"}`；旧/空/不识别的版本返回503。未来新增迁移后migration会改变，客户端不硬编码0002。
+公开，数据库连接及迁移head一致返回 `{"status":"ready","migration":"pg0001"}`；旧/空/不识别的版本返回503。未来新增迁移后migration会改变，客户端不硬编码pg0001。
 
 ### POST /auth/login
 

@@ -63,7 +63,7 @@
 <text x="148.0" y="555.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="30" font-weight="400" fill="#102A43">上传 CSV、四类题与量表</text>
 <text x="148.0" y="599.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="30" font-weight="400" fill="#102A43">发布时固定版本与应交名单</text>
 <rect x="142" y="623" width="1016" height="42" rx="8" fill="#EAF1FF" stroke="none" stroke-width="2"/>
-<text x="156.0" y="656.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#2563EB">待 T01–T03 · 目前用演示数据</text>
+<text x="156.0" y="656.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#2563EB">待 T01–T03 · 已有全量快照 · 写入入口待接</text>
 <rect x="120" y="790" width="1060" height="250" rx="16" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
 <text x="148.0" y="855.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="37" font-weight="700" fill="#2563EB">查看提交过程</text>
 <text x="148.0" y="915.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="30" font-weight="400" fill="#102A43">按课程查询，限定任课范围</text>
@@ -131,7 +131,7 @@
 <rect x="2682" y="1703" width="1016" height="42" rx="8" fill="#FFF2DF" stroke="none" stroke-width="2"/>
 <text x="2696.0" y="1736.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#C87914">后续 A02 / A03；A04 真实评测</text>
 <rect x="120" y="1880" width="3600" height="160" rx="18" fill="#E5ECF5" stroke="none" stroke-width="2"/>
-<text x="155.0" y="1942.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#102A43">共享 MySQL：当前已保存配置 / 名单 / 提交 / 代码任务 / 模拟结果</text>
+<text x="155.0" y="1942.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#102A43">共享 PostgreSQL：当前已保存配置 / 名单 / 提交 / 代码任务 / 模拟结果</text>
 <text x="155.0" y="1995.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#53677F">后续新增互评、聚合、异常与发布记录；所有箭头都经统一后端，浏览器不直连数据库。</text>
 <text x="120.0" y="2118.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="28" font-weight="400" fill="#53677F">今晚讲解：先演示实线最小链路，再确认 T00 / S01 / A01；复杂算法研究在流程稳定后并行认领。</text>
 </svg>

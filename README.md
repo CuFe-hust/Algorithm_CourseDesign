@@ -16,21 +16,22 @@
 
 阅读顺序：本README启动 → MAIN和自己的Issue → [数据库与归属](docs/DATABASE.md) → [信息流](docs/DATA_FLOWS.md) → [当前API格式](docs/API.md)。规划接口另见[下一阶段提案](docs/contracts/next-phase.md)，未标记为已实现的接口不能当作可调用。
 
-推送与分支/PR方式见[Git协作](docs/COLLABORATION.md)。仓库有3个GitHub Issue模板，推送后可直接选用，负责人待你填写；当前未在线创建Issue，也未设置远程地址。
+推送与分支/PR方式见[Git协作](docs/COLLABORATION.md)。仓库有3个GitHub Issue模板，推送后可直接选用，负责人待你填写；当前未在线创建Issue；远程仓库已配置并推送。
 
-开发资料包含70道编程题、主观题原Word和任务书，见[data/source](data/source/README.md)；仅4道演示题实际入库，真实学生名册不打包。前端位置和公共骨架分工见[frontend约定](frontend/README.md)，当前没有可启动的Vue应用。
+开发资料包含70道编程题、主观题原Word和任务书，见[data/source](data/source/README.md)；全量120题及217位合成身份、8班的结构化快照见[data/formatted](data/formatted/README.md)，队友可直接导入；真实名册及映射仅留本机。前端位置和公共骨架分工见[frontend约定](frontend/README.md)，当前没有可启动的Vue应用。
 
 ## 完整启动顺序
 
-在工程根目录使用PowerShell。本机实际验证Python 3.14.5、MySQL 9.4.0，建议队友使用同版本；依赖锁文件包含运行与测试依赖。需要预先安装Python和MySQL程序。
+在工程根目录使用PowerShell。本机实际验证Python 3.14.5、PostgreSQL 18.6，建议队友使用同版本；依赖锁文件包含运行与测试依赖。需要预先安装Python和[PostgreSQL程序](https://www.postgresql.org/download/windows/)，或将解压后的bin目录设为PG_BIN。
 
 ```powershell
-python scripts/setup_local_mysql.py
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r backend/requirements.lock
+.\.venv\Scripts\python.exe scripts/setup_local_postgres.py
 Set-Location backend
 ..\.venv\Scripts\python.exe -m alembic upgrade head
 ..\.venv\Scripts\python.exe -m scripts.seed_demo
+..\.venv\Scripts\python.exe -m scripts.import_full_data
 ..\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 ```
 
@@ -56,7 +57,7 @@ Set-Location backend
 
 脚本读取本地密码且不打印密码/token；真实登录、查题、提交并重试、处理一次任务、查询落库结果、验证另一学生不可读、教师可读，并提交主观答案。演示提交保留，不清空业务数据。改用其他端口时加 `--base-url http://127.0.0.1:端口`。
 
-## MySQL集成验证
+## PostgreSQL集成验证
 
 在backend目录运行；测试会清空并重建专用验证库的已知表及合成数据，禁止把真实数据放进algorithm_review_test。项目库不被清空。
 
@@ -76,41 +77,33 @@ Remove-Item Env:DB_NAME
 - [实际数据库字段](docs/database-schema.md)、[数据来源与导入约定](docs/data-import.md)
 - [教师Issue草案](docs/issues/01-teacher.md)、[学生Issue草案](docs/issues/02-student.md)、[数据库与分析Issue草案](docs/issues/03-database-analysis.md)，尚未在线创建。
 - `backend/app/teacher`、`student`、`analysis` 是各自扩展位置；`common` 和 `core` 是公共基础。
-- `backend/app/db/models` 和 `backend/migrations` 由数据库负责人协调，修改字段时新增迁移，禁止改写已应用版本。
+- `backend/app/db/models` 和 `backend/migrations_postgresql` 由数据库负责人协调，修改字段时新增迁移，禁止改写已应用版本。
 - `data/demo` 使用合成学生及少量已核对题目，题目JSON包含教师参考资料，不能直接打包进学生前端。
 
-## Windows 项目专用 MySQL
+## Windows 项目专用 PostgreSQL
 
-电脑已安装 MySQL Server 时运行：
+使用上面的虚拟环境安装依赖后运行 `.\.venv\Scripts\python.exe scripts/setup_local_postgres.py`。脚本查找本机已安装的PostgreSQL，或环境变量PG_BIN指定的bin目录；在127.0.0.1:5433启动独立实例，数据保存在 `%LOCALAPPDATA%/AlgorithmReview/postgres-local/data`。不会修改已有Windows数据库服务。
 
-```powershell
-python scripts/setup_local_mysql.py
-```
-
-脚本复用已有 MySQL 安装中的程序，在本机 127.0.0.1:3307 启动独立实例，不修改既有 Windows MySQL 服务。数据位于本机用户的 `%LOCALAPPDATA%/AlgorithmReview/mysql-local/data`，不会放进同步或 Git 目录。
-
-创建项目库 `algorithm_review` 和独立验证库 `algorithm_review_test`。随机生成项目账号密码，写入已忽略的 `.env`；管理凭据仅保存在本机实例状态目录中。脚本不会输出密码，也不会要求现有管理员密码。
-
-验证项目账号、数据库访问权限及中文读写：
+创建algorithm_review和algorithm_review_test，项目角色无超级用户/建库/建角色权限，随机凭据写到已忽略的.env。管理配置仅保存在本机实例目录。重启电脑后再次运行同一命令启动，数据保留。停止本实例：
 
 ```powershell
-python scripts/check_database.py
+.\.venv\Scripts\python.exe scripts/setup_local_postgres.py --stop
 ```
 
-此检查只在独立验证库创建临时表并在验证后删除；业务验证使用上文的pytest和HTTP脚本。
+验证权限及中文读写：`.\.venv\Scripts\python.exe scripts/check_database.py`。只在验证库事务内创建临时表，回滚后不留数据。
 
-若程序安装在其他位置，先设置 `MYSQL_BIN` 为安装的 bin 目录。脚本在端口被其他实例占用或出现未知数据目录时拒绝初始化；不会清空已有数据。
-
-重启电脑后再次运行同一命令启动实例，已有数据保留。停止本实例：
-
-```powershell
-python scripts/setup_local_mysql.py --stop
-```
+旧MySQL用户按[迁移说明](docs/POSTGRESQL_MIGRATION.md)切换。旧实例、原数据及原.env备份保留；旧迁移链仅作历史，不对PostgreSQL执行。
 
 ## 三人本地开发
 
 每位成员使用自己的 `.env`、数据库和虚拟环境，通过统一模型、迁移及演示种子共享结构，不复制密码、管理凭据或数据库数据目录。仅提交 `.env.example` 供配置参考。
 
-有现成可用MySQL账号的成员可复制.env.example并填写自己的连接，项目账号需有项目库及验证库的迁移/读写权限；APP_SECRET设置至少32字符随机值。该模式无需运行专用实例脚本。前端开发CORS已允许localhost及127.0.0.1的5173端口，登录使用Authorization头。
+有现成可用PostgreSQL账号的成员可复制.env.example并填写自己的连接，项目账号需有项目库及验证库的迁移/读写权限；APP_SECRET设置至少32字符随机值。该模式无需运行专用实例脚本。前端开发CORS已允许localhost及127.0.0.1的5173端口，登录使用Authorization头。
 
-前台运行的API与worker使用Ctrl+C停止。如果本机使用隐藏后台进程，可在工程根执行 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/stop_dev.ps1`，脚本只匹配本工程路径与对应模块命令，不停止数据库。随后再按需停止项目MySQL。
+前台运行的API与worker使用Ctrl+C停止。如果本机使用隐藏后台进程，可在工程根执行 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/stop_dev.ps1`，脚本只匹配本工程路径与对应模块命令，不停止数据库。随后再按需停止项目PostgreSQL。
+
+## 全量数据与隐私
+
+队友运行`python -m scripts.import_full_data`默认使用公开脱敏快照，导入ALGO_FULL_2026课程：70编程题、50主观题、350组测试、275份参考答案/代码、217名学生、8班。DEMO_ALGO仍用于四类题的登录与提交流程演示。全量课程不会自动发布作业，名册账号PENDING且无密码，激活及作业发布交给后续教师模块。
+
+真实名册只供本机显式导入；不要把数据库备份、身份映射或原始xlsx上传GitHub。不同身份模式不能覆盖同一数据库的已有身份，请选定一种，详见[数据导入](docs/data-import.md)。当前API业务格式保持兼容，迁移head改为pg0001；分析框架稍后讨论。

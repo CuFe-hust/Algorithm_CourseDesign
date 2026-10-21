@@ -13,6 +13,7 @@ def db(monkeypatch):
     monkeypatch.setenv('DB_NAME', 'algorithm_review_test')
     engine = make_engine()
     assert engine.url.database == 'algorithm_review_test'
+    assert engine.dialect.name == 'postgresql'
     with engine.begin() as connection:
         for table in reversed(Base.metadata.sorted_tables):
             connection.execute(delete(table))

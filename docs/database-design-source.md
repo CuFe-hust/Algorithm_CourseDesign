@@ -1,5 +1,7 @@
 # 数据库设计讨论稿 V0.1.0
 
+> 历史记录：本文保留早期MySQL方案及当时验证结果。当前已切换PostgreSQL，启动与全量数据以README、POSTGRESQL_MIGRATION.md为准；当前4K图已更新。
+
 - 日期：2026-10-21。
 - 已对齐方向：统一网站工程；教师、学生、数据库与分析三个开发范围；各人独立本地数据库，以升级脚本同步结构。
 - 技术基线：Vue 3、TypeScript、Vite；Python、FastAPI；MySQL、SQLAlchemy、Alembic。具体依赖及数据库版本在创建工程时固定。

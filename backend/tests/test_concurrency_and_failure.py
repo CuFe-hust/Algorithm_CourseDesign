@@ -51,12 +51,12 @@ def test_task_write_failure_rolls_back_submission(client,demo,auth,db):
     assert db.scalar(select(func.count()).select_from(AnalysisJob))==0
 
 
-def test_mysql_rejects_duplicate_student_number_and_missing_foreign_key(db,demo):
+def test_postgresql_rejects_duplicate_student_number_and_missing_foreign_key(db,demo):
     user=db.scalar(select(User).where(User.login_name=='demo.student01'))
     db.add(User(login_name='duplicate',student_no=user.student_no,full_name='重名允许但学号不能重复'))
     with pytest.raises(IntegrityError):db.flush()
     db.rollback()
-    db.add(CourseMember(course_id=18446744073709551614,user_id=user.id,role='STUDENT'))
+    db.add(CourseMember(course_id=9223372036854775806,user_id=user.id,role='STUDENT'))
     with pytest.raises(IntegrityError):db.flush()
     db.rollback()
 
@@ -83,3 +83,34 @@ def test_worker_failure_records_error_without_fake_result(client,demo,auth,db,mo
     job=db.scalar(select(AnalysisJob))
     assert job.status=='FAILED' and 'secret' not in job.error_message
     assert db.scalar(select(func.count()).select_from(JudgeResult))==0
+
+
+@pytest.mark.parametrize('model_name,field', [
+    ('AssignmentItem', 'sort_order'), ('AssignmentItem', 'required_reviewers'),
+    ('TestCase', 'sort_order'), ('RubricItem', 'sort_order'), ('Rubric', 'version_no'),
+])
+def test_postgresql_preserves_nonnegative_integer_constraints(db, demo, model_name, field):
+    from app.db import models
+    model = getattr(models, model_name)
+    row = db.scalar(select(model))
+    assert row is not None
+    setattr(row, field, -1)
+    with pytest.raises(IntegrityError):
+        db.flush()
+    db.rollback()
+
+
+@pytest.mark.parametrize('resource', ['cpu_time_ms', 'memory_kib'])
+def test_postgresql_rejects_negative_measured_judge_resources(client, demo, auth, db, resource):
+    from app.analysis.worker import process_pending_jobs
+    item = next(x['id'] for x in demo[0]['items'] if x['type'] == 'PROGRAMMING')
+    response = client.post(f'/api/v1/assignment-items/{item}/submissions', headers=auth(),
+        json={'content': 'print(1)', 'language': 'python3', 'client_request_id': uuid.uuid4().hex})
+    assert response.status_code == 202
+    assert process_pending_jobs(db, 20) == 1
+    result = db.scalar(select(JudgeResult))
+    result.is_mock = False
+    setattr(result, resource, -1)
+    with pytest.raises(IntegrityError):
+        db.flush()
+    db.rollback()

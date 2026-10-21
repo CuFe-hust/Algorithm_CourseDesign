@@ -8,7 +8,7 @@ from app.db.models import (User, Course, CourseMember, Assignment, AssignmentIte
 
 
 def iso(value):
-    return value.replace(tzinfo=timezone.utc).isoformat() if value else None
+    return value.astimezone(timezone.utc).isoformat() if value else None
 
 
 def item_context(db,item_id,user):

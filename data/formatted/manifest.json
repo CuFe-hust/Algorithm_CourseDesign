@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "data_version": "2026-10-21.1",
+  "counts": {
+    "questions": 120,
+    "programming": 70,
+    "subjective": 50,
+    "analysis": 20,
+    "proof": 20,
+    "open": 10,
+    "tests": 350,
+    "programming_reference_solutions": 210,
+    "formulas": 49,
+    "students": 217,
+    "classes": 8
+  },
+  "sha256": {
+    "questions.programming.json": "44a3d60d3bd571e474d4734a963328137c7f0b133cf4145614993f2536f6c40b",
+    "questions.subjective.json": "531be4e3497317dd3d15507a44734ec2ed512fcd5c65ed61b74066aab211fe70",
+    "students.anonymized.json": "671e0b408a946d2871838dc54c9f20afee3c31e33cf987a2f0d1406d8dd3d355"
+  },
+  "validation": {
+    "programming_count": true,
+    "subjective_count": true,
+    "tests_count": true,
+    "reference_implementations": true,
+    "formulas_preserved": true,
+    "rubric_totals": true,
+    "student_count": true,
+    "class_count": true,
+    "unique_student_identifiers": true
+  },
+  "source_validation": "Structure checked; source-provided algorithm implementations and test outputs have not been independently executed."
+}

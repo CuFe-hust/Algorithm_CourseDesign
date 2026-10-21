@@ -1,5 +1,7 @@
 # 公共数据库与后端底座实施计划 V0.1.0
 
+> 历史记录：本文保留早期MySQL方案及当时验证结果。当前已切换PostgreSQL，启动与全量数据以README、POSTGRESQL_MIGRATION.md为准；当前4K图已更新。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking. 在本会话内顺序实施，不自动创建其他代理或 GitHub Issue。
 
 **Goal:** 提供可供三人独立启动、连接各自 MySQL 的公共后端，跑通登录、读取题目、提交答案及模拟评测结果查询。

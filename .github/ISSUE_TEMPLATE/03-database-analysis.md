@@ -12,10 +12,10 @@ assignees: ""
 
 ## A00 已交付公共底座
 
-- [x] 21业务表、0001/0002迁移、合成种子与四类题/两份作业。
+- [x] 21业务表、PostgreSQL pg0001迁移、合成种子与四类题/两份作业。
 - [x] 数据库会话、权限、读题、正式提交、版本、撤回及提交/任务同事务。
 - [x] 模拟JUDGE、冻结测试集引用、持久化结果和教师提交查询。
-- [x] 27项MySQL测试、真实HTTP链路及main协作文档。
+- [x] 46项PostgreSQL测试、真实HTTP链路及main协作文档。
 
 队友仍需各自执行首次启动验收。阅读`MAIN.md`、`docs/DATABASE.md`、`docs/DATA_FLOWS.md`、`docs/contracts/next-phase.md`。本模块位置backend/app/db、analysis，统计页面未来放frontend/src/features/analytics。
 

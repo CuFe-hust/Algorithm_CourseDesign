@@ -1,5 +1,7 @@
 # 实施记录：公共底座计划 V0.1.0
 
+> 历史记录：本文保留早期MySQL方案及当时验证结果。当前已切换PostgreSQL，启动与全量数据以README、POSTGRESQL_MIGRATION.md为准；当前4K图已更新。
+
 计划：上级“2026.10.21 数据库形态与搭建/02_FOUNDATION_IMPLEMENTATION_PLAN_V0.1.0.md”。
 
 - 任务1完成：契约、21表数据字典、接口样例与OpenAPI快照已提供。

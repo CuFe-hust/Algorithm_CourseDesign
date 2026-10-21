@@ -1,6 +1,6 @@
 # 数据库业务地图与写入边界
 
-当前：MySQL，21张业务表+alembic_version，迁移head为0002。SQLAlchemy模型是开发入口，Alembic迁移是建库/升级入口，字段见[数据字典](database-schema.md)。
+当前：PostgreSQL，21张业务表+alembic_version，迁移head为pg0001。SQLAlchemy模型是开发入口，Alembic迁移是建库/升级入口，字段见[数据字典](database-schema.md)。
 
 ## 1. 当前表分组
 
@@ -23,7 +23,7 @@
 
 | 字段 | 含义 | 使用规则 |
 |---|---|---|
-| id、*_id | 内部关联 | 数据库存BIGINT UNSIGNED；HTTP用字符串，前端不转Number |
+| id、*_id | 内部关联 | 数据库存BIGINT（有符号64位，最大9223372036854775807）；HTTP用字符串，前端不转Number |
 | student_no | 学号 | 字符串、非空唯一；教师可空，空值用NULL |
 | created_by/published_by | 创建/发布操作人 | 指向users.id，后端从登录身份写入，不相信前端冒充的ID |
 | version_no | 所属对象内的版本 | 题目/测试集/量表按对象；提交按学生+作业题目，不是全库流水号 |
@@ -73,12 +73,12 @@ analysis_jobs.submission_id当前必填，按一份代码提交组织。匹配�
 
 ## 6. 分数、时间与统计口径
 
-分数DECIMAL(8,2)、权重DECIMAL(8,6)，HTTP均字符串；UTC DATETIME(6)与带时区ISO响应；CPU毫秒、内存KiB。当前模拟资源为空，不是0。
+分数DECIMAL(8,2)、权重DECIMAL(8,6)，HTTP均字符串；TIMESTAMP WITH TIME ZONE（UTC读写）与带时区ISO响应；CPU毫秒、内存KiB。当前模拟资源为空，不是0。
 
 后续统计必须区分学生通过率与提交通过率、最终发布分与预览分、未交与待评。重测不新增学生提交次数；知识点掌握只使用有依据的已出分记录，并显示缺失和样本量。教师设定难度与从得分估计的经验难度分别保存和命名。
 
 ## 7. 本地副本与升级
 
-每个人自行创建MySQL与.env，运行 `alembic upgrade head`、合成种子。通过Git共享模型/迁移/fixture，不交换原始数据库目录。当前固定head=0002；主干新增迁移后，拉取代码先升级再启动。`/ready`不接受旧或不识别的迁移版本。
+每个人自行创建PostgreSQL与.env，运行 `alembic upgrade head`、演示种子及全量结构化导入。通过Git共享模型/迁移/fixture，不交换原始数据库目录。当前固定head=pg0001；主干新增迁移后，拉取代码先升级再启动。`/ready`不接受旧或不识别的迁移版本。
 
 真实名册和密码不进入仓库。测试会重建algorithm_review_test的已知表，不得放真实资料；项目演示库algorithm_review不会在测试中被清空。数据字典是实现快照，不代替迁移。

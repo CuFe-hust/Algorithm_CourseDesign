@@ -2,7 +2,7 @@
 name = "algorithm-course-review"
 version = "0.1.0"
 requires-python = ">=3.12"
-dependencies = ["fastapi", "uvicorn", "sqlalchemy", "alembic", "pymysql[rsa]", "python-dotenv"]
+dependencies = ["fastapi", "uvicorn", "sqlalchemy", "alembic", "psycopg[binary]", "python-dotenv"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

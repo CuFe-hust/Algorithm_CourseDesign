@@ -125,7 +125,7 @@ BOXES={name:(90+col*620,430+row*360,650+col*620,690+row*360) for name,col,row,*_
 
 def schema_diagram():
     canvas=Canvas()
-    canvas.title('01','数据库模式图','当前数据库现状：配置、作答、计算结果分别保存；所有模块共用同一套事实。','已实现 21 张业务表  ·  MySQL  ·  迁移 0002')
+    canvas.title('01','数据库模式图','当前数据库现状：配置、作答、计算结果分别保存；所有模块共用同一套事实。','已实现 21 张业务表  ·  PostgreSQL  ·  迁移 pg0001')
     headings=[('账户与身份','公共基础 / T导入'),('课程与知识点','T配置 / 公共权限'),('题库与内容版本','T配置 / S读取'),('题型专用配置','T配置 / A计算'),('作业与应交名单','T发布 / 固定依据'),('作答与计算结果','S提交 / A消费')]
     for i,(title,sub) in enumerate(headings):
         x=90+620*i
@@ -204,7 +204,7 @@ def interaction_diagram():
         c.rectangle((x,305,x+width,390),PALE[color],radius=16)
         c.text(x+28,329,title,38,color,bold=True,max_width=1000)
     cards=[
-      (0,0,True,'名单 / 题库 / 作业发布',['上传 CSV、四类题与量表','发布时固定版本与应交名单'],'待 T01–T03 · 目前用演示数据'),
+      (0,0,True,'名单 / 题库 / 作业发布',['上传 CSV、四类题与量表','发布时固定版本与应交名单'],'待 T01–T03 · 已有全量快照 · 写入入口待接'),
       (0,1,False,'查看提交过程',['按课程查询，限定任课范围','查看作答版本、源码与模拟状态'],'已实现 API · 教师页面待接'),
       (0,2,True,'预览分配 → 确认开放互评',['查看负载、真实映射与无解原因','教师确认后正式生成评审任务'],'待 T05 + A01'),
       (0,3,True,'复核证据 → 确认发布',['保留 / 降权 / 作废补评 / 改分','实际变更调用分析服务并留痕'],'待 T05 + A02 / A03'),
@@ -240,7 +240,7 @@ def interaction_diagram():
         c.rectangle((x+22,y+193,x+width-22,y+235),PALE[color],radius=8)
         c.text(x+36,y+201,badge,25,color,max_width=970)
     c.rectangle((120,1880,3720,2040),'#E5ECF5',radius=18)
-    c.text(155,1908,'共享 MySQL：当前已保存配置 / 名单 / 提交 / 代码任务 / 模拟结果',34,bold=True,max_width=3500)
+    c.text(155,1908,'共享 PostgreSQL：当前已保存配置 / 名单 / 提交 / 代码任务 / 模拟结果',34,bold=True,max_width=3500)
     c.text(155,1966,'后续新增互评、聚合、异常与发布记录；所有箭头都经统一后端，浏览器不直连数据库。',29,MUTED,max_width=3500)
     c.text(120,2090,'今晚讲解：先演示实线最小链路，再确认 T00 / S01 / A01；复杂算法研究在流程稳定后并行认领。',28,MUTED,max_width=3600)
     return c.save('02-interaction-flow-4k')

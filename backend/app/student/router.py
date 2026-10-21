@@ -10,7 +10,7 @@ from app.student.schemas import SubmissionInput
 from app.student.service import item_view,accept_submission,submission_view,withdraw_submission,iso
 
 router=APIRouter(prefix='/api/v1',tags=['学生与公共查询'])
-Id=Annotated[int,Path(gt=0,le=18446744073709551615)]
+Id=Annotated[int,Path(gt=0,le=9223372036854775807)]
 
 
 @router.get('/courses')

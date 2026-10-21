@@ -4,7 +4,7 @@
 <text x="90.0" y="170.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="74" font-weight="700" fill="#102A43">数据库模式图</text>
 <text x="90.0" y="235.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#53677F">当前数据库现状：配置、作答、计算结果分别保存；所有模块共用同一套事实。</text>
 <rect x="2680" y="98" width="1070" height="82" rx="18" fill="#E6EDF7" stroke="none" stroke-width="2"/>
-<text x="2942.5" y="154.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="28" font-weight="400" fill="#102A43">已实现 21 张业务表  ·  MySQL  ·  迁移 0002</text>
+<text x="2894.0" y="154.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="28" font-weight="400" fill="#102A43">已实现 21 张业务表  ·  PostgreSQL  ·  迁移 pg0001</text>
 <polyline points="90,270 3750,270" fill="none" stroke="#CCD7E4" stroke-width="2" stroke-linejoin="round"/>
 <text x="90.0" y="347.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="35" font-weight="700" fill="#102A43">账户与身份</text>
 <text x="90.0" y="387.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="24" font-weight="400" fill="#53677F">公共基础 / T导入</text>

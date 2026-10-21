@@ -8,7 +8,7 @@
 sequenceDiagram
     participant S as 学生页面
     participant API as 学生后端
-    participant DB as MySQL
+    participant DB as PostgreSQL
     participant W as 模拟worker
     S->>API: POST作答 content/language/client_request_id + Bearer
     API->>DB: 身份、课程、名单、题型和截止校验
@@ -57,7 +57,7 @@ CSV文件 → 预览（行号、问题、待新增/复用/更改） → 教师�
 sequenceDiagram
     participant T as 教师入口
     participant A as 分析服务
-    participant DB as MySQL
+    participant DB as PostgreSQL
     participant S as 评审学生
     T->>A: 预览分配（作业题目、人数、约束）
     A->>DB: 读取名单和有效答案，固定输入快照

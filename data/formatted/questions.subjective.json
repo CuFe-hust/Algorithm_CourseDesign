@@ -1,0 +1,2974 @@
+[
+  {
+    "code": "SUB-A01",
+    "type": "ALGORITHM_ANALYSIS",
+    "title": "调和型循环的精确计数",
+    "difficulty": 1,
+    "tags": [
+      "复杂度分析",
+      "调和级数"
+    ],
+    "statement": "设 n 为正整数。以下函数中，每执行一次 count += 1 计一次基本操作。请给出 n=5 时的返回值，写出一般 n 的精确求和式，并证明紧确时间界。说明辅助空间，不得只按“两层循环”直接判断为平方级。\n\n题干给定的 Python 3 代码\n\n```python\ndef count_visits(n):\n    count = 0\n    for step in range(1, n + 1):\n        for position in range(step, n + 1, step):\n            count += 1\n    return count\n```",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R01",
+        "title": "MIT 6.006 Introduction to Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2008/resources/lecture-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "计数与样例",
+        "max_score": 25,
+        "description": "计数与样例"
+      },
+      {
+        "name": "上下界论证",
+        "max_score": 45,
+        "description": "上下界论证"
+      },
+      {
+        "name": "时间与空间口径",
+        "max_score": 30,
+        "description": "时间与空间口径"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "A01",
+    "source_math_omml": [
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">nH</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">nH</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">H</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">C</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">=</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:sSup><ns0:e><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">∑</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">=</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">1</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:e><ns0:sup><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r></ns0:sup></ns0:sSup><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">floor</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">/</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">=</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">Θ</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">log</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r></ns0:oMath>"
+    ],
+    "metadata": {
+      "difficulty_label": "基础",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "当 n=5，各 step 的执行次数依次为 5、2、1、1、1，总计 10。一般情况下，内层访问 step 的正倍数，因此该轮次数为 floor(n/step)。\n\n上界：floor(n/i) 不超过 n/i，故总次数不超过 $nH_{n}$。下界：对 1≤i≤n，floor(n/i)≥n/(2i)，故总次数至少为 $nH_{n}$/2。利用 $H_{n}$=Θ(log n)，得到 Θ(n log n)。外层初始化等额外操作 O(n)，不改变紧确界。\n\n只保存循环变量和计数器，辅助空间 O(1)。按字长 RAM 模型计数；若讨论任意大整数位运算，应另计整数加法成本。\n\n$C(n) = ∑_{i=1}^{n} floor(n/i) = Θ(n log n)$"
+  },
+  {
+    "code": "SUB-A02",
+    "type": "ALGORITHM_ANALYSIS",
+    "title": "含对数合并代价的递归式",
+    "difficulty": 3,
+    "tags": [
+      "分治",
+      "递归树",
+      "主定理"
+    ],
+    "statement": "设 n=$2^{k}$，T(1)=1，且 T(n)=2T(n/2)+n log₂n。请用递归树求紧确界，写出每层代价、树高及叶子总代价；再用主定理交叉验证。指出为何答案不是 Θ(n log n)。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R02",
+        "title": "MIT 6.046J Design and Analysis of Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/pages/lecture-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "分层代价",
+        "max_score": 30,
+        "description": "分层代价"
+      },
+      {
+        "name": "求和与主定理",
+        "max_score": 45,
+        "description": "求和与主定理"
+      },
+      {
+        "name": "空间限制与易错点",
+        "max_score": 25,
+        "description": "空间限制与易错点"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "A02",
+    "source_math_omml": [
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSup><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">2</ns0:t></ns0:r></ns0:e><ns0:sup><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">k</ns0:t></ns0:r></ns0:sup></ns0:sSup></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSup><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">2</ns0:t></ns0:r></ns0:e><ns0:sup><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">ℓ</ns0:t></ns0:r></ns0:sup></ns0:sSup></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSup><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">2</ns0:t></ns0:r></ns0:e><ns0:sup><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">ℓ</ns0:t></ns0:r></ns0:sup></ns0:sSup></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSup><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">2</ns0:t></ns0:r></ns0:e><ns0:sup><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">ℓ</ns0:t></ns0:r></ns0:sup></ns0:sSup></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">T</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">=</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">+</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">×</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">k</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">k</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">+</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">1</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">/</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">2</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">=</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">Θ</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">log</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">2</ns0:t></ns0:r></ns0:sub></ns0:sSub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r><ns0:sSup><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r></ns0:e><ns0:sup><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">2</ns0:t></ns0:r></ns0:sup></ns0:sSup><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r></ns0:oMath>"
+    ],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "深度为 ℓ 的一层有 $2^{ℓ}$ 个子问题，每个规模 n/$2^{ℓ}$，其非递归代价为 (n/$2^{ℓ}$)(k−ℓ)。该层总计 n(k−ℓ)，内部层 ℓ 从 0 到 k−1。\n\n把内部层相加，得到 n·k(k+1)/2；另有 n 个叶子，每叶代价 1。因此精确式为 T(n)=n+n·k(k+1)/2，紧确界为 Θ(n log²n)。\n\n主定理中 a=2、b=2，临界项为 n；额外项 n log n 比临界项多一个对数，适用对数扩展情形，结论仍为 Θ(n log²n)。把每层都误算成 n 会少掉一个对数。递归栈深度为 Θ(log n)，但算法总辅助空间还依赖合并操作是否另开数组，单凭递归式无法唯一确定。\n\n$T(n) = n + n × k(k+1)/2 = Θ(n (log_{2} n)^{2})$"
+  },
+  {
+    "code": "SUB-A03",
+    "type": "ALGORITHM_ANALYSIS",
+    "title": "有序数组中的左边界查找",
+    "difficulty": 1,
+    "tags": [
+      "二分查找",
+      "边界条件"
+    ],
+    "statement": "给定长度 n≥0 的非降序整数数组 a 和整数 target，返回第一个满足 a[i]≥target 的下标；不存在时返回 n。允许重复元素。设计对数级算法，解释区间语义和终止条件。例：a=[1,3,3,7]，target=3 时返回 1；target=8 时返回 4。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R01",
+        "title": "MIT 6.006 Introduction to Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2008/resources/lecture-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [
+      {
+        "language": "Python",
+        "content": "def lower_bound(a, target):\n    left, right = 0, len(a)\n    while left < right:\n        mid = left + (right - left) // 2\n        if a[mid] < target:\n            left = mid + 1\n        else:\n            right = mid\n    return left"
+      }
+    ],
+    "rubric": [
+      {
+        "name": "区间与实现",
+        "max_score": 40,
+        "description": "区间与实现"
+      },
+      {
+        "name": "不变式与终止",
+        "max_score": 40,
+        "description": "不变式与终止"
+      },
+      {
+        "name": "边界和复杂度",
+        "max_score": 20,
+        "description": "边界和复杂度"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "A03",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "基础",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "维护半开候选区间 [left,right)。不变式为：left 左侧元素均小于 target，right 及其右侧的实际数组元素均不小于 target。初始 [0,n) 满足。\n\n若 a[mid]<target，则 mid 及左侧都不能是答案，令 left=mid+1；否则答案不在 mid 右侧，令 right=mid。每次严格缩短区间。结束时 left=right，由两侧性质可知它正是所求插入边界。\n\n最坏时间 O(log(n+1))，辅助空间 O(1)。空数组返回 0，全小于目标返回 n；整数语言中宜用 left+(right−left)//2 避免加法溢出。\n\nPython 3 参考实现\n\n```python\ndef lower_bound(a, target):\n    left, right = 0, len(a)\n    while left < right:\n        mid = left + (right - left) // 2\n        if a[mid] < target:\n            left = mid + 1\n        else:\n            right = mid\n    return left\n```"
+  },
+  {
+    "code": "SUB-A04",
+    "type": "ALGORITHM_ANALYSIS",
+    "title": "用归并统计逆序对",
+    "difficulty": 3,
+    "tags": [
+      "分治",
+      "归并排序",
+      "计数"
+    ],
+    "statement": "给定整数数组 a，逆序对是满足 i<j 且 a[i]>a[j] 的下标对。设计 O(n log n) 算法返回逆序对数，要求重复值不被误计。例：[6,3,5,2] 的答案为 5。说明跨左右子区间的计数依据与辅助空间。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R01",
+        "title": "MIT 6.006 Introduction to Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2008/resources/lecture-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [
+      {
+        "language": "Python",
+        "content": "def inversion_count(a):\n    def solve(values):\n        if len(values) <= 1:\n            return values[:], 0\n        mid = len(values) // 2\n        left, x = solve(values[:mid])\n        right, y = solve(values[mid:])\n        merged, i, j, cross = [], 0, 0, 0\n        while i < len(left) and j < len(right):\n            if left[i] <= right[j]:\n                merged.append(left[i])\n                i += 1\n            else:\n                merged.append(right[j])\n                j += 1\n                cross += len(left) - i\n        merged.extend(left[i:])\n        merged.extend(right[j:])\n        return merged, x + y + cross\n    return solve(list(a))[1]"
+      }
+    ],
+    "rubric": [
+      {
+        "name": "分治建模",
+        "max_score": 25,
+        "description": "分治建模"
+      },
+      {
+        "name": "跨区间计数与重复值",
+        "max_score": 45,
+        "description": "跨区间计数与重复值"
+      },
+      {
+        "name": "复杂度与数值边界",
+        "max_score": 30,
+        "description": "复杂度与数值边界"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "A04",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "把答案分成左半内部、右半内部和跨两半三部分，前两部分递归求出。归并时左右序列已有序：如果左元素不大于右元素，先取左元素；否则右元素小于左侧所有尚未取出的元素，一次增加 len(left)−i。\n\n各逆序对按其两个端点第一次位于不同子区间的那次归并唯一计数，因此不重不漏。相等时先取左元素，避免把相等值当成严格逆序。\n\n递归式 T(n)=2T(n/2)+Θ(n)，时间 Θ(n log n)。以下切片实现峰值辅助空间 O(n)，另有 O(log n) 递归栈；不是原地算法。C++ 计数应使用足够宽的整数，最大可能为 n(n−1)/2。\n\nPython 3 参考实现\n\n```python\ndef inversion_count(a):\n    def solve(values):\n        if len(values) <= 1:\n            return values[:], 0\n        mid = len(values) // 2\n        left, x = solve(values[:mid])\n        right, y = solve(values[mid:])\n        merged, i, j, cross = [], 0, 0, 0\n        while i < len(left) and j < len(right):\n            if left[i] <= right[j]:\n                merged.append(left[i])\n                i += 1\n            else:\n                merged.append(right[j])\n                j += 1\n                cross += len(left) - i\n        merged.extend(left[i:])\n        merged.extend(right[j:])\n        return merged, x + y + cross\n    return solve(list(a))[1]\n```"
+  },
+  {
+    "code": "SUB-A05",
+    "type": "ALGORITHM_ANALYSIS",
+    "title": "随机选择第 k 小元素",
+    "difficulty": 4,
+    "tags": [
+      "随机算法",
+      "三路划分",
+      "顺序统计量"
+    ],
+    "statement": "给定非空整数数组和 1≤k≤n，返回按非降序排列后的第 k 个元素，重复元素分别占名次。请设计不完全排序的算法，分析期望和最坏时间。例：[8,2,5,2,9,1]，k=3 时答案为 2。随机枢轴在当前区间均匀选择。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R05",
+        "title": "LeetCode 215 Kth Largest Element in an Array 相关顺序统计原型",
+        "urls": [
+          "https://leetcode.com/problems/kth-largest-element-in-an-array/"
+        ]
+      },
+      {
+        "id": "R14",
+        "title": "MIT 6.046J Lecture 2 分治与中位数选择",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-2-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [
+      {
+        "language": "Python",
+        "content": "import random\n\ndef kth_smallest(values, k, seed=0):\n    a, rng = list(values), random.Random(seed)\n    if not 1 <= k <= len(a):\n        raise ValueError(\"invalid k\")\n    lo, hi, target = 0, len(a) - 1, k - 1\n    while lo <= hi:\n        pivot = a[rng.randrange(lo, hi + 1)]\n        lt, i, gt = lo, lo, hi\n        while i <= gt:\n            if a[i] < pivot:\n                a[lt], a[i] = a[i], a[lt]\n                lt, i = lt + 1, i + 1\n            elif a[i] > pivot:\n                a[i], a[gt] = a[gt], a[i]\n                gt -= 1\n            else:\n                i += 1\n        if target < lt:\n            hi = lt - 1\n        elif target > gt:\n            lo = gt + 1\n        else:\n            return pivot"
+      }
+    ],
+    "rubric": [
+      {
+        "name": "三路选择逻辑",
+        "max_score": 40,
+        "description": "三路选择逻辑"
+      },
+      {
+        "name": "期望与最坏分析",
+        "max_score": 40,
+        "description": "期望与最坏分析"
+      },
+      {
+        "name": "重复值与空间口径",
+        "max_score": 20,
+        "description": "重复值与空间口径"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "A05",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "进阶",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "三路划分为小于、等于、大于枢轴的连续区间。若目标下标 k−1 落在等于区间，立即返回；否则只在可能包含目标的一侧继续。这样重复值不会造成错误或全相等输入下的不必要递归。\n\n每轮划分线性；均匀随机枢轴以常数概率把区间缩小至至多原来的 3/4，从而总期望工作量为 O(n)，且读取输入给出 Ω(n) 下界。连续选到极端枢轴时仍可能 Θ(n²)。随机化保证针对任意固定输入的期望，不是每次最坏线性。\n\n下面实现先复制输入，空间 O(n)；若允许直接修改原数组，迭代划分部分额外空间 O(1)。seed 用于复现实验，不应把固定种子误称为抗对抗输入的安全保证。\n\nPython 3 参考实现\n\n```python\nimport random\n\ndef kth_smallest(values, k, seed=0):\n    a, rng = list(values), random.Random(seed)\n    if not 1 <= k <= len(a):\n        raise ValueError(\"invalid k\")\n    lo, hi, target = 0, len(a) - 1, k - 1\n    while lo <= hi:\n        pivot = a[rng.randrange(lo, hi + 1)]\n        lt, i, gt = lo, lo, hi\n        while i <= gt:\n            if a[i] < pivot:\n                a[lt], a[i] = a[i], a[lt]\n                lt, i = lt + 1, i + 1\n            elif a[i] > pivot:\n                a[i], a[gt] = a[gt], a[i]\n                gt -= 1\n            else:\n                i += 1\n        if target < lt:\n            hi = lt - 1\n        elif target > gt:\n            lo = gt + 1\n        else:\n            return pivot\n```"
+  },
+  {
+    "code": "SUB-A06",
+    "type": "ALGORITHM_ANALYSIS",
+    "title": "最大连续子数组的两种设计",
+    "difficulty": 1,
+    "tags": [
+      "分治",
+      "动态规划",
+      "滚动状态"
+    ],
+    "statement": "给定非空整数数组，求一个非空连续子数组的最大元素和。请说明分治法中跨中点情况如何处理，再给出线性时间算法并比较复杂度。例：[-4,3,-1,2,-5,4] 的最大和为 4。全负数组也必须选择至少一个元素。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R04",
+        "title": "LeetCode 53 Maximum Subarray 相关经典原型",
+        "urls": [
+          "https://leetcode.com/problems/maximum-subarray/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [
+      {
+        "language": "Python",
+        "content": "def max_subarray_sum(a):\n    if not a:\n        raise ValueError(\"nonempty array required\")\n    ending = best = a[0]\n    for i in range(1, len(a)):\n        value = a[i]\n        ending = max(value, ending + value)\n        best = max(best, ending)\n    return best"
+      }
+    ],
+    "rubric": [
+      {
+        "name": "分治三种情况",
+        "max_score": 30,
+        "description": "分治三种情况"
+      },
+      {
+        "name": "线性状态与正确性",
+        "max_score": 45,
+        "description": "线性状态与正确性"
+      },
+      {
+        "name": "边界与比较",
+        "max_score": 25,
+        "description": "边界与比较"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "A06",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "基础",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "分治法取左半最优、右半最优、左侧最大后缀和加右侧最大前缀和三者的最大值。跨中点扫描 Θ(n)，故时间 Θ(n log n)；用下标递归且不复制切片时，额外栈空间 O(log n)。\n\n线性法令 ending 表示“必须在当前位置结束”的最佳非空子数组和。当前位置要么独立开始，要么接在前一 ending 之后；best 保存目前全部 ending 的最大值。归纳可知两种可能穷尽所有合法结尾，因此 best 正确。\n\n线性法时间 Θ(n)，辅助空间 O(1)。初始化必须用首元素而非 0，否则全负输入会错误地选择空子数组。若还需返回区间，可额外保存起点与最佳端点，空间仍为 O(1)。\n\nPython 3 参考实现\n\n```python\ndef max_subarray_sum(a):\n    if not a:\n        raise ValueError(\"nonempty array required\")\n    ending = best = a[0]\n    for i in range(1, len(a)):\n        value = a[i]\n        ending = max(value, ending + value)\n        best = max(best, ending)\n    return best\n```"
+  },
+  {
+    "code": "SUB-A07",
+    "type": "ALGORITHM_ANALYSIS",
+    "title": "最多兼容活动的选择",
+    "difficulty": 1,
+    "tags": [
+      "贪心",
+      "区间调度"
+    ],
+    "statement": "每项活动占用半开区间 [s,f)，s<f，所有活动价值相同，结束时刻等于另一个开始时刻时可以衔接。设计选取最多不重叠活动的算法，返回其原下标。例：[(1,4),(3,5),(0,6),(5,7),(8,9)] 可选 3 项。解释按最早开始或最短持续时间选择为何不可靠。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R17",
+        "title": "MIT 6.046J Lecture 1 区间调度",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-1-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [
+      {
+        "language": "Python",
+        "content": "def select_activities(intervals):\n    jobs = sorted(enumerate(intervals),\n                  key=lambda item: (item[1][1], item[0]))\n    chosen, last_end = [], float(\"-inf\")\n    for index, (start, finish) in jobs:\n        if start >= last_end:\n            chosen.append(index)\n            last_end = finish\n    return chosen"
+      }
+    ],
+    "rubric": [
+      {
+        "name": "排序扫描与样例",
+        "max_score": 40,
+        "description": "排序扫描与样例"
+      },
+      {
+        "name": "交换论证及反例",
+        "max_score": 40,
+        "description": "交换论证及反例"
+      },
+      {
+        "name": "复杂度和边界",
+        "max_score": 20,
+        "description": "复杂度和边界"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "A07",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "基础",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "按结束时间递增排序，依次接纳开始时间不早于已选最后结束时间的活动。示例可选下标 0、3、4。相同结束时间可按原下标稳定处理，不影响数量最优性。\n\n最早结束活动可替换任一最优解的第一项且不影响后续兼容性；删除与它冲突的活动后对子问题重复，所以贪心正确。反例：最早开始会在 (0,10)、(1,2)、(2,3) 中只取长活动；最短时长会在 (0,3)、(3,6)、(2,4) 中先取中间活动而损失两项组合。\n\n排序 O(n log n)，扫描 O(n)。以下存储排序记录和返回解共 O(n) 空间。空集合返回空列表；不能把“结束≤下一开始”误写成严格小于。\n\nPython 3 参考实现\n\n```python\ndef select_activities(intervals):\n    jobs = sorted(enumerate(intervals),\n                  key=lambda item: (item[1][1], item[0]))\n    chosen, last_end = [], float(\"-inf\")\n    for index, (start, finish) in jobs:\n        if start >= last_end:\n            chosen.append(index)\n            last_end = finish\n    return chosen\n```"
+  },
+  {
+    "code": "SUB-A08",
+    "type": "ALGORITHM_ANALYSIS",
+    "title": "哈夫曼编码的总代价",
+    "difficulty": 3,
+    "tags": [
+      "贪心",
+      "最小堆",
+      "前缀编码"
+    ],
+    "statement": "四个字符的出现频数分别为 A:5、B:7、C:10、D:15。构造一组最优二进制前缀码，计算加权路径长度。说明为何反复合并两个最小权值可求最优值，并分析 n 个正频数字符的一般复杂度。无需复现某网站的特定码字。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R03",
+        "title": "Princeton Algorithms 讲义索引 字符串与哈夫曼等主题",
+        "urls": [
+          "https://algs4.cs.princeton.edu/lectures/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [
+      {
+        "language": "Python",
+        "content": "import heapq\n\ndef huffman_cost(frequencies):\n    heap = list(frequencies)\n    heapq.heapify(heap)\n    total = 0\n    while len(heap) > 1:\n        merged = heapq.heappop(heap) + heapq.heappop(heap)\n        total += merged\n        heapq.heappush(heap, merged)\n    return total"
+      }
+    ],
+    "rubric": [
+      {
+        "name": "构造与数值",
+        "max_score": 40,
+        "description": "构造与数值"
+      },
+      {
+        "name": "贪心依据",
+        "max_score": 35,
+        "description": "贪心依据"
+      },
+      {
+        "name": "复杂度与单字符约定",
+        "max_score": 25,
+        "description": "复杂度与单字符约定"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "A08",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "先合并 5 与 7 得 12，再合并 10 与 12 得 22，最后合并 15 与 22 得 37。可取 D=0、C=10、A=110、B=111；加权长度为 15×1+10×2+5×3+7×3=71。左右子树互换会产生不同但同样最优的码字。\n\n存在一棵最优树，使最小的两个频数位于最深层并互为兄弟；把它们缩成权值之和的伪字符，原树代价等于缩约树代价加这两个频数之和。最优子结构允许递归合并。因此所有合并权值之和就是最终加权路径长度。\n\n建堆 O(n)，进行 n−1 次合并，每次 O(log n)，总 O(n log n)，空间 O(n)。单字符约定需明确：按树路径长度计为 0；若协议要求非空码字则用一位编码，代价等于该频数。本实现采用树代价约定。\n\nPython 3 参考实现\n\n```python\nimport heapq\n\ndef huffman_cost(frequencies):\n    heap = list(frequencies)\n    heapq.heapify(heap)\n    total = 0\n    while len(heap) > 1:\n        merged = heapq.heappop(heap) + heapq.heappop(heap)\n        total += merged\n        heapq.heappush(heap, merged)\n    return total\n```"
+  },
+  {
+    "code": "SUB-A09",
+    "type": "ALGORITHM_ANALYSIS",
+    "title": "零一背包的一维状态压缩",
+    "difficulty": 3,
+    "tags": [
+      "动态规划",
+      "零一背包",
+      "伪多项式"
+    ],
+    "statement": "n 件物品各有正整数重量 w 和非负价值 v，每件至多选一次；背包容量 W 为非负整数。求总重量不超过 W 的最大价值。例：物品 (2,3)、(3,4)、(4,5)，W=5，答案为 7。给出状态转移，解释为何容量必须倒序更新，并讨论按二进制输入长度衡量的复杂度。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R01",
+        "title": "MIT 6.006 Introduction to Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2008/resources/lecture-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [
+      {
+        "language": "Python",
+        "content": "def knapsack_01(items, capacity):\n    dp = [0] * (capacity + 1)\n    for weight, value in items:\n        for c in range(capacity, weight - 1, -1):\n            dp[c] = max(dp[c], dp[c - weight] + value)\n    return dp[capacity]"
+      }
+    ],
+    "rubric": [
+      {
+        "name": "状态与转移",
+        "max_score": 40,
+        "description": "状态与转移"
+      },
+      {
+        "name": "倒序理由与反例",
+        "max_score": 35,
+        "description": "倒序理由与反例"
+      },
+      {
+        "name": "复杂度与输入长度",
+        "max_score": 25,
+        "description": "复杂度与输入长度"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "A09",
+    "source_math_omml": [
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">v</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">w</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">F</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">,</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">c</ns0:t></ns0:r></ns0:sub></ns0:sSub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">=</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">max</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">F</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">-</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">1</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">,</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">c</ns0:t></ns0:r></ns0:sub></ns0:sSub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">,</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">v</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r></ns0:sub></ns0:sSub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">+</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">F</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">-</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">1</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">,</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">c</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">-</ns0:t></ns0:r><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">w</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:sub></ns0:sSub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r></ns0:oMath>"
+    ],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "二维状态 F(i,c) 表示前 i 件、容量至多 c 的最优价值。第 i 件不选时取 F(i−1,c)，可选时与 $v_{i}$+F(i−1,c−$w_{i}$) 比较。所有初值为 0，允许不装满或一件不选。\n\n压缩后倒序遍历 c，读取的 dp[c−w] 尚未被本件更新，仍代表上一层。正序会把同一件重复装入：只有一件 (2,3)、W=4 时，错误结果 6，正确为 3。\n\n时间 O(nW)，辅助空间 O(W)。W 的输入位数只有 Θ(log(W+1))，因此这是伪多项式算法，不是关于二进制输入长度的一般多项式算法。重量必须为正；W=0 时结果为 0。\n\n$F_{i,c} = max(F_{i-1,c}, v_{i} + F_{i-1,c-w_{i}})$\n\nPython 3 参考实现\n\n```python\ndef knapsack_01(items, capacity):\n    dp = [0] * (capacity + 1)\n    for weight, value in items:\n        for c in range(capacity, weight - 1, -1):\n            dp[c] = max(dp[c], dp[c - weight] + value)\n    return dp[capacity]\n```"
+  },
+  {
+    "code": "SUB-A10",
+    "type": "ALGORITHM_ANALYSIS",
+    "title": "最长公共子序列的状态设计",
+    "difficulty": 3,
+    "tags": [
+      "动态规划",
+      "序列对齐",
+      "空间优化"
+    ],
+    "statement": "给定两个有限字符序列 x、y，长度分别为 m、n，允许为空。子序列可删除字符但不改变顺序，不要求连续。求最长公共子序列的长度，并说明如何恢复一条序列以及何时可将空间压为线性。例：ABCBDAB 与 BDCABA 的答案为 4，一条解为 BCBA。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R07",
+        "title": "LeetCode 1143 Longest Common Subsequence 相关经典原型",
+        "urls": [
+          "https://leetcode.com/problems/longest-common-subsequence/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [
+      {
+        "language": "Python",
+        "content": "def lcs_length(x, y):\n    if len(x) < len(y):\n        x, y = y, x\n    previous = [0] * (len(y) + 1)\n    for char_x in x:\n        current = [0] * (len(y) + 1)\n        for j, char_y in enumerate(y, 1):\n            if char_x == char_y:\n                current[j] = previous[j - 1] + 1\n            else:\n                current[j] = max(previous[j], current[j - 1])\n        previous = current\n    return previous[-1]"
+      }
+    ],
+    "rubric": [
+      {
+        "name": "状态与递推",
+        "max_score": 40,
+        "description": "状态与递推"
+      },
+      {
+        "name": "恢复与非唯一性",
+        "max_score": 30,
+        "description": "恢复与非唯一性"
+      },
+      {
+        "name": "时空分析和空串",
+        "max_score": 30,
+        "description": "时空分析和空串"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "A10",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "令 dp[i][j] 为 x 前 i 个字符与 y 前 j 个字符的最优长度，空前缀对应 0。末字符相同时，可取左上状态加 1；不同时，至少舍弃一个末字符，取上方与左方的最大值。按前缀长度递增填表。\n\n恢复时从 (m,n) 回溯：相等字符加入答案并对角移动，否则往值较大的一侧移动；同值可任选，最后反转。此方法得到一条解，不保证字典序最小，也不枚举所有解。\n\n完整表时间 O(mn)、空间 O(mn)。只求长度时可保留两行，或一行加对角旧值，使空间 O(min(m,n))；不能在未另用分治恢复技术时直接声称一行状态也能完成上述普通回溯。下面代码返回长度。\n\nPython 3 参考实现\n\n```python\ndef lcs_length(x, y):\n    if len(x) < len(y):\n        x, y = y, x\n    previous = [0] * (len(y) + 1)\n    for char_x in x:\n        current = [0] * (len(y) + 1)\n        for j, char_y in enumerate(y, 1):\n            if char_x == char_y:\n                current[j] = previous[j - 1] + 1\n            else:\n                current[j] = max(previous[j], current[j - 1])\n        previous = current\n    return previous[-1]\n```"
+  },
+  {
+    "code": "SUB-A11",
+    "type": "ALGORITHM_ANALYSIS",
+    "title": "带收益的兼容任务选择",
+    "difficulty": 3,
+    "tags": [
+      "动态规划",
+      "带权区间调度",
+      "二分"
+    ],
+    "statement": "给定 n 项任务 (开始,结束,收益)，开始严格小于结束，收益非负，每项至多选择一次。区间采用 [s,f)，要求互不重叠且总收益最大。例：(1,3,4)、(2,5,7)、(4,6,4)、(6,7,2)，答案为 10。设计优于 O(n²) 的算法，并说明“最早结束”贪心为何不再保证最优。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R06",
+        "title": "LeetCode 1235 Maximum Profit in Job Scheduling 相关经典原型",
+        "urls": [
+          "https://leetcode.com/problems/maximum-profit-in-job-scheduling/"
+        ]
+      },
+      {
+        "id": "R17",
+        "title": "MIT 6.046J Lecture 1 区间调度",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-1-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [
+      {
+        "language": "Python",
+        "content": "from bisect import bisect_right\n\ndef weighted_schedule(jobs):\n    ordered = sorted(jobs, key=lambda job: job[1])\n    ends = [finish for start, finish, profit in ordered]\n    dp = [0] * (len(ordered) + 1)\n    for j, (start, finish, profit) in enumerate(ordered, 1):\n        compatible = bisect_right(ends, start, 0, j - 1)\n        dp[j] = max(dp[j - 1], profit + dp[compatible])\n    return dp[-1]"
+      }
+    ],
+    "rubric": [
+      {
+        "name": "兼容前驱与递推",
+        "max_score": 45,
+        "description": "兼容前驱与递推"
+      },
+      {
+        "name": "正确性及贪心反例",
+        "max_score": 35,
+        "description": "正确性及贪心反例"
+      },
+      {
+        "name": "实现与复杂度",
+        "max_score": 20,
+        "description": "实现与复杂度"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "A11",
+    "source_math_omml": [
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">F</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">j</ns0:t></ns0:r></ns0:sub></ns0:sSub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">=</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">max</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">F</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">j</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">-</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">1</ns0:t></ns0:r></ns0:sub></ns0:sSub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">,</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">profit</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">j</ns0:t></ns0:r></ns0:sub></ns0:sSub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">+</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">F</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">p</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">j</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r></ns0:sub></ns0:sSub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r></ns0:oMath>"
+    ],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "按结束时间排序。p(j) 为结束时间不超过任务 j 开始时间的前面任务数量，可在前 j−1 项的结束时刻中二分。令 F[j] 表示前 j 项最优收益，选择与不选择最后一项给出 F[j]=max(F[j−1],收益_j+F[p(j)])。\n\n任何最优解要么不包含 j，要么包含 j 且其他任务必须位于它之前的兼容前缀；两类穷尽，故递推正确。例中可选第 1、3、4 项，收益 4+4+2=10。反例：(0,2,1)、(1,3,100)，最早结束贪心只得 1。\n\n排序与 n 次二分合计 O(n log n)，DP 数组 O(n)。二分只查已处理前缀，允许结束等于开始。空任务集最优为 0；恢复选择可保存每一步的取舍。\n\n$F_{j} = max(F_{j-1}, profit_{j} + F_{p(j)})$\n\nPython 3 参考实现\n\n```python\nfrom bisect import bisect_right\n\ndef weighted_schedule(jobs):\n    ordered = sorted(jobs, key=lambda job: job[1])\n    ends = [finish for start, finish, profit in ordered]\n    dp = [0] * (len(ordered) + 1)\n    for j, (start, finish, profit) in enumerate(ordered, 1):\n        compatible = bisect_right(ends, start, 0, j - 1)\n        dp[j] = max(dp[j - 1], profit + dp[compatible])\n    return dp[-1]\n```"
+  },
+  {
+    "code": "SUB-A12",
+    "type": "ALGORITHM_ANALYSIS",
+    "title": "矩阵链相乘的区间动态规划",
+    "difficulty": 3,
+    "tags": [
+      "区间动态规划",
+      "最优子结构"
+    ],
+    "statement": "有 n≥1 个矩阵，$A_{i}$ 的维度为 $p_{i−1}$×$p_{i}$，所有维度为正整数。矩阵乘法顺序不变，只可添加括号；一次 a×b 与 b×c 矩阵相乘需 abc 次标量乘法。求最小总次数并解释切分状态。例：维度序列 [10,30,5,60] 的最优值为 4500。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R01",
+        "title": "MIT 6.006 Introduction to Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2008/resources/lecture-notes/"
+        ]
+      },
+      {
+        "id": "R19",
+        "title": "MIT 6.046J Lecture 10 动态规划",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-10-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [
+      {
+        "language": "Python",
+        "content": "def matrix_chain_cost(p):\n    n = len(p) - 1\n    dp = [[0] * n for _ in range(n)]\n    for length in range(2, n + 1):\n        for i in range(n - length + 1):\n            j = i + length - 1\n            dp[i][j] = min(\n                dp[i][k] + dp[k + 1][j] + p[i] * p[k + 1] * p[j + 1]\n                for k in range(i, j)\n            )\n    return dp[0][n - 1]"
+      }
+    ],
+    "rubric": [
+      {
+        "name": "区间定义和转移",
+        "max_score": 45,
+        "description": "区间定义和转移"
+      },
+      {
+        "name": "正确性与示例",
+        "max_score": 35,
+        "description": "正确性与示例"
+      },
+      {
+        "name": "复杂度及恢复",
+        "max_score": 20,
+        "description": "复杂度及恢复"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "A12",
+    "source_math_omml": [
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">A</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">p</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">−</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">1</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">p</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">A</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">A</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">j</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">p</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">−</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">1</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">p</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">k</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">p</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">j</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>"
+    ],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "令 M[i,j] 为连续矩阵 $A_{i}$…$A_{j}$ 的最小乘法次数。单矩阵代价为 0。最后一次乘法一定在某个 k（i≤k<j）处切分，代价为两子链最优值之和，加 $p_{i−1}$·$p_{k}$·$p_{j}$。按区间长度从小到大填表。\n\n若某一子链不是最优括号化，替换成更优子链就会改进总方案，矛盾；枚举所有最后切分点即覆盖所有括号化。示例先算 A₁A₂：1500 次，再乘 A₃：3000 次，总计 4500；另一顺序需要 36000 次。\n\n有 O(n²) 个区间，每个枚举 O(n) 个切点，时间 O(n³)，空间 O(n²)。若需括号化，记录最佳切点并递归输出。不能按维度局部最小等未经证明的规则贪心。\n\nPython 3 参考实现\n\n```python\ndef matrix_chain_cost(p):\n    n = len(p) - 1\n    dp = [[0] * n for _ in range(n)]\n    for length in range(2, n + 1):\n        for i in range(n - length + 1):\n            j = i + length - 1\n            dp[i][j] = min(\n                dp[i][k] + dp[k + 1][j] + p[i] * p[k + 1] * p[j + 1]\n                for k in range(i, j)\n            )\n    return dp[0][n - 1]\n```"
+  },
+  {
+    "code": "SUB-A13",
+    "type": "ALGORITHM_ANALYSIS",
+    "title": "非负权图上的优先队列最短路",
+    "difficulty": 3,
+    "tags": [
+      "图算法",
+      "Dijkstra",
+      "松弛"
+    ],
+    "statement": "给定 n 个顶点的有向图、非负边权和源点 s，使用邻接表求到各顶点的最短距离，不可达记为无穷。允许平行边。例：S→A=4、S→B=1、B→A=2、A→T=1、B→T=7，则 S 到 T 的距离为 4。解释堆中的过期条目以及负权限制。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R01",
+        "title": "MIT 6.006 Introduction to Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2008/resources/lecture-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [
+      {
+        "language": "Python",
+        "content": "import heapq\n\ndef dijkstra(adj, source):\n    dist = [float(\"inf\")] * len(adj)\n    dist[source] = 0\n    heap = [(0, source)]\n    while heap:\n        distance, u = heapq.heappop(heap)\n        if distance != dist[u]:\n            continue\n        for v, weight in adj[u]:\n            candidate = distance + weight\n            if candidate < dist[v]:\n                dist[v] = candidate\n                heapq.heappush(heap, (candidate, v))\n    return dist"
+      }
+    ],
+    "rubric": [
+      {
+        "name": "堆与松弛实现",
+        "max_score": 40,
+        "description": "堆与松弛实现"
+      },
+      {
+        "name": "非负性及过期条目",
+        "max_score": 35,
+        "description": "非负性及过期条目"
+      },
+      {
+        "name": "严谨复杂度与不可达",
+        "max_score": 25,
+        "description": "严谨复杂度与不可达"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "A13",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "维护当前距离并用最小堆取最小暂定距离；取出的条目若不等于当前 dist[u] 就跳过，否则松弛所有出边。非负权保证有效最小点的最短距离已经确定；示例最短路径为 S→B→A→T。\n\n同一顶点可能因更优路径被多次入堆，过期检查防止反复扫描旧距离对应的出边。下列无 decrease-key 实现的时间上界为 O((n+m)log(n+m))，辅助空间 O(n+m)，其中堆最多 O(m+1) 个条目；简单图常简写为 O((n+m)log n)。\n\n本题仅保证非负权时的正确性与复杂度。存在负权时应选适合的 Bellman–Ford，或 DAG 上拓扑松弛；可达负环会使部分最短距离无下界。不可直接套用 Dijkstra 的定点证明。\n\nPython 3 参考实现\n\n```python\nimport heapq\n\ndef dijkstra(adj, source):\n    dist = [float(\"inf\")] * len(adj)\n    dist[source] = 0\n    heap = [(0, source)]\n    while heap:\n        distance, u = heapq.heappop(heap)\n        if distance != dist[u]:\n            continue\n        for v, weight in adj[u]:\n            candidate = distance + weight\n            if candidate < dist[v]:\n                dist[v] = candidate\n                heapq.heappush(heap, (candidate, v))\n    return dist\n```"
+  },
+  {
+    "code": "SUB-A14",
+    "type": "ALGORITHM_ANALYSIS",
+    "title": "依赖任务的最早完工时间",
+    "difficulty": 3,
+    "tags": [
+      "有向无环图",
+      "拓扑排序",
+      "最长路"
+    ],
+    "statement": "若干任务可无限并行执行，任务 v 需耗时 duration[v]≥0；边 u→v 表示 v 必须等 u 完成后才能开始。求全部任务的最早完工时间并检测循环依赖。例：A=2、B=3、C=4、D=2，依赖 A→C、B→C、C→D，答案为 9。解释为何不能直接把带权图当作一般最长路问题。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R01",
+        "title": "MIT 6.006 Introduction to Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2008/resources/lecture-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [
+      {
+        "language": "Python",
+        "content": "from collections import deque\n\ndef earliest_completion(duration, adj):\n    indegree = [0] * len(adj)\n    for edges in adj:\n        for v in edges:\n            indegree[v] += 1\n    queue = deque(i for i, d in enumerate(indegree) if d == 0)\n    finish, seen = list(duration), 0\n    while queue:\n        u = queue.popleft()\n        seen += 1\n        for v in adj[u]:\n            finish[v] = max(finish[v], finish[u] + duration[v])\n            indegree[v] -= 1\n            if indegree[v] == 0:\n                queue.append(v)\n    if seen != len(adj):\n        raise ValueError(\"cyclic dependencies\")\n    return max(finish, default=0)"
+      }
+    ],
+    "rubric": [
+      {
+        "name": "拓扑与状态",
+        "max_score": 40,
+        "description": "拓扑与状态"
+      },
+      {
+        "name": "正确性与循环检测",
+        "max_score": 35,
+        "description": "正确性与循环检测"
+      },
+      {
+        "name": "假设和复杂度",
+        "max_score": 25,
+        "description": "假设和复杂度"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "A14",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "在拓扑过程中令 finish[v] 初值为自身耗时。处理边 u→v 时更新 finish[v]=max(finish[v],finish[u]+duration[v])，对应等待所有前置任务的最晚结束。所有顶点处理完后取最大 finish。空图约定为 0。\n\n拓扑序保证计算 v 前所有前驱已确定，因而按序归纳正确。例中 A、B 同时开始，C 在时刻 3 开始、7 结束，D 在 9 结束。若处理顶点数少于 n，则存在环，当前依赖要求不能完成，不能返回部分计算结果。\n\n每个顶点和边各处理一次，时间 O(n+m)，辅助空间 O(n)。一般图最长简单路径并无这样的高效保证；此处依靠 DAG 结构与无限并行资源假设。若只有一台机器，模型需要改变。\n\nPython 3 参考实现\n\n```python\nfrom collections import deque\n\ndef earliest_completion(duration, adj):\n    indegree = [0] * len(adj)\n    for edges in adj:\n        for v in edges:\n            indegree[v] += 1\n    queue = deque(i for i, d in enumerate(indegree) if d == 0)\n    finish, seen = list(duration), 0\n    while queue:\n        u = queue.popleft()\n        seen += 1\n        for v in adj[u]:\n            finish[v] = max(finish[v], finish[u] + duration[v])\n            indegree[v] -= 1\n            if indegree[v] == 0:\n                queue.append(v)\n    if seen != len(adj):\n        raise ValueError(\"cyclic dependencies\")\n    return max(finish, default=0)\n```"
+  },
+  {
+    "code": "SUB-A15",
+    "type": "ALGORITHM_ANALYSIS",
+    "title": "最小生成树与并查集",
+    "difficulty": 3,
+    "tags": [
+      "贪心",
+      "Kruskal",
+      "并查集"
+    ],
+    "statement": "给定 n≥1 的无向带权图，边权可为负。设计 Kruskal 算法，说明并查集如何避免环，并返回最小生成树权重；不连通时必须报告失败。例：AB=1、BC=2、AC=4、CD=3、BD=5，最优总权为 6。分析排序与并查集的成本。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R18",
+        "title": "MIT 6.046J Lecture 12 最小生成树",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-12-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [
+      {
+        "language": "Python",
+        "content": "def kruskal_weight(n, edges):\n    parent, size = list(range(n)), [1] * n\n    def find(x):\n        while x != parent[x]:\n            parent[x] = parent[parent[x]]\n            x = parent[x]\n        return x\n    total = used = 0\n    for u, v, weight in sorted(edges, key=lambda edge: edge[2]):\n        a, b = find(u), find(v)\n        if a == b:\n            continue\n        if size[a] < size[b]:\n            a, b = b, a\n        parent[b] = a\n        size[a] += size[b]\n        total, used = total + weight, used + 1\n    if used != n - 1:\n        raise ValueError(\"disconnected graph\")\n    return total"
+      }
+    ],
+    "rubric": [
+      {
+        "name": "排序与并查集",
+        "max_score": 40,
+        "description": "排序与并查集"
+      },
+      {
+        "name": "割性质与不连通",
+        "max_score": 35,
+        "description": "割性质与不连通"
+      },
+      {
+        "name": "复杂度与边界",
+        "max_score": 25,
+        "description": "复杂度与边界"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "A15",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "按边权递增扫描，仅当两端属于不同连通分量时选边并合并分量。选到 n−1 条后完成；扫描结束仍不足则无生成树。示例选 AB、BC、CD，总权 6。负权不会破坏割性质；自环自然被排除，平行边正常比较。\n\n当前森林的每个连通分量形成一个割；下一条可选最轻边是某个尊重当前森林的割的安全边，可以扩充到一棵最小生成树。并查集用路径压缩和按大小合并，处理 m 次操作的摊还代价 O(m α(n))。\n\n总时间 O(m log m+(n+m)α(n))，常由排序主导。以下排序复制边表，辅助空间 O(n+m)；并查集本身只需 O(n)。n=1 时空边集的生成树权为 0。不得把不连通图的最小生成森林误当作生成树。\n\nPython 3 参考实现\n\n```python\ndef kruskal_weight(n, edges):\n    parent, size = list(range(n)), [1] * n\n    def find(x):\n        while x != parent[x]:\n            parent[x] = parent[parent[x]]\n            x = parent[x]\n        return x\n    total = used = 0\n    for u, v, weight in sorted(edges, key=lambda edge: edge[2]):\n        a, b = find(u), find(v)\n        if a == b:\n            continue\n        if size[a] < size[b]:\n            a, b = b, a\n        parent[b] = a\n        size[a] += size[b]\n        total, used = total + weight, used + 1\n    if used != n - 1:\n        raise ValueError(\"disconnected graph\")\n    return total\n```"
+  },
+  {
+    "code": "SUB-A16",
+    "type": "ALGORITHM_ANALYSIS",
+    "title": "增广路最大流的执行与分析",
+    "difficulty": 4,
+    "tags": [
+      "网络流",
+      "残量网络",
+      "最小割"
+    ],
+    "statement": "网络含 S→A 容量 3、S→B 容量 2、A→B 容量 1、A→T 容量 2、B→T 容量 3，其余边不存在。请用 BFS 寻找最短增广路的 Edmonds–Karp 方法求最大流，给出一个证明最优的割，并分析一般图的时间、空间。容量均为非负整数。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R10",
+        "title": "MIT 6.046J Lecture 13 最大流与最小割",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-13-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "增广序列与最大流",
+        "max_score": 35,
+        "description": "增广序列与最大流"
+      },
+      {
+        "name": "割和反向边",
+        "max_score": 40,
+        "description": "割和反向边"
+      },
+      {
+        "name": "一般复杂度",
+        "max_score": 25,
+        "description": "一般复杂度"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "A16",
+    "source_math_omml": [
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">max</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">flow</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">=</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">5</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">=</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">c</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">{</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">S</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">}</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">,</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">{</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">A</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">,</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">B</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">,</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">T</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">}</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r></ns0:oMath>"
+    ],
+    "metadata": {
+      "difficulty_label": "进阶",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "可先沿 S→A→T 增广 2，再沿 S→B→T 增广 2，最后沿 S→A→B→T 增广 1，总流 5。此时割 {S} 的容量为 3+2=5；任何可行流不超过任意割容量，因此已最优。BFS 的平手顺序可不同，但最大流值不变。\n\n每次在正残量边上 BFS，取路径瓶颈 Δ，正向残量减 Δ，反向残量加 Δ。反向边代表撤销或调整既有流，不能省略。没有 S 到 T 的残量路径即停止；可达集合构成最大流对应的最小割。\n\n邻接表和成对残量边实现中，一次 BFS 为 O(V+E)，最短增广距离单调不减，每条边成为关键饱和边至多 O(V) 次，总增广 O(VE) 次，得到标准 O(VE²) 上界（去除无关孤立点）。空间 O(V+E)。整数容量保证增广流量整数，但终止次数上界不依赖总容量数值。\n\n$max flow = 5 = c({S}, {A,B,T})$"
+  },
+  {
+    "code": "SUB-A17",
+    "type": "ALGORITHM_ANALYSIS",
+    "title": "倍增动态数组的摊还成本",
+    "difficulty": 3,
+    "tags": [
+      "摊还分析",
+      "动态数组",
+      "势能"
+    ],
+    "statement": "动态数组初始容量为 1，连续执行 n 次 append，不删除。未满时写入成本为 1；已满时先把容量翻倍、复制全部现有元素，再写入。请求总成本上界和单次摊还成本，并说明一次追加可能很贵为何与结论不矛盾。分别讨论持有容量和扩容瞬间空间。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R13",
+        "title": "MIT 6.046J Lecture 5 摊还分析",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-5-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "聚合分析",
+        "max_score": 40,
+        "description": "聚合分析"
+      },
+      {
+        "name": "势能或完整收费证明",
+        "max_score": 35,
+        "description": "势能或完整收费证明"
+      },
+      {
+        "name": "最坏单次与空间",
+        "max_score": 25,
+        "description": "最坏单次与空间"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "A17",
+    "source_math_omml": [
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">1</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">+</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">2</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">+</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">4</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">+</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">⋯</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">&lt;</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">2</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">Φ</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">=</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">2</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">×</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">size</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">−</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">capacity</ns0:t></ns0:r></ns0:oMath>"
+    ],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "复制规模依次为 1、2、4、…，直到小于 n 的最大二次幂。几何级数之和小于 2n，另有 n 次新元素写入，因此总成本小于 3n；单次摊还 O(1)，某次扩容本身仍可为 Θ(n)。\n\n也可取势能 Φ=2·size−capacity。普通追加实际成本 1、势能增 2，摊还为 3；扩容前 size=capacity=c，扩容后 size=c+1、capacity=2c，势能变化 2−c，实际 c+1，摊还仍为 3。初态势能 −1 只带来常数项，也可整体加 1。\n\nn≥1 时最终容量满足 n≤capacity<2n，持有空间 O(n)。若新旧缓冲区同时存在，扩容瞬间仍是 O(n) 空间，但常数更大。若每次只把容量加 1，则复制总和 Θ(n²)，不能获得常数摊还。\n\n$1 + 2 + 4 + ⋯ < 2n$\n\n$Φ = 2 × size − capacity$"
+  },
+  {
+    "code": "SUB-A18",
+    "type": "ALGORITHM_ANALYSIS",
+    "title": "拉链哈希的期望与最坏界",
+    "difficulty": 3,
+    "tags": [
+      "随机化",
+      "哈希",
+      "装载因子"
+    ],
+    "statement": "拉链哈希表有 m 个桶、n 个不同键，装载因子 α=n/m。假定采用独立于键集合随机选择的通用哈希族，不同键的碰撞概率至多 1/m。分析失败查询和成功查询的期望成本、最坏成本，并说明扩容的作用与随机假设失效的后果。按单次计算哈希为 O(1) 的模型回答。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R15",
+        "title": "MIT 6.046J Lecture 8 通用哈希与完美哈希",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-8-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "期望碰撞推导",
+        "max_score": 45,
+        "description": "期望碰撞推导"
+      },
+      {
+        "name": "扩容及最坏情形",
+        "max_score": 35,
+        "description": "扩容及最坏情形"
+      },
+      {
+        "name": "假设与空间",
+        "max_score": 20,
+        "description": "假设与空间"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "A18",
+    "source_math_omml": [
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">E</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">[</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">collisions</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">q</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">]</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">≤</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">/</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">m</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">=</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">α</ns0:t></ns0:r></ns0:oMath>"
+    ],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "对于与已存键不同的查询键 q，用指示变量表示每个键是否与 q 同桶，期望桶长至多 n/m。检查桶及比较的期望成本为 O(1+α)。成功查询最多检查同桶的其他 n−1 个键及自身，也得到 O(1+α) 上界。\n\n若通过倍增维持 α 为常数，查找期望 O(1)，插入在重哈希成本也摊还后可达期望 O(1)。仅讨论一次搬迁的哈希计算仍是 O(n)，不能说扩容操作本身常数。\n\n最坏情况下所有键落在一桶，查询 Θ(n)，空间 O(n+m)。通用哈希是对随机选函数的期望保证；固定公开函数、适应性对手或任意长字符串的哈希计算都需要另行分析。仅把桶数设为质数并不能自动证明均匀性。\n\n$E[collisions(q)] ≤ n/m = α$"
+  },
+  {
+    "code": "SUB-A19",
+    "type": "ALGORITHM_ANALYSIS",
+    "title": "KMP 中的前缀信息复用",
+    "difficulty": 3,
+    "tags": [
+      "字符串",
+      "KMP",
+      "失配函数"
+    ],
+    "statement": "给定文本 text 和模式 pattern，返回模式第一次出现的零基下标，不存在时返回 −1；空模式约定返回 0。以 ABABAC 为模式，求前缀函数数组，并说明失配时为何不必回退文本指针。例：文本 ABABABAC 的返回值为 2。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R03",
+        "title": "Princeton Algorithms 讲义索引 字符串与哈夫曼等主题",
+        "urls": [
+          "https://algs4.cs.princeton.edu/lectures/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [
+      {
+        "language": "Python",
+        "content": "def kmp_find(text, pattern):\n    if not pattern:\n        return 0\n    pi = [0] * len(pattern)\n    for i in range(1, len(pattern)):\n        j = pi[i - 1]\n        while j and pattern[i] != pattern[j]:\n            j = pi[j - 1]\n        if pattern[i] == pattern[j]:\n            j += 1\n        pi[i] = j\n    j = 0\n    for i, char in enumerate(text):\n        while j and char != pattern[j]:\n            j = pi[j - 1]\n        if char == pattern[j]:\n            j += 1\n        if j == len(pattern):\n            return i - j + 1\n    return -1"
+      }
+    ],
+    "rubric": [
+      {
+        "name": "前缀函数数值",
+        "max_score": 25,
+        "description": "前缀函数数值"
+      },
+      {
+        "name": "失配复用和实现",
+        "max_score": 45,
+        "description": "失配复用和实现"
+      },
+      {
+        "name": "线性分析与边界",
+        "max_score": 30,
+        "description": "线性分析与边界"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "A19",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "pi[i] 表示模式前缀 pattern[0:i+1] 的最长真前缀与后缀的公共长度；本例为 [0,0,1,2,3,0]。失配时令 j=pi[j−1]，保留已经确认与文本后缀相等的较短前缀。比这更长的候选因失配已被排除。\n\n构造 pi 和扫描文本都使用同样的退回逻辑。每轮外层使位置向前；j 的增加次数为线性，回退只消耗此前增加形成的额度，因此 while 虽然嵌套，累计次数仍线性。\n\n设文本长 n、模式长 m，时间 O(n+m)，辅助空间 O(m)。返回首次完整匹配的位置。不能把 pi 当作“已经匹配的字符总数”跨失配无条件保留，也不应在每次失配后重新扫描整个模式。\n\nPython 3 参考实现\n\n```python\ndef kmp_find(text, pattern):\n    if not pattern:\n        return 0\n    pi = [0] * len(pattern)\n    for i in range(1, len(pattern)):\n        j = pi[i - 1]\n        while j and pattern[i] != pattern[j]:\n            j = pi[j - 1]\n        if pattern[i] == pattern[j]:\n            j += 1\n        pi[i] = j\n    j = 0\n    for i, char in enumerate(text):\n        while j and char != pattern[j]:\n            j = pi[j - 1]\n        if char == pattern[j]:\n            j += 1\n        if j == len(pattern):\n            return i - j + 1\n    return -1\n```"
+  },
+  {
+    "code": "SUB-A20",
+    "type": "ALGORITHM_ANALYSIS",
+    "title": "子集和的回溯与界限剪枝",
+    "difficulty": 4,
+    "tags": [
+      "回溯",
+      "剪枝",
+      "指数算法"
+    ],
+    "statement": "给定 n 个正整数及非负目标 target，每个元素至多用一次，判断能否选出若干元素之和等于目标，允许空集。设计回溯算法，使用当前和及剩余总和进行剪枝；说明剪枝正确性、最坏复杂度和负数会破坏哪条依据。例：[3,5,7,9]，target=12 为真。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R08",
+        "title": "LeetCode 416 Partition Equal Subset Sum 相关子集和原型",
+        "urls": [
+          "https://leetcode.com/problems/partition-equal-subset-sum/"
+        ]
+      },
+      {
+        "id": "R09",
+        "title": "MIT 6.046J Lecture 16 P NP 与多项式归约",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-16-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [
+      {
+        "language": "Python",
+        "content": "def subset_sum_exists(a, target):\n    n = len(a)\n    suffix = [0] * (n + 1)\n    for i in range(n - 1, -1, -1):\n        suffix[i] = suffix[i + 1] + a[i]\n    def search(i, total):\n        if total == target:\n            return True\n        if i == n or total > target or total + suffix[i] < target:\n            return False\n        return search(i + 1, total + a[i]) or search(i + 1, total)\n    return search(0, 0)"
+      }
+    ],
+    "rubric": [
+      {
+        "name": "状态与分支",
+        "max_score": 35,
+        "description": "状态与分支"
+      },
+      {
+        "name": "剪枝正确性及负数限制",
+        "max_score": 40,
+        "description": "剪枝正确性及负数限制"
+      },
+      {
+        "name": "最坏分析与边界",
+        "max_score": 25,
+        "description": "最坏分析与边界"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "A20",
+    "source_math_omml": [
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSup><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">2</ns0:t></ns0:r></ns0:e><ns0:sup><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r></ns0:sup></ns0:sSup></ns0:oMath>"
+    ],
+    "metadata": {
+      "difficulty_label": "进阶",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "状态为已决定前 i 项、当前和 total。每个状态尝试选与不选第 i 项。total=target 时成功；total>target 时，后续正数不能把和降回来；total+suffix[i]<target 时，即使全选剩余项也不够。这两种失败可立即剪枝。\n\n例中可选 3+9 或 5+7。分支包含所有子集且剪枝仅排除不可能完成的分支，故判定正确。target=0 直接返回真；n=0 且目标为正返回假。若含负数，超出目标仍可能被后续负数抵消，所给剪枝不再成立。\n\n最坏仍访问 O($2^{n}$) 个节点，预处理 suffix 为 O(n)，栈与后缀数组 O(n)。剪枝只改进部分实例，不能据此声称多项式时间。下面递归仅作教学参考，大 n 实现需处理语言递归深度限制。\n\nPython 3 参考实现\n\n```python\ndef subset_sum_exists(a, target):\n    n = len(a)\n    suffix = [0] * (n + 1)\n    for i in range(n - 1, -1, -1):\n        suffix[i] = suffix[i + 1] + a[i]\n    def search(i, total):\n        if total == target:\n            return True\n        if i == n or total > target or total + suffix[i] < target:\n            return False\n        return search(i + 1, total + a[i]) or search(i + 1, total)\n    return search(0, 0)\n```"
+  },
+  {
+    "code": "SUB-P01",
+    "type": "PROOF",
+    "title": "左边界二分查找的循环不变式",
+    "difficulty": 1,
+    "tags": [
+      "循环不变式",
+      "二分查找"
+    ],
+    "statement": "非降序数组 a 长 n，算法维护 left=0、right=n；当 left<right 时取 mid，若 a[mid]<target 则 left=mid+1，否则 right=mid。返回 left。请用“初始化、保持、终止”三部分证明返回的是第一个不小于 target 的位置，无解返回 n；同时证明循环必然结束。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R01",
+        "title": "MIT 6.006 Introduction to Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2008/resources/lecture-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "完整不变式",
+        "max_score": 30,
+        "description": "完整不变式"
+      },
+      {
+        "name": "保持证明",
+        "max_score": 35,
+        "description": "保持证明"
+      },
+      {
+        "name": "终止与边界",
+        "max_score": 35,
+        "description": "终止与边界"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "P01",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "基础",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "不变式：0≤left≤right≤n；所有下标 i<left 都满足 a[i]<target；所有合法下标 i≥right 都满足 a[i]≥target。初始化时左右外侧均为空，成立。\n\n保持：若 a[mid]<target，由非降序性，[left,mid] 全部小于 target，将 left 移到 mid+1 仍保持左侧性质；右侧不变。否则 [mid,right) 均不小于 target，将 right 移到 mid 仍保持右侧性质；左侧不变。mid 始终位于原半开区间内。\n\n终止：非负整数 right−left 在每轮严格减小，故最终 left=right。此时左侧全小、右侧全大或相等，边界正是所求位置；若边界为 n，则整个数组都小于目标。证明同时覆盖空数组与全部相等情况。时间 O(log(n+1))，额外空间 O(1)。"
+  },
+  {
+    "code": "SUB-P02",
+    "type": "PROOF",
+    "title": "归并排序的正确性与稳定性",
+    "difficulty": 1,
+    "tags": [
+      "数学归纳法",
+      "归并",
+      "稳定排序"
+    ],
+    "statement": "对记录数组按 key 排序，记录还有不参与比较的原始序号。归并排序递归排好左右两半，合并时 key 相等优先取左半记录。请证明最终序列按 key 非降序、元素多重集不变，并保持同 key 记录的原始相对次序。说明若相等时先取右侧会发生什么。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R01",
+        "title": "MIT 6.006 Introduction to Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2008/resources/lecture-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "归并引理",
+        "max_score": 35,
+        "description": "归并引理"
+      },
+      {
+        "name": "归纳正确性",
+        "max_score": 30,
+        "description": "归纳正确性"
+      },
+      {
+        "name": "稳定性与反例",
+        "max_score": 35,
+        "description": "稳定性与反例"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "P02",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "基础",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "先证明归并：已输出部分始终有序、恰好由已取元素组成，且不大于两侧未取部分的所有元素。每次取两侧首元素中较小者，保持此不变式；一侧耗尽后追加另一侧剩余元素。每个元素恰取一次，故多重集不变。\n\n对输入长度归纳：长度至多 1 时结论成立。假定更短数组成立，左右子序列各自已正确且稳定；由归并引理，合并结果有序且不漏不重。\n\n稳定性分两类：同半中的相等记录由归纳假设保序；来自不同半的相等记录，原输入中左半在右半之前，相等优先取左因此保序。若先取右，输入 [(2,a),(2,b)] 分到两半后会变成 b 在 a 前，稳定性失效。时间 Θ(n log n)，普通数组归并辅助空间 O(n)。"
+  },
+  {
+    "code": "SUB-P03",
+    "type": "PROOF",
+    "title": "比较排序的最坏下界",
+    "difficulty": 3,
+    "tags": [
+      "决策树",
+      "信息下界",
+      "比较模型"
+    ],
+    "statement": "证明：对 n 个互异元素，任何确定性、仅通过两两比较取得次序信息的通用排序算法，其最坏比较次数为 Ω(n log n)。说明“互异”“比较模型”和“最坏”各自的作用，并解释计数排序为何不构成反例。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R01",
+        "title": "MIT 6.006 Introduction to Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2008/resources/lecture-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "决策树与叶子数",
+        "max_score": 40,
+        "description": "决策树与叶子数"
+      },
+      {
+        "name": "阶乘下界",
+        "max_score": 35,
+        "description": "阶乘下界"
+      },
+      {
+        "name": "模型边界",
+        "max_score": 25,
+        "description": "模型边界"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "P03",
+    "source_math_omml": [
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSup><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">2</ns0:t></ns0:r></ns0:e><ns0:sup><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">h</ns0:t></ns0:r></ns0:sup></ns0:sSup></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSup><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">2</ns0:t></ns0:r></ns0:e><ns0:sup><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">h</ns0:t></ns0:r></ns0:sup></ns0:sSup><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">≥</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">!</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">⇒</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">h</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">≥</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">log</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">2</ns0:t></ns0:r></ns0:sub></ns0:sSub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">!</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">=</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">Ω</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">log</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r></ns0:oMath>"
+    ],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "把算法画成二叉决策树；因元素互异，每次比较只有小于或大于两种实际分支。输入存在 n! 种相对排列，为了对所有排列正确，决策树至少要有 n! 个可区分叶子。\n\n高度 h 的二叉树至多有 $2^{h}$ 个叶子，故 h≥ceil(log₂(n!))。仅看后面至少 n/2 个因子，每个至少 n/2，得到 log₂(n!)≥(n/2)log₂(n/2)=Ω(n log n)。这给出至少一个输入所需的比较次数下界。\n\n互异输入是通用排序必须处理的子集，因此足够建立最坏下界；不表示每个输入都要这么多比较。计数排序利用整数键值进行索引并依赖值域大小，超出纯比较模型，O(n+K) 与该定理不矛盾。该结论也不直接等于所有随机算法的期望下界，后者需另作论证。\n\n$2^{h} ≥ n!  ⇒  h ≥ log_{2}(n!) = Ω(n log n)$"
+  },
+  {
+    "code": "SUB-P04",
+    "type": "PROOF",
+    "title": "五元组中位数选择的最坏线性界",
+    "difficulty": 4,
+    "tags": [
+      "分治",
+      "确定性选择",
+      "递归不等式"
+    ],
+    "statement": "对 n 个互异数分成至多 5 个一组，求各组中位数，再递归求这些中位数的中位数作为划分枢轴。证明每次可排除至少 3n/10−O(1) 个元素，并证明选择第 k 小的最坏时间为 O(n)。最后一个不足 5 的分组及小规模情形必须处理。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R14",
+        "title": "MIT 6.046J Lecture 2 分治与中位数选择",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-2-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "排除数量",
+        "max_score": 40,
+        "description": "排除数量"
+      },
+      {
+        "name": "递归与强归纳",
+        "max_score": 45,
+        "description": "递归与强归纳"
+      },
+      {
+        "name": "取整和实现口径",
+        "max_score": 15,
+        "description": "取整和实现口径"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "P04",
+    "source_math_omml": [
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">T</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">≤</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">T</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">ceil</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">/</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">5</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">+</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">T</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">7</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">/</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">10</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">+</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">O</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">1</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">+</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">O</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r></ns0:oMath>"
+    ],
+    "metadata": {
+      "difficulty_label": "进阶",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "除去不足 5 的末组和包含枢轴的组，至少约一半的组中位数不小于枢轴，每个完整组又至少有 3 个元素不小于它；对不大于一侧同理。因此两侧都能保证至少 3n/10−O(1) 个元素，继续搜索的较大侧至多 7n/10+O(1)。\n\n分组和划分耗时 O(n)，递归代价满足 T(n)≤T(ceil(n/5))+T(7n/10+O(1))+cn。选一个充分大的常数阈值，小于阈值时直接排序求解；对阈值以上用强归纳假设 T(t)≤at，递归规模系数 1/5+7/10=9/10<1，余下的 a·n/10 可覆盖 cn 及取整常数，适当增大 a 即得 O(n)。\n\n注意这不是 T(n)=T(n/2)+O(n)，也不能直接套单分支主定理。构造一组长度约 n/5 的中位数数组的直接实现使用 O(n) 额外空间；更省空间的实现需另行说明。\n\n$T(n) ≤ T(ceil(n/5)) + T(7n/10+O(1)) + O(n)$"
+  },
+  {
+    "code": "SUB-P05",
+    "type": "PROOF",
+    "title": "最早结束活动的交换论证",
+    "difficulty": 1,
+    "tags": [
+      "贪心",
+      "交换论证",
+      "区间调度"
+    ],
+    "statement": "对价值相同的活动 [s,f)，s<f，兼容条件为上一活动结束不晚于下一活动开始。证明反复选取最早结束的可兼容活动，所得活动数最多。证明必须写出如何把一个最优解变成包含贪心首项的最优解，以及余下问题为何可以递归处理。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R17",
+        "title": "MIT 6.046J Lecture 1 区间调度",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-1-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "首项交换",
+        "max_score": 45,
+        "description": "首项交换"
+      },
+      {
+        "name": "最优子结构与归纳",
+        "max_score": 40,
+        "description": "最优子结构与归纳"
+      },
+      {
+        "name": "适用条件",
+        "max_score": 15,
+        "description": "适用条件"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "P05",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "基础",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "设 g 是结束最早的活动，O 是按执行顺序排列的任一最优解，其首项为 o。由 f(g)≤f(o)，将 o 替换成 g 后，原来在 o 之后的所有活动仍可开始，因为它们开始时间至少为 f(o)，也至少为 f(g)。\n\n替换不改变活动数，故存在一个包含 g 的最优解。选择 g 后，只需在开始时间至少为 f(g) 的活动中求最大兼容子集；若该子集不是最优，可替换成更多活动并改进原最优解，产生矛盾。\n\n对子问题活动数量归纳得到整个贪心序列最优。相同结束时间任选一个仍满足不等式。结论依赖“每项价值相同”；带收益时替换首项可能损失收益，不能沿用此证明。排序时间 O(n log n)，扫描 O(n)。"
+  },
+  {
+    "code": "SUB-P06",
+    "type": "PROOF",
+    "title": "哈夫曼合并规则的最优性",
+    "difficulty": 4,
+    "tags": [
+      "贪心",
+      "交换论证",
+      "树的归纳"
+    ],
+    "statement": "设 n≥2 个字符有正频数，二进制前缀码的总代价为“频数乘码长”的总和。证明存在最优编码树，使频数最小的两个字符互为兄弟；进而证明把它们合并成一个伪字符再递归的哈夫曼算法最优。允许多个相同频数与不同最优码字。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R03",
+        "title": "Princeton Algorithms 讲义索引 字符串与哈夫曼等主题",
+        "urls": [
+          "https://algs4.cs.princeton.edu/lectures/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "最深兄弟与标签交换",
+        "max_score": 45,
+        "description": "最深兄弟与标签交换"
+      },
+      {
+        "name": "收缩与归纳",
+        "max_score": 40,
+        "description": "收缩与归纳"
+      },
+      {
+        "name": "相等及复杂度",
+        "max_score": 15,
+        "description": "相等及复杂度"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "P06",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "进阶",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "正频数下，可消去只有一个孩子的内部节点以减少总代价，故只需考虑满二叉树。取最深层的一对兄弟叶子，深度均为 d。设频数最小的字符为 x、y；交换叶子标签，把它们放到这对位置。\n\n若较小频数 a 原深度为 h≤d，较大频数 b 原深度为 d，交换后代价变化为 (a−b)(d−h)≤0。连续进行合适交换，就得到不更差且 x、y 为兄弟的最优树；相等时允许变化为零。\n\n把兄弟 x、y 收缩成频数 f(x)+f(y) 的叶子，原总代价=缩约总代价+f(x)+f(y)。若缩约树不是最优，替换后能改进原树，矛盾。由字符数归纳，递归缩约所得树最优，展开即哈夫曼树。堆实现 O(n log n) 时间、O(n) 空间。此证明不要求最优码字唯一。"
+  },
+  {
+    "code": "SUB-P07",
+    "type": "PROOF",
+    "title": "分数背包的密度贪心与适用边界",
+    "difficulty": 3,
+    "tags": [
+      "贪心",
+      "交换论证",
+      "反例"
+    ],
+    "statement": "物品重量为正、价值非负，允许取任意比例，总重不超过 W。证明按价值密度 v/w 从高到低装入的策略最优；再给出同一策略用于零一背包会失败的具体反例。论证必须说明连续可分性在何处使用。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R02",
+        "title": "MIT 6.046J Design and Analysis of Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/pages/lecture-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "等重量交换",
+        "max_score": 50,
+        "description": "等重量交换"
+      },
+      {
+        "name": "连续性与完整论证",
+        "max_score": 25,
+        "description": "连续性与完整论证"
+      },
+      {
+        "name": "零一反例",
+        "max_score": 25,
+        "description": "零一反例"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "P07",
+    "source_math_omml": [
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">ρ</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">ρ</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">j</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>"
+    ],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "把按密度排序后的贪心解记为 G。取任意最优解 O，考察它与 G 第一个不同的位置 i。若 O 对更高密度物品 i 取少了，而后面某个更低密度物品 j 取了正重量，则从 j 转移重量 δ 给 i，价值变化 δ($ρ_{i}$−$ρ_{j}$)≥0。\n\nδ 可取到使 i 与贪心一致，或 j 被清空；重复交换，可逐步把 O 变成 G 而不降价值。若容量未满且还有正价值可取，继续装入不劣；零价值剩余可任意。因此存在与 G 一致的最优解。转移任意小的 δ 正是分数可分性的用途。\n\n零一反例：容量 50，物品 (重量,价值) 为 (10,60)、(20,100)、(30,120)。按密度取前两件得 160，后两件可得 220。不能拆分物品完成上述重量交换。分数背包排序 O(n log n)、扫描 O(n)，零一版本一般需其他算法。"
+  },
+  {
+    "code": "SUB-P08",
+    "type": "PROOF",
+    "title": "Dijkstra 定点步骤为何需要非负权",
+    "difficulty": 3,
+    "tags": [
+      "最短路",
+      "贪心正确性",
+      "反例"
+    ],
+    "statement": "证明：在所有边权非负的有向图中，Dijkstra 每次选取最小暂定距离的未定点 u 时，dist[u] 已等于真实最短距离。再构造含负边但无负环的图，使“顶点一旦定点就不再修改”的版本失败。不可只写“负权不能用”。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R01",
+        "title": "MIT 6.006 Introduction to Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2008/resources/lecture-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "路径首个未定点",
+        "max_score": 35,
+        "description": "路径首个未定点"
+      },
+      {
+        "name": "不等式与非负作用",
+        "max_score": 40,
+        "description": "不等式与非负作用"
+      },
+      {
+        "name": "准确反例和版本界定",
+        "max_score": 25,
+        "description": "准确反例和版本界定"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "P08",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "归纳假设已定点集合 S 内距离正确。取 u 的一条最短路径，令 y 为该路径上第一个不在 S 中的点，x 为其前驱。x 已定点并松弛过 x→y，所以 dist[y] 已不大于该路径到 y 的前缀长度；暂定距离来自实际路径，又不可能小于真实最短距离，故 y 的该值正确。\n\n由于后续边非负，真实距离 δ(y)≤δ(u)；而 u 在未定点中最小，dist[u]≤dist[y]=δ(y)≤δ(u)。另一方面 dist[u]≥δ(u)，两者相等。不可达顶点的无穷值单独保留。\n\n反例：s→a=2、s→b=5、b→a=−4，无其他边。定点版本先固定 a 为 2，但真实最短路 s→b→a 的长度为 1；图无环所以无负环。某些允许重复处理点的堆代码可能修复这个例子，但已不再具有上述一次定点证明和标准复杂度保证。"
+  },
+  {
+    "code": "SUB-P09",
+    "type": "PROOF",
+    "title": "最小生成树的割安全性",
+    "difficulty": 3,
+    "tags": [
+      "最小生成树",
+      "割性质",
+      "交换"
+    ],
+    "statement": "设连通无向带权图中，F 是某棵最小生成树的边子集；割 (S,V−S) 不切开 F 中任一条边。令 e 为跨此割的一条最轻边。证明存在包含 F∪{e} 的最小生成树。边权可相等；说明为何不能由此断言 e 属于所有最小生成树。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R18",
+        "title": "MIT 6.046J Lecture 12 最小生成树",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-12-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "构环与第二跨割边",
+        "max_score": 35,
+        "description": "构环与第二跨割边"
+      },
+      {
+        "name": "保留 F 的交换",
+        "max_score": 40,
+        "description": "保留 F 的交换"
+      },
+      {
+        "name": "平权与量词",
+        "max_score": 25,
+        "description": "平权与量词"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "P09",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "取包含 F 的一棵最小生成树 T。若 e 已在 T 中，结论直接成立；否则把 e 加入 T 形成唯一环。由于 e 跨割，环上还存在另一条跨割边 f。\n\n割尊重 F，所以 f 不在 F 中；e 是割上最轻边，w(e)≤w(f)。用 e 替换 f 得到生成树 T′，仍保留 F，且总权不增加。T 已最优，T′ 只能同样最优，因此 e 为安全边。\n\n若有平权，可能多条跨割边都可被不同最小生成树选用。例如三角形三条边均为 1，对割 {a}，ab 和 ac 都最轻，却各自都不是所有最小生成树必含的边。若该割上的最轻边严格唯一，才能进一步推出所有最小生成树都包含它。"
+  },
+  {
+    "code": "SUB-P10",
+    "type": "PROOF",
+    "title": "最小生成树的环排除性质",
+    "difficulty": 3,
+    "tags": [
+      "最小生成树",
+      "环性质",
+      "严格与非严格"
+    ],
+    "statement": "在连通无向带权图的某个环 C 中，边 e 的权重严格大于环内其他所有边。证明 e 不属于任何最小生成树。再讨论如果 e 只是并列最大，能够得到什么较弱结论，并用例子解释。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R18",
+        "title": "MIT 6.046J Lecture 12 最小生成树",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-12-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "删边分割与替换边",
+        "max_score": 40,
+        "description": "删边分割与替换边"
+      },
+      {
+        "name": "严格矛盾",
+        "max_score": 30,
+        "description": "严格矛盾"
+      },
+      {
+        "name": "平权弱结论与例子",
+        "max_score": 30,
+        "description": "平权弱结论与例子"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "P10",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "反设存在最小生成树 T 包含 e。删掉 e 后，T 分为两部分。原环去掉 e 后仍有连接 e 两端的路径，因此路径上至少有一条边 f 跨越这两个部分。f 不在删边后的森林中，加入可恢复生成树。\n\n由于 e 严格最重，w(f)<w(e)，新树 T−e+f 总权更小，与 T 最优矛盾。因此 e 不在任何最小生成树中。关键是严格不等式，它排除了所有含 e 的最优树。\n\n若只是并列最大，同样交换只能保证不增权，于是能推出“至少存在一棵最小生成树不含 e”，不能推出“全部不含”。三角形边权都为 1 时，任何一条边都可包含在某棵最小生成树中，也可被另一棵排除。该性质与割性质兼容，二者量词不能混淆。"
+  },
+  {
+    "code": "SUB-P11",
+    "type": "PROOF",
+    "title": "BFS 的层次就是最少边数距离",
+    "difficulty": 1,
+    "tags": [
+      "图搜索",
+      "BFS",
+      "归纳"
+    ],
+    "statement": "有限无权图可以是有向或无向，从源点 s 执行 BFS，首次发现邻点 v 时设置 d[v]=d[u]+1 并入先进先出队列。证明每个可达点的 d 都是最少边数距离，说明首次发现后为何无需重新入队，并给出时间空间界。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R01",
+        "title": "MIT 6.006 Introduction to Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2008/resources/lecture-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "队列分层性质",
+        "max_score": 35,
+        "description": "队列分层性质"
+      },
+      {
+        "name": "距离上下界归纳",
+        "max_score": 45,
+        "description": "距离上下界归纳"
+      },
+      {
+        "name": "一次访问与适用范围",
+        "max_score": 20,
+        "description": "一次访问与适用范围"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "P11",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "基础",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "队列按距离非降序处理：开始仅有距离 0 的 s；处理距离 k 的点时，新发现的点仅被赋值 k+1，并排在已有点之后，所以较深层不会越过较浅层。每个有限 d 对应沿父指针得到的一条真实路径，故 d 不小于真实最短距离。\n\n按真实最短距离归纳。距离 0 的 s 正确；若 v 的真实距离为 k+1，取一条最短路上的前驱 u，其距离为 k。u 按归纳会正确处理，届时 v 要么已在不晚于本层的处理过程中被赋值，要么此时被赋为 k+1；两种情形均有 d[v]≤k+1，结合下界得相等。\n\n首次发现已经最短，再入队没有收益，因此用访问标记保证每点一次。邻接表时间 O(V+E)，额外队列、距离、父指针空间 O(V)。不可达点保留无穷或 −1；带任意正权时按边数分层不再等同于按权重最短。"
+  },
+  {
+    "code": "SUB-P12",
+    "type": "PROOF",
+    "title": "拓扑序存在当且仅当图无环",
+    "difficulty": 3,
+    "tags": [
+      "有向无环图",
+      "拓扑排序",
+      "反证"
+    ],
+    "statement": "对有限有向图，拓扑序指每条边 u→v 的 u 都排在 v 前。证明图存在拓扑序当且仅当图没有有向环，并由证明说明“反复删除入度为零顶点”的算法为何能检测有向环。需覆盖非连通图和空图。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R01",
+        "title": "MIT 6.006 Introduction to Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2008/resources/lecture-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "必要性",
+        "max_score": 25,
+        "description": "必要性"
+      },
+      {
+        "name": "零入度引理与充分性",
+        "max_score": 50,
+        "description": "零入度引理与充分性"
+      },
+      {
+        "name": "检测和边界",
+        "max_score": 25,
+        "description": "检测和边界"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "P12",
+    "source_math_omml": [
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">v</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">k</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">v</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">k</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>"
+    ],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "必要性：若存在有向环 v₁→v₂→…→$v_{k}$→v₁，拓扑序会要求 v₁ 在 v₂ 前、…、$v_{k}$ 在 v₁ 前，形成严格次序矛盾，因此有拓扑序必无环。\n\n充分性：非空有限 DAG 至少有一个入度为 0 的点。否则从任一点不断沿入边找前驱，有限顶点必重复，从而出现有向环，矛盾。删掉一个入度为 0 的点后仍是 DAG，归纳地排好剩余图，再把该点放最前，即得拓扑序。\n\n算法不断处理零入度点并削减后继入度。若处理数等于 V，输出序有效；若尚有未处理点却无零入度点，剩余子图含环。非连通图可交错处理各分量，空图的空序合法。邻接表配队列时间 O(V+E)、额外空间 O(V)。"
+  },
+  {
+    "code": "SUB-P13",
+    "type": "PROOF",
+    "title": "零一背包倒序更新的不变式",
+    "difficulty": 3,
+    "tags": [
+      "动态规划",
+      "状态压缩",
+      "归纳"
+    ],
+    "statement": "重量均为正整数。对每件 (w,v)，容量 c 从 W 递减到 w，执行 dp[c]=max(dp[c],dp[c−w]+v)，初值全为 0。证明每件物品至多被使用一次，处理完 i 件后 dp[c] 就是前 i 件、容量至多 c 的最优价值。给出改成正序的反例。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R01",
+        "title": "MIT 6.006 Introduction to Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2008/resources/lecture-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "更新时刻不变式",
+        "max_score": 45,
+        "description": "更新时刻不变式"
+      },
+      {
+        "name": "二维递推归纳",
+        "max_score": 35,
+        "description": "二维递推归纳"
+      },
+      {
+        "name": "正序反例和前提",
+        "max_score": 20,
+        "description": "正序反例和前提"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "P13",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "按物品数归纳，未处理物品时最优值均为 0。处理当前物品时，容量从大到小，更新 c 前，dp[c] 仍是上一层值，而 c−w<c，其位置尚未被本轮更新，因此 dp[c−w] 同样来自前 i−1 件。\n\n新值分别表示不选本件、以及在前 i−1 件的可行最优方案后增加本件。两类覆盖全部选择，本件只增加一次，故更新后满足二维递推；小于 w 的容量不更新，也恰好不能放本件。由归纳得全表正确。\n\n正序反例：唯一物品重量 2、价值 3，容量 4。更新 c=2 后 dp[2]=3，到 c=4 又读到本轮的 dp[2]，得到 6，把同一件用了两次。算法时间 O(nW)，空间 O(W)，并不因压缩状态就改变时间阶。重量为零时上述“严格更小尚未更新”证明需重写，因此本题排除零重量。"
+  },
+  {
+    "code": "SUB-P14",
+    "type": "PROOF",
+    "title": "最长公共子序列递推的完备性",
+    "difficulty": 3,
+    "tags": [
+      "动态规划",
+      "最优子结构",
+      "存在性"
+    ],
+    "statement": "令 L(i,j) 为字符串 x 前 i 个字符与 y 前 j 个字符的 LCS 长度。证明空前缀值为 0；末字符相同可取 L(i−1,j−1)+1；末字符不同取 max(L(i−1,j),L(i,j−1))。相同情形要证明存在合适最优解，不能无理由声称所有最优对齐都使用最后两个位置。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R07",
+        "title": "LeetCode 1143 Longest Common Subsequence 相关经典原型",
+        "urls": [
+          "https://leetcode.com/problems/longest-common-subsequence/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "相同字符上下界",
+        "max_score": 50,
+        "description": "相同字符上下界"
+      },
+      {
+        "name": "不同字符完备性",
+        "max_score": 35,
+        "description": "不同字符完备性"
+      },
+      {
+        "name": "存在性与边界",
+        "max_score": 15,
+        "description": "存在性与边界"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "P14",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "空前缀没有字符，只能形成空公共子序列。若最后两个字符相同为 c，在两个短前缀的一条 LCS 后追加 c，得到长度 L(i−1,j−1)+1，建立下界。\n\n对任一最优匹配，若两个最后位置都没用，可以追加 c，矛盾；若只使用一个最后位置，可把与它配对的同字符移到另一串的最后位置，仍保持顺序；若两个都用，由顺序性只能互相配对。因此存在使用最后一对 c 的最优匹配，移去该对后长度至多 L(i−1,j−1)，得到上界。\n\n若最后字符不同，它们不可能互相配对；一个公共子序列匹配也不可能同时使用这两个最后位置去匹配别处，否则顺序交叉。因此至少一个最后位置未用，解落在两个短前缀子问题之一。反向看，两子问题任一解都在原问题可行，故取最大值恰好。"
+  },
+  {
+    "code": "SUB-P15",
+    "type": "PROOF",
+    "title": "无增广路与最大流最小割",
+    "difficulty": 4,
+    "tags": [
+      "网络流",
+      "残量图",
+      "最优性证书"
+    ],
+    "statement": "给定具有非负容量的有限流网络及一个可行流 f。证明以下三者等价：f 为最大流；残量网络中不存在 s 到 t 的增广路；存在容量等于流值的 s-t 割。请说明反向残量边在证明中的角色。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R10",
+        "title": "MIT 6.046J Lecture 13 最大流与最小割",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-13-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "增广破坏最优性",
+        "max_score": 25,
+        "description": "增广破坏最优性"
+      },
+      {
+        "name": "可达割的两项条件",
+        "max_score": 45,
+        "description": "可达割的两项条件"
+      },
+      {
+        "name": "弱对偶与等价闭合",
+        "max_score": 30,
+        "description": "弱对偶与等价闭合"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "P15",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "进阶",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "若存在正残量路径，沿瓶颈 Δ>0 增广，可保持容量与流守恒并增大流值，所以最大流不可能有增广路。反向残量边使增广能够减少旧流，并不代表增加原网络不存在的实际容量。\n\n若无增广路，令 S 为残量图中从 s 可达的点集，t 不在 S。每条原图从 S 到外部的边都已饱和，否则可继续走出 S；每条从外部进入 S 的边流量必须为 0，否则反向残量边同样能走出 S。\n\n把 S 内流守恒相加，流值等于跨割净流，恰好等于全部出割容量。任意可行流的流值都不超过任意割容量，故此流最大、此割最小。最后，若存在等值割，由该上界立即知 f 最大，完成三者等价。平行边应分别计容量；反向边不能与原图的独立反向边混淆。"
+  },
+  {
+    "code": "SUB-P16",
+    "type": "PROOF",
+    "title": "一对一互评分配的 Hall 条件",
+    "difficulty": 4,
+    "tags": [
+      "二分图匹配",
+      "Hall 定理",
+      "增广路"
+    ],
+    "statement": "简化互评模型中，左侧为作品集合 W，右侧为候选评审者集合 R，边表示允许评价；每份作品需要 1 人，每名评审者至多评 1 份。证明存在覆盖 W 的匹配，当且仅当任意作品子集 X 都满足 |N(X)|≥|X|。解释“每份作品至少有一个候选”为何不足。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R11",
+        "title": "MIT 6.046J Lecture 14A 匹配",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-14a-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "必要性",
+        "max_score": 20,
+        "description": "必要性"
+      },
+      {
+        "name": "交替可达集证明",
+        "max_score": 60,
+        "description": "交替可达集证明"
+      },
+      {
+        "name": "反例和模型范围",
+        "max_score": 20,
+        "description": "反例和模型范围"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "P16",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "进阶",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "必要性：覆盖匹配会把 X 中每份作品映射到一个不同的邻居评审者，因此邻居数至少为 |X|。\n\n充分性用反证：取最大匹配，若作品 w₀ 未匹配，从它沿“未匹配边从左到右、匹配边从右到左”探索。若遇到未匹配评审者，就有增广路，违背最大性。因此所有可达右点均已匹配，其匹配左点也可达。\n\n记可达左点 X、可达右点 Y。X 的所有邻居都在 Y：未匹配边已探索，左点的匹配右点也是其进入路径上的点。除起点 w₀ 外，X 中每个点对应唯一的匹配右点，故 |X|=|Y|+1，而 N(X)=Y，违反 Hall 条件。\n\n反例：两份作品都只能分给同一个评审者，各自有候选却无法同时覆盖。本定理针对一次一人的单位容量模型；每份 r 人、每人多份及负载下界需要容量流模型，不能直接照抄这一条件作为充分判断。"
+  },
+  {
+    "code": "SUB-P17",
+    "type": "PROOF",
+    "title": "多次弹栈的势能分析",
+    "difficulty": 3,
+    "tags": [
+      "摊还分析",
+      "势能法",
+      "栈"
+    ],
+    "statement": "初始为空栈，任意执行 q 次 PUSH(x)、POP、MULTIPOP(k)，后者最多弹出 k 个现有元素。每次实际压入或弹出一个元素成本为 1，另有每次操作 O(1) 的控制成本。证明任意操作序列的总成本 O(q)，虽然单次 MULTIPOP 可能线性。要求给出合法势能。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R13",
+        "title": "MIT 6.046J Lecture 5 摊还分析",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-5-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "势能及非负性",
+        "max_score": 30,
+        "description": "势能及非负性"
+      },
+      {
+        "name": "各操作摊还成本",
+        "max_score": 40,
+        "description": "各操作摊还成本"
+      },
+      {
+        "name": "求和和最坏单次区分",
+        "max_score": 30,
+        "description": "求和和最坏单次区分"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "P17",
+    "source_math_omml": [
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">Φ</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">final</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">Φ</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">initial</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">ĉ</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r></ns0:sub></ns0:sSub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">=</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">c</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r></ns0:sub></ns0:sSub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">+</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">Φ</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r></ns0:sub></ns0:sSub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">−</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">Φ</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">-</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">1</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">∑</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">c</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r></ns0:sub></ns0:sSub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">=</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">∑</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">ĉ</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r></ns0:sub></ns0:sSub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">−</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">Φ</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">final</ns0:t></ns0:r></ns0:sub></ns0:sSub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">+</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">Φ</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">initial</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>"
+    ],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "取势能 Φ 为栈中元素个数，初值 0，且任意时刻非负。PUSH 的元素操作成本为 1，势能增加 1，因此摊还成本 2；弹出一个现有元素时，实际成本 1、势能减 1，摊还为 0。\n\nMULTIPOP 实际弹出 t=min(k,当前大小) 个元素，元素成本 t、势能变化 −t，摊还同样为 0；空栈 POP 的元素成本和势能变化均为 0。再给每次调用加上常数控制成本，总摊还 O(q)。\n\n势能望远镜求和满足“实际总成本=摊还总成本−$Φ_{final}$+$Φ_{initial}$”，最终势能非负，所以实际总成本也 O(q)。另可用每个元素至多压入一次、弹出一次计费。此处是对任意合法序列的确定性保证，不是对随机输入求平均，也不保证单次 MULTIPOP 为 O(1)。\n\n$ĉ_{i} = c_{i} + Φ_{i} − Φ_{i-1}$\n\n$∑ c_{i} = ∑ ĉ_{i} − Φ_{final} + Φ_{initial}$"
+  },
+  {
+    "code": "SUB-P18",
+    "type": "PROOF",
+    "title": "随机快速排序的期望比较次数",
+    "difficulty": 4,
+    "tags": [
+      "随机算法",
+      "指示变量",
+      "期望线性性"
+    ],
+    "statement": "n 个键互异，快速排序每次在当前子数组中均匀随机选枢轴。把排序后的键记为 z₁<…<$z_{n}$。证明 $z_{i}$ 与 $z_{j}$ 被比较的概率为 2/(j−i+1)，由此推导期望比较次数 Θ(n log n)。同时说明最坏时间为何仍为 Θ(n²)。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R16",
+        "title": "MIT 6.046J Lecture 6 随机化与快速排序",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-6-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "比较概率",
+        "max_score": 45,
+        "description": "比较概率"
+      },
+      {
+        "name": "期望求和上下界",
+        "max_score": 40,
+        "description": "期望求和上下界"
+      },
+      {
+        "name": "最坏与随机性",
+        "max_score": 15,
+        "description": "最坏与随机性"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "P18",
+    "source_math_omml": [
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">z</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">z</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">z</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">j</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">z</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">z</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">j</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSup><ns0:e><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">∑</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">d</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">=</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">1</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:e><ns0:sup><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">−</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">1</ns0:t></ns0:r></ns0:sup></ns0:sSup></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">Pr</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">compare</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">z</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r></ns0:sub></ns0:sSub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">,</ns0:t></ns0:r><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">z</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">j</ns0:t></ns0:r></ns0:sub></ns0:sSub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">=</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\"> </ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">2</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">/</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">(</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">j</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">−</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">i</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">+</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">1</ns0:t></ns0:r><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">)</ns0:t></ns0:r></ns0:oMath>"
+    ],
+    "metadata": {
+      "difficulty_label": "进阶",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "两个键只在其中一个成为枢轴、另一个仍在同一子问题时比较。在区间 $z_{i}$…$z_{j}$ 中，第一个被选作枢轴的键若是内部键，就把两端分开，之后永不比较；若是任一端点，两端立即比较。均匀性使首个枢轴在该区间等可能，故概率为 2/(j−i+1)。\n\n对所有 i<j 的比较指示变量求和，用期望线性性，不需要不同事件独立。按间隔 d=j−i 分组，总期望为 $∑_{d=1}^{n−1}$ 2(n−d)/(d+1)，由调和级数得 O(n log n)。只保留 d≤floor(n/2) 的项，n−d≥n/2，又得 Ω(n log n)。\n\n若每层都选到极小或极大键，递归规模为 n−1，比较次数为 n(n−1)/2，最坏 Θ(n²)。该事件概率小但非零。结论是对算法随机性取期望，不能解释成“任何一次运行都是 n log n”，也不能无条件扩展到固定枢轴策略。\n\n$Pr(compare(z_{i},z_{j})) = 2/(j−i+1)$"
+  },
+  {
+    "code": "SUB-P19",
+    "type": "PROOF",
+    "title": "用独立集归约证明顶点覆盖 NP 完全",
+    "difficulty": 4,
+    "tags": [
+      "复杂性理论",
+      "NP 完全性",
+      "多项式归约"
+    ],
+    "statement": "顶点覆盖判定问题：给定简单无向图 G=(V,E) 和整数 0≤k≤|V|，是否存在至多 k 个顶点，使每条边至少有一个端点被选？已知独立集判定问题是 NP 完全的。请证明顶点覆盖在 NP 中，并构造方向正确的归约，说明两实例“是”答案等价。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R09",
+        "title": "MIT 6.046J Lecture 16 P NP 与多项式归约",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-16-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "NP 验证",
+        "max_score": 25,
+        "description": "NP 验证"
+      },
+      {
+        "name": "构造与双向等价",
+        "max_score": 55,
+        "description": "构造与双向等价"
+      },
+      {
+        "name": "归约方向和结论",
+        "max_score": 20,
+        "description": "归约方向和结论"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "P19",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "进阶",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "NP 成员性：证书是至多 k 个顶点的集合 C；检查大小、标记成员并逐边检查至少一个端点在 C 中，时间 O(V+E)，因此可在多项式时间验证。\n\n从独立集实例 (G,r) 构造同一张图上的顶点覆盖实例 (G,|V|−r)。若 I 是至少 r 个顶点的独立集，则补集 C=V−I 大小至多 |V|−r；不存在两端都在 I 的边，所以 C 覆盖每条边。\n\n反之，若 C 是大小至多 |V|−r 的顶点覆盖，其补集至少 r 个点，且不可能有一条边的两端都在补集中，否则那条边未被覆盖；故补集是独立集。构造只复制图和计算参数，时间多项式。由“已知难问题归约到目标问题”得 NP 难，再加 NP 成员性得到 NP 完全。仅给出反向归约不足以证明目标困难。"
+  },
+  {
+    "code": "SUB-P20",
+    "type": "PROOF",
+    "title": "极大匹配给出二近似顶点覆盖",
+    "difficulty": 4,
+    "tags": [
+      "近似算法",
+      "下界",
+      "极大匹配"
+    ],
+    "statement": "在简单无向图上，反复选一条尚未被已选端点覆盖的边，把其两个端点都加入 C，直到所有边被覆盖。证明所得 C 是顶点覆盖且 |C|≤2OPT，其中 OPT 是最小顶点覆盖大小。说明极大匹配与最大匹配的区别，以及无边图的情况。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R12",
+        "title": "MIT 6.046J Lecture 17 近似算法",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-17-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "覆盖性与极大性",
+        "max_score": 35,
+        "description": "覆盖性与极大性"
+      },
+      {
+        "name": "最优下界和二近似",
+        "max_score": 45,
+        "description": "最优下界和二近似"
+      },
+      {
+        "name": "概念与边界",
+        "max_score": 20,
+        "description": "概念与边界"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "P20",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "进阶",
+      "max_score": 100,
+      "suggested_minutes": 25
+    },
+    "reference_answer": "所选各边的端点彼此不交，构成匹配 M；算法停止后不存在两端都没被选的边，所以 C 覆盖所有边，同时 M 无法再加边，是极大匹配。\n\n任何顶点覆盖必须对 M 的每条边至少取一个端点，而匹配的边不共享端点，故 OPT≥|M|。算法恰好取每条匹配边的两个端点，|C|=2|M|≤2OPT，得到二近似保证。\n\n极大表示再加入任何边就不再是匹配，最大表示边数全局最多；本证明只需要极大，不要求求最大匹配。按边表扫描、两端都未选就加入，实现时间 O(V+E)、额外空间 O(V)。无边图返回空集，OPT=0，不用除以零计算近似比；不等式仍成立。该算法不直接给一般带权顶点覆盖相同保证。"
+  },
+  {
+    "code": "SUB-O01",
+    "type": "OPEN_QUESTION",
+    "title": "为多种路网条件选择最短路算法",
+    "difficulty": 3,
+    "tags": [
+      "算法选型",
+      "最短路",
+      "实验设计"
+    ],
+    "statement": "你要为路径查询系统提供算法方案。情形一：10 万顶点、50 万条有向边，权值非负，只查一个源点；情形二：允许负权但无可达负环，图规模较小；情形三：图保证是 DAG；情形四：边权持续更新。请分别给出选择、复杂度、失败条件和至少三类测试。允许不同合理设计，但必须写明假设。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R01",
+        "title": "MIT 6.006 Introduction to Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2008/resources/lecture-notes/"
+        ]
+      },
+      {
+        "id": "R02",
+        "title": "MIT 6.046J Design and Analysis of Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/pages/lecture-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "分情形选型",
+        "max_score": 35,
+        "description": "分情形选型"
+      },
+      {
+        "name": "复杂度与失效条件",
+        "max_score": 30,
+        "description": "复杂度与失效条件"
+      },
+      {
+        "name": "更新一致性和实验",
+        "max_score": 35,
+        "description": "更新一致性和实验"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "O01",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 35
+    },
+    "reference_answer": "参考选择：情形一用邻接表与二叉堆 Dijkstra，时间约 O((V+E)log V)，惰性重复入堆版本可按 O((V+E)log(V+E)) 记，空间 O(V+E)。若频繁查询且图近静态，可讨论预处理，但不能凭空承诺常数查询。\n\n情形二用 Bellman–Ford，最坏 O(VE)，额外距离空间 O(V)，第 V 轮仍能松弛可定位可达负环影响；情形三按拓扑序松弛，O(V+E)，允许负权但不允许有环。两者不能因负权就自动宣称所有点均无最短路。\n\n动态更新的可实施基线是按版本重算并使缓存失效；少量更新可研究增量算法，但须区分边权增大、减小及失效路径。查询使用一致图快照，不能拼接不同版本的边。\n\n测试至少含不可达点、零权与平行边、已知最短路样例、负环和更新后答案改变；以小图穷举或独立算法对账，记录延迟和内存。若论证清楚，提出 Johnson 等多源方法亦可，但须符合查询规模。"
+  },
+  {
+    "code": "SUB-O02",
+    "type": "OPEN_QUESTION",
+    "title": "带优先级的任务调度与贪心边界",
+    "difficulty": 3,
+    "tags": [
+      "问题建模",
+      "动态规划",
+      "公平性"
+    ],
+    "statement": "学校只有一间实验室，预约任务给出固定起止时间、收益和所属小组。基本目标为最大总收益，进一步希望至少让每个小组获选一次。请区分两个模型，设计基本问题算法，构造一个简单贪心失败例，并讨论新增公平约束如何影响状态规模。不能把“加一点权重”直接当成公平保证。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R06",
+        "title": "LeetCode 1235 Maximum Profit in Job Scheduling 相关经典原型",
+        "urls": [
+          "https://leetcode.com/problems/maximum-profit-in-job-scheduling/"
+        ]
+      },
+      {
+        "id": "R19",
+        "title": "MIT 6.046J Lecture 10 动态规划",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-10-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "基础建模与反例",
+        "max_score": 30,
+        "description": "基础建模与反例"
+      },
+      {
+        "name": "公平约束与状态",
+        "max_score": 40,
+        "description": "公平约束与状态"
+      },
+      {
+        "name": "可行性及验证",
+        "max_score": 30,
+        "description": "可行性及验证"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "O02",
+    "source_math_omml": [
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSup><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">2</ns0:t></ns0:r></ns0:e><ns0:sup><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">g</ns0:t></ns0:r></ns0:sup></ns0:sSup></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSup><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">2</ns0:t></ns0:r></ns0:e><ns0:sup><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">g</ns0:t></ns0:r></ns0:sup></ns0:sSup></ns0:oMath>"
+    ],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 35
+    },
+    "reference_answer": "基本模型是带权区间调度：按结束排序，二分找兼容前驱 p(j)，用 F[j]=max(F[j−1],收益_j+F[p(j)])。时间 O(n log n)、空间 O(n)；例 (0,2,1)、(1,3,100) 说明最早结束不保证最大收益。\n\n要求每组至少一项是硬覆盖约束。若组数 g 很小，可用 F[j,mask] 表示前 j 项、恰覆盖小组集合 mask 的最优值。初态 F[0,0]=0，其余不可达状态为负无穷；不选 j，或从 p(j) 的状态选 j 并入其小组。最终读全覆盖状态，时间 O(n·$2^{g}$+n log n)，空间 O(n·$2^{g}$)。\n\n需检查不可行，例如两个小组唯一活动完全重叠；组数大时指数状态不适用，可改整数规划、近似或教师放宽，但必须说明不再保证原目标。给小组附加收益是软偏好，可能仍让某组零入选。\n\n验收分别检查不重叠、每组覆盖、总收益和求解耗时；用小规模枚举验证。若采用其他精确或分层目标方案，只要模型、可行性和边界清楚均可得分。"
+  },
+  {
+    "code": "SUB-O03",
+    "type": "OPEN_QUESTION",
+    "title": "公平比较两种排序算法",
+    "difficulty": 1,
+    "tags": [
+      "实验方法",
+      "复杂度",
+      "可复现性"
+    ],
+    "statement": "你要比较随机快速排序与归并排序，结论将写入课程实验报告。设计可复现实验：说明输入分布、规模、计时范围、正确性、重复次数、内存和统计展示。解释一次测量中“快一倍”为什么不足以证明渐近复杂度更优，并指出语言内置排序不能随意冒充手写算法。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R01",
+        "title": "MIT 6.006 Introduction to Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2008/resources/lecture-notes/"
+        ]
+      },
+      {
+        "id": "R16",
+        "title": "MIT 6.046J Lecture 6 随机化与快速排序",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-6-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "数据与公平控制",
+        "max_score": 35,
+        "description": "数据与公平控制"
+      },
+      {
+        "name": "测量和正确性",
+        "max_score": 35,
+        "description": "测量和正确性"
+      },
+      {
+        "name": "统计解释与复现",
+        "max_score": 30,
+        "description": "统计解释与复现"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "O03",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "基础",
+      "max_score": 100,
+      "suggested_minutes": 30
+    },
+    "reference_answer": "同一规模与种子生成同一数组，覆盖均匀随机、已排序、逆序、少量不同值和大量重复；记录随机枢轴策略及实现细节。规模按倍增取点，避免只测一个 n。比较前固定语言、工具链、优化和机器环境。\n\n先验证有序性与多重集不变；稳定性若是比较目标，还需带原始序号记录。计时仅包含算法本身，输入复制和生成另列，两个算法使用独立等价输入；先预热，再多次重复，随机交错执行次序。\n\n报告中位数、分位数及样本数，记录失败和超时，不删慢样本。每次在独立进程测峰值 RSS，说明是否含解释器与输入；绘制耗时-规模以及耗时/(n log n) 曲线，另测递归深度。\n\n常数、缓存、分配和输入分布都会影响实际耗时，有限实验只能支持实现层面的观测，渐近界仍需理论证明。若使用内置排序作基线，应准确标注库与版本，不把其算法性质归于自己的代码。"
+  },
+  {
+    "code": "SUB-O04",
+    "type": "OPEN_QUESTION",
+    "title": "有限内存下的日志排序与前 K 大值",
+    "difficulty": 3,
+    "tags": [
+      "外部排序",
+      "堆",
+      "流式处理"
+    ],
+    "statement": "日志文件远大于 256 MiB 内存，每条记录有时间戳和唯一序号。任务一是按时间戳、再按序号完整有序导出；任务二是单次流式扫描，返回数值字段最大的 K 条记录，K 条可放入内存。设计两个算法，说明内存预算、磁盘读写、重复值及恢复策略。注意第二问不是“出现频率最高的 K 个键”。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R01",
+        "title": "MIT 6.006 Introduction to Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2008/resources/lecture-notes/"
+        ]
+      },
+      {
+        "id": "R02",
+        "title": "MIT 6.046J Design and Analysis of Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/pages/lecture-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "外部排序及资源",
+        "max_score": 40,
+        "description": "外部排序及资源"
+      },
+      {
+        "name": "前 K 与边界",
+        "max_score": 35,
+        "description": "前 K 与边界"
+      },
+      {
+        "name": "恢复和问题区分",
+        "max_score": 25,
+        "description": "恢复和问题区分"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "O04",
+    "source_math_omml": [
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSub><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">log</ns0:t></ns0:r></ns0:e><ns0:sub><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">b</ns0:t></ns0:r></ns0:sub></ns0:sSub></ns0:oMath>"
+    ],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 35
+    },
+    "reference_answer": "完整排序采用外部归并：按低于内存上限的块读取、排序后写成有序段；用小根堆进行多路归并。堆键为 (时间戳,序号)，使重复时间戳结果确定。块大小要扣除对象、缓冲和排序辅助空间，不能直接把 256 MiB 全当作净记录容量。\n\n若有 R 个初始段，每轮归并 fan-in 为 b≥2，需约 ceil($log_{b}$ R) 轮，每轮读写全量 N 条记录；CPU 归并约 O(N log b) 每轮。b 受输入缓冲、输出缓冲和文件描述符限制。无需把全部段同时打开。\n\n前 K 大值用容量 K 的小根堆：不足 K 时插入，否则仅当新键大于堆顶时替换。时间 O(N log(K+1))，空间 O(K)，最终排序输出另需 O(K log(K+1))；数值相同时用序号统一打破平手。若 K=0 返回空。\n\n使用临时段清单、记录数与校验值，完成新输出并校验后原子更名；失败可由已完成段恢复。频率前 K 则需要额外计数结构或近似模型，不能直接用上述数值堆声称精确完成。"
+  },
+  {
+    "code": "SUB-O05",
+    "type": "OPEN_QUESTION",
+    "title": "匿名互评的公平分配模型",
+    "difficulty": 4,
+    "tags": [
+      "二分图",
+      "容量流",
+      "公平分配"
+    ],
+    "statement": "课程中有 n 份主观答案与 m 名候选评审者，每份需 r 人评价，禁止作者自评和同人重复评同一作品。希望每人任务量尽量相近，并减少连续轮次固定组合。设计一个能判断可行性的分配方案，说明目标函数、无解处理、匿名字段和验证指标；不得仅用独立随机抽签。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R10",
+        "title": "MIT 6.046J Lecture 13 最大流与最小割",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-13-notes/"
+        ]
+      },
+      {
+        "id": "R11",
+        "title": "MIT 6.046J Lecture 14A 匹配",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-14a-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "硬约束和公平模型",
+        "max_score": 40,
+        "description": "硬约束和公平模型"
+      },
+      {
+        "name": "历史目标与无解",
+        "max_score": 30,
+        "description": "历史目标与无解"
+      },
+      {
+        "name": "匿名 验证 复杂度",
+        "max_score": 30,
+        "description": "匿名 验证 复杂度"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "O05",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "进阶",
+      "max_score": 100,
+      "suggested_minutes": 40
+    },
+    "reference_answer": "令总量 F=nr，负载下界 L=floor(F/m)、上界 U=ceil(F/m)。建源点到评审者的上下界 [L,U]，评审者到允许作品的容量 [0,1]，作品到汇点的固定需求 r；补上固定 F 的回边，转为带上下界可行循环。自评不建边。\n\n为允许的评审边赋非负历史成本，重复同向和历史反向关系成本较高，再用最小费用流求满流。精确负载界保证可行时差值≤1；历史成本是减少固定关系的软目标，不能声称它严格消除所有本轮双向关系。若设硬历史禁边，必须重新检验可行性。\n\n无完整流时返回缺口和容量瓶颈，不能静默降 r 或允许自评。教师可以显式调整候选、r 或历史政策再生成新版本。学生只收到随机任务 ID、匿名作品与量表，作者映射仅教师可查；内容自行署名需另行提示处理。\n\n验证每份 r 条、无重复无自评、负载差、跨轮重复率、失败率及耗时；用极小图穷举对账。若采用带势能的逐次最短增广，求解上界 O(FE log V)，另计建图和历史读取。补评还需固定原任务与已完成负载。"
+  },
+  {
+    "code": "SUB-O06",
+    "type": "OPEN_QUESTION",
+    "title": "评分聚合与异常处理的取舍",
+    "difficulty": 3,
+    "tags": [
+      "稳健统计",
+      "可信度",
+      "评审公平"
+    ],
+    "statement": "一份答案收到百分制评价 [78,79,80,81,10]。请比较平均数、去掉一个最高最低后的平均数和中位数；设计适合课程互评的聚合及异常处置方案。讨论只有 3 条评价、评审者无历史、以及多数人合谋时的限制。必须保留原始评分并解释人工复核作用。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R02",
+        "title": "MIT 6.046J Design and Analysis of Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/pages/lecture-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "数值与方法比较",
+        "max_score": 25,
+        "description": "数值与方法比较"
+      },
+      {
+        "name": "可信度和处置设计",
+        "max_score": 45,
+        "description": "可信度和处置设计"
+      },
+      {
+        "name": "小样本 合谋 实验",
+        "max_score": 30,
+        "description": "小样本 合谋 实验"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "O06",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 35
+    },
+    "reference_answer": "原平均数为 65.6；去掉 10 与 81 后均值为 79；中位数也为 79。前者对单条极端分敏感，后两者在该例更稳定，但不能由一个例子断言总是更公平。若仅 3 条，去两端只剩中位数，信息显著减少，应明确方法和样本数。\n\n可采用中位数与 MAD 建立稳健偏离证据，再结合历史教师校准或留一参考估计可信度。历史少时权重向相等收缩；本轮权重使用先前冻结历史，避免“聚合决定可信度、可信度又循环决定同轮聚合”的自证。\n\n极端值先标记，不能直接认定恶意；参考可能错，少数派也可能正确。教师查看量表、评语、参考来源和样本量后选择保留、降权、作废补评或人工改分。所有动作保留原分、原因和成绩版本；不足评价不自动用零填充。\n\n多数人合谋可控制中位数，时长短也不等于作弊，必须报告失效边界。实验用独立真值比较 MAE、扰动敏感度、误报与分组误差，且自动结果和有教师信息帮助的结果分开报告。其他透明且论证充分的聚合政策可接受。"
+  },
+  {
+    "code": "SUB-O07",
+    "type": "OPEN_QUESTION",
+    "title": "代码相似性检测的分层方案",
+    "difficulty": 4,
+    "tags": [
+      "字符串",
+      "指纹",
+      "候选检索",
+      "公平性"
+    ],
+    "statement": "某课程有 500 份同题代码，每份约 1000 个词法 token。希望发现值得教师复核的高相似提交，但不能仅凭相似度自动判抄袭。请设计从预处理、候选生成到精细比较的流程，给出成本、误报控制和评估方法。必须考虑题目模板、变量改名及短代码。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R01",
+        "title": "MIT 6.006 Introduction to Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2008/resources/lecture-notes/"
+        ]
+      },
+      {
+        "id": "R03",
+        "title": "Princeton Algorithms 讲义索引 字符串与哈夫曼等主题",
+        "urls": [
+          "https://algs4.cs.princeton.edu/lectures/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "分层流程",
+        "max_score": 35,
+        "description": "分层流程"
+      },
+      {
+        "name": "复杂度与碰撞",
+        "max_score": 30,
+        "description": "复杂度与碰撞"
+      },
+      {
+        "name": "误报 证据与评估",
+        "max_score": 35,
+        "description": "误报 证据与评估"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "O07",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "进阶",
+      "max_score": 100,
+      "suggested_minutes": 40
+    },
+    "reference_answer": "先进行语言词法分析、删除注释并规范化空白；变量重命名可按作用域映射为规范标识符，但不能误改字面量或语言关键字。把教师公共模板对应 token 区域剔除或降权，并记录预处理版本。\n\n以 token k-gram 或窗口指纹建立倒排索引生成候选，避免无条件把全部对都做昂贵比较。可用滚动哈希加速，但哈希碰撞必须通过真实 token 验证；仅凭一个哈希相等不能判定内容一致。\n\n对候选用公共片段覆盖率、编辑距离或 LCS 细查，并展示对齐片段。若共有 P 对候选、每份长至多 L，标准编辑距离精查时间 O(P L²)，只求分数可用 O(L) 工作空间；候选最坏仍可 Θ(N²)，不能无条件承诺整体线性。短程序与统一解法应提高复核谨慎程度。\n\n用许可的标注样本测召回率、精确率和候选削减率，按代码长度与模板占比分组。相似只能形成线索，教师结合提交时间、解题过程与解释复核，并提供申诉。学生身份、源码访问和检测结果要限制在课程授权范围。"
+  },
+  {
+    "code": "SUB-O08",
+    "type": "OPEN_QUESTION",
+    "title": "配送巡回的精确与近似设计",
+    "difficulty": 4,
+    "tags": [
+      "状态压缩",
+      "旅行商",
+      "近似算法"
+    ],
+    "statement": "配送员须从仓库出发，访问每个地点一次后返回。距离是完整无向图上的非负对称度量，满足三角不等式。少量地点 n≤18 希望精确求最优；n=500 时优先保证可运行且有近似界。请分别设计方案并解释保证依赖的条件；不是求从仓库到各点的独立最短路。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R12",
+        "title": "MIT 6.046J Lecture 17 近似算法",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-17-notes/"
+        ]
+      },
+      {
+        "id": "R19",
+        "title": "MIT 6.046J Lecture 10 动态规划",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/resources/lecture-10-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "精确模型与复杂度",
+        "max_score": 30,
+        "description": "精确模型与复杂度"
+      },
+      {
+        "name": "二近似证明",
+        "max_score": 45,
+        "description": "二近似证明"
+      },
+      {
+        "name": "条件与实验",
+        "max_score": 25,
+        "description": "条件与实验"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "O08",
+    "source_math_omml": [
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSup><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">2</ns0:t></ns0:r></ns0:e><ns0:sup><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r></ns0:sup></ns0:sSup></ns0:oMath>",
+      "<ns0:oMath xmlns:ns0=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><ns0:sSup><ns0:e><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">2</ns0:t></ns0:r></ns0:e><ns0:sup><ns0:r><ns0:rPr><ns0:sty ns0:val=\"p\" /></ns0:rPr><ns0:t xml:space=\"preserve\">n</ns0:t></ns0:r></ns0:sup></ns0:sSup></ns0:oMath>"
+    ],
+    "metadata": {
+      "difficulty_label": "进阶",
+      "max_score": 100,
+      "suggested_minutes": 40
+    },
+    "reference_answer": "小规模用 Held–Karp 状态压缩 DP：固定仓库 0，dp[S,v] 为从 0 出发、访问集合 S 并停在 v 的最小长度；从上一个终点 u 转移，最终加回仓库的边。时间 O(n²·$2^{n}$)，空间 O(n·$2^{n}$)，实际内存预算决定可承受规模，n=18 也应先估算实现常数。\n\n大规模可先求最小生成树，将每条树边加倍得到欧拉巡回，再按访问顺序跳过重复地点，最后回仓库。树权不超过最优巡回权：从最优巡回删一条边就是生成树。加倍巡回长为两倍树权，三角不等式保证跳过重复点不增加长度，因此路线≤2OPT。\n\n完整稠密距离图可用朴素 Prim 在 O(n²) 时间、O(n) 额外工作空间求树；若显式保存全部距离则另有 O(n²) 存储。树遍历和去重 O(n)，直接输出先序巡回即可实现同样跳跃路线。\n\n保证依赖对称、非负和三角不等式；一般非度量距离不能套用。小实例用精确 DP 测近似比，大实例测路线合法性、耗时、内存和相对下界，不能把“与最优未知”误写成实验已证明最优。"
+  },
+  {
+    "code": "SUB-O09",
+    "type": "OPEN_QUESTION",
+    "title": "从课程数据估计难度与掌握情况",
+    "difficulty": 3,
+    "tags": [
+      "统计建模",
+      "知识点",
+      "缺失数据"
+    ],
+    "statement": "平台记录应交学生、每次代码提交判定、主观题已发布分数与题目知识点。设计教师仪表盘中的题目通过率、经验难度和知识点掌握指标。解释多次尝试、未交、待评、系统故障和不同满分如何处理，并提出避免误导的展示与验证方法。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R01",
+        "title": "MIT 6.006 Introduction to Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2008/resources/lecture-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "指标与分母",
+        "max_score": 40,
+        "description": "指标与分母"
+      },
+      {
+        "name": "缺失和归一化",
+        "max_score": 35,
+        "description": "缺失和归一化"
+      },
+      {
+        "name": "解释与验证",
+        "max_score": 25,
+        "description": "解释与验证"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "O09",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 35
+    },
+    "reference_answer": "编程题学生通过率可定义为截止前至少一次有效 AC 的人数除以应交人数，未交保留在分母；提交通过率则为 AC 提交数除以有效判题提交数，单独命名，不能混用。重测同一提交只引用当前有效代次，不增加提交次数；系统故障不是学生错误。\n\n编程题经验难度取 1−学生通过率；主观题可取 1−已交且已出分的平均归一化分/100，显示参与与未出分人数。不同题目先归一到相同比例，未交与待评单列，不静默补零。\n\n对每学生和知识点，使用关联题的归一化成绩加权均值，权重可取题目权重乘知识点关联权重；只用已交已出分观察，报告覆盖率。再按班级汇总，并展示样本数、分布和缺失情况。教师明确的未交零分可参与最终总成绩，但不应无说明地当作真实掌握能力证据。\n\n高通过率可能来自大量尝试、较容易题目或泄题，不能直接推断能力或教学因果。以手工小样本对账、跨时间和班级分组检查、教师复核异常指标。其他指标若清楚定义分子分母并论证限制，也可接受。"
+  },
+  {
+    "code": "SUB-O10",
+    "type": "OPEN_QUESTION",
+    "title": "可信自动评测与复杂度实验",
+    "difficulty": 3,
+    "tags": [
+      "自动评测",
+      "资源限制",
+      "实验验证"
+    ],
+    "statement": "设计面向课程的单文件程序评测流程，要求反馈 AC、WA、TLE、RE、运行时间和内存，并保护隐藏测试数据。另需用实验比较同题 O(n²) 与 O(n log n) 解法。请写出执行隔离、判定、任务恢复和实验控制方案，说明测量不能直接证明什么。",
+    "requirements": "",
+    "input": "",
+    "output": "",
+    "constraints": "",
+    "examples": [],
+    "source": "算法设计与分析课程主观题库（教师参考版）",
+    "references": [
+      {
+        "id": "R01",
+        "title": "MIT 6.006 Introduction to Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2008/resources/lecture-notes/"
+        ]
+      },
+      {
+        "id": "R02",
+        "title": "MIT 6.046J Design and Analysis of Algorithms 课程讲义目录",
+        "urls": [
+          "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/pages/lecture-notes/"
+        ]
+      }
+    ],
+    "tests": [],
+    "reference_solutions": [],
+    "rubric": [
+      {
+        "name": "隔离和判定",
+        "max_score": 40,
+        "description": "隔离和判定"
+      },
+      {
+        "name": "恢复与信息保护",
+        "max_score": 25,
+        "description": "恢复与信息保护"
+      },
+      {
+        "name": "复杂度实验和限制",
+        "max_score": 35,
+        "description": "复杂度实验和限制"
+      }
+    ],
+    "source_file": "data/source/subjective-50.docx",
+    "source_anchor": "O10",
+    "source_math_omml": [],
+    "metadata": {
+      "difficulty_label": "中等",
+      "max_score": 100,
+      "suggested_minutes": 35
+    },
+    "reference_answer": "API 保存不可变源码与测试版本，和持久评测任务同事务提交；独立 Worker 领取后在隔离环境编译，再对每例创建干净运行空间。配置 CPU 时间、墙钟、内存、进程数、输出及磁盘限制，禁外网；标准答案和服务凭据不进入用户程序可读目录。\n\n先区分编译失败与平台故障；正常退出后比较输出，得 AC 或 WA，超时得 TLE，非预期退出得 RE；有明确 OOM 证据才归为 MLE。记录逐例 CPU 与峰值内存的统一单位和测量口径。隐藏用例不向学生返回输入、预期答案或原始输出，避免利用回显泄露。\n\n任务有租约、心跳、尝试编号和幂等写回，Worker 崩溃可重领，旧令牌结果不得覆盖新任务。系统错误有限重试，不能记为学生零分；编译和用户程序均不得直接放在业务 API 进程执行。\n\n复杂度实验固定机器、工具链和测试生成策略，按倍增规模、多种输入分布和多次重复测量，报告中位耗时、波动和内存，并保留超时样本。n² 与 n log n 的归一化曲线可支持趋势解释，但有限计时不能独立证明渐近界，更不能单凭一次运行时间认定作弊或推断源程序的精确复杂度。"
+  }
+]
