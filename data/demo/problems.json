@@ -1,0 +1,46 @@
+[
+  {
+    "code": "CODE-P01", "type": "PROGRAMMING", "title": "活动安排问题", "difficulty": 2,
+    "tags": ["贪心算法", "区间调度", "排序"],
+    "statement": "有 n 个活动，第 i 个活动占用时间区间 [s_i,t_i]，其中 s_i<t_i。同一个人只能参加互不重叠的活动，允许上一个活动结束时刻等于下一个开始时刻。活动给出顺序任意。求最多能参加多少个活动。",
+    "input": "第一行 n，之后 n 行各含两个整数 s_i 和 t_i。", "output": "输出最多能参加的活动数量。",
+    "constraints": "1 <= n <= 1000；0 <= s_i < t_i <= 10^9；只有一组数据。",
+    "examples": "输入：\n```text\n4\n1 3\n2 4\n3 5\n4 6\n```\n输出：\n```text\n2\n```",
+    "reference": "按结束时刻排序，再依次接纳开始时刻不早于上一结束时刻的活动。参考程序：\n```python\nn = int(input())\na = [tuple(map(int, input().split())) for _ in range(n)]\nlast, ans = -1, 0\nfor s, t in sorted(a, key=lambda p: (p[1], p[0])):\n    if s >= last:\n        last, ans = t, ans + 1\nprint(ans)\n```",
+    "source": "Problems/01-贪心算法/P01-活动安排问题.md；题干整理为演示版本，5组测试来自原文件；资源限制为本项目演示配置。",
+    "tests": [
+      {"input":"1\n0 1000000000\n","output":"1\n","public":true},
+      {"input":"3\n1 5\n2 6\n3 7\n","output":"1\n","public":false},
+      {"input":"4\n0 1\n1 2\n2 3\n3 4\n","output":"4\n","public":false},
+      {"input":"3\n0 5\n1 2\n3 4\n","output":"2\n","public":false},
+      {"input":"5\n0 1\n1 999999999\n999999999 1000000000\n2 3\n4 5\n","output":"4\n","public":false}
+    ]
+  },
+  {
+    "code":"SUB-A03", "type":"ALGORITHM_ANALYSIS", "title":"有序数组中的左边界查找", "difficulty":1,
+    "tags":["二分查找","边界条件"],
+    "statement":"给定长度 $n\\ge 0$ 的非降序整数数组 a 和整数 target，返回第一个满足 $a[i]\\ge target$ 的下标；不存在时返回 n。允许重复元素。设计对数级算法，解释区间语义和终止条件。例：a=[1,3,3,7]，target=3 返回1，target=8 返回4。",
+    "requirements":"说明算法思想、正确性依据、复杂度和边界情况。",
+    "reference":"维护半开区间[left,right)。a[mid]<target时令left=mid+1，否则令right=mid。循环结束返回left。最坏时间O(log(n+1))，辅助空间O(1)，覆盖空数组与重复元素。",
+    "rubric":[["区间与实现",40],["不变式与终止",40],["边界和复杂度",20]],
+    "source":"算法设计与分析课程主观题库50题(1).docx，A03；手工核对后转为含LaTeX公式的演示文本。难度“基础”映射为1。"
+  },
+  {
+    "code":"SUB-P01", "type":"PROOF", "title":"左边界二分查找的循环不变式", "difficulty":1,
+    "tags":["循环不变式","二分查找"],
+    "statement":"非降序数组a长n，维护left=0、right=n；当left<right时取mid，若a[mid]<target则left=mid+1，否则right=mid。返回left。用初始化、保持、终止三部分证明它返回第一个不小于target的位置，无解返回n，并证明循环必然结束。",
+    "requirements":"提交完整证明；说明空数组、重复值和无解边界。",
+    "reference":"不变式：0<=left<=right<=n；i<left均有a[i]<target；合法i>=right均有a[i]>=target。初始成立，两种更新保持性质；right-left为严格递减非负整数，最终left=right，因此得到正确边界。",
+    "rubric":[["完整不变式",30],["保持证明",35],["终止与边界",35]],
+    "source":"算法设计与分析课程主观题库50题(1).docx，P01；题干及参考答案整理为演示文本。"
+  },
+  {
+    "code":"SUB-O01", "type":"OPEN_QUESTION", "title":"为多种路网条件选择最短路算法", "difficulty":3,
+    "tags":["算法选型","最短路","实验设计"],
+    "statement":"为路径查询系统提供方案：一、10万顶点50万条有向边，非负权，单源查询；二、允许负权但无可达负环，规模较小；三、图保证是DAG；四、边权持续更新。分别说明算法、复杂度、失败条件和至少三类测试，写明假设。",
+    "requirements":"允许不同合理方案；必须说明适用条件、复杂度与实验验证。",
+    "reference":"非负权单源可用堆优化Dijkstra；负权小图可用Bellman-Ford；DAG按拓扑序松弛；动态更新可按图版本重算并使缓存失效。覆盖不可达、零权、负环、更新后变化等测试。合理等价方案按论证给分。",
+    "rubric":[["分情形选型",35],["复杂度与失效条件",30],["更新一致性和实验",35]],
+    "source":"算法设计与分析课程主观题库50题(1).docx，O01；题干及参考答案整理为演示文本。难度“中等”映射为3。"
+  }
+]

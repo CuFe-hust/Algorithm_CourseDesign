@@ -1,0 +1,24 @@
+{
+  "request": {
+    "content": "print(1)",
+    "language": "python3",
+    "client_request_id": "example-request-001"
+  },
+  "accepted_example": {
+    "submission_id": "1",
+    "version_no": 1,
+    "status": "SUBMITTED",
+    "job_status": "PENDING",
+    "replayed": false
+  },
+  "result_example": {
+    "verdict": "MOCK_ACCEPTED",
+    "is_mock": true,
+    "algorithm_name": "deterministic_mock",
+    "algorithm_version": "1",
+    "cpu_time_ms": null,
+    "memory_kib": null,
+    "message": "模拟结果，不表示实际程序正确性。"
+  },
+  "note": "示例ID不是固定演示数据ID；页面应使用查询和提交接口返回值。"
+}
