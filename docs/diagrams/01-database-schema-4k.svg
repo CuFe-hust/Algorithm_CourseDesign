@@ -1,0 +1,258 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160">
+<rect width="3840" height="2160" fill="#F4F7FB"/>
+<text x="90.0" y="63.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">ALGORITHM COURSE REVIEW  /  TEAM BRIEFING  /  01</text>
+<text x="90.0" y="170.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="74" font-weight="700" fill="#102A43">数据库模式图</text>
+<text x="90.0" y="235.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#53677F">当前数据库现状：配置、作答、计算结果分别保存；所有模块共用同一套事实。</text>
+<rect x="2680" y="98" width="1070" height="82" rx="18" fill="#E6EDF7" stroke="none" stroke-width="2"/>
+<text x="2942.5" y="154.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="28" font-weight="400" fill="#102A43">已实现 21 张业务表  ·  MySQL  ·  迁移 0002</text>
+<polyline points="90,270 3750,270" fill="none" stroke="#CCD7E4" stroke-width="2" stroke-linejoin="round"/>
+<text x="90.0" y="347.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="35" font-weight="700" fill="#102A43">账户与身份</text>
+<text x="90.0" y="387.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="24" font-weight="400" fill="#53677F">公共基础 / T导入</text>
+<text x="710.0" y="347.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="35" font-weight="700" fill="#102A43">课程与知识点</text>
+<text x="710.0" y="387.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="24" font-weight="400" fill="#53677F">T配置 / 公共权限</text>
+<text x="1330.0" y="347.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="35" font-weight="700" fill="#102A43">题库与内容版本</text>
+<text x="1330.0" y="387.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="24" font-weight="400" fill="#53677F">T配置 / S读取</text>
+<text x="1950.0" y="347.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="35" font-weight="700" fill="#102A43">题型专用配置</text>
+<text x="1950.0" y="387.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="24" font-weight="400" fill="#53677F">T配置 / A计算</text>
+<text x="2570.0" y="347.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="35" font-weight="700" fill="#102A43">作业与应交名单</text>
+<text x="2570.0" y="387.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="24" font-weight="400" fill="#53677F">T发布 / 固定依据</text>
+<text x="3190.0" y="347.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="35" font-weight="700" fill="#102A43">作答与计算结果</text>
+<text x="3190.0" y="387.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="24" font-weight="400" fill="#53677F">S提交 / A消费</text>
+<polyline points="370.0,690 370.0,790" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="370.0,790.0 363.9,777.4 376.1,777.4" fill="#8295AA"/>
+<polyline points="370.0,1510 370.0,1410" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="370.0,1410.0 376.1,1422.6 363.9,1422.6" fill="#8295AA"/>
+<polyline points="650,550 668,550 668,1280 650,1280" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="650.0,1280.0 662.6,1273.9 662.6,1286.1" fill="#8295AA"/>
+<polyline points="990.0,690 990.0,790" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="990.0,790.0 983.9,777.4 996.1,777.4" fill="#8295AA"/>
+<polyline points="650,605 690,605 690,920 710,920" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="710.0,920.0 697.4,926.1 697.4,913.9" fill="#8295AA"/>
+<polyline points="1270,560 1288,560 1288,1280 1270,1280" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1270.0,1280.0 1282.6,1273.9 1282.6,1286.1" fill="#8295AA"/>
+<polyline points="1270,550 1330,550" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1330.0,550.0 1317.4,556.1 1317.4,543.9" fill="#8295AA"/>
+<polyline points="1610.0,690 1610.0,790" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1610.0,790.0 1603.9,777.4 1616.1,777.4" fill="#8295AA"/>
+<polyline points="1610.0,1050 1610.0,1150" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1610.0,1150.0 1603.9,1137.4 1616.1,1137.4" fill="#8295AA"/>
+<polyline points="1270,1280 1330,1280" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1330.0,1280.0 1317.4,1286.1 1317.4,1273.9" fill="#8295AA"/>
+<polyline points="1890,930 1906,930 1906,1640 1890,1640" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1890.0,1640.0 1902.6,1633.9 1902.6,1646.1" fill="#8295AA"/>
+<polyline points="1890,850 1920,850 1920,550 1950,550" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1950.0,550.0 1937.4,556.1 1937.4,543.9" fill="#8295AA"/>
+<polyline points="1890,1000 1936,1000 1936,1280 1950,1280" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1950.0,1280.0 1937.4,1286.1 1937.4,1273.9" fill="#8295AA"/>
+<polyline points="2230.0,690 2230.0,790" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="2230.0,790.0 2223.9,777.4 2236.1,777.4" fill="#8295AA"/>
+<polyline points="2230.0,1410 2230.0,1510" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="2230.0,1510.0 2223.9,1497.4 2236.1,1497.4" fill="#8295AA"/>
+<polyline points="1050,430 1050,404 2850,404 2850,430" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="2850.0,430.0 2843.9,417.4 2856.1,417.4" fill="#8295AA"/>
+<polyline points="2850.0,690 2850.0,790" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="2850.0,790.0 2843.9,777.4 2856.1,777.4" fill="#8295AA"/>
+<polyline points="1750,790 1750,745 2730,745 2730,790" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="2730.0,790.0 2723.9,777.4 2736.1,777.4" fill="#8295AA"/>
+<polyline points="2510,550 2530,550 2530,955 2570,955" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="2570.0,955.0 2557.4,961.1 2557.4,948.9" fill="#8295AA"/>
+<polyline points="2510,1280 2548,1280 2548,1005 2570,1005" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="2570.0,1005.0 2557.4,1011.1 2557.4,998.9" fill="#8295AA"/>
+<polyline points="3130,550 3148,550 3148,1280 3130,1280" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="3130.0,1280.0 3142.6,1273.9 3142.6,1286.1" fill="#8295AA"/>
+<polyline points="3130,920 3168,920 3168,550 3190,550" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="3190.0,550.0 3177.4,556.1 3177.4,543.9" fill="#8295AA"/>
+<polyline points="3470.0,690 3470.0,790" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="3470.0,790.0 3463.9,777.4 3476.1,777.4" fill="#8295AA"/>
+<polyline points="3470.0,1050 3470.0,1150" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="3470.0,1150.0 3463.9,1137.4 3476.1,1137.4" fill="#8295AA"/>
+<polyline points="3750,605 3780,605 3780,1280 3750,1280" fill="none" stroke="#8295AA" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="3750.0,1280.0 3762.6,1273.9 3762.6,1286.1" fill="#8295AA"/>
+<rect x="90" y="430" width="560" height="260" rx="18" fill="#FFFFFF" stroke="#D4DFEA" stroke-width="2"/>
+<rect x="92" y="432" width="556" height="8" rx="4" fill="#52657B" stroke="none" stroke-width="2"/>
+<text x="114.0" y="492.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#52657B">用户账号</text>
+<text x="114.0" y="534.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">users</text>
+<polyline points="114,549 626,549" fill="none" stroke="#E0E7EF" stroke-width="2" stroke-linejoin="round"/>
+<text x="114.0" y="597.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">id PK · student_no UQ</text>
+<text x="114.0" y="635.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">login_name UQ · full_name</text>
+<text x="114.0" y="673.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">status · password_hash</text>
+<rect x="90" y="790" width="560" height="260" rx="18" fill="#FFFFFF" stroke="#D4DFEA" stroke-width="2"/>
+<rect x="92" y="792" width="556" height="8" rx="4" fill="#52657B" stroke="none" stroke-width="2"/>
+<text x="114.0" y="852.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#52657B">登录会话</text>
+<text x="114.0" y="894.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">auth_sessions</text>
+<polyline points="114,909 626,909" fill="none" stroke="#E0E7EF" stroke-width="2" stroke-linejoin="round"/>
+<text x="114.0" y="957.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">user_id FK</text>
+<text x="114.0" y="995.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">token_hash UQ</text>
+<text x="114.0" y="1033.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">expires_at</text>
+<rect x="90" y="1150" width="560" height="260" rx="18" fill="#FFFFFF" stroke="#D4DFEA" stroke-width="2"/>
+<rect x="92" y="1152" width="556" height="8" rx="4" fill="#52657B" stroke="none" stroke-width="2"/>
+<text x="114.0" y="1212.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#52657B">学生资料</text>
+<text x="114.0" y="1254.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">student_profiles</text>
+<polyline points="114,1269 626,1269" fill="none" stroke="#E0E7EF" stroke-width="2" stroke-linejoin="round"/>
+<text x="114.0" y="1317.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">user_id FK UQ</text>
+<text x="114.0" y="1355.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">class_id FK</text>
+<rect x="90" y="1510" width="560" height="260" rx="18" fill="#FFFFFF" stroke="#D4DFEA" stroke-width="2"/>
+<rect x="92" y="1512" width="556" height="8" rx="4" fill="#52657B" stroke="none" stroke-width="2"/>
+<text x="114.0" y="1572.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#52657B">行政班级</text>
+<text x="114.0" y="1614.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">classes</text>
+<polyline points="114,1629 626,1629" fill="none" stroke="#E0E7EF" stroke-width="2" stroke-linejoin="round"/>
+<text x="114.0" y="1677.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">class_code UQ</text>
+<text x="114.0" y="1715.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">name · status</text>
+<rect x="710" y="430" width="560" height="260" rx="18" fill="#FFFFFF" stroke="#D4DFEA" stroke-width="2"/>
+<rect x="712" y="432" width="556" height="8" rx="4" fill="#2563EB" stroke="none" stroke-width="2"/>
+<text x="734.0" y="492.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">开课实例</text>
+<text x="734.0" y="534.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">courses</text>
+<polyline points="734,549 1246,549" fill="none" stroke="#E0E7EF" stroke-width="2" stroke-linejoin="round"/>
+<text x="734.0" y="597.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">code UQ · name · term</text>
+<text x="734.0" y="635.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">created_by FK</text>
+<text x="734.0" y="673.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">status</text>
+<rect x="710" y="790" width="560" height="260" rx="18" fill="#FFFFFF" stroke="#D4DFEA" stroke-width="2"/>
+<rect x="712" y="792" width="556" height="8" rx="4" fill="#2563EB" stroke="none" stroke-width="2"/>
+<text x="734.0" y="852.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">课程成员与角色</text>
+<text x="734.0" y="894.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">course_members</text>
+<polyline points="734,909 1246,909" fill="none" stroke="#E0E7EF" stroke-width="2" stroke-linejoin="round"/>
+<text x="734.0" y="957.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">course_id FK · user_id FK</text>
+<text x="734.0" y="995.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">UQ(course_id, user_id)</text>
+<text x="734.0" y="1033.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">role · status</text>
+<rect x="710" y="1150" width="560" height="260" rx="18" fill="#FFFFFF" stroke="#D4DFEA" stroke-width="2"/>
+<rect x="712" y="1152" width="556" height="8" rx="4" fill="#2563EB" stroke="none" stroke-width="2"/>
+<text x="734.0" y="1212.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">知识点字典</text>
+<text x="734.0" y="1254.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">knowledge_points</text>
+<polyline points="734,1269 1246,1269" fill="none" stroke="#E0E7EF" stroke-width="2" stroke-linejoin="round"/>
+<text x="734.0" y="1317.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">course_id FK · code</text>
+<text x="734.0" y="1355.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">name · status</text>
+<text x="734.0" y="1393.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">UQ(course_id, code)</text>
+<rect x="1330" y="430" width="560" height="260" rx="18" fill="#FFFFFF" stroke="#D4DFEA" stroke-width="2"/>
+<rect x="1332" y="432" width="556" height="8" rx="4" fill="#2563EB" stroke="none" stroke-width="2"/>
+<text x="1354.0" y="492.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">题目身份</text>
+<text x="1354.0" y="534.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">problems</text>
+<polyline points="1354,549 1866,549" fill="none" stroke="#E0E7EF" stroke-width="2" stroke-linejoin="round"/>
+<text x="1354.0" y="597.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">course_id FK · code</text>
+<text x="1354.0" y="635.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">question_type</text>
+<text x="1354.0" y="673.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">created_by FK</text>
+<rect x="1330" y="790" width="560" height="260" rx="18" fill="#FFFFFF" stroke="#D4DFEA" stroke-width="2"/>
+<rect x="1332" y="792" width="556" height="8" rx="4" fill="#2563EB" stroke="none" stroke-width="2"/>
+<text x="1354.0" y="852.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">题目内容版本</text>
+<text x="1354.0" y="894.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">problem_versions</text>
+<polyline points="1354,909 1866,909" fill="none" stroke="#E0E7EF" stroke-width="2" stroke-linejoin="round"/>
+<text x="1354.0" y="957.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">problem_id FK · version_no</text>
+<text x="1354.0" y="995.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">statement_md · difficulty_level</text>
+<text x="1354.0" y="1033.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">status · frozen_at</text>
+<rect x="1330" y="1150" width="560" height="260" rx="18" fill="#FFFFFF" stroke="#D4DFEA" stroke-width="2"/>
+<rect x="1332" y="1152" width="556" height="8" rx="4" fill="#2563EB" stroke="none" stroke-width="2"/>
+<text x="1354.0" y="1212.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">版本与知识点</text>
+<text x="1354.0" y="1254.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">problem_version_tags</text>
+<polyline points="1354,1269 1866,1269" fill="none" stroke="#E0E7EF" stroke-width="2" stroke-linejoin="round"/>
+<text x="1354.0" y="1317.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">problem_version_id FK</text>
+<text x="1354.0" y="1355.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">knowledge_point_id FK</text>
+<text x="1354.0" y="1393.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">mastery_weight</text>
+<rect x="1330" y="1510" width="560" height="260" rx="18" fill="#FFFFFF" stroke="#D4DFEA" stroke-width="2"/>
+<rect x="1332" y="1512" width="556" height="8" rx="4" fill="#2563EB" stroke="none" stroke-width="2"/>
+<text x="1354.0" y="1572.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">教师参考资料</text>
+<text x="1354.0" y="1614.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">reference_solutions</text>
+<polyline points="1354,1629 1866,1629" fill="none" stroke="#E0E7EF" stroke-width="2" stroke-linejoin="round"/>
+<text x="1354.0" y="1677.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">problem_version_id FK</text>
+<text x="1354.0" y="1715.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">language · content</text>
+<text x="1354.0" y="1753.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">created_by FK</text>
+<rect x="1950" y="430" width="560" height="260" rx="18" fill="#FFFFFF" stroke="#D4DFEA" stroke-width="2"/>
+<rect x="1952" y="432" width="556" height="8" rx="4" fill="#0D9488" stroke="none" stroke-width="2"/>
+<text x="1974.0" y="492.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#0D9488">测试集版本</text>
+<text x="1974.0" y="534.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">test_suites</text>
+<polyline points="1974,549 2486,549" fill="none" stroke="#E0E7EF" stroke-width="2" stroke-linejoin="round"/>
+<text x="1974.0" y="597.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">problem_version_id FK</text>
+<text x="1974.0" y="635.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">version_no · allowed_languages</text>
+<text x="1974.0" y="673.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">cpu_limit_ms · memory_limit_kib</text>
+<rect x="1950" y="790" width="560" height="260" rx="18" fill="#FFFFFF" stroke="#D4DFEA" stroke-width="2"/>
+<rect x="1952" y="792" width="556" height="8" rx="4" fill="#0D9488" stroke="none" stroke-width="2"/>
+<text x="1974.0" y="852.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#0D9488">测试用例</text>
+<text x="1974.0" y="894.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">test_cases</text>
+<polyline points="1974,909 2486,909" fill="none" stroke="#E0E7EF" stroke-width="2" stroke-linejoin="round"/>
+<text x="1974.0" y="957.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">test_suite_id FK</text>
+<text x="1974.0" y="995.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">input_text · expected_output</text>
+<text x="1974.0" y="1033.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">weight · is_public</text>
+<rect x="1950" y="1150" width="560" height="260" rx="18" fill="#FFFFFF" stroke="#D4DFEA" stroke-width="2"/>
+<rect x="1952" y="1152" width="556" height="8" rx="4" fill="#0D9488" stroke="none" stroke-width="2"/>
+<text x="1974.0" y="1212.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#0D9488">评分量表版本</text>
+<text x="1974.0" y="1254.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">rubrics</text>
+<polyline points="1974,1269 2486,1269" fill="none" stroke="#E0E7EF" stroke-width="2" stroke-linejoin="round"/>
+<text x="1974.0" y="1317.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">problem_version_id FK</text>
+<text x="1974.0" y="1355.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">version_no · name</text>
+<text x="1974.0" y="1393.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">status · frozen_at</text>
+<rect x="1950" y="1510" width="560" height="260" rx="18" fill="#FFFFFF" stroke="#D4DFEA" stroke-width="2"/>
+<rect x="1952" y="1512" width="556" height="8" rx="4" fill="#0D9488" stroke="none" stroke-width="2"/>
+<text x="1974.0" y="1572.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#0D9488">评分维度</text>
+<text x="1974.0" y="1614.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">rubric_items</text>
+<polyline points="1974,1629 2486,1629" fill="none" stroke="#E0E7EF" stroke-width="2" stroke-linejoin="round"/>
+<text x="1974.0" y="1677.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">rubric_id FK</text>
+<text x="1974.0" y="1715.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">name · max_score</text>
+<text x="1974.0" y="1753.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">description · sort_order</text>
+<rect x="2570" y="430" width="560" height="260" rx="18" fill="#FFFFFF" stroke="#D4DFEA" stroke-width="2"/>
+<rect x="2572" y="432" width="556" height="8" rx="4" fill="#2563EB" stroke="none" stroke-width="2"/>
+<text x="2594.0" y="492.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">一次作业</text>
+<text x="2594.0" y="534.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">assignments</text>
+<polyline points="2594,549 3106,549" fill="none" stroke="#E0E7EF" stroke-width="2" stroke-linejoin="round"/>
+<text x="2594.0" y="597.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">course_id FK · created_by FK</text>
+<text x="2594.0" y="635.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">submission_deadline / review_deadline</text>
+<text x="2594.0" y="673.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">submission_status</text>
+<rect x="2570" y="790" width="560" height="260" rx="18" fill="#FFFFFF" stroke="#D4DFEA" stroke-width="2"/>
+<rect x="2572" y="792" width="556" height="8" rx="4" fill="#2563EB" stroke="none" stroke-width="2"/>
+<text x="2594.0" y="852.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">作业中的题目</text>
+<text x="2594.0" y="894.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">assignment_items</text>
+<polyline points="2594,909 3106,909" fill="none" stroke="#E0E7EF" stroke-width="2" stroke-linejoin="round"/>
+<text x="2594.0" y="957.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">problem_version_id FK</text>
+<text x="2594.0" y="995.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">test_suite_id FK / rubric_id FK</text>
+<text x="2594.0" y="1033.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">max_score · score_weight · 互评人数</text>
+<rect x="2570" y="1150" width="560" height="260" rx="18" fill="#FFFFFF" stroke="#D4DFEA" stroke-width="2"/>
+<rect x="2572" y="1152" width="556" height="8" rx="4" fill="#2563EB" stroke="none" stroke-width="2"/>
+<text x="2594.0" y="1212.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">应交名单快照</text>
+<text x="2594.0" y="1254.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">assignment_participants</text>
+<polyline points="2594,1269 3106,1269" fill="none" stroke="#E0E7EF" stroke-width="2" stroke-linejoin="round"/>
+<text x="2594.0" y="1317.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">assignment_id FK · student_id FK</text>
+<text x="2594.0" y="1355.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">class_id_at_publish FK</text>
+<text x="2594.0" y="1393.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">class_name_at_publish</text>
+<rect x="3190" y="430" width="560" height="260" rx="18" fill="#FFFFFF" stroke="#D4DFEA" stroke-width="2"/>
+<rect x="3192" y="432" width="556" height="8" rx="4" fill="#059669" stroke="none" stroke-width="2"/>
+<text x="3214.0" y="492.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#059669">学生正式提交</text>
+<text x="3214.0" y="534.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">submissions</text>
+<polyline points="3214,549 3726,549" fill="none" stroke="#E0E7EF" stroke-width="2" stroke-linejoin="round"/>
+<text x="3214.0" y="597.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">assignment_item_id FK · student_id FK</text>
+<text x="3214.0" y="635.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">version_no · content · language</text>
+<text x="3214.0" y="673.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">UQ(student_id, client_request_id)</text>
+<rect x="3190" y="790" width="560" height="260" rx="18" fill="#FFFFFF" stroke="#D4DFEA" stroke-width="2"/>
+<rect x="3192" y="792" width="556" height="8" rx="4" fill="#C87914" stroke="none" stroke-width="2"/>
+<text x="3214.0" y="852.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#C87914">代码分析任务</text>
+<text x="3214.0" y="894.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">analysis_jobs</text>
+<polyline points="3214,909 3726,909" fill="none" stroke="#E0E7EF" stroke-width="2" stroke-linejoin="round"/>
+<text x="3214.0" y="957.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">submission_id FK</text>
+<text x="3214.0" y="995.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">kind=JUDGE · status</text>
+<text x="3214.0" y="1033.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">parameters · 输入版本引用</text>
+<rect x="3190" y="1150" width="560" height="260" rx="18" fill="#FFFFFF" stroke="#D4DFEA" stroke-width="2"/>
+<rect x="3192" y="1152" width="556" height="8" rx="4" fill="#C87914" stroke="none" stroke-width="2"/>
+<text x="3214.0" y="1212.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#C87914">评测结果</text>
+<text x="3214.0" y="1254.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">judge_results</text>
+<polyline points="3214,1269 3726,1269" fill="none" stroke="#E0E7EF" stroke-width="2" stroke-linejoin="round"/>
+<text x="3214.0" y="1317.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">job_id FK UQ · submission_id FK UQ</text>
+<text x="3214.0" y="1355.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">verdict · is_mock</text>
+<text x="3214.0" y="1393.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">CPU ms / 内存 KiB（模拟为空）</text>
+<polyline points="720,1538 720,1723" fill="none" stroke="#2563EB" stroke-width="5" stroke-linejoin="round"/>
+<text x="744.0" y="1574.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="700" fill="#102A43">权限跟着课程走</text>
+<text x="744.0" y="1627.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="400" fill="#53677F">角色取 course_members</text>
+<text x="744.0" y="1668.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="400" fill="#53677F">名单决定本次作业能否提交</text>
+<text x="744.0" y="1709.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="400" fill="#53677F">学生端只看本人有权访问的数据</text>
+<polyline points="2580,1538 2580,1723" fill="none" stroke="#2563EB" stroke-width="5" stroke-linejoin="round"/>
+<text x="2604.0" y="1574.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="700" fill="#102A43">发布固定依据</text>
+<text x="2604.0" y="1627.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="400" fill="#53677F">题目 / 测试集 / 量表版本</text>
+<text x="2604.0" y="1668.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="400" fill="#53677F">应交学生与当时班级</text>
+<text x="2604.0" y="1709.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="400" fill="#53677F">修改不覆盖历史作答</text>
+<polyline points="3200,1538 3200,1723" fill="none" stroke="#C87914" stroke-width="5" stroke-linejoin="round"/>
+<text x="3224.0" y="1574.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="700" fill="#102A43">当前只模拟代码评测</text>
+<text x="3224.0" y="1627.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="400" fill="#53677F">MOCK_ACCEPTED 不等于 AC</text>
+<text x="3224.0" y="1668.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="400" fill="#53677F">is_mock=true；资源为空</text>
+<text x="3224.0" y="1709.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="400" fill="#53677F">主观答案等待下一阶段互评</text>
+<text x="90.0" y="1876.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="36" font-weight="700" fill="#102A43">讲解主线：课程 → 作业题目 → 提交版本 → 任务 → 结果</text>
+<text x="90.0" y="1928.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="28" font-weight="400" fill="#53677F">箭头：被引用表 → 引用表（通常 1:N）；带唯一外键为 1:0..1。各表都有 id 主键和 created_at。</text>
+<rect x="90" y="1960" width="3660" height="110" rx="14" fill="#FFF0DB" stroke="none" stroke-width="2"/>
+<text x="120.0" y="2010.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="30" font-weight="400" fill="#84500E">下一阶段 A01：新增评审批次 / 任务 / 原始评分；再接聚合、异常与正式成绩发布。上述表当前尚未创建。</text>
+<text x="120.0" y="2051.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="400" fill="#84500E">本图列全 21 表，只绘制主干关系；操作者等辅助外键见完整 CSV 和数据字典。</text>
+<text x="90.0" y="2135.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">PK 主键   UQ 唯一约束   FK 外键   ·   三人各用本地副本，通过模型、迁移和契约保持一致。</text>
+</svg>

@@ -1,0 +1,27 @@
+{
+  "resolution": [
+    3840,
+    2160
+  ],
+  "diagrams": [
+    {
+      "file": "01-database-schema-4k.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "labels": 136,
+      "tables": 21,
+      "drawn_relationships": 25,
+      "actual_foreign_keys": 34
+    },
+    {
+      "file": "02-interaction-flow-4k.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "labels": 69
+    }
+  ]
+}

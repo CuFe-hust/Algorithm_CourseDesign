@@ -6,6 +6,8 @@
 
 **[MAIN.md：项目主文档、分工与开发顺序](MAIN.md)**。本main是已经跑通最小链路的协作底座，你可以直接基于它推进分析流程，两位队友分别完成教师和学生模块。
 
+今晚开会：[讲解顺序与下一步动作](docs/MEETING_2026-10-21.md) · [数据库模式图（4K）](docs/diagrams/01-database-schema-4k.png) · [交互流程图（4K）](docs/diagrams/02-interaction-flow-4k.png) · [SVG源文件及完整外键清单](docs/diagrams/README.md)。
+
 | 负责人 | 任务正文 | 先做什么 |
 |---|---|---|
 | T：教师队友 | [教师Issue](docs/issues/01-teacher.md) | T00统一Vue骨架，然后CSV、题库和作业写入 |
