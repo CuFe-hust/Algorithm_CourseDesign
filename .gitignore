@@ -13,3 +13,6 @@ local-data/
 .DS_Store
 __MACOSX/
 ._*
+
+# Baidu Sync transient upload metadata; never publish.
+*.baiduyun.uploading.cfg
