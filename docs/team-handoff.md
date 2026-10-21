@@ -1,5 +1,7 @@
 # 三人开发交接
 
+完整协作入口见[MAIN](../MAIN.md)，详细API见[API](API.md)，每位成员的逐项交付见[教师](issues/01-teacher.md)、[学生](issues/02-student.md)、[分析](issues/03-database-analysis.md)。本文件保留快速交接摘要。
+
 ## 当前可用范围
 
 教师/学生可登录、读取课程作业和学生可见题目；学生提交按版本保存，编程提交与模拟任务同事务写入，主观答案等待后续互评。教师可查询课程提交，另一学生不能读取他人源码。完整启动见根README，接口以运行时openapi.json和[契约](contracts/foundation-v1.md)为准；ID通过查询取得，不在页面硬编码为1。

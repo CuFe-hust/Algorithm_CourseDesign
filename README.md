@@ -2,6 +2,22 @@
 
 已实现共享后端最小链路：登录、读取作业题目、版本提交、模拟任务、结果查询与教师提交列表。包含21张业务表、迁移、合成账号和四类演示题，可供队友对接。完整前端、真实代码执行、互评和正式成绩发布尚未实现。
 
+## 三人从这里开始
+
+**[MAIN.md：项目主文档、分工与开发顺序](MAIN.md)**。本main是已经跑通最小链路的协作底座，你可以直接基于它推进分析流程，两位队友分别完成教师和学生模块。
+
+| 负责人 | 任务正文 | 先做什么 |
+|---|---|---|
+| T：教师队友 | [教师Issue](docs/issues/01-teacher.md) | T00统一Vue骨架，然后CSV、题库和作业写入 |
+| S：学生队友 | [学生Issue](docs/issues/02-student.md) | 当前真实作答页面，接着历史，再接A01互评 |
+| A：你 | [分析Issue](docs/issues/03-database-analysis.md) | 在底座上补互评契约/数据/基础流程，再聚合/检测/发布 |
+
+阅读顺序：本README启动 → MAIN和自己的Issue → [数据库与归属](docs/DATABASE.md) → [信息流](docs/DATA_FLOWS.md) → [当前API格式](docs/API.md)。规划接口另见[下一阶段提案](docs/contracts/next-phase.md)，未标记为已实现的接口不能当作可调用。
+
+推送与分支/PR方式见[Git协作](docs/COLLABORATION.md)。仓库有3个GitHub Issue模板，推送后可直接选用，负责人待你填写；当前未在线创建Issue，也未设置远程地址。
+
+开发资料包含70道编程题、主观题原Word和任务书，见[data/source](data/source/README.md)；仅4道演示题实际入库，真实学生名册不打包。前端位置和公共骨架分工见[frontend约定](frontend/README.md)，当前没有可启动的Vue应用。
+
 ## 完整启动顺序
 
 在工程根目录使用PowerShell。本机实际验证Python 3.14.5、MySQL 9.4.0，建议队友使用同版本；依赖锁文件包含运行与测试依赖。需要预先安装Python和MySQL程序。

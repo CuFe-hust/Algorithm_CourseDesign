@@ -25,7 +25,7 @@
 | GET /courses/{course_id}/assignments | 课程成员 | 学生只见名单内已发布作业，教师见课程全部作业；含题目ID、题型、截止、满分与权重 |
 | GET /assignment-items/{item_id} | 教师或名单内学生 | 指定题目版本的学生可见题干、公开样例、量表、允许语言 |
 | POST /assignment-items/{item_id}/submissions | 名单内学生 | 输入 content、language、client_request_id；202返回 submission_id、version_no、status、job_status、replayed |
-| GET /submissions/{submission_id} | 本人或任课教师 | 提交内容、题型、版本、时间、任务状态与允许为空的模拟结果 |
+| GET /submissions/{submission_id} | 本人或任课教师 | 提交内容、作业题目ID、版本、时间、任务状态与允许为空的模拟结果；题型由作业题目查询 |
 | GET /teacher/courses/{course_id}/submissions | 任课教师 | 本课程提交列表，支持 assignment_item_id、student_id，分页limit/offset；上限100 |
 | POST /submissions/{submission_id}/withdraw | 本人 | 截止前撤回；不修改源码；任务执行器跳过已撤回提交 |
 
