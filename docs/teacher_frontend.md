@@ -16,7 +16,8 @@ frontend/
     │   ├── session.ts              # 登录、课程列表、课程选择、退出
     │   ├── Login.vue / Access.vue / NotFound.vue
     │   ├── Pagination.vue
-    │   └── markdown.ts / MarkdownPreview.vue
+    │   ├── confirm.ts / ConfirmDialog.vue
+    │   └── markdown.ts / MarkdownPreview.vue / CodePreview.vue
     └── features/
         ├── teacher/
         │   ├── TeacherLayout.vue   # 侧栏、课程切换、账户与内容区
@@ -52,9 +53,11 @@ frontend/
 - 当前课程 ID 持久化在当前会话；切换课程时先经过未保存修改提示，再切换数据。页面以课程 ID 与路径作为 key，防止复用旧课程编辑状态。
 - 题库、学生列表使用请求序号，丢弃较早的异步响应。搜索、分页、加载、失败、空列表均有明确状态。
 - 401 清除会话并回到登录；404 等错误正常显示，不能当作成功空列表。错误展示 `request_id` 便于定位。
+- 模板下载复用请求客户端的认证和错误处理；字段校验和冻结要求转为中文提示，不把原始校验对象直接呈现给教师。
 - BIGINT ID 全程使用字符串；保存前通过 `editable()` 显式提取字段，避免把服务端元数据提交给严格 DTO。
 - 页面确认对话框统一由 `ConfirmDialog.vue` 提供，支持取消、Escape 和焦点约束。草稿提交携带原始 `updated_at`，409 提示重新读取；未保存修改离开页面、切换版本和关闭页面时提醒。冻结和归档前有明确确认。
 - Markdown 禁用原始 HTML，KaTeX `trust=false`，限制展开次数，清洗最终 HTML/MathML。代码输入作为文本处理，不执行学生或教师代码。
+- 标准代码用独立 `CodePreview` 保留原始缩进和文本，即使代码包含 Markdown 围栏也不会被当作题目内容重新解析。Python 3 使用 Python 高亮规则。
 - 改选文件会清空预览、确认勾选与导入结果；确认始终上传同一 File 和签名预览令牌。数据库变化时重新预览。
 
 ## 4. 学生端和互评端如何接入
@@ -65,4 +68,4 @@ frontend/
 
 ## 5. 验证
 
-`pnpm test` 覆盖字符串 ID、Bearer、multipart 边界、401、错误传播、安全 Markdown 和严格保存投影；`pnpm build` 同时进行 TypeScript 检查与生产构建。实际浏览器操作验收见 [teacher_setup.md](teacher_setup.md)。
+`pnpm test` 的17项测试覆盖字符串 ID、Bearer、multipart 边界、401、下载认证、中文校验、安全 Markdown/代码、严格保存投影、取消课程切换、导入确认和更换文件后的预览失效。`pnpm build` 同时进行 TypeScript 检查与生产构建。实际浏览器操作验收见 [teacher_setup.md](teacher_setup.md)。

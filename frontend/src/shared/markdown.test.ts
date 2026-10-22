@@ -1,7 +1,18 @@
 // @vitest-environment jsdom
 import { describe, it, expect } from "vitest";
-import { renderMarkdown } from "./markdown";
+import { renderMarkdown, renderCode } from "./markdown";
 describe("safe teaching content", () => {
+  it("highlights Python 3 and preserves Markdown fences inside reference code", () => {
+    const code = 'print("```html\\n<script>alert(1)</script>")';
+    const html = renderCode(code, "python3");
+    expect(html).toContain("hljs-built_in");
+    const dom = new DOMParser().parseFromString(
+      `<pre><code>${html}</code></pre>`,
+      "text/html",
+    );
+    expect(dom.querySelector("script")).toBeNull();
+    expect(dom.querySelector("code")!.textContent).toBe(code);
+  });
   it("renders inline/display formulas and highlighted code", () => {
     const html = renderMarkdown(
       "递推式 $T(n)=2T(n/2)+n$\n\n$$\nn^2\n$$\n\n```python\nprint(1)\n```",

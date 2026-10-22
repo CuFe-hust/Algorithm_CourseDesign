@@ -13,7 +13,13 @@ import {
   Eye,
   PencilLine,
 } from "@lucide/vue";
-import { request, post, errorText, ApiError } from "../../shared/api";
+import {
+  request,
+  post,
+  errorText,
+  validationMessages,
+  ApiError,
+} from "../../shared/api";
 import { session } from "../../shared/session";
 import {
   newVersion,
@@ -26,6 +32,7 @@ import {
 } from "./types";
 import { confirmAction } from "../../shared/confirm";
 import MarkdownPreview from "../../shared/MarkdownPreview.vue";
+import CodePreview from "../../shared/CodePreview.vue";
 const route = useRoute(),
   router = useRouter(),
   existing = computed(() => Boolean(route.params.id));
@@ -48,6 +55,7 @@ const locked = computed(
   () =>
     current.value?.status === "FROZEN" || detail.value?.status === "ARCHIVED",
 );
+const issues = computed(() => validationMessages(errors.value));
 const fingerprint = () =>
   JSON.stringify({ form: form.value, code: code.value, type: type.value });
 const dirty = computed(
@@ -100,6 +108,7 @@ function changeType() {
   form.value.rubric = type.value === "PROGRAMMING" ? null : newVersion().rubric;
 }
 function displayError(e: unknown) {
+  success.value = "";
   error.value = errorText(e);
   errors.value = e instanceof ApiError ? e.details : null;
 }
@@ -312,10 +321,9 @@ watch(tab, () => {
   </div>
   <div v-if="error" class="alert error" role="alert">
     {{ error }}
-    <details v-if="errors">
-      <summary>查看校验详情</summary>
-      <pre>{{ JSON.stringify(errors, null, 2) }}</pre>
-    </details>
+    <ul v-if="issues.length">
+      <li v-for="issue in issues" :key="issue">{{ issue }}</li>
+    </ul>
     <button v-if="!current && existing" @click="reload()">重试</button>
   </div>
   <div v-if="success" class="alert success" role="status">{{ success }}</div>
@@ -357,6 +365,7 @@ watch(tab, () => {
               ><label
                 >题型<select
                   v-model="type"
+                  aria-label="题型"
                   :disabled="existing"
                   @change="changeType"
                 >
@@ -400,6 +409,7 @@ watch(tab, () => {
                 ><button
                   type="button"
                   class="small"
+                  v-if="!locked"
                   @click="preview = !preview"
                 >
                   <PencilLine v-if="preview" :size="14" /><Eye
@@ -479,7 +489,10 @@ watch(tab, () => {
                   </button>
                 </div>
                 <label
-                  >语言<select v-model="answer.language">
+                  >语言<select
+                    v-model="answer.language"
+                    :aria-label="`参考答案语言 ${i + 1}`"
+                  >
                     <option :value="null">文字 / Markdown</option>
                     <option value="python3">Python 3</option>
                     <option value="cpp">C++</option>
@@ -497,14 +510,14 @@ watch(tab, () => {
                       {{ answer.language }}
                     </option>
                   </select></label
-                ><MarkdownPreview
-                  v-if="locked"
-                  :source="
-                    answer.language
-                      ? `\`\`\`${answer.language}\n${answer.content}\n\`\`\``
-                      : answer.content
-                  "
-                /><textarea
+                ><template v-if="locked">
+                  <CodePreview
+                    v-if="answer.language"
+                    :source="answer.content"
+                    :language="answer.language"
+                  />
+                  <MarkdownPreview v-else :source="answer.content" /> </template
+                ><textarea
                   v-else
                   v-model="answer.content"
                   :aria-label="`参考答案内容 ${i + 1}`"
@@ -696,7 +709,10 @@ watch(tab, () => {
           <div class="card-heading"><h2>题目属性</h2></div>
           <fieldset :disabled="locked || busy" class="form-body">
             <label
-              >难度<select v-model.number="form.difficulty_level">
+              >难度<select
+                v-model.number="form.difficulty_level"
+                aria-label="难度"
+              >
                 <option v-for="n in 5" :key="n" :value="n">
                   {{ n }} / 5 ·
                   {{ ["入门", "基础", "中等", "进阶", "挑战"][n - 1] }}

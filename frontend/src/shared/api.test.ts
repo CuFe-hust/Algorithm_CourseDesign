@@ -1,11 +1,59 @@
 // @vitest-environment jsdom
 import { afterEach, describe, it, expect, vi } from "vitest";
-import { request, post, ApiError, query } from "./api";
+import {
+  request,
+  requestBlob,
+  post,
+  ApiError,
+  query,
+  validationMessages,
+} from "./api";
 afterEach(() => {
   vi.unstubAllGlobals();
   sessionStorage.clear();
 });
 describe("shared API contract", () => {
+  it("applies the same authentication and error handling to downloaded CSV files", async () => {
+    sessionStorage.setItem("algoclass.token", "test-download-session");
+    const fetch = vi
+      .fn()
+      .mockResolvedValue(
+        new Response("student_no,full_name,class_name\n", { status: 200 }),
+      );
+    vi.stubGlobal("fetch", fetch);
+    const blob = await requestBlob("/teacher/template");
+    const content = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = reject;
+      reader.readAsText(blob);
+    });
+    expect(content).toContain("student_no");
+    expect(
+      (fetch.mock.calls[0]![1].headers as Headers).get("Authorization"),
+    ).toBe("Bearer test-download-session");
+    fetch.mockResolvedValueOnce(
+      new Response('{"message":"请重新登录"}', { status: 401 }),
+    );
+    await expect(requestBlob("/teacher/template")).rejects.toMatchObject({
+      status: 401,
+    });
+    expect(sessionStorage.getItem("algoclass.token")).toBeNull();
+  });
+  it("shows actionable validation hints without raw database or schema details", () => {
+    expect(validationMessages({ requirements: ["至少一个测试用例"] })).toEqual([
+      "至少一个测试用例",
+    ]);
+    expect(
+      validationMessages([
+        {
+          field: "body.version.test_suite.cases.1.weight",
+          type: "decimal_max_places",
+        },
+      ]),
+    ).toEqual(["测试配置 · 测试点 · 第 2 项 · 权重：请检查数值范围与小数位数"]);
+    expect(validationMessages(null)).toEqual([]);
+  });
   it("retains BIGINT strings and injects bearer credentials", async () => {
     sessionStorage.setItem("algoclass.token", "test-session");
     const fetch = vi
