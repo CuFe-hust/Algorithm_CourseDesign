@@ -1,13 +1,13 @@
 # 当前API格式 v1（已实现）
 
-基础地址开发默认 `http://127.0.0.1:8000/api/v1`。本文件只描述main当前可调用接口；新增接口提案见[下一阶段契约](contracts/next-phase.md)。[OpenAPI快照](contracts/openapi.json)可查参数和认证方式，交互文档为 `/docs`。
+基础地址开发默认 `http://127.0.0.1:8000/api/v1`。本文件描述共享底座接口；本轮新增的 [教师接口](teacher_api.md) 单独列出；新增接口提案见[下一阶段契约](contracts/next-phase.md)。[OpenAPI快照](contracts/openapi.json)可查参数和认证方式，交互文档为 `/docs`。
 
 ## 1. 统一格式
 
-- 请求/响应JSON使用UTF-8，字段snake_case。文件上传只在后续教师接口引入。
+- 请求/响应JSON使用UTF-8，字段snake_case。教师名册上传使用 multipart/form-data。
 - ID在JSON中是十进制字符串，前端不转Number；URL和查询参数按其字符串形式拼接。
 - 时间为UTC ISO8601，例如 `2026-10-21T08:00:00+00:00`，页面转北京时间；分数/权重用字符串，例如 `100.00`、`0.250000`。
-- 成功响应直接返回对象，没有统一data外壳。当前列表返回 `{items:[...]}`，只有教师提交列表增加total/limit/offset。
+- 成功响应直接返回对象，没有统一data外壳。当前列表返回 `{items:[...]}`，教师提交、题库和学生列表增加total/limit/offset。
 - 除health、ready、login外均需 `Authorization: Bearer <access_token>`。密码仅在登录body中发送，token不放URL或日志。会话有效2小时，401重新登录。
 - 每个响应有X-Request-ID。错误格式如下，details通常为空，字段校验错误时是field/type数组。
 

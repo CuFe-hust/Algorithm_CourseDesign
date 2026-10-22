@@ -1,17 +1,17 @@
-# 下一阶段协作接口提案（未实现）
+# 下一阶段协作接口提案与实施状态
 
-状态：为三人并行开发提供的提案。下列接口不在当前OpenAPI中，调用会404。对应负责人在首个PR中确认DTO和错误规则、更新契约，再实现；不得把本文件当作已上线能力。
+状态：教师题库、版本与名册导入已在本轮实现，精确请求格式以 [teacher_api.md](../teacher_api.md) 和 OpenAPI 为准。以下作业发布、成绩、互评与分析条目仍为提案，未实现接口调用会404。不得把提案当作已上线能力。
 
 保持/api/v1、Bearer、字符串ID、UTC、十进制分数字符串和统一错误格式。T负责教师操作入口，S负责本人作答/评价，A负责分析服务与结果；T的开放/处置/发布接口调用A服务，而不是各写一套算法或改分表。
 
-## 1. T：教师写入接口建议
+## 1. T：教师写入接口状态
 
-| 接口（规划） | 请求要点 | 返回要点 |
+| 接口 | 请求要点 | 返回要点 / 状态 |
 |---|---|---|
-| POST /teacher/courses/{course_id}/students/import/preview | multipart CSV文件，列student_no/full_name/class_name | content_sha256、行号、问题、待新增/复用/更改数量 |
-| POST /teacher/courses/{course_id}/students/import/confirm | 同文件+expected_sha256，教师确认的冲突处理 | 本次新增/更新/跳过数量及错误；确认时重校验数据库现状 |
-| GET/POST /teacher/courses/{course_id}/problems | 课程、题型、题号；详情包含草稿/版本 | 创建返回题目及版本ID，教师可见参考内容使用专用DTO |
-| POST /teacher/problems/{problem_id}/versions | 完整新版本内容、知识点与专用配置 | 新版本ID；不覆盖旧冻结版本 |
+| POST /teacher/courses/{course_id}/students/import/preview | multipart CSV文件，列student_no/full_name/class_name | 已实现；content_sha256、签名令牌、行号、问题和数量 |
+| POST /teacher/courses/{course_id}/students/import/confirm | 同文件+expected_sha256+preview_token+allow_updates | 已实现；确认时重校验数据库现状 |
+| GET/POST /teacher/courses/{course_id}/problems | 课程、题型、题号；详情包含草稿/版本 | 已实现；创建返回完整版本；教师专用DTO |
+| POST /teacher/problems/{problem_id}/versions | source_version_id；复制冻结版本后编辑草稿 | 已实现；不覆盖旧冻结版本 |
 | POST /teacher/courses/{course_id}/assignments | 标题、截止、选题/分值/权重、目标名单 | 草稿作业ID，尚不可被学生访问 |
 | POST /teacher/assignments/{assignment_id}/publish | 明确发布该草稿 | 发布信息、固定名单人数和题目版本 |
 | GET /teacher/courses/{course_id}/grades | assignment_id/student_id/class_id与分页 | 已发布成绩、缺交/待评分类、发布版本；不能引用mock判定给分 |
