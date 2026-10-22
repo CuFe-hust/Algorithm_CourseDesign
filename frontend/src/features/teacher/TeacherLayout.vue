@@ -15,15 +15,31 @@ import { session, selectCourse, logout } from "../../shared/session";
 import { errorText } from "../../shared/api";
 const router = useRouter(),
   mobile = ref(false),
-  error = ref("");
+  error = ref(""),
+  switchingCourse = ref(false);
 const course = computed(() =>
   session.courses.find((c) => c.id === session.courseId),
 );
 async function changeCourse(event: Event) {
-  const id = (event.target as HTMLSelectElement).value;
+  const select = event.target as HTMLSelectElement;
+  const id = select.value;
+  if (switchingCourse.value) {
+    select.value = session.courseId;
+    return;
+  }
+  switchingCourse.value = true;
   // Navigate first: an editor's unsaved-change guard can cancel the switch.
-  await router.push("/teacher");
-  if (router.currentRoute.value.path === "/teacher") selectCourse(id);
+  try {
+    await router.push("/teacher");
+    if (router.currentRoute.value.path === "/teacher") selectCourse(id);
+  } catch (e) {
+    error.value = errorText(e);
+  } finally {
+    // Native selects change before Vue's route guard resolves. Restore their
+    // displayed value after cancellation, even if reactive state never changed.
+    select.value = session.courseId;
+    switchingCourse.value = false;
+  }
 }
 async function leave() {
   await router.push("/login");
@@ -79,6 +95,7 @@ async function leave() {
           <div>
             <select
               :value="session.courseId"
+              :disabled="switchingCourse"
               aria-label="当前课程"
               @change="changeCourse"
             >

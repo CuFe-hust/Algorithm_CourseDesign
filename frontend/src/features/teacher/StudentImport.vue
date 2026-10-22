@@ -12,7 +12,7 @@ import {
 import { onBeforeRouteLeave } from "vue-router";
 import { confirmAction } from "../../shared/confirm";
 import { session } from "../../shared/session";
-import { request, token, errorText, ApiError } from "../../shared/api";
+import { request, requestBlob, errorText, ApiError } from "../../shared/api";
 interface ImportRow {
   row_number: number;
   student_no: string;
@@ -20,7 +20,7 @@ interface ImportRow {
   class_name: string;
   action: string;
   errors: string[];
-  changes: unknown[];
+  changes: string[];
 }
 interface Preview {
   valid: boolean;
@@ -29,7 +29,7 @@ interface Preview {
   requires_update_confirmation: boolean;
   preview_token: string | null;
   content_sha256: string;
-  expires_at: string;
+  expires_in: number;
 }
 interface Result {
   summary: Record<string, number>;
@@ -83,17 +83,17 @@ function drop(event: DragEvent) {
 async function download() {
   error.value = "";
   try {
-    const response = await fetch(
-      `/api/v1/teacher/courses/${session.courseId}/students/import/template`,
-      { headers: { Authorization: `Bearer ${token()}` } },
+    const blob = await requestBlob(
+      `/teacher/courses/${session.courseId}/students/import/template`,
     );
-    if (!response.ok) throw new Error("模板下载失败，请确认登录有效后重试。");
-    const url = URL.createObjectURL(await response.blob());
+    const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = "students-template.csv";
+    document.body.append(a);
     a.click();
-    URL.revokeObjectURL(url);
+    a.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   } catch (e) {
     error.value = errorText(e);
   }

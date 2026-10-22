@@ -2,14 +2,23 @@ import MarkdownIt from "markdown-it";
 import DOMPurify from "dompurify";
 import katex from "katex";
 import hljs from "highlight.js/lib/common";
+function highlightedCode(code: string, language: string): string {
+  const normalized = language === "python3" ? "python" : language;
+  return normalized && hljs.getLanguage(normalized)
+    ? hljs.highlight(code, { language: normalized, ignoreIllegals: true }).value
+    : md.utils.escapeHtml(code);
+}
+export function renderCode(code: string, language: string): string {
+  return DOMPurify.sanitize(highlightedCode(code, language), {
+    USE_PROFILES: { html: true },
+  });
+}
 const md: MarkdownIt = new MarkdownIt({
   html: false,
   linkify: false,
   breaks: true,
   highlight(code, language): string {
-    return language && hljs.getLanguage(language)
-      ? hljs.highlight(code, { language, ignoreIllegals: true }).value
-      : md.utils.escapeHtml(code);
+    return highlightedCode(code, language);
   },
 });
 function math(source: string, displayMode: boolean) {
