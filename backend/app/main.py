@@ -78,7 +78,7 @@ def create_app() -> FastAPI:
     # Outermost user middleware: also decorate failures caught by identify.
     application.add_middleware(CORSMiddleware,
         allow_origins=['http://localhost:5173', 'http://127.0.0.1:5173'],
-        allow_methods=['GET', 'POST'], allow_headers=['Authorization', 'Content-Type'],
+        allow_methods=['GET', 'POST', 'PUT'], allow_headers=['Authorization', 'Content-Type'],
         expose_headers=['X-Request-ID'])
     return application
 
