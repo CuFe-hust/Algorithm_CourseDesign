@@ -2,11 +2,11 @@
 
 版本：协作底座 v0.1.0 + 教师题库/导入；更新日期：2026-10-22。
 
-教师端本轮实现及边界见 [教师端架构索引](docs/teacher_architecture.md)。
+教师端本轮实现及边界见 [教师端架构索引](docs/design/teacher/architecture.md)。
 
 本文件是队友进入项目后的阅读入口。先按README运行，再阅读本文件和自己负责的Issue，即可开始分模块开发。文中的“已实现”以本仓库代码为准；“规划”用于协作约定，不表示对应表和接口已经存在。
 
-会议材料：[今天的工作与会后动作](docs/MEETING_2026-10-21.md)、[两张4K图与SVG源](docs/diagrams/README.md)。可先用图讲主线，再查字段和Issue细节。
+会议材料：[今天的工作与会后动作](docs/archive/meeting-2026-10-21.md)、[两张4K图与SVG源](docs/assets/diagrams/README.md)。可先用图讲主线，再查字段和Issue细节。
 
 ## 1. 项目目标和范围
 
@@ -65,7 +65,7 @@ flowchart TB
 
 ## 5. 数据库形态与信息流
 
-先看[数据库业务地图与读写归属](docs/DATABASE.md)，查字段看[实际21表数据字典](docs/database-schema.md)，追完整流程看[信息流与状态](docs/DATA_FLOWS.md)。
+先看[数据库业务地图与读写归属](docs/design/shared/database.md)，查字段看[实际21表数据字典](docs/design/shared/database-schema.md)，追完整流程看[信息流与状态](docs/design/shared/data-flows.md)。
 
 核心关联：课程/名单 → 作业题目 → 固定题目版本 → 学生提交版本 → 评测或评审记录 → 分析结果 → 教师确认后的成绩发布。
 
@@ -76,21 +76,21 @@ flowchart TB
 
 ## 6. 当前API怎样使用
 
-阅读[当前API格式与完整样例](docs/API.md)。输入输出与状态规则由[底座契约](docs/contracts/foundation-v1.md)约束，机器可读版本为[OpenAPI快照](docs/contracts/openapi.json)，运行时文档位于 `http://127.0.0.1:8000/docs`。
+阅读[当前API格式与完整样例](docs/design/shared/api-v1.md)。输入输出与状态规则由[底座契约](docs/design/contracts/foundation-v1.md)约束，机器可读版本为[OpenAPI快照](docs/design/contracts/openapi.json)，运行时文档位于 `http://127.0.0.1:8000/docs`。
 
 登录后先查询courses取得课程角色，再查询assignments取得作业题目ID，不硬编码ID。所有ID是字符串，时间是UTC ISO8601，分数和权重是十进制字符串。只有教师提交列表有分页字段，其他当前列表为items数组。
 
-新增教师写接口、互评、统计和成绩接口统一参考[下一阶段协作接口提案](docs/contracts/next-phase.md)。该文件内所有接口和DTO都标注“规划”，须在对应PR中落实后才成为已实现接口。
+新增教师写接口、互评、统计和成绩接口统一参考[下一阶段协作接口提案](docs/design/contracts/next-phase.md)。该文件内所有接口和DTO都标注“规划”，须在对应PR中落实后才成为已实现接口。
 
 ## 7. 并行开发的起跑顺序
 
 1. 三人各自克隆/取得main，按README迁移、种子和HTTP联调；记录自己的环境差异。
-2. T提交公共Vue/Vite骨架的小PR（T00）：统一登录、课程选择、路由外壳、请求客户端、错误提示；S同时开发学生功能组件，A推进分析流程契约。
+2. T提交公共Vue/Vite骨架的小PR（TH00）：统一登录、课程选择、路由外壳、请求客户端、错误提示；S同时开发学生功能组件，A推进分析流程契约。
 3. T实现名单/题库/作业的写入闭环；S实现当前答题接口的页面闭环；A先补互评数据与任务接口，使用确定性的基础实现。
 4. A交付一组匿名任务、量表与评分请求样例；S实现互评，T实现开放/预览/复核入口。
 5. 再打通聚合、异常、教师处置和发布；最后并行研究复杂算法并跑实验。
 
-前端当前没有Vue工程，避免T/S分别生成两个不同工程。T00合并前，S可按[前端目录约定](frontend/README.md)准备组件与样例，A不依赖前端开展后台流程。互评接口未落地时用明确标识的本地fixture，不调用不存在的接口后把404当空结果。
+前端当前没有Vue工程，避免T/S分别生成两个不同工程。TH00合并前，S可按[前端目录约定](frontend/README.md)准备组件与样例，A不依赖前端开展后台流程。互评接口未落地时用明确标识的本地fixture，不调用不存在的接口后把404当空结果。
 
 ## 8. 谁负责写哪些数据
 
@@ -116,7 +116,7 @@ flowchart TB
 
 仅推送本工程目录，禁止将上级课程资料、真实学生名册、.env、本地数据库、虚拟环境和日志一起上传。题库来源见[data/source说明](data/source/README.md)，仓库包含开发用题目材料；真实名单不打包。
 
-仓库本地main已整理；远程仓库地址与可见性由你决定，当前未自动发布。具体流程见[Git协作与推送](docs/COLLABORATION.md)。三个Issue文件的正文可复制到GitHub，只需指定负责人和替换实际Issue编号。
+仓库本地main已整理；远程仓库地址与可见性由你决定，当前未自动发布。具体流程见[Git协作与推送](docs/implementation/runbooks/collaboration.md)。三个Issue文件的正文可复制到GitHub，只需指定负责人和替换实际Issue编号。
 
 ## PostgreSQL与全量快照更新
 

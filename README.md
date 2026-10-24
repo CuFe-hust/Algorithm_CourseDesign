@@ -6,19 +6,19 @@
 
 **[MAIN.md：项目主文档、分工与开发顺序](MAIN.md)**。本仓库提供已经跑通最小链路的协作底座，三位成员可基于它分别推进教师、学生与互评分析模块。
 
-今晚开会：[讲解顺序与下一步动作](docs/MEETING_2026-10-21.md) · [数据库模式图（4K）](docs/diagrams/01-database-schema-4k.png) · [交互流程图（4K）](docs/diagrams/02-interaction-flow-4k.png) · [SVG源文件及完整外键清单](docs/diagrams/README.md)。
+今晚开会：[讲解顺序与下一步动作](docs/archive/meeting-2026-10-21.md) · [数据库模式图（4K）](docs/assets/diagrams/01-database-schema-4k.png) · [交互流程图（4K）](docs/assets/diagrams/02-interaction-flow-4k.png) · [SVG源文件及完整外键清单](docs/assets/diagrams/README.md)。
 
 | 负责人 | 任务正文 | 先做什么 |
 |---|---|---|
-| T：教师队友 | [教师Issue](docs/issues/01-teacher.md) | T00统一Vue骨架，然后CSV、题库和作业写入 |
-| S：学生队友 | [学生Issue](docs/issues/02-student.md) | 当前真实作答页面，接着历史，再接A01互评 |
+| T：教师队友 | [教师Issue](docs/issues/01-teacher.md) | TH00统一Vue骨架，然后CSV、题库和作业写入 |
+| S：学生队友 | [学生Issue](docs/issues/02-student.md) | 当前真实作答页面，接着历史，再接AN01互评 |
 | A：数据库与分析负责人 | [分析Issue](docs/issues/03-database-analysis.md) | 在底座上补互评契约/数据/基础流程，再聚合/检测/发布 |
 
-阅读顺序：本README启动 → MAIN和自己的Issue → [数据库与归属](docs/DATABASE.md) → [信息流](docs/DATA_FLOWS.md) → [当前API格式](docs/API.md)。规划接口另见[下一阶段提案](docs/contracts/next-phase.md)，未标记为已实现的接口不能当作可调用。
+阅读顺序：本README启动 → MAIN和自己的Issue → [数据库与归属](docs/design/shared/database.md) → [信息流](docs/design/shared/data-flows.md) → [当前API格式](docs/design/shared/api-v1.md)。规划接口另见[下一阶段提案](docs/design/contracts/next-phase.md)，未标记为已实现的接口不能当作可调用。
 
-推送与分支/PR方式见[Git协作](docs/COLLABORATION.md)。仓库有3个GitHub Issue模板，推送后可直接选用，负责人待你填写；当前未在线创建Issue；远程仓库已配置并推送。
+推送与分支/PR方式见[Git协作](docs/implementation/runbooks/collaboration.md)。仓库有3个GitHub Issue模板，推送后可直接选用，负责人待你填写；当前未在线创建Issue；远程仓库已配置并推送。
 
-开发资料包含70道编程题、主观题原Word和任务书，见[data/source](data/source/README.md)；全量120题及217位合成身份、8班的结构化快照见[data/formatted](data/formatted/README.md)，队友可直接导入；真实名册及映射仅留本机。前端位置和公共骨架分工见[frontend约定](frontend/README.md)，教师前端已可启动，见 [教师端架构](docs/teacher_architecture.md) 和 [运行验收](docs/teacher_setup.md)。
+开发资料包含70道编程题、主观题原Word和任务书，见[data/source](data/source/README.md)；全量120题及217位合成身份、8班的结构化快照见[data/formatted](data/formatted/README.md)，队友可直接导入；真实名册及映射仅留本机。前端位置和公共骨架分工见[frontend约定](frontend/README.md)，教师前端已可启动，见 [教师端架构](docs/design/teacher/architecture.md) 和 [运行验收](docs/implementation/runbooks/teacher-setup.md)。
 
 ## 完整启动顺序
 
@@ -72,9 +72,9 @@ Remove-Item Env:DB_NAME
 
 ## 协作入口
 
-- [接口与数据流契约](docs/contracts/foundation-v1.md)
-- [三人交接说明](docs/team-handoff.md)
-- [实际数据库字段](docs/database-schema.md)、[数据来源与导入约定](docs/data-import.md)
+- [接口与数据流契约](docs/design/contracts/foundation-v1.md)
+- [三人交接说明](docs/archive/team-handoff.md)
+- [实际数据库字段](docs/design/shared/database-schema.md)、[数据来源与导入约定](docs/implementation/runbooks/data-import.md)
 - [教师Issue草案](docs/issues/01-teacher.md)、[学生Issue草案](docs/issues/02-student.md)、[数据库与分析Issue草案](docs/issues/03-database-analysis.md)，尚未在线创建。
 - `backend/app/teacher`、`student`、`analysis` 是各自扩展位置；`common` 和 `core` 是公共基础。
 - `backend/app/db/models` 和 `backend/migrations_postgresql` 由数据库负责人协调，修改字段时新增迁移，禁止改写已应用版本。
@@ -92,7 +92,7 @@ Remove-Item Env:DB_NAME
 
 验证权限及中文读写：`.\.venv\Scripts\python.exe scripts/check_database.py`。只在验证库事务内创建临时表，回滚后不留数据。
 
-旧MySQL用户按[迁移说明](docs/POSTGRESQL_MIGRATION.md)切换。旧实例、原数据及原.env备份保留；旧迁移链仅作历史，不对PostgreSQL执行。
+旧MySQL用户按[迁移说明](docs/implementation/runbooks/postgresql-migration.md)切换。旧实例、原数据及原.env备份保留；旧迁移链仅作历史，不对PostgreSQL执行。
 
 ## 三人本地开发
 
@@ -106,4 +106,4 @@ Remove-Item Env:DB_NAME
 
 队友运行`python -m scripts.import_full_data`默认使用公开脱敏快照，导入ALGO_FULL_2026课程：70编程题、50主观题、350组测试、275份参考答案/代码、217名学生、8班。DEMO_ALGO仍用于四类题的登录与提交流程演示。全量课程不会自动发布作业，名册账号PENDING且无密码，激活政策与作业发布待后续任务实现。
 
-真实名册只供本机显式导入；不要把数据库备份、身份映射或原始xlsx上传GitHub。不同身份模式不能覆盖同一数据库的已有身份，请选定一种，详见[数据导入](docs/data-import.md)。当前API业务格式保持兼容，迁移head改为pg0001；分析框架稍后讨论。
+真实名册只供本机显式导入；不要把数据库备份、身份映射或原始xlsx上传GitHub。不同身份模式不能覆盖同一数据库的已有身份，请选定一种，详见[数据导入](docs/implementation/runbooks/data-import.md)。当前API业务格式保持兼容，迁移head改为pg0001；分析框架稍后讨论。

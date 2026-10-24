@@ -4,7 +4,7 @@
 
 - programming/：用户提供Problems中的70道编程题及原README，按原分类保存，每题包含题干、样例、测试及参考实现。
 - subjective-50.docx：用户提供的50道主观题教师参考版，保留原Word公式和量表，尚未全部结构化入库。
-- [课程任务书](../../docs/source/course-assignment-guide.docx)：仅其中课题一用于本项目。
+- [课程任务书](../../docs/assets/source/course-assignment-guide.docx)：仅其中课题一用于本项目。
 
 当前真正入库的是 [演示JSON](../demo/problems.json) 中的一题编程和三类主观题。其余题库材料保留为导入来源，不代表已全部进数据库。
 
