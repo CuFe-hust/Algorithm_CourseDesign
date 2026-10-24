@@ -94,5 +94,6 @@ def test_freeze_incomplete_rejected_and_shared_assignment_preserved(client, teac
     assert fork.status_code == 201, fork.text
     assert client.post(f'/api/v1/teacher/problems/{original_version.problem_id}/archive', headers=headers).status_code == 200
     after = client.get(f'/api/v1/assignment-items/{item_id}', headers=auth()).json()
+    before.pop('server_time'); after.pop('server_time')
     assert before == after
     assert 'reference_solutions' not in after and 'test_cases' not in after

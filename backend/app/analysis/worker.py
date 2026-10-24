@@ -1,15 +1,21 @@
-from sqlalchemy import select
+from sqlalchemy import func, select
 from app.db.base import utcnow
 from app.db.models import AnalysisJob,Submission,JudgeResult,TestSuite
 from app.analysis.contracts import JudgeInput
 from app.analysis.judge_mock import judge
 
 
+def _mock_only():
+    """Legacy mock worker: never claim a real LOCAL or LINUX_SANDBOX job."""
+    return func.coalesce(AnalysisJob.parameters['execution_mode'].astext, 'MOCK') == 'MOCK'
+
+
 def process_pending_jobs(session,limit:int=20)->int:
     if not 1<=limit<=1000:raise ValueError('limit must be 1..1000')
     processed=0
     for _ in range(limit):
-        job=session.scalar(select(AnalysisJob).where(AnalysisJob.kind=='JUDGE',AnalysisJob.status=='PENDING')
+        job=session.scalar(select(AnalysisJob).where(AnalysisJob.kind=='JUDGE',AnalysisJob.status=='PENDING',
+                                                     AnalysisJob.available_at<=utcnow(),_mock_only())
                            .order_by(AnalysisJob.id).with_for_update(skip_locked=True).limit(1))
         if job is None:
             session.commit();break

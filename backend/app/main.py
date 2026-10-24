@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import logging
 import uuid
 
 from fastapi import FastAPI, Request
@@ -11,6 +12,7 @@ from alembic.script import ScriptDirectory
 from app.core.config import ROOT
 
 from app.core.errors import AppError, error_response
+from app.core.bodylimit import BodyLimitMiddleware
 from app.db.session import make_engine
 from app.common.auth import router as auth_router
 from app.student.router import router as student_router
@@ -42,7 +44,7 @@ def create_app() -> FastAPI:
 
     @application.exception_handler(AppError)
     async def application_error(request: Request, exc: AppError):
-        return error_response(request, exc.status, exc.code, exc.message, exc.details)
+        return error_response(request, exc.status, exc.code, exc.message, exc.details, exc.headers)
 
     @application.exception_handler(RequestValidationError)
     async def validation_error(request: Request, exc: RequestValidationError):
@@ -55,6 +57,8 @@ def create_app() -> FastAPI:
 
     @application.exception_handler(Exception)
     async def internal_error(request: Request, exc: Exception):
+        # Log the failure with the request id, but never leak internals to the client.
+        logging.getLogger('app').exception('unhandled error request_id=%s', getattr(request.state, 'request_id', ''))
         return error_response(request, 500, 'INTERNAL_ERROR', '服务暂时不可用，请保留请求编号')
 
     @application.get('/api/v1/health')
@@ -76,10 +80,11 @@ def create_app() -> FastAPI:
             raise AppError(503, 'DATABASE_NOT_READY', '数据库或迁移尚未就绪')
 
     # Outermost user middleware: also decorate failures caught by identify.
+    application.add_middleware(BodyLimitMiddleware)
     application.add_middleware(CORSMiddleware,
         allow_origins=['http://localhost:5173', 'http://127.0.0.1:5173'],
         allow_methods=['GET', 'POST', 'PUT'], allow_headers=['Authorization', 'Content-Type'],
-        expose_headers=['X-Request-ID'])
+        expose_headers=['X-Request-ID', 'Retry-After'])
     return application
 
 
