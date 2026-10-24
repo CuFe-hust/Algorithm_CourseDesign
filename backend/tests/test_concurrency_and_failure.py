@@ -11,7 +11,10 @@ from app.student.schemas import SubmissionInput
 from app.student.service import accept_submission
 
 
-def test_concurrent_retries_and_new_versions_are_serialized(db,demo):
+def test_concurrent_retries_and_new_versions_are_serialized(db,demo,monkeypatch):
+    # This test exercises row locking, so the per-account burst limiter is raised out of the way.
+    monkeypatch.setenv('LIMIT_SUBMISSION_BURST','100')
+    monkeypatch.setenv('LIMIT_SUBMISSION_PER_MINUTE','100')
     engine=db.bind
     uid=db.scalar(select(User.id).where(User.login_name=='demo.student01'))
     item=int(next(x['id'] for x in demo[0]['items'] if x['type']=='PROGRAMMING'))

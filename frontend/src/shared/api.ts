@@ -5,23 +5,65 @@ export class ApiError extends Error {
     message: string,
     public details?: unknown,
     public requestId?: string,
+    public retryAfterSeconds?: number,
+    public retryAfterAt?: string,
   ) {
     super(message);
   }
+  /** True when the request was never delivered (no state change on the server). */
+  get network(): boolean {
+    return this.status === 0;
+  }
 }
+
+const TOKEN_KEY = "algoclass.token";
+const USER_KEY = "algoclass.user";
+
+/** Authentication generation: bumped whenever the credential set changes. */
+let authGeneration = 0;
+
 export function token() {
-  return sessionStorage.getItem("algoclass.token");
+  return sessionStorage.getItem(TOKEN_KEY);
+}
+export function currentGeneration() {
+  return authGeneration;
+}
+export interface AuthSnapshot {
+  generation: number;
+  token: string | null;
+}
+export function captureAuth(): AuthSnapshot {
+  return { generation: authGeneration, token: token() };
+}
+export function setSession(accessToken: string, user?: unknown) {
+  sessionStorage.setItem(TOKEN_KEY, accessToken);
+  if (user !== undefined)
+    sessionStorage.setItem(USER_KEY, JSON.stringify(user));
+  authGeneration += 1;
 }
 export function clearSession() {
-  sessionStorage.removeItem("algoclass.token");
-  sessionStorage.removeItem("algoclass.user");
+  sessionStorage.removeItem(TOKEN_KEY);
+  sessionStorage.removeItem(USER_KEY);
+  authGeneration += 1;
 }
+/** A stale response may only clear credentials when it still owns the current generation. */
+export function isCurrentAuth(snapshot: AuthSnapshot) {
+  return snapshot.generation === authGeneration && snapshot.token === token();
+}
+
+function retryHeaders(response: Response) {
+  const header = response.headers.get("Retry-After");
+  const seconds = header ? Number(header) : undefined;
+  return Number.isFinite(seconds) ? (seconds as number) : undefined;
+}
+
 async function transport(
   path: string,
   options: RequestInit = {},
 ): Promise<Response> {
+  const snapshot = captureAuth();
   const headers = new Headers(options.headers);
-  if (token()) headers.set("Authorization", `Bearer ${token()}`);
+  if (snapshot.token) headers.set("Authorization", `Bearer ${snapshot.token}`);
   if (options.body && !(options.body instanceof FormData))
     headers.set("Content-Type", "application/json");
   let response: Response;
@@ -36,7 +78,11 @@ async function transport(
   }
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
-    if (response.status === 401 && !path.startsWith("/auth/login")) {
+    if (
+      response.status === 401 &&
+      !path.startsWith("/auth/login") &&
+      isCurrentAuth(snapshot)
+    ) {
       clearSession();
       window.dispatchEvent(new Event("session-expired"));
     }
@@ -46,6 +92,8 @@ async function transport(
       body.message || "请求失败，请稍后重试。",
       body.details,
       body.request_id,
+      retryHeaders(response),
+      body?.details?.retry_after_at,
     );
   }
   return response;
@@ -67,8 +115,11 @@ export const post = <T>(path: string, body?: unknown) =>
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
 export function errorText(error: unknown) {
-  if (error instanceof ApiError)
+  if (error instanceof ApiError) {
+    if (error.retryAfterSeconds)
+      return `${error.message}（约 ${error.retryAfterSeconds} 秒后重试）`;
     return `${error.message}${error.requestId ? `（请求编号：${error.requestId}）` : ""}`;
+  }
   return error instanceof Error ? error.message : "操作失败，请稍后重试。";
 }
 export function query(values: Record<string, string | number | undefined>) {
@@ -109,6 +160,10 @@ const fieldNames: Record<string, string> = {
   description: "评分描述",
   max_score: "满分",
   expected_updated_at: "版本更新时间",
+  new_password: "新密码",
+  current_password: "当前密码",
+  client_request_id: "请求标识",
+  submission_ids: "提交标识",
 };
 export function validationMessages(details: unknown): string[] {
   if (!details || typeof details !== "object") return [];

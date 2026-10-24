@@ -16,3 +16,6 @@ __MACOSX/
 
 # Baidu Sync transient upload metadata; never publish.
 *.baiduyun.uploading.cfg
+
+# Judge runtime scratch space (local execution work dirs and locks).
+.judge-work/
