@@ -20,7 +20,7 @@ from app.db.base import Base
 from app.db import models
 
 W, H = 3840, 2160
-OUT = ROOT / 'docs/diagrams'
+OUT = ROOT / 'docs/assets/diagrams'
 BG, INK, MUTED, LINE = '#F4F7FB', '#102A43', '#53677F', '#8295AA'
 BLUE, GREEN, AMBER = '#2563EB', '#059669', '#C87914'
 PALE = {'#2563EB':'#EAF1FF', '#059669':'#E6F6F0', '#C87914':'#FFF2DF', '#52657B':'#EDF1F5', '#0D9488':'#E4F6F3'}

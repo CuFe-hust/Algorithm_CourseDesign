@@ -9,10 +9,10 @@ pnpm dev
 
 Node 22.12+（或兼容的20.19+）、pnpm 11。开发服务为 `http://127.0.0.1:5173`，`/api` 代理到本机8000后端。先按根README配置数据库、迁移和演示账户。密码仅在本地 `.env`。
 
-- [教师前端结构](../docs/teacher_frontend.md)
-- [教师完整架构与边界](../docs/teacher_architecture.md)
-- [启动与验收](../docs/teacher_setup.md)
-- [教师API](../docs/teacher_api.md)
+- [教师前端结构](../docs/design/teacher/frontend.md)
+- [教师完整架构与边界](../docs/design/teacher/architecture.md)
+- [启动与验收](../docs/implementation/runbooks/teacher-setup.md)
+- [教师API](../docs/design/teacher/api.md)
 
 学生与互评模块分别接入 `src/features/student`、`analytics`，路由注册在 `src/app/router.ts`；共享请求位于 `src/shared/api.ts`，会话和课程位于 `session.ts`。当前非教师登录进入待接入提示，由学生负责人接入实际主页。不要创建第二套前端或登录协议。
 
