@@ -5,6 +5,7 @@ import { BookOpen, KeyRound } from "@lucide/vue";
 import { errorText, validationMessages } from "./api";
 import { changePassword, session } from "./session";
 import { startActivityTracking } from "./activity";
+import { safeInternalPath } from "./navigation";
 const router = useRouter();
 const route = useRoute();
 const current = ref(""),
@@ -26,8 +27,11 @@ async function submit() {
     next.value = "";
     confirm.value = "";
     startActivityTracking();
-    const target = String(route.query.next || "");
-    await router.replace(target.startsWith("/") ? target : "/courses");
+    const target = safeInternalPath(String(route.query.next || ""));
+    await router.replace({
+      path: "/courses",
+      query: target ? { next: target } : {},
+    });
   } catch (e) {
     const messages = validationMessages((e as { details?: unknown }).details);
     error.value = messages.length ? messages.join("；") : errorText(e);

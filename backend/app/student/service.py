@@ -191,7 +191,8 @@ def submission_view(db,sid,user):
     result=db.scalar(select(JudgeResult).where(JudgeResult.submission_id==sid)
                      .execution_options(populate_existing=True))
     receipt=submission_receipt(db,row)
-    job_payload=judge_results.job_view(job)
+    personal_blocked,service_paused=judge_results.dispatch_state(db,row.student_id)
+    job_payload=judge_results.job_view(job,personal_blocked=personal_blocked,service_paused=service_paused)
     if job_payload is not None:
         can_retry,block_reason,retry_after=judge_results.retry_state(db,job)
         job_payload.update({'can_retry':can_retry,'retry_block_reason':block_reason,

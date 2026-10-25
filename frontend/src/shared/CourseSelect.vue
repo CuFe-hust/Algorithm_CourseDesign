@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
+import { computed, onMounted, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import {
   BookOpen,
   ChevronRight,
@@ -19,8 +19,11 @@ import {
   type Course,
 } from "./session";
 import { startActivityTracking } from "./activity";
+import { courseEntryTarget, safeInternalPath } from "./navigation";
 
 const router = useRouter();
+const route = useRoute();
+const next = computed(() => safeInternalPath(String(route.query.next || "")));
 const loading = ref(true);
 const busy = ref("");
 const error = ref("");

@@ -51,6 +51,11 @@ def runtime_profile(mode: str | None = None) -> str:
     return MOCK_PROFILE
 
 
+def service_paused() -> bool:
+    """Operator pause: stop claiming new work without discarding accepted jobs."""
+    return os.getenv('JUDGE_SERVICE_PAUSED', '').strip().lower() in {'1', 'true', 'yes'}
+
+
 def driver_available(mode: str | None = None) -> bool:
     """Only MOCK and LOCAL have drivers this round; LINUX_SANDBOX must never be labelled."""
     return (mode or execution_mode()) in (MOCK, LOCAL)

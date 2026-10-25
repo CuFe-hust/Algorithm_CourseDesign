@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.core import limits, ratelimit
@@ -50,23 +50,42 @@ def result_view(result: JudgeResult | None) -> dict | None:
     }
 
 
-def queue_reason(job: AnalysisJob, now: datetime) -> str | None:
+def dispatch_state(db: Session, student_id: int) -> tuple[bool, bool]:
+    """Return ``(personal_blocked, service_paused)`` for one student's queued work.
+
+    ``personal_blocked`` means the student already occupies every execution slot,
+    so their own PENDING job is waiting on itself rather than on node capacity.
+    """
+    running = db.scalar(select(func.count()).select_from(AnalysisJob)
+                        .join(Submission, Submission.id == AnalysisJob.submission_id)
+                        .where(Submission.student_id == student_id, AnalysisJob.kind == 'JUDGE',
+                               AnalysisJob.status == 'RUNNING')) or 0
+    return running >= config.per_student_concurrency(), config.service_paused()
+
+
+def queue_reason(job: AnalysisJob, now: datetime, personal_blocked: bool = False,
+                 service_paused: bool = False) -> str | None:
     if job.status != 'PENDING':
         return None
     available = job.available_at
     if available is not None and available > now:
         return 'RETRY_BACKOFF'
+    if service_paused:
+        return 'SERVICE_PAUSED'
+    if personal_blocked:
+        return 'PERSONAL_LIMIT'
     return 'RESOURCE_WAIT'
 
 
-def job_view(job: AnalysisJob | None, now: datetime | None = None) -> dict | None:
+def job_view(job: AnalysisJob | None, now: datetime | None = None, personal_blocked: bool = False,
+             service_paused: bool = False) -> dict | None:
     if job is None:
         return None
     now = now or utcnow()
     return {
         'status': job.status,
         'phase': job.phase,
-        'queue_reason': queue_reason(job, now),
+        'queue_reason': queue_reason(job, now, personal_blocked, service_paused),
         'attempt_no': job.attempt_no,
         'recovery_cycle_no': job.recovery_cycle_no,
         'error_code': job.error_message if job.status == 'FAILED' else None,

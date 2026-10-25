@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { AlertTriangle, ArrowRight, Clock, FileText } from "@lucide/vue";
 import { errorText } from "../../shared/api";
 import { session } from "../../shared/session";
 import * as api from "./api";
-import SubmissionStatus from "./components/SubmissionStatus.vue";
 import { useJudgePolling } from "./composables/useJudgePolling";
 import type {
   AssignmentSummary,
@@ -27,16 +26,65 @@ const progressMap = computed(() => {
   return map;
 });
 const summary = computed(() => progress.value?.summary);
-const unresolvedIds = computed(() =>
-  (progress.value?.items ?? [])
-    .filter((entry) => entry.has_unresolved_jobs && entry.latest_submission_id)
-    .map((entry) => entry.latest_submission_id as string),
-);
+
+// Authoritative discovery: page through the keyset scan instead of trusting the
+// progress snapshot, so more than 100 jobs and jobs restored by an operator are
+// still found.
+const activeJobIds = ref<string[]>([]);
+const scanning = ref(false);
+let rescanTimer: ReturnType<typeof setInterval> | undefined;
+let refreshTimer: ReturnType<typeof setTimeout> | undefined;
+
+async function scanJobs() {
+  if (scanning.value) return;
+  scanning.value = true;
+  try {
+    const ids = new Set<string>();
+    let cursor: string | undefined;
+    for (let page = 0; page < 50; page += 1) {
+      const result = await api.discoverJobs(courseId.value, cursor, 100);
+      for (const item of result.items) {
+        const status = item.job?.status;
+        if (status === "PENDING" || status === "RUNNING")
+          ids.add(item.submission_id);
+      }
+      if (!result.has_more || !result.next_cursor) break;
+      cursor = result.next_cursor;
+    }
+    activeJobIds.value = [...ids];
+    if (activeJobIds.value.length) polling.start();
+    else polling.stop();
+  } catch (e) {
+    error.value = errorText(e);
+  } finally {
+    scanning.value = false;
+  }
+}
+
+function scheduleRefresh() {
+  if (refreshTimer) return;
+  refreshTimer = setTimeout(() => {
+    refreshTimer = undefined;
+    void refresh();
+  }, 300);
+}
 
 const polling = useJudgePolling({
-  ids: () => unresolvedIds.value,
-  onChange: () => void refresh(),
-  onResync: () => void load(),
+  ids: () => activeJobIds.value,
+  onChange: (entries) => {
+    activeJobIds.value = entries
+      .filter((entry) =>
+        ["PENDING", "RUNNING"].includes(entry.job?.status ?? ""),
+      )
+      .map((entry) => entry.submission_id);
+    scheduleRefresh();
+  },
+  onResync: () => {
+    // One invisible id fails the whole batch: rebuild the visible set instead of probing.
+    activeJobIds.value = [];
+    void scanJobs();
+    scheduleRefresh();
+  },
 });
 
 async function load() {
@@ -49,8 +97,6 @@ async function load() {
     ]);
     assignments.value = list.items;
     progress.value = report;
-    if (unresolvedIds.value.length) polling.start();
-    else polling.stop();
   } catch (e) {
     error.value = errorText(e);
   } finally {
@@ -60,7 +106,6 @@ async function load() {
 async function refresh() {
   try {
     progress.value = await api.myProgress(courseId.value);
-    if (!unresolvedIds.value.length) polling.stop();
   } catch {
     /* keep the previous snapshot; the poller retries */
   }
@@ -84,7 +129,17 @@ function itemState(itemId: string) {
     return { label: "已提交", tone: "type" };
   return { label: "未通过", tone: "amber" };
 }
-onMounted(load);
+onMounted(async () => {
+  await load();
+  await scanJobs();
+  // Periodic keyset rescan finds jobs that an operator or another page resumed.
+  rescanTimer = setInterval(() => void scanJobs(), 60_000);
+});
+
+onBeforeUnmount(() => {
+  if (rescanTimer !== undefined) clearInterval(rescanTimer);
+  if (refreshTimer !== undefined) clearTimeout(refreshTimer);
+});
 </script>
 <template>
   <div class="page-heading">

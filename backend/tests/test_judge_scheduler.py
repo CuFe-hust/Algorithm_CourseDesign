@@ -287,3 +287,21 @@ def test_unimplemented_sandbox_mode_is_refused_instead_of_mislabelled(client, de
     assert response.status_code == 409
     assert response.json()['code'] == 'JUDGE_CONFIGURATION_UNSUPPORTED'
     assert db.scalar(select(AnalysisJob)) is None
+
+
+def test_service_pause_keeps_jobs_queued_and_resumes_after_switch(client, demo, auth, db, local_mode, monkeypatch):
+    """A paused service must stop claiming work without discarding accepted jobs."""
+    headers = auth()
+    submission_id = _submit(client, headers, demo)
+    monkeypatch.setenv('JUDGE_SERVICE_PAUSED', '1')
+    scheduler = Scheduler(db.bind, mode='LOCAL', concurrency=1)
+    assert scheduler.claim() is None
+    assert scheduler.run_once() == 0
+    db.expire_all()
+    job = db.scalar(select(AnalysisJob).where(AnalysisJob.submission_id == int(submission_id)))
+    assert job.status == 'PENDING'
+
+    monkeypatch.setenv('JUDGE_SERVICE_PAUSED', '0')
+    assert scheduler.run_once() == 1
+    db.expire_all()
+    assert db.get(AnalysisJob, job.id).status == 'SUCCEEDED'
