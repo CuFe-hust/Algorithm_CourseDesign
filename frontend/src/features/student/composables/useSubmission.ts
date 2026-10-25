@@ -1,4 +1,4 @@
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { ApiError, errorText } from "../../../shared/api";
 import { draftStore, type UnconfirmedRequest } from "../draft-store";
 import { submitAnswer } from "../api";
@@ -23,16 +23,9 @@ export interface SubmissionSnapshot {
 export function useSubmission(itemId: () => string) {
   const busy = ref(false);
   const receipt = ref<Receipt | null>(null);
-  const receiptContent = ref("");
   const error = ref("");
   const unknownResult = ref(false);
   const pending = ref<UnconfirmedRequest[]>([]);
-  const lastSnapshot = ref<SubmissionSnapshot | null>(null);
-
-  const accepted = computed(() => receipt.value !== null);
-  const needsNewKey = computed(
-    () => unknownResult.value && pending.value.length === 0,
-  );
 
   async function loadPending(userId: string) {
     const store = await draftStore();
@@ -51,8 +44,6 @@ export function useSubmission(itemId: () => string) {
         client_request_id: snapshot.clientRequestId,
       });
       receipt.value = result;
-      receiptContent.value = snapshot.content;
-      lastSnapshot.value = snapshot;
       const store = await draftStore();
       await store.removeUnconfirmed(snapshot.userId, snapshot.clientRequestId);
       await loadPending(snapshot.userId);
@@ -97,7 +88,6 @@ export function useSubmission(itemId: () => string) {
       revision: input.revision,
       clientRequestId: input.clientRequestId || newRequestKey(),
     };
-    lastSnapshot.value = snapshot;
     const store = await draftStore();
     const stored = await store.saveUnconfirmed({
       userId: snapshot.userId,
@@ -130,28 +120,15 @@ export function useSubmission(itemId: () => string) {
     await loadPending(request.userId);
   }
 
-  /** The editor content differs from the acknowledged snapshot. */
-  function dirtySinceReceipt(current: string, language: string | null) {
-    if (!receipt.value) return false;
-    return (
-      current !== receiptContent.value ||
-      language !== (lastSnapshot.value?.language ?? null)
-    );
-  }
-
   return {
     busy,
     receipt,
     error,
     unknownResult,
     pending,
-    accepted,
-    needsNewKey,
-    lastSnapshot,
     loadPending,
     submit,
     retry,
     discard,
-    dirtySinceReceipt,
   };
 }

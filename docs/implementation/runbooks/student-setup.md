@@ -40,6 +40,10 @@ DB_NAME=algorithm_review_test JUDGE_EXECUTION_MODE=LOCAL \
 - `--purge-aux`：清理过期会话、限流桶与超过保留期的编译诊断（不动提交、判定和幂等记录）。
 - 第二个 `--loop` 进程拿不到节点派发锁，会以退出码 2 结束并提示 `dispatch lock busy`，不会重复调度。
 
+运维暂停（不丢弃已接收任务）：在启动执行器的环境里设置 `JUDGE_SERVICE_PAUSED=1`，调度器停止领取新任务，学生侧看到 `queue_reason=SERVICE_PAUSED`；去掉该变量后继续执行。
+
+开发库（`DB_NAME=algorithm_review`）同样需要先升级到 `pg0003`，否则 `/ready` 会因迁移版本不一致返回 503。本机已于 2026-10-25 升级并备份到 `~/algoclass-backups/`。
+
 健康检查：`GET /api/v1/health`、`GET /api/v1/ready`（`ready` 同时校验迁移版本）。
 
 ## 4. 前端

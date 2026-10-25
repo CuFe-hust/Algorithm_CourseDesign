@@ -88,6 +88,8 @@ class Scheduler:
 
     # -- claim -------------------------------------------------------------
     def claim(self) -> Claim | None:
+        if config.service_paused():
+            return None
         now = utcnow()
         with self.session_factory() as db:
             locks.xact_lock(db, locks.CLAIM)
@@ -240,15 +242,3 @@ class Scheduler:
             for future in futures:
                 future.result()
         return started
-
-    def run_forever(self, stop: threading.Event, poll_seconds: float = 1.0):  # pragma: no cover - loop
-        if not self.acquire_main():
-            raise RuntimeError('another scheduler already holds the node dispatch lock')
-        try:
-            while not stop.is_set():
-                if not self.healthy:
-                    break
-                if self.run_once() == 0:
-                    stop.wait(poll_seconds)
-        finally:
-            self.release_main()

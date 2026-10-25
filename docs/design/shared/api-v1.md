@@ -237,6 +237,7 @@ role为TEACHER或STUDENT，导航选择应以当前课程为单位。
 - `GET /courses/{course_id}/my-progress` 返回本人逐题 `has_submitted/has_passed/submission_count/active_submission_count/latest_submission_id/best_submission_id/effective_submission_id/has_unresolved_jobs`，`summary` 覆盖完整过滤范围，`evaluation_context` 标明当前执行环境。
 - `GET /me/judge-jobs` 的 `filter=DISCOVERY&limit≤100&cursor` 以首次 `scan_high_watermark` 为界做 ID 升序 keyset 扫描，游标绑定账号、课程、过滤与上界并带 HMAC，伪造或过期返回 `422 INVALID_CURSOR`。
 - `POST /me/judge-jobs/status` 每次 1～100 个不重复 ID；任一 ID 不可见则整批 404，不暴露哪个 ID 存在。
+- `queue_reason` 取值为 `RETRY_BACKOFF`（自动重试退避中）、`SERVICE_PAUSED`（运维暂停领取）、`PERSONAL_LIMIT`（本人已占满 3 个执行名额）、`RESOURCE_WAIT`（等待节点名额），四者按此优先级判定；运维暂停通过 `JUDGE_SERVICE_PAUSED=1` 设置，已接收任务保留排队，恢复后继续领取。
 
 ### 7.5 结果语义
 

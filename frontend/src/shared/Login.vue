@@ -5,6 +5,7 @@ import { BookOpen, ArrowRight } from "@lucide/vue";
 import { login, session } from "./session";
 import { errorText } from "./api";
 import { startActivityTracking } from "./activity";
+import { safeInternalPath } from "./navigation";
 const router = useRouter(),
   route = useRoute();
 const name = ref(""),

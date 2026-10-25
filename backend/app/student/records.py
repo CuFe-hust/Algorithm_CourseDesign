@@ -305,16 +305,18 @@ def _job_filters(user: User, course_id: int | None, filter_name: str | None, db:
 
 
 def _job_item(job: AnalysisJob, submission: Submission, item: AssignmentItem, assignment: Assignment,
-              problem: Problem, now: datetime) -> dict:
+              problem: Problem, now: datetime, personal_blocked: bool = False,
+              service_paused: bool = False) -> dict:
     return {'submission_id': str(submission.id), 'assignment_id': str(assignment.id),
             'assignment_item_id': str(item.id), 'question_type': problem.question_type,
             'version_no': submission.version_no, 'submitted_at': iso(submission.submitted_at),
-            'job': judge_results.job_view(job, now)}
+            'job': judge_results.job_view(job, now, personal_blocked, service_paused)}
 
 
 def my_judge_jobs(db: Session, user: User, *, course_id: int | None, filter_name: str | None,
                   limit: int | None, offset: int | None, cursor: str | None) -> dict:
     now = utcnow()
+    personal_blocked, service_paused = judge_results.dispatch_state(db, user.id)
     filter_name = (filter_name or 'ACTIVE').upper()
     if filter_name == 'DISCOVERY':
         statement = _job_filters(user, course_id, None, db)
@@ -330,7 +332,7 @@ def my_judge_jobs(db: Session, user: User, *, course_id: int | None, filter_name
         page_size = min(MAX_LIMIT, max(1, limit or MAX_LIMIT))
         rows = db.execute(statement.where(AnalysisJob.id > last_id, AnalysisJob.id <= high_watermark)
                           .order_by(AnalysisJob.id).limit(page_size)).all()
-        items = [_job_item(job, submission, item, assignment, problem, now)
+        items = [_job_item(job, submission, item, assignment, problem, now, personal_blocked, service_paused)
                  for job, submission, item, assignment, problem in rows]
         next_cursor = None
         has_more = len(items) == page_size and bool(items)
@@ -345,7 +347,7 @@ def my_judge_jobs(db: Session, user: User, *, course_id: int | None, filter_name
     total = db.scalar(select(func.count()).select_from(statement.order_by(None).subquery()))
     rows = db.execute(statement.order_by(AnalysisJob.id.desc()).limit(_limit(limit))
                       .offset(max(0, offset or 0))).all()
-    return {'items': [_job_item(job, submission, item, assignment, problem, now)
+    return {'items': [_job_item(job, submission, item, assignment, problem, now, personal_blocked, service_paused)
                       for job, submission, item, assignment, problem in rows],
             'total': total or 0, 'limit': _limit(limit), 'offset': max(0, offset or 0)}
 
@@ -369,7 +371,8 @@ def batch_status(db: Session, user: User, submission_ids: list[str]) -> dict:
     if len(rows) != len(ids):
         raise AppError(404, 'NOT_FOUND', '资源不存在或不可访问')
     now = utcnow()
+    personal_blocked, service_paused = judge_results.dispatch_state(db, user.id)
     items = [{'submission_id': str(submission.id), 'status': submission.status,
-              'job': judge_results.job_view(job, now) if job else None,
+              'job': judge_results.job_view(job, now, personal_blocked, service_paused) if job else None,
               'result': judge_results.result_view(result)} for submission, job, result in rows]
     return {'items': items}

@@ -25,8 +25,8 @@ DB_NAME=algorithm_review_test ../.venv/bin/python -m alembic upgrade head
 
 | 命令 | 结果 |
 |---|---|
-| `DB_NAME=algorithm_review_test ../.venv/bin/python -m pytest -q`（backend） | **106 passed**（基线 68 passed，新增 38 条） |
-| `npx vitest run`（frontend） | **36 passed / 9 files**（基线无法运行，`node_modules` 缺失；本次先安装依赖再跑） |
+| `DB_NAME=algorithm_review_test ../.venv/bin/python -m pytest -q`（backend） | **108 passed**（基线 68 passed，新增 40 条） |
+| `npx vitest run`（frontend） | **40 passed / 10 files**（基线无法运行，`node_modules` 缺失；本次先安装依赖再跑） |
 | `npx vue-tsc --noEmit` | 通过 |
 | `npx prettier --check "src/**/*.{ts,vue}"` | 通过（仅格式化本轮新增／修改文件） |
 | `npx vite build` | 通过（`dist/` 已在 `.gitignore`） |
@@ -120,17 +120,23 @@ PASS token revoked
 | AC36 | 内部逐点判定汇总，无 `judge_case_results` 表；`test_local_job_produces_real_summary_and_progress` | 通过 |
 | AC37 | 教师总预算字段尚不存在，按受控配置推导；执行器保留墙钟上界 | **未完成**（依赖 TD06 与预算字段） |
 
-## 6. 已识别但未修复的偏差
+## 6. 复核修复（2026-10-25）
+
+| 原偏差 | 处理 | 证据 |
+|---|---|---|
+| 登录带 `next` 深链接直接跳目标页，绕过重新选课 | 登录、改密后一律先到 `/courses`；选课页按所选课程决定是否回到原位置，跨课程或跨角色的链接回落到课程首页 | `shared/navigation.ts` + `navigation.test.ts`（4 条）、`Login.vue`、`ChangePassword.vue`、`CourseSelect.vue` |
+| 前端未接 DISCOVERY，超过 100 份或恢复执行的任务发现不了 | 课程首页改为完整 keyset 扫描（游标翻页、上限 50 页）、按状态只轮询活跃任务、60 秒周期重扫、批量 404 时重建可见集合 | `CourseHome.vue`；后端 105 条两页扫描测试已有 |
+| `queue_reason` 只有两种 | 增加 `PERSONAL_LIMIT`（本人已占满 3 个名额）与 `SERVICE_PAUSED`（运维暂停）；暂停开关真实生效，调度器不再领取任务 | `test_queue_reason_reports_personal_limit_and_service_pause`、`test_service_pause_keeps_jobs_queued_and_resumes_after_switch` |
+| `Scheduler.run_forever`、`dirtySinceReceipt` 等无调用代码 | 删除；CLI 保留自己的循环 | `vue-tsc`、`pytest` 保持通过 |
+| 开发库停在 `pg0001` | 已备份（`~/algoclass-backups/algorithm_review-pg0001-20261025-150225.dump`）后升级到 `pg0003`；`/ready` 返回 `{"status":"ready","migration":"pg0003"}`，业务数据行数逐表核对未变（users 224、problems 124、test_cases 355、reference_solutions 279） | 本文件第 9 节 |
+
+### 仍未修复
 
 | 偏差 | 影响 | 归属 |
 |---|---|---|
-| 登录成功后若带 `next` 深链接会直接跳到目标页，未按 R02／接口设计 §3.1-6“重新登录仍先选课” | 重新登录绕过显式选课，违反已定产品规则 | SP07b 一并修 |
-| 前端未调用 `GET /me/judge-jobs` 的 DISCOVERY／ACTIVE 接口；课程首页只轮询进度快照里的 `latest_submission_id` | 超过 100 份任务、旧任务被维护恢复执行时不能完整发现（AC32 前端部分缺失） | SP15 前端补 |
-| `queue_reason` 实际只产出 `RESOURCE_WAIT` 与 `RETRY_BACKOFF` | `PERSONAL_LIMIT`、`SERVICE_PAUSED` 提示缺失，学生只能看到“排队” | SP18/SP21 |
-| 开发库 `algorithm_review` 仍停在 `pg0001`（本轮只在验证库执行迁移） | 直接用开发库启动会 `/ready` 失败、旧表缺列 | 部署前执行 `alembic upgrade head` |
-| 诊断容量预算（256 MiB）、结构化日志轮转、启动扫描遗留执行目录未实现 | 只有按天保留，磁盘水位失控时没有提前过期 | SP21 |
-| `Scheduler.run_forever` 与 CLI 自带循环重复，当前 CLI 未使用该方法 | 代码冗余，两处容易漂移 | 清理项 |
-| `useSubmission.dirtySinceReceipt` 未被页面使用（页面用本地 `dirty` 标记） | 语义重复 | 清理项 |
+| 诊断容量预算（256 MiB）、结构化日志轮转、启动扫描遗留执行目录 | 只有按天保留，磁盘失控时没有提前过期 | SP21 |
+| 熔断与自动探测恢复 | 只有运维手动暂停，没有“连续 3 次故障自动暂停” | SP21 |
+| 浏览器级 E2E | AC04–AC06 仍无页面证据 | 按用户决定暂不做 |
 
 ## 7. 未覆盖与外部依赖
 
@@ -145,7 +151,19 @@ PASS token revoked
 | `pnpm` 本机损坏 | 环境问题，已用 `npm install` 绕过；`pnpm-lock.yaml` 未改动 | 修复本机 pnpm 后回归 `pnpm test` |
 | `_test` 库外的迁移 | 未执行 | 部署时单独安排 |
 
-## 8. 本轮改动文件（概要）
+## 9. 开发库升级记录（2026-10-25）
+
+```bash
+pg_dump -Fc algorithm_review    # ~/algoclass-backups/algorithm_review-pg0001-20261025-150225.dump（0.21 MB）
+cd backend && DB_NAME=algorithm_review ../.venv/bin/python -m alembic upgrade head
+```
+
+- 升级前 `alembic_version=pg0001`；升级后 `pg0003`，与 `ScriptDirectory.get_heads()` 一致。
+- 新增 `request_rate_limits`、`judge_attempts`、`judge_retry_requests` 三张表；`users.must_change_password`、`auth_sessions.absolute_expires_at` 等列存在。
+- 升级前后逐表计数一致，未删改题库、作业、名单与参考实现。
+- 启动验证：`/api/v1/ready` → `{"status":"ready","migration":"pg0003"}`。
+
+## 10. 本轮改动文件（概要）
 
 后端：`app/common/auth.py`、`app/core/{errors,limits,ratelimit,bodylimit}.py`、`app/db/models/{identity,analysis}.py`、`app/judge/*`（config、checker、local、gate_launcher、supervisor、locks、results、selection、scheduler、recovery、maintenance）、`app/student/{router,service,schemas,records}.py`、`app/analysis/worker.py`、`app/main.py`、`migrations_postgresql/versions/pg0002_*.py`、`pg0003_*.py`、`scripts/{run_judge,smoke_student_flow}.py`。
 

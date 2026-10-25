@@ -228,3 +228,33 @@ def test_rejudge_requires_facility_failure_cooldown_and_budget(client, demo, aut
                             json={'client_request_id': uuid.uuid4().hex})
     assert exhausted.status_code == 409
     assert exhausted.json()['code'] == 'JUDGE_RETRY_BUDGET_EXHAUSTED'
+
+
+def test_queue_reason_reports_personal_limit_and_service_pause(client, demo, auth, db, monkeypatch):
+    """AC28: the queue hint must say why a job is waiting, not just 'queued'."""
+    monkeypatch.setenv('LIMIT_SUBMISSION_BURST', '50')
+    monkeypatch.setenv('LIMIT_SUBMISSION_PER_MINUTE', '50')
+    headers = auth()
+    ids = [_submit(client, headers, _item(demo)).json()['submission_id'] for _ in range(4)]
+    for index, submission_id in enumerate(ids[:3]):
+        job = db.scalar(select(AnalysisJob).where(AnalysisJob.submission_id == int(submission_id)))
+        job.status = 'RUNNING'
+        job.phase = 'TESTING'
+        job.attempt_token = f'token-{index}'
+    db.commit()
+
+    detail = client.get(f'/api/v1/submissions/{ids[3]}', headers=headers).json()
+    assert detail['job']['queue_reason'] == 'PERSONAL_LIMIT'
+    batch = client.post('/api/v1/me/judge-jobs/status', headers=headers,
+                        json={'submission_ids': [ids[3]]}).json()
+    assert batch['items'][0]['job']['queue_reason'] == 'PERSONAL_LIMIT'
+    listing = client.get('/api/v1/me/judge-jobs', headers=headers,
+                         params={'filter': 'ACTIVE'}).json()
+    waiting = next(row for row in listing['items'] if row['submission_id'] == ids[3])
+    assert waiting['job']['queue_reason'] == 'PERSONAL_LIMIT'
+
+    monkeypatch.setenv('JUDGE_SERVICE_PAUSED', '1')
+    paused = client.get(f'/api/v1/submissions/{ids[3]}', headers=headers).json()
+    assert paused['job']['queue_reason'] == 'SERVICE_PAUSED'
+    monkeypatch.setenv('JUDGE_SERVICE_PAUSED', '')
+    assert client.get(f'/api/v1/submissions/{ids[3]}', headers=headers).json()['job']['queue_reason'] == 'PERSONAL_LIMIT'
