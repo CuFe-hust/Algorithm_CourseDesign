@@ -1,6 +1,6 @@
 # 当前数据库字段
 
-实现版本：PostgreSQL迁移pg0003；24张业务表，另有alembic_version。由SQLAlchemy模型自动生成类型与外键。
+实现版本：PostgreSQL迁移pg0004；24张业务表，另有alembic_version。由SQLAlchemy模型自动生成类型与外键。
 
 时间戳均带时区，服务端按UTC输出；ID为有符号64位整数，API以字符串传输。JSON列使用JSONB。
 
@@ -331,6 +331,7 @@
 | memory_limit_kib | INTEGER | 否 | — |
 | allowed_languages | JSONB | 否 | — |
 | checker | VARCHAR(32) | 否 | — |
+| total_budget_ms | INTEGER | 是 | — |
 | status | VARCHAR(16) | 否 | — |
 | frozen_at | TIMESTAMP WITH TIME ZONE | 否 | — |
 | id | BIGINT | 否 | — |

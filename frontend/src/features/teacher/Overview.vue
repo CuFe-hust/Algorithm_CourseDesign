@@ -71,7 +71,7 @@ onMounted(load);
             label: '课程学生',
             value: data.students,
             icon: Users,
-            note: `${data.students_by_status.PENDING || 0} 人待激活`,
+            note: `${data.students_by_status.PENDING || 0} 人待开通`,
           },
           {
             label: '教学班级',

@@ -22,6 +22,7 @@ export interface VersionInput {
     memory_limit_kib: number;
     allowed_languages: string[];
     checker: "TEXT_TRIM_TRAILING";
+    total_budget_ms?: number | null;
     cases: {
       input_text: string;
       expected_output: string;
@@ -83,6 +84,7 @@ export function newVersion(programming = false): VersionInput {
           memory_limit_kib: 262144,
           allowed_languages: ["python3"],
           checker: "TEXT_TRIM_TRAILING",
+          total_budget_ms: null,
           cases: [],
         }
       : null,
@@ -115,6 +117,10 @@ export function editable(v: VersionInput): VersionInput {
         memory_limit_kib: v.test_suite.memory_limit_kib,
         allowed_languages: [...v.test_suite.allowed_languages],
         checker: v.test_suite.checker,
+        total_budget_ms:
+          typeof v.test_suite.total_budget_ms === "number"
+            ? v.test_suite.total_budget_ms
+            : null,
         cases: v.test_suite.cases.map((c) => ({ ...c })),
       }
     : null;

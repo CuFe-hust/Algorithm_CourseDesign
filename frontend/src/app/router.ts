@@ -10,8 +10,32 @@ import {
 import Login from "../shared/Login.vue";
 import TeacherLayout from "../features/teacher/TeacherLayout.vue";
 import StudentLayout from "../features/student/StudentLayout.vue";
+import {
+  startActivityTracking,
+  stopActivityTracking,
+} from "../shared/activity";
 
 export const teacherRoutes = [
+  {
+    path: "assignments",
+    name: "teacher-assignments",
+    component: () => import("../features/teacher/Assignments.vue"),
+  },
+  {
+    path: "assignments/new",
+    name: "teacher-assignment-new",
+    component: () => import("../features/teacher/AssignmentEditor.vue"),
+  },
+  {
+    path: "assignments/:id",
+    name: "teacher-assignment-edit",
+    component: () => import("../features/teacher/AssignmentEditor.vue"),
+  },
+  {
+    path: "students/:studentId/progress",
+    name: "teacher-student-progress",
+    component: () => import("../features/teacher/StudentProgress.vue"),
+  },
   {
     path: "",
     name: "teacher-home",
@@ -136,8 +160,7 @@ router.beforeEach(async (to) => {
       (entry) => entry.id === session.courseId,
     );
     if (!current || current.role !== "TEACHER") {
-      const first = session.courses.find((entry) => entry.role === "TEACHER");
-      if (first) selectCourse(first.id);
+      return { path: "/courses", query: { next: to.fullPath } };
     }
     return true;
   }
@@ -155,11 +178,17 @@ router.beforeEach(async (to) => {
 });
 
 window.addEventListener("session-expired", () => {
+  stopActivityTracking();
   resetLocalSession();
   void router.replace({
     path: "/login",
     query: { next: router.currentRoute.value.fullPath },
   });
+});
+
+router.afterEach((to) => {
+  if (token() && session.user && to.path !== "/login") startActivityTracking();
+  else stopActivityTracking();
 });
 
 export default router;

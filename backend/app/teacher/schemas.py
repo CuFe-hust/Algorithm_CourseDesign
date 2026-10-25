@@ -40,6 +40,7 @@ class SuiteInput(Input):
     allowed_languages: list[Literal['python3', 'cpp', 'c', 'java']] = Field(
         default_factory=lambda: ['python3'], min_length=1, max_length=4)
     checker: Literal['TEXT_TRIM_TRAILING'] = 'TEXT_TRIM_TRAILING'
+    total_budget_ms: int | None = Field(default=None, ge=1000, le=3600000)
     cases: list[CaseInput] = Field(default_factory=list, max_length=200)
 
     @field_validator('allowed_languages')
@@ -129,3 +130,72 @@ class KnowledgeCreate(Input):
         if not value.strip() or '\x00' in value:
             raise ValueError('Name cannot be blank.')
         return value.strip()
+
+
+class AccountTarget(VersionAction):
+    student_id: DbId
+
+
+class AccountIssue(Input):
+    action: Literal['ACTIVATE', 'RESET']
+    students: list[AccountTarget] = Field(min_length=1, max_length=50)
+
+    @model_validator(mode='after')
+    def unique_students(self):
+        if len({row.student_id for row in self.students}) != len(self.students):
+            raise ValueError('Student IDs must be unique.')
+        return self
+
+
+class AssignmentItemInput(Input):
+    problem_version_id: DbId
+    test_suite_id: DbId | None = None
+    rubric_id: DbId | None = None
+    max_score: Decimal = Field(gt=0, le=999999, max_digits=8, decimal_places=2)
+    score_weight: Weight
+    required_reviewers: int = Field(default=0, ge=0, le=10)
+
+
+class AssignmentInput(Input):
+    title: str = Field(min_length=1, max_length=200)
+    description_md: str | None = Field(default=None, max_length=65536)
+    submission_deadline: datetime
+    review_deadline: datetime | None = None
+    items: list[AssignmentItemInput] = Field(default_factory=list, max_length=100)
+    student_ids: list[DbId] = Field(default_factory=list, max_length=2000)
+
+    _timezone_required = field_validator('submission_deadline')(VersionUpdate.timezone_required.__func__)
+
+    @field_validator('review_deadline')
+    @classmethod
+    def review_timezone(cls, value):
+        return VersionUpdate.timezone_required(value) if value is not None else value
+
+    @model_validator(mode='after')
+    def valid_assignment(self):
+        if not self.title.strip():
+            raise ValueError('Title cannot be blank.')
+        if self.review_deadline and self.review_deadline <= self.submission_deadline:
+            raise ValueError('Review deadline must follow submission deadline.')
+        if len(set(self.student_ids)) != len(self.student_ids):
+            raise ValueError('Student IDs must be unique.')
+        if len({i.problem_version_id for i in self.items}) != len(self.items):
+            raise ValueError('Problem version IDs must be unique.')
+        return self
+
+
+class AssignmentUpdate(VersionAction):
+    assignment: AssignmentInput
+
+
+class AssignmentPublish(VersionAction):
+    submission_status: Literal['OPEN', 'CLOSED'] = 'CLOSED'
+
+
+class AssignmentSchedule(VersionAction):
+    submission_deadline: datetime
+    review_deadline: datetime | None = None
+    submission_status: Literal['OPEN', 'CLOSED']
+
+    _deadline_timezone = field_validator('submission_deadline')(VersionUpdate.timezone_required.__func__)
+    _review_timezone = field_validator('review_deadline')(AssignmentInput.review_timezone.__func__)

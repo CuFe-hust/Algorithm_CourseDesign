@@ -68,6 +68,12 @@ export interface ItemDetail {
   submission_open: boolean;
   allowed_languages: string[];
   cpu_limit_ms: number | null;
+  execution_budget?: {
+    total_budget_ms: number;
+    minimum_budget_ms: number;
+    maximum_budget_ms: number;
+    budget_source: "TEACHER" | "LEGACY_DERIVED";
+  } | null;
   memory_limit_kib: number | null;
   public_test_cases: PublicCase[];
   rubric: RubricDimension[];

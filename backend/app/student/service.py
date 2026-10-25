@@ -61,6 +61,9 @@ def item_view(db,item_id,user):
         'allowed_languages':suite.allowed_languages if suite else [],
         'cpu_limit_ms':suite.cpu_limit_ms if suite else None,'memory_limit_kib':suite.memory_limit_kib if suite else None,
         'public_test_cases':public_test_cases(db,item),
+        'execution_budget':judge_config.suite_budget(suite.cpu_limit_ms,
+            db.scalar(select(func.count()).select_from(TestCase).where(TestCase.test_suite_id==suite.id)),
+            suite.total_budget_ms) if suite else None,
         'rubric':[{'id':str(x.id),'name':x.name,'description':x.description,'max_score':str(x.max_score)} for x in dimensions]}
 
 
@@ -141,6 +144,9 @@ def accept_submission(db,item_id,user,body,request=None):
     item,a,v,p,role=item_context(db,item_id,user)
     if role!='STUDENT':
         raise AppError(403,'STUDENT_REQUIRED','教师账号不能提交学生答案')
+    # Serialize the acceptance decision with teacher close/deadline changes.
+    a=db.scalar(select(Assignment).where(Assignment.id==a.id).with_for_update()
+                .execution_options(populate_existing=True))
     participant(db,a.id,user.id,lock=True)
     existing=_existing(db,user.id,body.client_request_id)
     if existing is not None:

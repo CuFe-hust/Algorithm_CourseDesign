@@ -10,6 +10,7 @@ import {
   ChevronDown,
   Menu,
   GraduationCap,
+  ClipboardList,
 } from "@lucide/vue";
 import { session, selectCourse, logout } from "../../shared/session";
 import { errorText } from "../../shared/api";
@@ -66,6 +67,10 @@ async function leave() {
           :class="{ selected: $route.path === '/teacher' }"
           ><LayoutDashboard :size="19" />课程概览</RouterLink
         ><RouterLink
+          to="/teacher/assignments"
+          :class="{ selected: $route.path.startsWith('/teacher/assignments') }"
+          ><ClipboardList :size="19" />作业管理</RouterLink
+        ><RouterLink
           to="/teacher/problems"
           :class="{ selected: $route.path.startsWith('/teacher/problems') }"
           ><LibraryBig :size="19" />题库管理</RouterLink
@@ -110,6 +115,9 @@ async function leave() {
           </div>
         </div>
         <div class="account">
+          <RouterLink to="/courses" class="button subtle"
+            >切换工作区</RouterLink
+          >
           <span class="avatar">{{
             session.user?.full_name?.slice(-2) || "教师"
           }}</span

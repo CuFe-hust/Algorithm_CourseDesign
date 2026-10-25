@@ -310,6 +310,15 @@ onMounted(load);
         <p v-else-if="programming" class="muted">
           本题仅允许 {{ item.allowed_languages.join("、") || "未配置语言" }}
         </p>
+        <p v-if="programming && item.execution_budget" class="muted">
+          全题执行预算
+          {{ (item.execution_budget.total_budget_ms / 1000).toLocaleString() }}
+          秒（含编译与启动开销，{{
+            item.execution_budget.budget_source === "TEACHER"
+              ? "教师配置"
+              : "历史配置推导"
+          }}）。
+        </p>
         <ProgrammingEditor
           v-if="programming"
           v-model="editorValue"

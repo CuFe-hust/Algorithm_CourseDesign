@@ -143,7 +143,7 @@ def terminate(spawned: Spawned) -> None:
 
 
 def _run_case(command: Iterable[str], cwd: Path, stdin_bytes: bytes, wall_ms: int,
-              gate: Gate | None) -> tuple[str, bytes, int]:
+              gate: Gate | None, total_deadline: float | None = None) -> tuple[str, bytes, int]:
     """Return ``(verdict_hint, output, wall_ms)``; verdict_hint is '' when the program ended."""
     spawned = spawn(command, cwd)
     released = False
@@ -187,6 +187,8 @@ def _run_case(command: Iterable[str], cwd: Path, stdin_bytes: bytes, wall_ms: in
             threading.Thread(target=writer, daemon=True).start()
             release(spawned)
             deadline = time.monotonic() + wall_ms / 1000.0
+            if total_deadline is not None:
+                deadline = min(deadline, total_deadline)
             while True:
                 if spawned.process.poll() is not None:
                     break
@@ -230,7 +232,7 @@ def _sanitize(text: str, workdir: Path) -> str:
     return cleaned
 
 
-def _compile(tool: config.Toolchain, workdir: Path) -> str | None:
+def _compile(tool: config.Toolchain, workdir: Path, remaining_ms: int | None = None) -> str | None:
     """Return sanitized diagnostics on failure, ``None`` on success."""
     if tool.language == 'python3':
         command = [config.python_executable(), '-I', '-c',
@@ -239,7 +241,7 @@ def _compile(tool: config.Toolchain, workdir: Path) -> str | None:
         command = list(tool.compile_command or ())
     try:
         completed = subprocess.run(command, cwd=str(workdir), capture_output=True,
-                                   timeout=config.COMPILE_WALL_MS / 1000.0)
+                                   timeout=min(config.COMPILE_WALL_MS, remaining_ms or config.COMPILE_WALL_MS) / 1000.0)
     except subprocess.TimeoutExpired:
         return '编译超过允许时间'
     if completed.returncode != 0:
@@ -249,16 +251,21 @@ def _compile(tool: config.Toolchain, workdir: Path) -> str | None:
 
 
 def execute(source: str, language: str, cases: list[CaseInput], cpu_limit_ms: int,
-            gate: Gate | None = None) -> ExecutionOutcome:
+            gate: Gate | None = None, total_budget_ms: int | None = None) -> ExecutionOutcome:
     tool = config.toolchain(language)
     if tool is None:
         raise ConfigurationError(f'当前节点不支持该提交语言：{language}')
     if not cases:
         raise ConfigurationError('测试集为空，无法执行')
+    try:
+        budget = config.validate_budget(cpu_limit_ms, len(cases), total_budget_ms)['total_budget_ms']
+    except ValueError as error:
+        raise ConfigurationError(str(error)) from error
+    deadline = time.monotonic() + budget / 1000.0
     workdir = Path(tempfile.mkdtemp(prefix='judge-', dir=str(config.work_root())))
     try:
         (workdir / tool.source_name).write_text(source, encoding='utf-8')
-        diagnostics = _compile(tool, workdir)
+        diagnostics = _compile(tool, workdir, max(1, int((deadline - time.monotonic()) * 1000)))
         total = len(cases)
         if diagnostics is not None:
             return ExecutionOutcome(COMPILATION_ERROR, 0, 0, total, 0, diagnostics)
@@ -267,9 +274,13 @@ def execute(source: str, language: str, cases: list[CaseInput], cpu_limit_ms: in
         passed = 0
         wall_total = 0
         for case in cases:
+            remaining = int((deadline - time.monotonic()) * 1000)
+            if remaining <= 0:
+                return ExecutionOutcome(TIME_LIMIT_EXCEEDED, passed, len(outcomes), total, wall_total, None, outcomes)
             try:
                 hint, output, wall = _run_case(tool.run_command, workdir,
-                                               case.input_text.encode('utf-8'), wall_limit, gate)
+                                               case.input_text.encode('utf-8'), min(wall_limit, remaining), gate,
+                                               total_deadline=deadline)
             except InfrastructureError:
                 raise
             except OSError as error:

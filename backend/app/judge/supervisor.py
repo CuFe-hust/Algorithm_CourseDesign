@@ -135,10 +135,11 @@ class ExecutionSupervisor:
         return True
 
     def run(self, job_id: int, attempt_token: str, verify: Callable[[], bool], source: str,
-            language: str, cases: list[local.CaseInput], cpu_limit_ms: int) -> local.ExecutionOutcome:
+            language: str, cases: list[local.CaseInput], cpu_limit_ms: int,
+            total_budget_ms: int | None = None) -> local.ExecutionOutcome:
         try:
             return local.execute(source, language, cases, cpu_limit_ms,
-                                 gate=self.gate(job_id, attempt_token, verify))
+                                 gate=self.gate(job_id, attempt_token, verify), total_budget_ms=total_budget_ms)
         finally:
             self.release_job(job_id)
 

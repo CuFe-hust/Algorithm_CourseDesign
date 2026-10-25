@@ -140,6 +140,32 @@ def _enforce_login_limits(db: Session, request: Request, name: str) -> str:
     return failure_key
 
 
+def issue_initial_password(db: Session, user_id: int, expected_updated_at: datetime,
+                           *, activate: bool) -> tuple[User, str]:
+    """Shared account mutation. Caller authorizes the target and owns the transaction.
+
+    The same fresh user-row lock as login/change-password serializes all credential
+    writes. Secrets are returned once to the authorized caller, never persisted.
+    """
+    user = db.scalar(select(User).where(User.id == user_id).with_for_update()
+                     .execution_options(populate_existing=True))
+    if user is None:
+        raise AppError(404, 'NOT_FOUND', '学生不存在或不可访问')
+    if user.updated_at != expected_updated_at:
+        raise AppError(409, 'ACCOUNT_CONFLICT', '账号已发生变化，请刷新名单后重试')
+    if user.status != ('PENDING' if activate else 'ACTIVE'):
+        raise AppError(409, 'ACCOUNT_STATE_CONFLICT', '仅待开通账号可开通，仅启用账号可重置密码')
+    password = secrets.token_urlsafe(18)
+    user.password_hash = hash_password(password)
+    user.must_change_password = True
+    user.password_updated_at = utcnow()
+    user.updated_at = utcnow()
+    user.status = 'ACTIVE'
+    db.execute(delete(AuthSession).where(AuthSession.user_id == user.id))
+    db.flush()
+    return user, password
+
+
 @router.post('/login')
 def login(body: LoginInput, request: Request, db: Session = Depends(get_db)):
     name = body.login_name.strip().casefold()

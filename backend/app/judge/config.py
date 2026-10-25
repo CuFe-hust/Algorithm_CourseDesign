@@ -7,6 +7,8 @@ values fall back to explicit development defaults instead of unlimited capacity.
 import os
 import shutil
 import sys
+import subprocess
+from functools import lru_cache
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -74,6 +76,30 @@ def case_wall_limit_ms(cpu_limit_ms: int) -> int:
     return max(1000, 3 * max(1, cpu_limit_ms))
 
 
+def max_total_budget_ms() -> int:
+    return min(3_600_000, _int('JUDGE_MAX_TOTAL_BUDGET_MS', 300_000))
+
+
+def minimum_total_budget_ms(cpu_limit_ms: int, case_count: int) -> int:
+    # Compile + per-case wall limit/start overhead + setup and process cleanup.
+    return COMPILE_WALL_MS + max(0, case_count) * (case_wall_limit_ms(cpu_limit_ms) + 250) + 5000
+
+
+def suite_budget(cpu_limit_ms: int, case_count: int, configured: int | None) -> dict:
+    minimum = minimum_total_budget_ms(cpu_limit_ms, case_count)
+    value = configured if configured is not None else minimum
+    return {'total_budget_ms': value, 'minimum_budget_ms': minimum,
+            'maximum_budget_ms': max_total_budget_ms(),
+            'budget_source': 'TEACHER' if configured is not None else 'LEGACY_DERIVED'}
+
+
+def validate_budget(cpu_limit_ms: int, case_count: int, configured: int | None) -> dict:
+    view = suite_budget(cpu_limit_ms, case_count, configured)
+    if not view['minimum_budget_ms'] <= view['total_budget_ms'] <= view['maximum_budget_ms']:
+        raise ValueError(f"总预算需在 {view['minimum_budget_ms']}～{view['maximum_budget_ms']} ms 之间；请调整测试数量或单点限额")
+    return view
+
+
 def work_root() -> Path:
     root = Path(os.getenv('JUDGE_WORK_ROOT', Path(__file__).resolve().parents[3] / '.judge-work'))
     root.mkdir(parents=True, exist_ok=True)
@@ -104,6 +130,18 @@ def _which_all(*names: str) -> bool:
     return all(shutil.which(name) is not None for name in names)
 
 
+@lru_cache(maxsize=16)
+def _java_available(compiler: str | None, runtime: str | None) -> bool:
+    # macOS ships java/javac launchers even when no JDK is installed.
+    if not compiler or not runtime:
+        return False
+    try:
+        return all(subprocess.run([path, '-version'], stdout=subprocess.DEVNULL,
+                   stderr=subprocess.DEVNULL, timeout=3).returncode == 0 for path in (compiler, runtime))
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+
+
 def toolchain(language: str) -> Toolchain | None:
     """Return the controlled adapter for a language, or None when unsupported."""
     if language == 'python3':
@@ -120,7 +158,7 @@ def toolchain(language: str) -> Toolchain | None:
                          ('gcc', '-O2', '-std=c17', '-pipe', '-o', 'main', 'main.c'),
                          ('./main',), available) if available else None
     if language in {'java', 'java17', 'openjdk'}:
-        available = _which_all('javac', 'java')
+        available = _java_available(shutil.which('javac'), shutil.which('java'))
         return Toolchain('java', 'Java', 'Main.java',
                          ('javac', '-encoding', 'UTF-8', 'Main.java'),
                          ('java', '-cp', '.', 'Main'), available) if available else None

@@ -300,7 +300,8 @@ def list_students(db, course_id, user, query, class_id, limit, offset):
     return {'total': total, 'limit': limit, 'offset': offset, 'items': [
         {'id': str(u.id), 'student_no': u.student_no, 'full_name': u.full_name,
          'login_name': u.login_name, 'status': u.status, 'class_id': str(c.id) if c else None,
-         'class_name': c.name if c else None, 'class_code': c.class_code if c else None}
+         'class_name': c.name if c else None, 'class_code': c.class_code if c else None,
+         'updated_at': iso(u.updated_at), 'must_change_password': bool(u.must_change_password)}
         for u, _, c in rows]}
 
 
