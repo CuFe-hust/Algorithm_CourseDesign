@@ -1,0 +1,2661 @@
+{
+  "schema_version": "analysis-v1",
+  "items": [
+    {
+      "key": "judge_adapter",
+      "label": "已有评测适配",
+      "implementation": "existing_judge_adapter",
+      "implementation_version": "1",
+      "schema_version": "analysis-v1",
+      "input_schema": {
+        "$defs": {
+          "JudgeSummary": {
+            "additionalProperties": false,
+            "properties": {
+              "student_key": {
+                "title": "Student Key",
+                "type": "string"
+              },
+              "submission_key": {
+                "title": "Submission Key",
+                "type": "string"
+              },
+              "passed_cases": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Passed Cases"
+              },
+              "total_cases": {
+                "anyOf": [
+                  {
+                    "exclusiveMinimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Total Cases"
+              },
+              "verdict": {
+                "title": "Verdict",
+                "type": "string"
+              },
+              "execution_mode": {
+                "title": "Execution Mode",
+                "type": "string"
+              },
+              "runtime_profile": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Runtime Profile"
+              },
+              "is_mock": {
+                "title": "Is Mock",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "student_key",
+              "submission_key",
+              "verdict",
+              "execution_mode",
+              "is_mock"
+            ],
+            "title": "JudgeSummary",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "results": {
+            "items": {
+              "$ref": "#/$defs/JudgeSummary"
+            },
+            "title": "Results",
+            "type": "array"
+          },
+          "test_suite_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Test Suite Key"
+          },
+          "evaluation_context": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Evaluation Context",
+            "type": "object"
+          }
+        },
+        "required": [
+          "results",
+          "test_suite_key",
+          "evaluation_context"
+        ],
+        "title": "JudgeInput",
+        "type": "object"
+      },
+      "output_schema": {
+        "$defs": {
+          "JudgeSummary": {
+            "additionalProperties": false,
+            "properties": {
+              "student_key": {
+                "title": "Student Key",
+                "type": "string"
+              },
+              "submission_key": {
+                "title": "Submission Key",
+                "type": "string"
+              },
+              "passed_cases": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Passed Cases"
+              },
+              "total_cases": {
+                "anyOf": [
+                  {
+                    "exclusiveMinimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Total Cases"
+              },
+              "verdict": {
+                "title": "Verdict",
+                "type": "string"
+              },
+              "execution_mode": {
+                "title": "Execution Mode",
+                "type": "string"
+              },
+              "runtime_profile": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Runtime Profile"
+              },
+              "is_mock": {
+                "title": "Is Mock",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "student_key",
+              "submission_key",
+              "verdict",
+              "execution_mode",
+              "is_mock"
+            ],
+            "title": "JudgeSummary",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "results": {
+            "items": {
+              "$ref": "#/$defs/JudgeSummary"
+            },
+            "title": "Results",
+            "type": "array"
+          },
+          "score_available": {
+            "default": false,
+            "title": "Score Available",
+            "type": "boolean"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "results",
+          "reason"
+        ],
+        "title": "JudgeOutput",
+        "type": "object"
+      },
+      "mock_available": false
+    },
+    {
+      "key": "allocation",
+      "label": "评审匹配",
+      "implementation": "balanced_greedy_baseline",
+      "implementation_version": "1",
+      "schema_version": "analysis-v1",
+      "input_schema": {
+        "$defs": {
+          "Answer": {
+            "additionalProperties": false,
+            "properties": {
+              "answer_key": {
+                "title": "Answer Key",
+                "type": "string"
+              },
+              "author_key": {
+                "title": "Author Key",
+                "type": "string"
+              }
+            },
+            "required": [
+              "answer_key",
+              "author_key"
+            ],
+            "title": "Answer",
+            "type": "object"
+          },
+          "Edge": {
+            "additionalProperties": false,
+            "properties": {
+              "answer_key": {
+                "title": "Answer Key",
+                "type": "string"
+              },
+              "reviewer_key": {
+                "title": "Reviewer Key",
+                "type": "string"
+              }
+            },
+            "required": [
+              "answer_key",
+              "reviewer_key"
+            ],
+            "title": "Edge",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "answers": {
+            "items": {
+              "$ref": "#/$defs/Answer"
+            },
+            "title": "Answers",
+            "type": "array"
+          },
+          "reviewers": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Reviewers",
+            "type": "array"
+          },
+          "required_reviewers": {
+            "maximum": 10,
+            "minimum": 1,
+            "title": "Required Reviewers",
+            "type": "integer"
+          },
+          "forbidden_edges": {
+            "items": {
+              "$ref": "#/$defs/Edge"
+            },
+            "title": "Forbidden Edges",
+            "type": "array"
+          },
+          "existing_edges": {
+            "items": {
+              "$ref": "#/$defs/Edge"
+            },
+            "title": "Existing Edges",
+            "type": "array"
+          },
+          "history": {
+            "items": {
+              "$ref": "#/$defs/Edge"
+            },
+            "title": "History",
+            "type": "array"
+          }
+        },
+        "required": [
+          "answers",
+          "reviewers",
+          "required_reviewers"
+        ],
+        "title": "AllocationInput",
+        "type": "object"
+      },
+      "output_schema": {
+        "$defs": {
+          "Edge": {
+            "additionalProperties": false,
+            "properties": {
+              "answer_key": {
+                "title": "Answer Key",
+                "type": "string"
+              },
+              "reviewer_key": {
+                "title": "Reviewer Key",
+                "type": "string"
+              }
+            },
+            "required": [
+              "answer_key",
+              "reviewer_key"
+            ],
+            "title": "Edge",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "feasible": {
+            "title": "Feasible",
+            "type": "boolean"
+          },
+          "edges": {
+            "items": {
+              "$ref": "#/$defs/Edge"
+            },
+            "title": "Edges",
+            "type": "array"
+          },
+          "unmet_constraints": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Unmet Constraints",
+            "type": "array"
+          },
+          "load_metrics": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Load Metrics",
+            "type": "object"
+          }
+        },
+        "required": [
+          "feasible",
+          "edges",
+          "unmet_constraints",
+          "load_metrics"
+        ],
+        "title": "AllocationOutput",
+        "type": "object"
+      },
+      "mock_available": false
+    },
+    {
+      "key": "aggregation",
+      "label": "评分聚合",
+      "implementation": "weighted_mean_baseline",
+      "implementation_version": "1",
+      "schema_version": "analysis-v1",
+      "input_schema": {
+        "$defs": {
+          "Evaluation": {
+            "additionalProperties": false,
+            "properties": {
+              "evaluation_key": {
+                "title": "Evaluation Key",
+                "type": "string"
+              },
+              "answer_key": {
+                "title": "Answer Key",
+                "type": "string"
+              },
+              "reviewer_key": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Reviewer Key"
+              },
+              "score": {
+                "anyOf": [
+                  {
+                    "minimum": 0.0,
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "title": "Score"
+              },
+              "weight": {
+                "anyOf": [
+                  {
+                    "minimum": 0.0,
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "default": "1",
+                "title": "Weight"
+              }
+            },
+            "required": [
+              "evaluation_key",
+              "answer_key",
+              "score"
+            ],
+            "title": "Evaluation",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "answers": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Answers",
+            "type": "array"
+          },
+          "rubric_max": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Rubric Max"
+          },
+          "minimum_samples": {
+            "default": 2,
+            "minimum": 1,
+            "title": "Minimum Samples",
+            "type": "integer"
+          },
+          "evaluations": {
+            "items": {
+              "$ref": "#/$defs/Evaluation"
+            },
+            "title": "Evaluations",
+            "type": "array"
+          }
+        },
+        "required": [
+          "answers",
+          "rubric_max",
+          "evaluations"
+        ],
+        "title": "AggregationInput",
+        "type": "object"
+      },
+      "output_schema": {
+        "$defs": {
+          "AggregatedScore": {
+            "additionalProperties": false,
+            "properties": {
+              "answer_key": {
+                "title": "Answer Key",
+                "type": "string"
+              },
+              "normalized_score": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Normalized Score"
+              },
+              "valid_count": {
+                "minimum": 0,
+                "title": "Valid Count",
+                "type": "integer"
+              },
+              "dispersion": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Dispersion"
+              },
+              "reason": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Reason"
+              }
+            },
+            "required": [
+              "answer_key",
+              "normalized_score",
+              "valid_count",
+              "dispersion",
+              "reason"
+            ],
+            "title": "AggregatedScore",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "scores": {
+            "items": {
+              "$ref": "#/$defs/AggregatedScore"
+            },
+            "title": "Scores",
+            "type": "array"
+          }
+        },
+        "required": [
+          "scores"
+        ],
+        "title": "AggregationOutput",
+        "type": "object"
+      },
+      "mock_available": false
+    },
+    {
+      "key": "deviation",
+      "label": "单次偏离",
+      "implementation": "not_implemented",
+      "implementation_version": "1",
+      "schema_version": "analysis-v1",
+      "input_schema": {
+        "$defs": {
+          "AggregatedScore": {
+            "additionalProperties": false,
+            "properties": {
+              "answer_key": {
+                "title": "Answer Key",
+                "type": "string"
+              },
+              "normalized_score": {
+                "anyOf": [
+                  {
+                    "maximum": 1.0,
+                    "minimum": 0.0,
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Normalized Score"
+              },
+              "valid_count": {
+                "minimum": 0,
+                "title": "Valid Count",
+                "type": "integer"
+              },
+              "dispersion": {
+                "anyOf": [
+                  {
+                    "minimum": 0.0,
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Dispersion"
+              },
+              "reason": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Reason"
+              }
+            },
+            "required": [
+              "answer_key",
+              "normalized_score",
+              "valid_count",
+              "dispersion",
+              "reason"
+            ],
+            "title": "AggregatedScore",
+            "type": "object"
+          },
+          "Edge": {
+            "additionalProperties": false,
+            "properties": {
+              "answer_key": {
+                "title": "Answer Key",
+                "type": "string"
+              },
+              "reviewer_key": {
+                "title": "Reviewer Key",
+                "type": "string"
+              }
+            },
+            "required": [
+              "answer_key",
+              "reviewer_key"
+            ],
+            "title": "Edge",
+            "type": "object"
+          },
+          "Evaluation": {
+            "additionalProperties": false,
+            "properties": {
+              "evaluation_key": {
+                "title": "Evaluation Key",
+                "type": "string"
+              },
+              "answer_key": {
+                "title": "Answer Key",
+                "type": "string"
+              },
+              "reviewer_key": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Reviewer Key"
+              },
+              "score": {
+                "anyOf": [
+                  {
+                    "minimum": 0.0,
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "title": "Score"
+              },
+              "weight": {
+                "anyOf": [
+                  {
+                    "minimum": 0.0,
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "default": "1",
+                "title": "Weight"
+              }
+            },
+            "required": [
+              "evaluation_key",
+              "answer_key",
+              "score"
+            ],
+            "title": "Evaluation",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "evaluations": {
+            "items": {
+              "$ref": "#/$defs/Evaluation"
+            },
+            "title": "Evaluations",
+            "type": "array"
+          },
+          "baseline": {
+            "items": {
+              "$ref": "#/$defs/AggregatedScore"
+            },
+            "title": "Baseline",
+            "type": "array"
+          },
+          "history": {
+            "items": {
+              "$ref": "#/$defs/Evaluation"
+            },
+            "title": "History",
+            "type": "array"
+          },
+          "edges": {
+            "items": {
+              "$ref": "#/$defs/Edge"
+            },
+            "title": "Edges",
+            "type": "array"
+          },
+          "minimum_samples": {
+            "default": 2,
+            "minimum": 1,
+            "title": "Minimum Samples",
+            "type": "integer"
+          },
+          "threshold": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "default": "0.2",
+            "title": "Threshold"
+          }
+        },
+        "required": [
+          "evaluations",
+          "baseline"
+        ],
+        "title": "DetectionInput",
+        "type": "object"
+      },
+      "output_schema": {
+        "$defs": {
+          "Evidence": {
+            "additionalProperties": false,
+            "properties": {
+              "object_key": {
+                "title": "Object Key",
+                "type": "string"
+              },
+              "kind": {
+                "title": "Kind",
+                "type": "string"
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Value"
+              },
+              "explanation": {
+                "title": "Explanation",
+                "type": "string"
+              }
+            },
+            "required": [
+              "object_key",
+              "kind",
+              "explanation"
+            ],
+            "title": "Evidence",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "signals": {
+            "items": {
+              "$ref": "#/$defs/Evidence"
+            },
+            "title": "Signals",
+            "type": "array"
+          },
+          "sample_count": {
+            "minimum": 0,
+            "title": "Sample Count",
+            "type": "integer"
+          },
+          "missing_count": {
+            "minimum": 0,
+            "title": "Missing Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "signals",
+          "sample_count",
+          "missing_count"
+        ],
+        "title": "SignalOutput",
+        "type": "object"
+      },
+      "mock_available": true
+    },
+    {
+      "key": "reviewer_bias",
+      "label": "长期偏差",
+      "implementation": "not_implemented",
+      "implementation_version": "1",
+      "schema_version": "analysis-v1",
+      "input_schema": {
+        "$defs": {
+          "AggregatedScore": {
+            "additionalProperties": false,
+            "properties": {
+              "answer_key": {
+                "title": "Answer Key",
+                "type": "string"
+              },
+              "normalized_score": {
+                "anyOf": [
+                  {
+                    "maximum": 1.0,
+                    "minimum": 0.0,
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Normalized Score"
+              },
+              "valid_count": {
+                "minimum": 0,
+                "title": "Valid Count",
+                "type": "integer"
+              },
+              "dispersion": {
+                "anyOf": [
+                  {
+                    "minimum": 0.0,
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Dispersion"
+              },
+              "reason": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Reason"
+              }
+            },
+            "required": [
+              "answer_key",
+              "normalized_score",
+              "valid_count",
+              "dispersion",
+              "reason"
+            ],
+            "title": "AggregatedScore",
+            "type": "object"
+          },
+          "Edge": {
+            "additionalProperties": false,
+            "properties": {
+              "answer_key": {
+                "title": "Answer Key",
+                "type": "string"
+              },
+              "reviewer_key": {
+                "title": "Reviewer Key",
+                "type": "string"
+              }
+            },
+            "required": [
+              "answer_key",
+              "reviewer_key"
+            ],
+            "title": "Edge",
+            "type": "object"
+          },
+          "Evaluation": {
+            "additionalProperties": false,
+            "properties": {
+              "evaluation_key": {
+                "title": "Evaluation Key",
+                "type": "string"
+              },
+              "answer_key": {
+                "title": "Answer Key",
+                "type": "string"
+              },
+              "reviewer_key": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Reviewer Key"
+              },
+              "score": {
+                "anyOf": [
+                  {
+                    "minimum": 0.0,
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "title": "Score"
+              },
+              "weight": {
+                "anyOf": [
+                  {
+                    "minimum": 0.0,
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "default": "1",
+                "title": "Weight"
+              }
+            },
+            "required": [
+              "evaluation_key",
+              "answer_key",
+              "score"
+            ],
+            "title": "Evaluation",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "evaluations": {
+            "items": {
+              "$ref": "#/$defs/Evaluation"
+            },
+            "title": "Evaluations",
+            "type": "array"
+          },
+          "baseline": {
+            "items": {
+              "$ref": "#/$defs/AggregatedScore"
+            },
+            "title": "Baseline",
+            "type": "array"
+          },
+          "history": {
+            "items": {
+              "$ref": "#/$defs/Evaluation"
+            },
+            "title": "History",
+            "type": "array"
+          },
+          "edges": {
+            "items": {
+              "$ref": "#/$defs/Edge"
+            },
+            "title": "Edges",
+            "type": "array"
+          },
+          "minimum_samples": {
+            "default": 2,
+            "minimum": 1,
+            "title": "Minimum Samples",
+            "type": "integer"
+          },
+          "threshold": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "default": "0.2",
+            "title": "Threshold"
+          }
+        },
+        "required": [
+          "evaluations",
+          "baseline"
+        ],
+        "title": "DetectionInput",
+        "type": "object"
+      },
+      "output_schema": {
+        "$defs": {
+          "Evidence": {
+            "additionalProperties": false,
+            "properties": {
+              "object_key": {
+                "title": "Object Key",
+                "type": "string"
+              },
+              "kind": {
+                "title": "Kind",
+                "type": "string"
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Value"
+              },
+              "explanation": {
+                "title": "Explanation",
+                "type": "string"
+              }
+            },
+            "required": [
+              "object_key",
+              "kind",
+              "explanation"
+            ],
+            "title": "Evidence",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "signals": {
+            "items": {
+              "$ref": "#/$defs/Evidence"
+            },
+            "title": "Signals",
+            "type": "array"
+          },
+          "sample_count": {
+            "minimum": 0,
+            "title": "Sample Count",
+            "type": "integer"
+          },
+          "missing_count": {
+            "minimum": 0,
+            "title": "Missing Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "signals",
+          "sample_count",
+          "missing_count"
+        ],
+        "title": "SignalOutput",
+        "type": "object"
+      },
+      "mock_available": true
+    },
+    {
+      "key": "relationship",
+      "label": "异常关系",
+      "implementation": "not_implemented",
+      "implementation_version": "1",
+      "schema_version": "analysis-v1",
+      "input_schema": {
+        "$defs": {
+          "AggregatedScore": {
+            "additionalProperties": false,
+            "properties": {
+              "answer_key": {
+                "title": "Answer Key",
+                "type": "string"
+              },
+              "normalized_score": {
+                "anyOf": [
+                  {
+                    "maximum": 1.0,
+                    "minimum": 0.0,
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Normalized Score"
+              },
+              "valid_count": {
+                "minimum": 0,
+                "title": "Valid Count",
+                "type": "integer"
+              },
+              "dispersion": {
+                "anyOf": [
+                  {
+                    "minimum": 0.0,
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Dispersion"
+              },
+              "reason": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Reason"
+              }
+            },
+            "required": [
+              "answer_key",
+              "normalized_score",
+              "valid_count",
+              "dispersion",
+              "reason"
+            ],
+            "title": "AggregatedScore",
+            "type": "object"
+          },
+          "Edge": {
+            "additionalProperties": false,
+            "properties": {
+              "answer_key": {
+                "title": "Answer Key",
+                "type": "string"
+              },
+              "reviewer_key": {
+                "title": "Reviewer Key",
+                "type": "string"
+              }
+            },
+            "required": [
+              "answer_key",
+              "reviewer_key"
+            ],
+            "title": "Edge",
+            "type": "object"
+          },
+          "Evaluation": {
+            "additionalProperties": false,
+            "properties": {
+              "evaluation_key": {
+                "title": "Evaluation Key",
+                "type": "string"
+              },
+              "answer_key": {
+                "title": "Answer Key",
+                "type": "string"
+              },
+              "reviewer_key": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Reviewer Key"
+              },
+              "score": {
+                "anyOf": [
+                  {
+                    "minimum": 0.0,
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "title": "Score"
+              },
+              "weight": {
+                "anyOf": [
+                  {
+                    "minimum": 0.0,
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "default": "1",
+                "title": "Weight"
+              }
+            },
+            "required": [
+              "evaluation_key",
+              "answer_key",
+              "score"
+            ],
+            "title": "Evaluation",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "evaluations": {
+            "items": {
+              "$ref": "#/$defs/Evaluation"
+            },
+            "title": "Evaluations",
+            "type": "array"
+          },
+          "baseline": {
+            "items": {
+              "$ref": "#/$defs/AggregatedScore"
+            },
+            "title": "Baseline",
+            "type": "array"
+          },
+          "history": {
+            "items": {
+              "$ref": "#/$defs/Evaluation"
+            },
+            "title": "History",
+            "type": "array"
+          },
+          "edges": {
+            "items": {
+              "$ref": "#/$defs/Edge"
+            },
+            "title": "Edges",
+            "type": "array"
+          },
+          "minimum_samples": {
+            "default": 2,
+            "minimum": 1,
+            "title": "Minimum Samples",
+            "type": "integer"
+          },
+          "threshold": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "default": "0.2",
+            "title": "Threshold"
+          }
+        },
+        "required": [
+          "evaluations",
+          "baseline"
+        ],
+        "title": "DetectionInput",
+        "type": "object"
+      },
+      "output_schema": {
+        "$defs": {
+          "Evidence": {
+            "additionalProperties": false,
+            "properties": {
+              "object_key": {
+                "title": "Object Key",
+                "type": "string"
+              },
+              "kind": {
+                "title": "Kind",
+                "type": "string"
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Value"
+              },
+              "explanation": {
+                "title": "Explanation",
+                "type": "string"
+              }
+            },
+            "required": [
+              "object_key",
+              "kind",
+              "explanation"
+            ],
+            "title": "Evidence",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "signals": {
+            "items": {
+              "$ref": "#/$defs/Evidence"
+            },
+            "title": "Signals",
+            "type": "array"
+          },
+          "sample_count": {
+            "minimum": 0,
+            "title": "Sample Count",
+            "type": "integer"
+          },
+          "missing_count": {
+            "minimum": 0,
+            "title": "Missing Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "signals",
+          "sample_count",
+          "missing_count"
+        ],
+        "title": "SignalOutput",
+        "type": "object"
+      },
+      "mock_available": true
+    },
+    {
+      "key": "review_timing",
+      "label": "评价时长",
+      "implementation": "not_implemented",
+      "implementation_version": "1",
+      "schema_version": "analysis-v1",
+      "input_schema": {
+        "$defs": {
+          "Timing": {
+            "additionalProperties": false,
+            "properties": {
+              "task_key": {
+                "title": "Task Key",
+                "type": "string"
+              },
+              "elapsed_seconds": {
+                "anyOf": [
+                  {
+                    "minimum": 0.0,
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Elapsed Seconds"
+              }
+            },
+            "required": [
+              "task_key",
+              "elapsed_seconds"
+            ],
+            "title": "Timing",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "timings": {
+            "items": {
+              "$ref": "#/$defs/Timing"
+            },
+            "title": "Timings",
+            "type": "array"
+          },
+          "minimum_samples": {
+            "default": 2,
+            "minimum": 1,
+            "title": "Minimum Samples",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "timings"
+        ],
+        "title": "TimingInput",
+        "type": "object"
+      },
+      "output_schema": {
+        "$defs": {
+          "Evidence": {
+            "additionalProperties": false,
+            "properties": {
+              "object_key": {
+                "title": "Object Key",
+                "type": "string"
+              },
+              "kind": {
+                "title": "Kind",
+                "type": "string"
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Value"
+              },
+              "explanation": {
+                "title": "Explanation",
+                "type": "string"
+              }
+            },
+            "required": [
+              "object_key",
+              "kind",
+              "explanation"
+            ],
+            "title": "Evidence",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "signals": {
+            "items": {
+              "$ref": "#/$defs/Evidence"
+            },
+            "title": "Signals",
+            "type": "array"
+          },
+          "sample_count": {
+            "minimum": 0,
+            "title": "Sample Count",
+            "type": "integer"
+          },
+          "missing_count": {
+            "minimum": 0,
+            "title": "Missing Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "signals",
+          "sample_count",
+          "missing_count"
+        ],
+        "title": "SignalOutput",
+        "type": "object"
+      },
+      "mock_available": true
+    },
+    {
+      "key": "code_similarity",
+      "label": "代码相似",
+      "implementation": "not_implemented",
+      "implementation_version": "1",
+      "schema_version": "analysis-v1",
+      "input_schema": {
+        "$defs": {
+          "Content": {
+            "additionalProperties": false,
+            "properties": {
+              "answer_key": {
+                "title": "Answer Key",
+                "type": "string"
+              },
+              "content": {
+                "title": "Content",
+                "type": "string"
+              },
+              "language": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Language"
+              }
+            },
+            "required": [
+              "answer_key",
+              "content"
+            ],
+            "title": "Content",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "answers": {
+            "items": {
+              "$ref": "#/$defs/Content"
+            },
+            "title": "Answers",
+            "type": "array"
+          },
+          "templates": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Templates",
+            "type": "array"
+          },
+          "comparison_scope": {
+            "default": "SAME_ITEM",
+            "title": "Comparison Scope",
+            "type": "string"
+          }
+        },
+        "required": [
+          "answers"
+        ],
+        "title": "ContentInput",
+        "type": "object"
+      },
+      "output_schema": {
+        "$defs": {
+          "SimilarPair": {
+            "additionalProperties": false,
+            "properties": {
+              "left_key": {
+                "title": "Left Key",
+                "type": "string"
+              },
+              "right_key": {
+                "title": "Right Key",
+                "type": "string"
+              },
+              "similarity": {
+                "title": "Similarity",
+                "type": "string"
+              },
+              "matching_spans": {
+                "items": {
+                  "additionalProperties": {
+                    "type": "integer"
+                  },
+                  "type": "object"
+                },
+                "title": "Matching Spans",
+                "type": "array"
+              }
+            },
+            "required": [
+              "left_key",
+              "right_key",
+              "similarity"
+            ],
+            "title": "SimilarPair",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "pairs": {
+            "items": {
+              "$ref": "#/$defs/SimilarPair"
+            },
+            "title": "Pairs",
+            "type": "array"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          }
+        },
+        "required": [
+          "pairs",
+          "method"
+        ],
+        "title": "SimilarityOutput",
+        "type": "object"
+      },
+      "mock_available": true
+    },
+    {
+      "key": "text_similarity",
+      "label": "文本相似",
+      "implementation": "not_implemented",
+      "implementation_version": "1",
+      "schema_version": "analysis-v1",
+      "input_schema": {
+        "$defs": {
+          "Content": {
+            "additionalProperties": false,
+            "properties": {
+              "answer_key": {
+                "title": "Answer Key",
+                "type": "string"
+              },
+              "content": {
+                "title": "Content",
+                "type": "string"
+              },
+              "language": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Language"
+              }
+            },
+            "required": [
+              "answer_key",
+              "content"
+            ],
+            "title": "Content",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "answers": {
+            "items": {
+              "$ref": "#/$defs/Content"
+            },
+            "title": "Answers",
+            "type": "array"
+          },
+          "templates": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Templates",
+            "type": "array"
+          },
+          "comparison_scope": {
+            "default": "SAME_ITEM",
+            "title": "Comparison Scope",
+            "type": "string"
+          }
+        },
+        "required": [
+          "answers"
+        ],
+        "title": "ContentInput",
+        "type": "object"
+      },
+      "output_schema": {
+        "$defs": {
+          "SimilarPair": {
+            "additionalProperties": false,
+            "properties": {
+              "left_key": {
+                "title": "Left Key",
+                "type": "string"
+              },
+              "right_key": {
+                "title": "Right Key",
+                "type": "string"
+              },
+              "similarity": {
+                "title": "Similarity",
+                "type": "string"
+              },
+              "matching_spans": {
+                "items": {
+                  "additionalProperties": {
+                    "type": "integer"
+                  },
+                  "type": "object"
+                },
+                "title": "Matching Spans",
+                "type": "array"
+              }
+            },
+            "required": [
+              "left_key",
+              "right_key",
+              "similarity"
+            ],
+            "title": "SimilarPair",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "pairs": {
+            "items": {
+              "$ref": "#/$defs/SimilarPair"
+            },
+            "title": "Pairs",
+            "type": "array"
+          },
+          "method": {
+            "title": "Method",
+            "type": "string"
+          }
+        },
+        "required": [
+          "pairs",
+          "method"
+        ],
+        "title": "SimilarityOutput",
+        "type": "object"
+      },
+      "mock_available": true
+    },
+    {
+      "key": "ai_signal",
+      "label": "AI辅助信号",
+      "implementation": "not_implemented",
+      "implementation_version": "1",
+      "schema_version": "analysis-v1",
+      "input_schema": {
+        "$defs": {
+          "Content": {
+            "additionalProperties": false,
+            "properties": {
+              "answer_key": {
+                "title": "Answer Key",
+                "type": "string"
+              },
+              "content": {
+                "title": "Content",
+                "type": "string"
+              },
+              "language": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Language"
+              }
+            },
+            "required": [
+              "answer_key",
+              "content"
+            ],
+            "title": "Content",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "answers": {
+            "items": {
+              "$ref": "#/$defs/Content"
+            },
+            "title": "Answers",
+            "type": "array"
+          },
+          "templates": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Templates",
+            "type": "array"
+          },
+          "comparison_scope": {
+            "default": "SAME_ITEM",
+            "title": "Comparison Scope",
+            "type": "string"
+          }
+        },
+        "required": [
+          "answers"
+        ],
+        "title": "ContentInput",
+        "type": "object"
+      },
+      "output_schema": {
+        "$defs": {
+          "Evidence": {
+            "additionalProperties": false,
+            "properties": {
+              "object_key": {
+                "title": "Object Key",
+                "type": "string"
+              },
+              "kind": {
+                "title": "Kind",
+                "type": "string"
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Value"
+              },
+              "explanation": {
+                "title": "Explanation",
+                "type": "string"
+              }
+            },
+            "required": [
+              "object_key",
+              "kind",
+              "explanation"
+            ],
+            "title": "Evidence",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "signals": {
+            "items": {
+              "$ref": "#/$defs/Evidence"
+            },
+            "title": "Signals",
+            "type": "array"
+          },
+          "sample_count": {
+            "minimum": 0,
+            "title": "Sample Count",
+            "type": "integer"
+          },
+          "missing_count": {
+            "minimum": 0,
+            "title": "Missing Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "signals",
+          "sample_count",
+          "missing_count"
+        ],
+        "title": "SignalOutput",
+        "type": "object"
+      },
+      "mock_available": true
+    },
+    {
+      "key": "mastery",
+      "label": "知识点掌握",
+      "implementation": "not_implemented",
+      "implementation_version": "1",
+      "schema_version": "analysis-v1",
+      "input_schema": {
+        "$defs": {
+          "Grade": {
+            "additionalProperties": false,
+            "properties": {
+              "student_key": {
+                "title": "Student Key",
+                "type": "string"
+              },
+              "item_key": {
+                "title": "Item Key",
+                "type": "string"
+              },
+              "normalized_score": {
+                "anyOf": [
+                  {
+                    "maximum": 1.0,
+                    "minimum": 0.0,
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Normalized Score"
+              },
+              "knowledge_weights": {
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "maximum": 1.0,
+                      "minimum": 0.0,
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "title": "Knowledge Weights",
+                "type": "object"
+              },
+              "difficulty": {
+                "default": 3,
+                "maximum": 5,
+                "minimum": 1,
+                "title": "Difficulty",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "student_key",
+              "item_key",
+              "normalized_score"
+            ],
+            "title": "Grade",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "release_version": {
+            "title": "Release Version",
+            "type": "string"
+          },
+          "grades": {
+            "items": {
+              "$ref": "#/$defs/Grade"
+            },
+            "title": "Grades",
+            "type": "array"
+          },
+          "minimum_samples": {
+            "default": 2,
+            "minimum": 1,
+            "title": "Minimum Samples",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "release_version",
+          "grades"
+        ],
+        "title": "LearningInput",
+        "type": "object"
+      },
+      "output_schema": {
+        "$defs": {
+          "Estimate": {
+            "additionalProperties": false,
+            "properties": {
+              "object_key": {
+                "title": "Object Key",
+                "type": "string"
+              },
+              "dimension": {
+                "title": "Dimension",
+                "type": "string"
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Value"
+              },
+              "sample_count": {
+                "minimum": 0,
+                "title": "Sample Count",
+                "type": "integer"
+              },
+              "missing_count": {
+                "minimum": 0,
+                "title": "Missing Count",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "object_key",
+              "dimension",
+              "value",
+              "sample_count",
+              "missing_count"
+            ],
+            "title": "Estimate",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "estimates": {
+            "items": {
+              "$ref": "#/$defs/Estimate"
+            },
+            "title": "Estimates",
+            "type": "array"
+          }
+        },
+        "required": [
+          "estimates"
+        ],
+        "title": "LearningOutput",
+        "type": "object"
+      },
+      "mock_available": true
+    },
+    {
+      "key": "ability",
+      "label": "学生能力",
+      "implementation": "not_implemented",
+      "implementation_version": "1",
+      "schema_version": "analysis-v1",
+      "input_schema": {
+        "$defs": {
+          "Grade": {
+            "additionalProperties": false,
+            "properties": {
+              "student_key": {
+                "title": "Student Key",
+                "type": "string"
+              },
+              "item_key": {
+                "title": "Item Key",
+                "type": "string"
+              },
+              "normalized_score": {
+                "anyOf": [
+                  {
+                    "maximum": 1.0,
+                    "minimum": 0.0,
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Normalized Score"
+              },
+              "knowledge_weights": {
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "maximum": 1.0,
+                      "minimum": 0.0,
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "title": "Knowledge Weights",
+                "type": "object"
+              },
+              "difficulty": {
+                "default": 3,
+                "maximum": 5,
+                "minimum": 1,
+                "title": "Difficulty",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "student_key",
+              "item_key",
+              "normalized_score"
+            ],
+            "title": "Grade",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "release_version": {
+            "title": "Release Version",
+            "type": "string"
+          },
+          "grades": {
+            "items": {
+              "$ref": "#/$defs/Grade"
+            },
+            "title": "Grades",
+            "type": "array"
+          },
+          "minimum_samples": {
+            "default": 2,
+            "minimum": 1,
+            "title": "Minimum Samples",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "release_version",
+          "grades"
+        ],
+        "title": "LearningInput",
+        "type": "object"
+      },
+      "output_schema": {
+        "$defs": {
+          "Estimate": {
+            "additionalProperties": false,
+            "properties": {
+              "object_key": {
+                "title": "Object Key",
+                "type": "string"
+              },
+              "dimension": {
+                "title": "Dimension",
+                "type": "string"
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Value"
+              },
+              "sample_count": {
+                "minimum": 0,
+                "title": "Sample Count",
+                "type": "integer"
+              },
+              "missing_count": {
+                "minimum": 0,
+                "title": "Missing Count",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "object_key",
+              "dimension",
+              "value",
+              "sample_count",
+              "missing_count"
+            ],
+            "title": "Estimate",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "estimates": {
+            "items": {
+              "$ref": "#/$defs/Estimate"
+            },
+            "title": "Estimates",
+            "type": "array"
+          }
+        },
+        "required": [
+          "estimates"
+        ],
+        "title": "LearningOutput",
+        "type": "object"
+      },
+      "mock_available": true
+    },
+    {
+      "key": "empirical_difficulty",
+      "label": "经验难度",
+      "implementation": "not_implemented",
+      "implementation_version": "1",
+      "schema_version": "analysis-v1",
+      "input_schema": {
+        "$defs": {
+          "Grade": {
+            "additionalProperties": false,
+            "properties": {
+              "student_key": {
+                "title": "Student Key",
+                "type": "string"
+              },
+              "item_key": {
+                "title": "Item Key",
+                "type": "string"
+              },
+              "normalized_score": {
+                "anyOf": [
+                  {
+                    "maximum": 1.0,
+                    "minimum": 0.0,
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Normalized Score"
+              },
+              "knowledge_weights": {
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "maximum": 1.0,
+                      "minimum": 0.0,
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "title": "Knowledge Weights",
+                "type": "object"
+              },
+              "difficulty": {
+                "default": 3,
+                "maximum": 5,
+                "minimum": 1,
+                "title": "Difficulty",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "student_key",
+              "item_key",
+              "normalized_score"
+            ],
+            "title": "Grade",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "release_version": {
+            "title": "Release Version",
+            "type": "string"
+          },
+          "grades": {
+            "items": {
+              "$ref": "#/$defs/Grade"
+            },
+            "title": "Grades",
+            "type": "array"
+          },
+          "minimum_samples": {
+            "default": 2,
+            "minimum": 1,
+            "title": "Minimum Samples",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "release_version",
+          "grades"
+        ],
+        "title": "LearningInput",
+        "type": "object"
+      },
+      "output_schema": {
+        "$defs": {
+          "Estimate": {
+            "additionalProperties": false,
+            "properties": {
+              "object_key": {
+                "title": "Object Key",
+                "type": "string"
+              },
+              "dimension": {
+                "title": "Dimension",
+                "type": "string"
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Value"
+              },
+              "sample_count": {
+                "minimum": 0,
+                "title": "Sample Count",
+                "type": "integer"
+              },
+              "missing_count": {
+                "minimum": 0,
+                "title": "Missing Count",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "object_key",
+              "dimension",
+              "value",
+              "sample_count",
+              "missing_count"
+            ],
+            "title": "Estimate",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "estimates": {
+            "items": {
+              "$ref": "#/$defs/Estimate"
+            },
+            "title": "Estimates",
+            "type": "array"
+          }
+        },
+        "required": [
+          "estimates"
+        ],
+        "title": "LearningOutput",
+        "type": "object"
+      },
+      "mock_available": true
+    },
+    {
+      "key": "behavior",
+      "label": "学习行为",
+      "implementation": "event_counts_baseline",
+      "implementation_version": "1",
+      "schema_version": "analysis-v1",
+      "input_schema": {
+        "$defs": {
+          "Event": {
+            "additionalProperties": false,
+            "properties": {
+              "student_key": {
+                "title": "Student Key",
+                "type": "string"
+              },
+              "kind": {
+                "title": "Kind",
+                "type": "string"
+              },
+              "occurred_at": {
+                "title": "Occurred At",
+                "type": "string"
+              }
+            },
+            "required": [
+              "student_key",
+              "kind",
+              "occurred_at"
+            ],
+            "title": "Event",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "events": {
+            "items": {
+              "$ref": "#/$defs/Event"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "available_event_types": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Available Event Types",
+            "type": "array"
+          },
+          "time_range": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Time Range",
+            "type": "object"
+          }
+        },
+        "required": [
+          "events",
+          "available_event_types",
+          "time_range"
+        ],
+        "title": "BehaviorInput",
+        "type": "object"
+      },
+      "output_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Counts",
+            "type": "object"
+          },
+          "available_event_types": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Available Event Types",
+            "type": "array"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Limitations",
+            "type": "array"
+          }
+        },
+        "required": [
+          "counts",
+          "available_event_types",
+          "limitations"
+        ],
+        "title": "BehaviorOutput",
+        "type": "object"
+      },
+      "mock_available": false
+    },
+    {
+      "key": "statistics",
+      "label": "基础统计",
+      "implementation": "descriptive_statistics",
+      "implementation_version": "1",
+      "schema_version": "analysis-v1",
+      "input_schema": {
+        "$defs": {
+          "Grade": {
+            "additionalProperties": false,
+            "properties": {
+              "student_key": {
+                "title": "Student Key",
+                "type": "string"
+              },
+              "item_key": {
+                "title": "Item Key",
+                "type": "string"
+              },
+              "normalized_score": {
+                "anyOf": [
+                  {
+                    "maximum": 1.0,
+                    "minimum": 0.0,
+                    "type": "number"
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Normalized Score"
+              },
+              "knowledge_weights": {
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "maximum": 1.0,
+                      "minimum": 0.0,
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                },
+                "title": "Knowledge Weights",
+                "type": "object"
+              },
+              "difficulty": {
+                "default": 3,
+                "maximum": 5,
+                "minimum": 1,
+                "title": "Difficulty",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "student_key",
+              "item_key",
+              "normalized_score"
+            ],
+            "title": "Grade",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "roster": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Roster",
+            "type": "array"
+          },
+          "submitted": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Submitted",
+            "type": "array"
+          },
+          "grades": {
+            "items": {
+              "$ref": "#/$defs/Grade"
+            },
+            "title": "Grades",
+            "type": "array"
+          },
+          "release_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Release Version"
+          }
+        },
+        "required": [
+          "roster",
+          "submitted",
+          "grades"
+        ],
+        "title": "StatisticsInput",
+        "type": "object"
+      },
+      "output_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "denominator": {
+            "minimum": 0,
+            "title": "Denominator",
+            "type": "integer"
+          },
+          "submitted_count": {
+            "minimum": 0,
+            "title": "Submitted Count",
+            "type": "integer"
+          },
+          "completed_count": {
+            "minimum": 0,
+            "title": "Completed Count",
+            "type": "integer"
+          },
+          "missing_count": {
+            "minimum": 0,
+            "title": "Missing Count",
+            "type": "integer"
+          },
+          "mean_score": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Score"
+          }
+        },
+        "required": [
+          "denominator",
+          "submitted_count",
+          "completed_count",
+          "missing_count",
+          "mean_score"
+        ],
+        "title": "StatisticsOutput",
+        "type": "object"
+      },
+      "mock_available": false
+    }
+  ]
+}

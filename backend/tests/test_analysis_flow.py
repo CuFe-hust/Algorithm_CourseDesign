@@ -119,3 +119,47 @@ def test_analysis_http_permissions_and_validation(client,auth,demo):
     assert client.post(create_url,headers=headers,json=dict(data,assignment_id='9999999999999999999')).status_code==422
     assert client.post(f'/api/v1/analysis/batches/{bid}/demo-events',headers=headers,
         json={'event':'OPEN_REVIEW','request_id':'too-early','expected_version':0}).status_code==409
+
+
+def test_concurrent_workers_claim_distinct_runs(db,demo):
+    from concurrent.futures import ThreadPoolExecutor
+    from sqlalchemy.orm import Session
+    create(db,demo)
+    engine=db.bind
+    def take(_):
+        with Session(engine) as session:return claim(session)
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        tickets=list(pool.map(take,range(2)))
+    assert len({t['run_id'] for t in tickets})==2
+    assert all(t['token'] for t in tickets)
+
+
+def test_expired_run_retry_preserves_input_and_rejects_stale_token(db,demo):
+    from app.analysis.framework.runner import recover_expired
+    bid=int(create(db,demo)['id']);ticket=claim(db);rid=int(ticket['run_id'])
+    run=db.get(AnalysisRun,rid);snapshot_id=run.snapshot_id
+    run.lease_expires_at=utcnow()-timedelta(seconds=1);db.commit()
+    recover_expired(db)
+    assert not finish(db,ticket,{'status':'OK','is_mock':True,'payload':{}})
+    retry_run(db,bid,rid,teacher(db),'retry-expired')
+    drain(db);db.expire_all();run=db.get(AnalysisRun,rid)
+    assert run.status=='SUCCEEDED' and run.attempt_no==2 and run.snapshot_id==snapshot_id
+    assert {h['status'] for h in run.attempt_history}>={'STARTED','EXPIRED','SUCCEEDED'}
+
+
+def test_delayed_steps_keep_version_pinned_at_batch_creation(db,demo,monkeypatch):
+    from dataclasses import replace
+    from app.analysis.framework.catalog import PLUGINS
+    bid=int(create(db,demo)['id']);drain(db)
+    plugin=PLUGINS['aggregation']
+    monkeypatch.setitem(PLUGINS,'aggregation',replace(plugin,version='2'))
+    for name in ('OPEN_REVIEW','SUBMIT_REVIEWS'):
+        event(db,bid,name);drain(db)
+    run=db.scalar(select(AnalysisRun).where(AnalysisRun.batch_id==bid,AnalysisRun.step_key=='aggregation'))
+    assert run.implementation_version=='1' and run.status=='FAILED'
+    assert run.reason['reason']=='IMPLEMENTATION_CHANGED_CREATE_NEW_BATCH'
+
+
+def test_batch_view_always_serializes_utc_after_database_reload(db,demo):
+    bid=int(create(db,demo)['id']);db.expire_all()
+    assert batch_view(db,bid,teacher(db))['created_at'].endswith('+00:00')

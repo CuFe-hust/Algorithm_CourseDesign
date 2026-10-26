@@ -31,7 +31,7 @@ def claim(db):
     run.attempt_history=[*run.attempt_history,dict(attempt_no=run.attempt_no,status='STARTED',at=run.started_at.isoformat())]
     ticket=dict(run_id=str(run.id),batch_id=str(batch.id),token=run.attempt_token,algorithm=run.algorithm_key,
         step=run.step_key,payload=snapshot.payload,input_hash=snapshot.input_hash,is_mock=snapshot.is_mock,
-        mode=batch.mode,seed=batch.seed,implementation=run.implementation_name,
+        mode=batch.mode,seed=batch.seed,implementation=run.implementation_name,implementation_version=run.implementation_version,
         root=root_snapshot(db,batch).payload)
     db.commit();return ticket
 
@@ -43,7 +43,7 @@ def finish(db,ticket,output=None,error=False):
     if run is None or run.status!='RUNNING' or run.attempt_token!=ticket['token'] or run.lease_expires_at<=now:
         db.rollback();return False
     if error:
-        run.status='FAILED';run.reason={'reason':'ALGORITHM_EXECUTION_FAILED','retryable':run.attempt_no<3}
+        run.status='FAILED';run.reason={'reason':error if isinstance(error,str) else 'ALGORITHM_EXECUTION_FAILED','retryable':run.attempt_no<3}
         run.finished_at=now
     else:
         output=dict(output,is_mock=bool(ticket['is_mock'] or output.get('is_mock')))
@@ -59,8 +59,9 @@ def process_one(db):
     if ticket is None:return False
     try:
         if ticket['algorithm']:
-            if PLUGINS[ticket['algorithm']].implementation!=ticket['implementation']:
-                raise ValueError('Implementation changed; create a new batch')
+            plugin=PLUGINS[ticket['algorithm']]
+            if plugin.implementation!=ticket['implementation'] or plugin.version!=ticket['implementation_version']:
+                finish(db,ticket,error='IMPLEMENTATION_CHANGED_CREATE_NEW_BATCH');return True
             result=invoke(ticket['algorithm'],ticket['payload'],mode=ticket['mode'],seed=ticket['seed'],
                 input_hash=ticket['input_hash']).model_dump(mode='json')
         else:

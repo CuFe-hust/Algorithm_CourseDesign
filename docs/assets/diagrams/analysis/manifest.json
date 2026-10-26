@@ -1,5 +1,5 @@
 {
-  "status": "DESIGN_PENDING_APPROVAL",
+  "status": "FRAMEWORK_AND_SYNTHETIC_DEMO_IMPLEMENTED",
   "base_main": "77f7cbc",
   "teacher_reference": "9865289",
   "diagrams": [
@@ -10,7 +10,7 @@
         2160
       ],
       "labels": 109,
-      "sha256": "0fe45b45192c987a043d11ecdd250bedaa5afcda7d4a181c3bb2b2e0c3f0d268"
+      "sha256": "4fdbf738e04cc5f3720cd8754ab0d8b8c78cc7d19533da4a45192c74b6c9c90f"
     },
     {
       "file": "04-algorithm-black-boxes-4k.png",

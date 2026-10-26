@@ -1,3 +1,4 @@
+from datetime import timezone
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from app.db.base import utcnow
@@ -9,21 +10,31 @@ from app.core.errors import AppError
 from .fixtures import demo_snapshot
 
 
-def capture(db,course_id,assignment_id,mode,seed):
+def utc_iso(value):
+    return value.astimezone(timezone.utc).isoformat()
+
+
+def capture(db,course_id,assignment_id,mode,seed,assignment_item_id=None):
     # An independent repeatable-read transaction prevents mixed generations after
     # authentication queries have already begun the request transaction.
     with Session(db.bind.execution_options(isolation_level='REPEATABLE READ')) as source:
         if source.get(Course,course_id) is None:raise AppError(404,'NOT_FOUND','课程不可访问')
+        if assignment_item_id is not None:
+            item=source.get(AssignmentItem,assignment_item_id)
+            owner=source.get(Assignment,item.assignment_id) if item else None
+            if owner is None or owner.course_id!=course_id or assignment_id is not None and owner.id!=assignment_id:
+                raise AppError(404,'NOT_FOUND','题目不在本次课程或作业范围')
+            assignment_id=owner.id
         if assignment_id is not None:
             assignment=source.get(Assignment,assignment_id)
             if assignment is None or assignment.course_id!=course_id:
                 raise AppError(404,'NOT_FOUND','作业不可访问')
         if mode=='DEMO':return demo_snapshot(seed)
         if mode!='REAL_INPUT':raise ValueError('Unsupported mode')
-        return _capture(source,course_id,assignment_id)
+        return _capture(source,course_id,assignment_id,assignment_item_id)
 
 
-def _capture(db,course_id,assignment_id):
+def _capture(db,course_id,assignment_id,assignment_item_id=None):
     now=utcnow()
     assignments=list(db.scalars(select(Assignment).where(Assignment.course_id==course_id,
         Assignment.submission_status!='DRAFT',*([Assignment.id==assignment_id] if assignment_id else []))))
@@ -38,10 +49,11 @@ def _capture(db,course_id,assignment_id):
     reviewers=sorted(key(uid) for uid,status in members if status=='ACTIVE' and uid in roster_ids)
     rows=list(db.execute(select(AssignmentItem,ProblemVersion,Problem).join(ProblemVersion,
         ProblemVersion.id==AssignmentItem.problem_version_id).join(Problem,Problem.id==ProblemVersion.problem_id)
-        .where(AssignmentItem.assignment_id.in_(assignment_map)))) if assignments else []
+        .where(AssignmentItem.assignment_id.in_(assignment_map),
+            *([AssignmentItem.id==assignment_item_id] if assignment_item_id else [])))) if assignments else []
     item_map={i.id:(i,v,p) for i,v,p in rows}
     submissions=list(db.scalars(select(Submission).where(Submission.assignment_item_id.in_(item_map),
-        Submission.status=='SUBMITTED').order_by(Submission.submitted_at,Submission.id))) if rows else []
+        Submission.status.in_(['SUBMITTED','WITHDRAWN'])).order_by(Submission.submitted_at,Submission.id))) if rows else []
     result_rows=list(db.scalars(select(JudgeResult).where(JudgeResult.submission_id.in_([s.id for s in submissions])))) if submissions else []
     results={r.submission_id:r for r in result_rows}
     mode=execution_mode();profile=runtime_profile(mode)
@@ -49,7 +61,8 @@ def _capture(db,course_id,assignment_id):
     for submission in submissions:
         assignment=assignment_map[item_map[submission.assignment_item_id][0].assignment_id]
         if submission.student_id not in roster_ids:continue
-        events.append(dict(student_key=key(submission.student_id),kind='SUBMITTED',occurred_at=submission.submitted_at.isoformat()))
+        events.append(dict(student_key=key(submission.student_id),kind='SUBMITTED',occurred_at=utc_iso(submission.submitted_at)))
+        if submission.status=='WITHDRAWN':continue
         if submission.submitted_at>=assignment.submission_deadline:continue
         grouped.setdefault((submission.assignment_item_id,submission.student_id),[]).append(submission)
     answers=[];code=[];judge=[];scopes=[];selected=[]
@@ -59,8 +72,8 @@ def _capture(db,course_id,assignment_id):
         scopes.append(dict(item_key=f'item-{item.id}',question_type=problem.question_type,
             problem_version_id=str(version.id),rubric_id=str(item.rubric_id) if item.rubric_id else None,
             test_suite_id=str(item.test_suite_id) if item.test_suite_id else None,
-            required_reviewers=item.required_reviewers,submission_deadline=assignment.submission_deadline.isoformat(),
-            assignment_updated_at=assignment.updated_at.isoformat(),closed=assignment.submission_status=='CLOSED' and assignment.submission_deadline<=now))
+            required_reviewers=item.required_reviewers,submission_deadline=utc_iso(assignment.submission_deadline),
+            assignment_updated_at=utc_iso(assignment.updated_at),closed=assignment.submission_status=='CLOSED' and assignment.submission_deadline<=now))
         for uid in sorted(roster_ids):
             history=grouped.get((item.id,uid),[])
             if not history:continue
@@ -85,7 +98,8 @@ def _capture(db,course_id,assignment_id):
     # REAL_INPUT batch-level algorithms intentionally wait for explicit item selection.
     # Never compare answers from different items in one similarity/matching task.
     return dict(schema_version='analysis-v1',is_mock=False,roster=roster,reviewers=reviewers,answers=answers,code=code,
-        rubric_max=None,required_reviewers=None,reference_scores={},judge_results=judge,evaluations=None,grades=None,
+        rubric_max=None,required_reviewers=scopes[0]['required_reviewers'] if assignment_item_id and answers else None,
+        reference_scores={},judge_results=judge,evaluations=None,grades=None,
         events=events,available_event_types=['SUBMITTED'],time_range={'to':now.isoformat()},
         test_suite_key=None,evaluation_context={'execution_mode':mode,'runtime_profile':profile},
         submitted=sorted({e['student_key'] for e in events}),scopes=scopes,

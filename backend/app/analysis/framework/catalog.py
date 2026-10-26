@@ -10,6 +10,7 @@ class Plugin:
     input:type[c.Contract]
     output:type[c.Contract]
     implementation:str
+    version:str='1'
 
 
 PLUGINS={p.key:p for p in [
@@ -30,7 +31,7 @@ PLUGINS={p.key:p for p in [
 
 
 def catalogue():
-    return [dict(key=p.key,label=p.label,implementation=p.implementation,implementation_version='1',
+    return [dict(key=p.key,label=p.label,implementation=p.implementation,implementation_version=p.version,
         schema_version='analysis-v1',input_schema=p.input.model_json_schema(),output_schema=p.output.model_json_schema(mode='serialization'),
         mock_available=p.implementation=='not_implemented') for p in PLUGINS.values()]
 
@@ -51,8 +52,11 @@ def invoke(key,payload,*,mode,seed,input_hash):
             output=dict(results=data.results,score_available=False,reason='WEIGHTED_CASE_EVIDENCE_UNAVAILABLE')
             is_mock=is_mock or any(r.is_mock for r in data.results)
         else:output=getattr(baseline,key)(data)
-        output=plugin.output.model_validate(output.model_dump() if isinstance(output,c.Contract) else output).model_dump(mode='json')
+        typed_output=plugin.output.model_validate(output.model_dump() if isinstance(output,c.Contract) else output)
+        from .validation import validate_output
+        validate_output(key,data,typed_output)
+        output=typed_output.model_dump(mode='json')
         if key=='allocation' and not output['feasible']:status='INFEASIBLE'
         if key=='aggregation' and any(s['normalized_score'] is None for s in output['scores']):status='INSUFFICIENT_DATA'
-    return c.AlgorithmOutput(algorithm_key=key,implementation_name=implementation,input_hash=input_hash,
+    return c.AlgorithmOutput(algorithm_key=key,implementation_name=implementation,implementation_version=plugin.version,input_hash=input_hash,
         is_mock=is_mock,status=status,payload=output,limitations=limitations)

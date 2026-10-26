@@ -34,10 +34,10 @@
 
 **Interfaces:** `catalogue()->list[dict]`含15插件的输入输出JSON Schema；`invoke(key,payload,*,mode,seed,input_hash)->AlgorithmOutput`；`steps()->list[Step]`给编排依赖；`digest(value)->str`稳定JSON hash。
 
-- [ ] 写失败测试：15插件schema完整；真实AI未实现；受约束匹配不自评/不重复/负载可验；人数不足INFEASIBLE；聚合0分不是null、缺样本null、权重0排除、分数越界拒绝；seed稳定。
-- [ ] 运行定向pytest确认缺模块/行为失败，再实施契约、基线、模拟与DAG。
-- [ ] 用独立dict/Pydantic数据，禁止算法导入SQLAlchemy/FastAPI；输出hash必须对应输入，输出引用属于输入范围。
-- [ ] 验证定向测试通过并提交。
+- [x] 写失败测试：15插件schema完整；真实AI未实现；受约束匹配不自评/不重复/负载可验；人数不足INFEASIBLE；聚合0分不是null、缺样本null、权重0排除、分数越界拒绝；seed稳定。
+- [x] 运行定向pytest确认缺模块/行为失败，再实施契约、基线、模拟与DAG。
+- [x] 用独立dict/Pydantic数据，禁止算法导入SQLAlchemy/FastAPI；输出hash必须对应输入，输出引用属于输入范围。
+- [x] 验证定向测试通过并提交。
 
 ## Task 2 — Persistence and snapshot adapters
 
@@ -45,10 +45,10 @@
 
 **Interfaces:** `demo_snapshot(seed)->dict`合成6人/两类题；`capture(db,course_id,assignment_id,mode,seed)->dict`只读真实名单/提交/结果并固定版本/上下文；四个模型供服务层使用。
 
-- [ ] 写失败测试：pg0005升级/往返与28表模型一致；真实快照不含姓名学号/密码；DEMO稳定且mock；跨课作业拒绝；原数据不改。
-- [ ] 在专用algorithm_review_test应用迁移，禁止清空项目库。现有conftest的/tmp假设改为仅非Windows设置，Windows使用本机pytest temp。
-- [ ] 模型/静态迁移保持一致，增加状态CHECK、唯一约束和必要索引；快照采集使用可重读事务，阻止后续覆盖。
-- [ ] 定向测试通过并提交。
+- [x] 写失败测试：pg0005升级/往返与28表模型一致；真实快照不含姓名学号/密码；DEMO稳定且mock；跨课作业拒绝；原数据不改。
+- [x] 在专用algorithm_review_test应用迁移，禁止清空项目库。现有conftest的/tmp假设改为仅非Windows设置，Windows使用本机pytest temp。
+- [x] 模型/静态迁移保持一致，增加状态CHECK、唯一约束和必要索引；快照采集使用可重读事务，阻止后续覆盖。
+- [x] 定向测试通过并提交。
 
 ## Task 3 — Orchestration, worker and HTTP API
 
@@ -56,25 +56,35 @@
 
 **Interfaces:** `create_batch(db,course_id,actor,body)`、`batch_view(db,batch_id,actor)`、`advance(db,batch_id,actor,request_id)`、`demo_event(db,batch_id,actor,body)`、`process_one(db)->bool`。
 
-- [ ] 写失败测试：DEMO逐阶段等待OPEN_REVIEW/SUBMIT_REVIEWS/RESOLVE/RELEASE；所有独立任务先就绪；缺真实互评等待；补评节点有显式入口且可无缺口SKIPPED。
-- [ ] 实施一个逻辑批次含固定步骤，run只推进满足前置/业务状态的任务；人工步骤不可自动跨过，数据不足保留blocked_by/reason。
-- [ ] 匹配/聚合mock或baseline结果各自记录来源；合成评审事件来自fixture；真实代码计分无证据时不编造分数。
-- [ ] 每任务保存input_hash/payload快照、算法版本/seed/参数；worker领取用SKIP LOCKED，完成需持有有效token/租约；失败有界重试保留attempt历史。
-- [ ] HTTP catalog/create/view/run/demo-events复用登录与任课权限、统一错误；额外retry接口仅FAILED且新attempt，不改输入。
-- [ ] 越权、幂等冲突、并发/过期完成、真实模式禁止演示事件测试通过并提交。
+- [x] 写失败测试：DEMO逐阶段等待OPEN_REVIEW/SUBMIT_REVIEWS/RESOLVE/RELEASE；所有独立任务先就绪；缺真实互评等待；补评节点有显式入口且可无缺口SKIPPED。
+- [x] 实施一个逻辑批次含固定步骤，run只推进满足前置/业务状态的任务；人工步骤不可自动跨过，数据不足保留blocked_by/reason。
+- [x] 匹配/聚合mock或baseline结果各自记录来源；合成评审事件来自fixture；真实代码计分无证据时不编造分数。
+- [x] 每任务保存input_hash/payload快照、算法版本/seed/参数；worker领取用SKIP LOCKED，完成需持有有效token/租约；失败有界重试保留attempt历史。
+- [x] HTTP catalog/create/view/run/demo-events复用登录与任课权限、统一错误；额外retry接口仅FAILED且新attempt，不改输入。
+- [x] 越权、幂等冲突、并发/过期完成、真实模式禁止演示事件测试通过并提交。
 
 ## Task 4 — Demonstration, schemas and verified handoff
 
 **Files:** backend/scripts/demo_analysis.py、export_analysis_contracts.py；docs/design/analysis/{api,black-boxes}.md；docs/implementation/runbooks/analysis-setup.md；data/analysis/{catalog,example-inputs,example-outputs}.json；图状态/索引更新。
 
-- [ ] CLI以合成DEMO运行完整六条线，输出稳定计数与mock标记，不输出token/个人资料；可以按人工节点逐段暂停讲解。
-- [ ] 从实际catalog生成JSON Schema和每插件成对输入输出样例；替换函数入口及验证命令写入黑盒说明。
-- [ ] 更新两张4K图与状态：框架/合成演示已实现，研究插件未实现，正式互评/发布未接入；PNG/SVG hash核对。
-- [ ] 定向回归＋全部后端测试；前端仅因共享整合已有代码需跑既有测试/构建，不新增UI；实际HTTP演示验证。
-- [ ] 请求一次最终独立代码审阅，修复重要问题，更新验收证据和本计划勾选。
+- [x] CLI以合成DEMO运行完整六条线，输出稳定计数与mock标记，不输出token/个人资料；可以按人工节点逐段暂停讲解。
+- [x] 从实际catalog生成JSON Schema和每插件成对输入输出样例；替换函数入口及验证命令写入黑盒说明。
+- [x] 更新两张4K图与状态：框架/合成演示已实现，研究插件未实现，正式互评/发布未接入；PNG/SVG hash核对。
+- [x] 定向回归＋全部后端测试；前端仅因共享整合已有代码需跑既有测试/构建，不新增UI；实际HTTP演示验证。
+- [x] 请求一次最终独立代码审阅，修复重要问题，更新验收证据和本计划勾选。
 - [ ] 提交独立副本全部变更，回到分析分支fast-forward整合；本轮不擅自合并/推送共享main。
 
 ## Execution ledger
 
 - 设计确认：用户明确“认可，按此边界继续”，同时授权写计划并开发；按已授权目标连续执行，不重复请求选择执行方式。
 - Ruling: 为满足最新教师/学生接入与单迁移链，本地分析分支合入9865289；共享main保持不变。唯一docs/README冲突保留双方链接。
+
+- Task1: observed ModuleNotFound RED, then4contract tests GREEN; semantic replacement tests subsequently6RED→GREEN. Pure functions and15schemas exported.
+- Task2: missing modules RED→models/pg0005/snapshot adapter GREEN; migration roundtrip and ORM compare zero differences;28business tables. Existing/tmp test assumption guarded for Windows.
+- Task3: missing service/router RED→persisted six-line flow, human gates, supplement, permissions/idempotency/lease tests GREEN.14initial focused tests then24analysis cases after review fixes.
+- Ruling: imported POSIX-only fcntl prevented Windows API import. Added cross-platform lifecycle locking and truthful LOCAL capability guard; POSIX process execution tests skip only on non-POSIX. CSV test case IDs made short to avoid Windows environment-variable size failures, not to remove cases.
+- Review: one independent final review found output semantic validation, item scope leakage and unpinned implementation versions. All3fixed with observed RED→GREEN regression tests. Algorithm versions now pinned even for delayed steps; scope applied before queries.
+- Verification: whole backend128passed/19POSIX-only skipped, frontend51passed/buildPASS, pipcheckPASS. Real project pg0005; CLI normal/supplement COMPLETE; real HTTP supplement24steps PASS with student403 and formal_grade_release=false.
+- Local demo evidence: batches1/2complete, batch3waitingOPEN_REVIEW for tonight, batch4complete via realHTTP. IDs are local and not portable.
+
+追加UTC回归：数据库时区Asia/Shanghai时，批次查询和快照时间仍统一转UTC；先复现+08:00响应，再修复并验证。最后全套128passed/19POSIX-only skipped。

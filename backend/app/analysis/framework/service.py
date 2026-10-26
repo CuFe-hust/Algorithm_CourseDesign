@@ -1,4 +1,5 @@
 """Transactional batch commands and dependency state transitions."""
+from datetime import timezone
 from sqlalchemy import select
 from app.common.permissions import require_teacher
 from app.core.errors import AppError
@@ -83,7 +84,6 @@ def refresh(db,batch):
         run.snapshot_id=snap.id
         run.dependency_refs=[dict(step=k,run_id=str(runs[k].id),artifact_id=str(artifacts[runs[k].id].id)
             if runs[k].id in artifacts else None) for k in step.dependencies]
-        run.implementation_name=PLUGINS[step.algorithm].implementation if step.algorithm else 'deterministic_rule'
         run.status='READY';run.reason={}
     batch.status='COMPLETE' if all(r.status in TERMINAL for r in runs.values()) else 'ACTIVE'
     db.flush()
@@ -100,16 +100,7 @@ def create_batch(db,course_id,actor,body):
         if existing.request_hash!=h:raise AppError(409,'IDEMPOTENCY_CONFLICT','同一请求标识不能对应不同分析输入')
         db.commit();return batch_view(db,existing.id,actor)
     data=capture(db,course_id,int(body['assignment_id']) if body.get('assignment_id') else None,
-        body['mode'],body['seed'])
-    item_id=body.get('assignment_item_id')
-    if item_id is not None and body['mode']=='REAL_INPUT':
-        scope=[s for s in data['scopes'] if s['item_key']==f'item-{item_id}']
-        if not scope:raise AppError(404,'NOT_FOUND','题目不在本次课程或作业范围')
-        data['scopes']=scope
-        for key in ('answers','code'):data[key]=[a for a in data[key] if a.get('item_key')==scope[0]['item_key']]
-        # Required reviewers are fixed in the scope; scores stay unavailable until
-        # a dedicated real review adapter supplies the frozen rubric/evaluations.
-        data['required_reviewers']=scope[0]['required_reviewers'] if data['answers'] else None
+        body['mode'],body['seed'],assignment_item_id=int(body['assignment_item_id']) if body.get('assignment_item_id') else None)
     if len(str(data).encode('utf-8'))>8*1024*1024:
         raise AppError(422,'ANALYSIS_SCOPE_TOO_LARGE','输入快照超过8MiB，请缩小范围')
     batch=AnalysisBatch(course_id=course_id,assignment_id=int(body['assignment_id']) if body.get('assignment_id') else None,
@@ -118,7 +109,10 @@ def create_batch(db,course_id,actor,body):
     db.add(batch);db.flush()
     db.add(AnalysisInputSnapshot(batch_id=batch.id,scope='ROOT',input_hash=digest(data),payload=data,is_mock=data['is_mock']))
     for step in STEPS:
-        db.add(AnalysisRun(batch_id=batch.id,step_key=step.key,algorithm_key=step.algorithm,dependencies=list(step.dependencies)))
+        plugin=PLUGINS[step.algorithm] if step.algorithm else None
+        db.add(AnalysisRun(batch_id=batch.id,step_key=step.key,algorithm_key=step.algorithm,dependencies=list(step.dependencies),
+            implementation_name=plugin.implementation if plugin else 'synthetic_human_event' if step.event else 'deterministic_rule',
+            implementation_version=plugin.version if plugin else '1'))
     db.flush();refresh(db,batch);db.commit()
     return batch_view(db,batch.id,actor)
 
@@ -127,7 +121,7 @@ def batch_view(db,batch_id,actor):
     batch=context(db,batch_id,actor);runs,artifacts=records(db,batch);root=root_snapshot(db,batch)
     return dict(id=str(batch.id),course_id=str(batch.course_id),mode=batch.mode,status=batch.status,
         revision_no=batch.revision_no,seed=batch.seed,schema_version='analysis-v1',input_hash=root.input_hash,
-        is_mock=root.is_mock,created_at=batch.created_at.isoformat(),formal_grade_release=False,
+        is_mock=root.is_mock,created_at=batch.created_at.astimezone(timezone.utc).isoformat(),formal_grade_release=False,
         steps=[dict(id=str(r.id),key=r.step_key,algorithm=r.algorithm_key,status=r.status,
             business_status=r.business_status,dependencies=r.dependencies,dependency_refs=r.dependency_refs,
             reason=r.reason,attempt_no=r.attempt_no,result=artifacts[r.id].payload if r.id in artifacts and r.status in TERMINAL else None)

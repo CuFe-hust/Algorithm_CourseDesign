@@ -33,3 +33,22 @@ def test_framework_records_roundtrip_without_touching_judge_queue(db,demo):
         payload=demo_snapshot(42),is_mock=True)
     db.add(source);db.commit()
     assert db.get(AnalysisInputSnapshot,source.id).payload['roster']==demo_snapshot(42)['roster']
+
+
+def test_item_scope_is_applied_before_all_source_queries(db,demo):
+    from sqlalchemy import delete
+    from app.db.models import Submission,AssignmentParticipant
+    from app.db.base import utcnow
+    programming=[i for i in demo[0]['items'] if i['type']=='PROGRAMMING']
+    first,second=programming[:2]
+    people=list(db.scalars(select(User).where(User.student_no.is_not(None)).order_by(User.id)))
+    db.execute(delete(AssignmentParticipant).where(AssignmentParticipant.assignment_id==int(first['assignment_id']),
+        AssignmentParticipant.student_id==people[-1].id))
+    for n,item in enumerate((first,second),1):
+        db.add(Submission(assignment_item_id=int(item['id']),student_id=people[0].id,version_no=1,
+            content='print(1)',language='python3',submitted_at=utcnow(),client_request_id=f'scope-{n}'))
+    db.commit()
+    source=capture(db,int(demo[0]['course_id']),None,'REAL_INPUT',42,assignment_item_id=int(first['id']))
+    assert len(source['roster'])==5
+    assert len(source['events'])==1 and len(source['code'])==1 and len(source['scopes'])==1
+    assert source['source_versions']['assignment_ids']==[first['assignment_id']]

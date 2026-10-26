@@ -21,7 +21,7 @@ def flow():
     c = C()
     c.title('03', '分析模块：六条业务链路',
             '箭头表示数据依赖；跨步骤通过数据库快照与结果交接。横向串行，不同链路可按条件并行。',
-            '设计稿 · 全链路纳入 · 新分析框架待实施')
+            '框架 / 合成演示已实现 · 研究算法待替换')
     rows = [
       ('01 编程评测线', 'P1逐提交执行；复用队友LOCAL评测。通过点数不直接冒充加权正式得分。', [
         ('固定提交与测试集', ['代码 / 语言 / 测试版本', '提交后立即入已有评测队列'], BLUE),
@@ -71,7 +71,7 @@ def flow():
         c.text(110, y+174, note, 27, drawing.MUTED, max_width=3600)
     c.rectangle((90, 1940, 3750, 2115), '#E6EDF7', radius=16)
     c.text(120, 1966, '绿：已有代码能力　橙：可替换算法　紫：必须有人参与　蓝：数据 / 规则 / 查询', 31, bold=True, max_width=3580)
-    c.text(120, 2022, '图示为设计：DEMO合成数据与REAL_INPUT分开；真实缺输入就等待，模拟来源沿链传播。', 29, drawing.MUTED, max_width=3580)
+    c.text(120, 2022, 'DEMO合成数据与REAL_INPUT分开；真实缺输入就等待，模拟来源沿链传播。', 29, drawing.MUTED, max_width=3580)
     c.text(120, 2070, '图中“并行”指数据依赖与研究可并行；首版可单worker运行。正式互评与成绩发布仍需后续业务接入。', 27, drawing.MUTED, max_width=3580)
     return c.save('03-analysis-data-flow-4k')
 
@@ -132,7 +132,7 @@ def main():
     reports = [flow(), contracts()]
     for r in reports:
         r['sha256'] = hashlib.sha256((OUT/r['file']).read_bytes()).hexdigest()
-    (OUT/'manifest.json').write_text(json.dumps({'status':'DESIGN_PENDING_APPROVAL',
+    (OUT/'manifest.json').write_text(json.dumps({'status':'FRAMEWORK_AND_SYNTHETIC_DEMO_IMPLEMENTED',
         'base_main':'77f7cbc', 'teacher_reference':'9865289', 'diagrams':reports},
         ensure_ascii=False, indent=2)+'\n', encoding='utf-8', newline='\n')
     print(json.dumps(reports, ensure_ascii=True))

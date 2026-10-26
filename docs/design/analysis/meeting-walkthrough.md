@@ -1,6 +1,6 @@
 # 分析模块：会议讲解与算法认领
 
-日期2026-10-26；设计讨论材料，不代表分析代码已实现。入口：[设计稿](../../superpowers/specs/2026-10-26-analysis-framework-design.md)、[4K图](../../assets/diagrams/analysis/README.md)。
+日期2026-10-26；框架与合成演示已实现，研究黑盒和正式互评/成绩业务仍待替换/接入。入口：[设计稿](../../superpowers/specs/2026-10-26-analysis-framework-design.md)、[4K图](../../assets/diagrams/analysis/README.md)。
 
 ## 开场
 
@@ -44,3 +44,7 @@ AI辅助信号先固定研究接口，方法未实现时如实标记；不要在
 - 每人认领哪些主黑盒，哪天交第一份可运行基线与实验。
 - 正式编程计分、缺交政策与异常处置是否影响发布；未决定前框架保留不可用/阻塞，不能替真实学生决定。
 - 三人共同使用哪个Git基线，教师联调分支如何合入；后续迁移按最新head统一分配。
+
+## 现场可运行内容
+
+先按[运行手册](../../implementation/runbooks/analysis-setup.md)启动，逐段DEMO会真实保存任务/快照/输出，并停在人工节点。也可运行`python -m scripts.demo_analysis --auto-events --supplement`演示补评。24步骤、15槽位均有契约，is_mock=true表示合成演示而非算法研究已完成。

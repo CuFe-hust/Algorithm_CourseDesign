@@ -58,3 +58,28 @@ def test_unimplemented_real_algorithm_never_silently_falls_back_to_mock():
     assert result.status=='NOT_IMPLEMENTED' and not result.is_mock
     mock=call('ai_signal',p,'DEMO')
     assert mock.is_mock and mock==call('ai_signal',p,'DEMO')
+
+
+def test_invalid_matching_references_and_empty_population_are_not_publishable():
+    p=allocation();p['existing_edges']=[{'answer_key':'not-in-input','reviewer_key':'u0'}]
+    with pytest.raises(ValueError):call('allocation',p)
+    assert call('allocation',allocation(0,2)).status=='INFEASIBLE'
+
+
+@pytest.mark.parametrize('edges',[
+    [{'answer_key':'a0','reviewer_key':'u0'}],
+    [{'answer_key':'foreign','reviewer_key':'u1'}],
+    [{'answer_key':'a0','reviewer_key':'foreign'}],
+    [{'answer_key':'a0','reviewer_key':'u1'}]*2,
+    [],
+])
+def test_framework_rejects_malformed_replacement_matcher(monkeypatch,edges):
+    from app.analysis.algorithms import baseline
+    monkeypatch.setattr(baseline,'allocation',lambda data:dict(feasible=True,edges=edges,unmet_constraints=[],load_metrics={}))
+    with pytest.raises(ValueError):call('allocation',allocation())
+
+
+def test_framework_rejects_incomplete_replacement_aggregation(monkeypatch):
+    from app.analysis.algorithms import baseline
+    monkeypatch.setattr(baseline,'aggregation',lambda data:dict(scores=[]))
+    with pytest.raises(ValueError):call('aggregation',aggregation([80,90]))
