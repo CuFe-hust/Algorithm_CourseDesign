@@ -19,3 +19,5 @@ __MACOSX/
 
 # Judge runtime scratch space (local execution work dirs and locks).
 .judge-work/
+
+.worktrees/
