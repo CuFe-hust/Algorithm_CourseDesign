@@ -60,7 +60,8 @@ def service_paused() -> bool:
 
 def driver_available(mode: str | None = None) -> bool:
     """Only MOCK and LOCAL have drivers this round; LINUX_SANDBOX must never be labelled."""
-    return (mode or execution_mode()) in (MOCK, LOCAL)
+    selected = mode or execution_mode()
+    return selected == MOCK or selected == LOCAL and os.name == 'posix'
 
 
 def max_concurrency() -> int:

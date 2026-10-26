@@ -31,7 +31,7 @@ PLUGINS={p.key:p for p in [
 
 def catalogue():
     return [dict(key=p.key,label=p.label,implementation=p.implementation,implementation_version='1',
-        schema_version='analysis-v1',input_schema=p.input.model_json_schema(),output_schema=p.output.model_json_schema(),
+        schema_version='analysis-v1',input_schema=p.input.model_json_schema(),output_schema=p.output.model_json_schema(mode='serialization'),
         mock_available=p.implementation=='not_implemented') for p in PLUGINS.values()]
 
 

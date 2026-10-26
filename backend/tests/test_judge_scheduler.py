@@ -34,6 +34,8 @@ print(count)
 
 @pytest.fixture
 def local_mode(monkeypatch, judge_work_root):
+    if os.name != 'posix':
+        pytest.skip('LOCAL start gate requires POSIX; Windows supports MOCK and analysis only')
     monkeypatch.setenv('JUDGE_EXECUTION_MODE', 'LOCAL')
     monkeypatch.setenv('LIMIT_SUBMISSION_BURST', '50')
     monkeypatch.setenv('LIMIT_SUBMISSION_PER_MINUTE', '50')
@@ -273,7 +275,8 @@ def test_node_and_claim_locks_are_independent(db, demo, local_mode):
 def test_unimplemented_sandbox_mode_is_refused_instead_of_mislabelled(client, demo, auth, db, monkeypatch):
     """No LINUX_SANDBOX driver: refuse to schedule and refuse to accept new jobs."""
     from app.judge import config
-    assert config.driver_available('LOCAL') and config.driver_available('MOCK')
+    assert config.driver_available('LOCAL') == (os.name == 'posix')
+    assert config.driver_available('MOCK')
     assert config.driver_available('LINUX_SANDBOX') is False
     with pytest.raises(RuntimeError):
         Scheduler(db.bind, mode='LINUX_SANDBOX', concurrency=1)

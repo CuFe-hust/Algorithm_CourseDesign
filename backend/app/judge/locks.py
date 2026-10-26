@@ -4,8 +4,12 @@ Advisory keys are declared once here so a namespace collision is a code review
 question rather than a data corruption. The per-job lifecycle lock is an OS file
 lock: it must work across processes, which a threading.Lock cannot provide.
 """
-import fcntl
 import os
+import time
+if os.name == 'nt':
+    import msvcrt
+else:
+    import fcntl
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -50,12 +54,32 @@ def job_lock(job_id: int, blocking: bool = True):
     """Exclusive per-job lifecycle lock. The descriptor is close-on-exec by default."""
     path = job_lock_path(job_id)
     fd = os.open(path, os.O_CREAT | os.O_RDWR, 0o600)
+    acquired = False
     try:
-        flags = fcntl.LOCK_EX | (0 if blocking else fcntl.LOCK_NB)
-        fcntl.flock(fd, flags)
+        if os.name == 'nt':
+            if os.fstat(fd).st_size == 0:
+                os.write(fd, b'\0')
+            while True:
+                os.lseek(fd, 0, os.SEEK_SET)
+                try:
+                    msvcrt.locking(fd, msvcrt.LK_NBLCK, 1)
+                    break
+                except OSError as error:
+                    if error.errno not in (13, 11, 36):raise
+                    if not blocking:raise BlockingIOError('Lifecycle lock already held') from error
+                    time.sleep(.05)
+        else:
+            flags = fcntl.LOCK_EX | (0 if blocking else fcntl.LOCK_NB)
+            fcntl.flock(fd, flags)
+        acquired = True
         yield
     finally:
         try:
-            fcntl.flock(fd, fcntl.LOCK_UN)
+            if acquired:
+                if os.name == 'nt':
+                    os.lseek(fd, 0, os.SEEK_SET)
+                    msvcrt.locking(fd, msvcrt.LK_UNLCK, 1)
+                else:
+                    fcntl.flock(fd, fcntl.LOCK_UN)
         finally:
             os.close(fd)

@@ -120,6 +120,8 @@ def _wait_until_stopped(process: subprocess.Popen, timeout: float = 5.0) -> bool
 
 def spawn(command: Iterable[str], cwd: Path) -> Spawned:
     """Start a gated child: the launcher stops before the student program is exec'ed."""
+    if os.name != 'posix':
+        raise ConfigurationError('LOCAL启动门需要POSIX系统；原生Windows仅支持MOCK与分析任务')
     process = subprocess.Popen([config.python_executable(), '-I', LAUNCHER, '--', *command],
                                cwd=str(cwd), stdin=subprocess.PIPE,
                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
@@ -252,6 +254,8 @@ def _compile(tool: config.Toolchain, workdir: Path, remaining_ms: int | None = N
 
 def execute(source: str, language: str, cases: list[CaseInput], cpu_limit_ms: int,
             gate: Gate | None = None, total_budget_ms: int | None = None) -> ExecutionOutcome:
+    if os.name != 'posix':
+        raise ConfigurationError('LOCAL启动门需要POSIX系统；原生Windows仅支持MOCK与分析任务')
     tool = config.toolchain(language)
     if tool is None:
         raise ConfigurationError(f'当前节点不支持该提交语言：{language}')

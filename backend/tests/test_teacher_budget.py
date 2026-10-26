@@ -1,4 +1,5 @@
 import time
+import os
 
 import pytest
 from app.judge import config, local
@@ -26,6 +27,7 @@ def test_budget_snapshot_freeze_node_bound_and_student_projection(client, teache
     assert 'test_cases' not in public
 
 
+@pytest.mark.skipif(os.name != 'posix', reason='LOCAL start gate requires POSIX')
 def test_aggregate_budget_really_stops_multiple_individually_valid_runs(judge_work_root, monkeypatch):
     # Lower only the admission minimum for this small real-process timing test.
     monkeypatch.setattr(config, 'minimum_total_budget_ms', lambda *args: 1000)

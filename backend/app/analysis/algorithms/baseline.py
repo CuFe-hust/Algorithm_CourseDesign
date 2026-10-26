@@ -7,10 +7,13 @@ def allocation(data):
     authors = {a.answer_key:a.author_key for a in data.answers}
     if len(authors)!=len(data.answers) or len(set(data.reviewers))!=len(data.reviewers):
         raise ValueError('Duplicate stable keys')
+    if any(e.answer_key not in authors or e.reviewer_key not in data.reviewers
+           for e in [*data.forbidden_edges,*data.existing_edges]):
+        raise ValueError('Edge references are outside the current snapshot')
     forbidden={(e.answer_key,e.reviewer_key) for e in [*data.forbidden_edges,*data.existing_edges]}
     load=Counter({r:0 for r in data.reviewers})
     history=Counter((e.answer_key,e.reviewer_key) for e in data.history)
-    edges=[];unmet=[]
+    edges=[];unmet=[] if data.answers else ['NO_ANSWERS']
     for answer in sorted(data.answers,key=lambda a:a.answer_key):
         eligible=[r for r in data.reviewers if r!=answer.author_key and (answer.answer_key,r) not in forbidden]
         if len(eligible)<data.required_reviewers:
