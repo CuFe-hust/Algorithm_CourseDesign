@@ -67,10 +67,12 @@ class TestSuite(Base):
     memory_limit_kib: Mapped[int] = mapped_column(Integer)
     allowed_languages: Mapped[list] = mapped_column(JSONB)
     checker: Mapped[str] = mapped_column(String(32), default='TEXT_TRIM_TRAILING')
+    total_budget_ms: Mapped[int | None] = mapped_column(Integer)
     status: Mapped[str] = mapped_column(String(16), default='FROZEN')
     frozen_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     __table_args__ = (UniqueConstraint('problem_version_id', 'version_no'),
         CheckConstraint('cpu_limit_ms > 0 AND memory_limit_kib > 0', name='ck_suite_resources'),
+        CheckConstraint('total_budget_ms IS NULL OR total_budget_ms BETWEEN 1000 AND 3600000', name='ck_suite_budget'),
         CheckConstraint('version_no > 0', name='ck_suite_version_positive'),
         CheckConstraint("status='FROZEN'", name='ck_suite_frozen'))
 

@@ -19,7 +19,7 @@ async function submit() {
     const result = await login(name.value.trim(), password.value);
     password.value = "";
     startActivityTracking();
-    const next = String(route.query.next || "");
+    const next = safeInternalPath(String(route.query.next || ""));
     if (result.must_change_password) {
       await router.replace({
         path: "/account/change-password",
@@ -27,7 +27,7 @@ async function submit() {
       });
       return;
     }
-    await router.replace(next.startsWith("/") ? next : "/courses");
+    await router.replace({ path: "/courses", query: next ? { next } : {} });
   } catch (e) {
     error.value = errorText(e);
   } finally {

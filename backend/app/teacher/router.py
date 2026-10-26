@@ -14,8 +14,12 @@ from app.student.router import Id
 from app.student.service import iso
 from app.core.errors import AppError
 from app.teacher import problems as problem_service, students as student_service
+from app.teacher import accounts as account_service, assignments as assignment_service
+from app.judge import config as judge_config
+from app.student.records import course_progress
 from app.teacher.schemas import (ProblemCreate,VersionUpdate,VersionAction,VersionFork,
-                                 KnowledgeCreate,QuestionType)
+                                 KnowledgeCreate,QuestionType,AccountIssue,AssignmentInput,
+                                 AssignmentUpdate,AssignmentPublish,AssignmentSchedule)
 
 router=APIRouter(prefix='/api/v1/teacher',tags=['教师管理'])
 logger=logging.getLogger(__name__)
@@ -32,6 +36,79 @@ def write_transaction(db):
     except Exception:
         db.rollback()
         raise
+
+
+@router.get('/courses/{course_id}/judge-capabilities')
+def judge_capabilities(course_id:Id,user:User=Depends(current_user),db:Session=Depends(get_db)):
+    require_teacher(db,course_id,user.id)
+    return {'execution_mode':judge_config.execution_mode(), 'driver_available':judge_config.driver_available(),
+        'supported_languages':judge_config.supported_languages(),
+        'maximum_budget_ms':judge_config.max_total_budget_ms(), 'compile_wall_ms':judge_config.COMPILE_WALL_MS,
+        'setup_cleanup_ms':5000,'per_case_overhead_ms':250,'case_wall_multiplier':3,'case_wall_minimum_ms':1000}
+
+
+@router.post('/courses/{course_id}/students/credentials')
+def issue_credentials(course_id:Id,body:AccountIssue,response:Response,
+                      user:User=Depends(current_user),db:Session=Depends(get_db)):
+    response.headers['Cache-Control']='no-store'
+    response.headers['Pragma']='no-cache'
+    with write_transaction(db):
+        return account_service.issue_accounts(db,course_id,user,body)
+
+
+@router.get('/courses/{course_id}/students/{student_id}/progress')
+def student_progress(course_id:Id,student_id:Id,user:User=Depends(current_user),db:Session=Depends(get_db),
+                     assignment_id:int|None=Query(default=None,gt=0,le=9223372036854775807),
+                     limit:int=Query(default=20,ge=1,le=100),offset:int=Query(default=0,ge=0)):
+    require_teacher(db,course_id,user.id)
+    target=db.get(User,student_id)
+    if target is None:
+        raise AppError(404,'NOT_FOUND','学生不存在或不可访问')
+    result=course_progress(db,course_id,target,assignment_id=assignment_id,limit=limit,offset=offset)
+    result['student']={'id':str(target.id),'full_name':target.full_name,'student_no':target.student_no}
+    return result
+
+
+@router.get('/courses/{course_id}/assignment-choices')
+def assignment_choices(course_id:Id,user:User=Depends(current_user),db:Session=Depends(get_db),
+                       limit:int=Query(default=20,ge=1,le=100),offset:int=Query(default=0,ge=0),
+                       q:str=Query(default='',max_length=100)):
+    return assignment_service.choices(db,course_id,user,limit,offset,q)
+
+
+@router.get('/courses/{course_id}/assignments')
+def teacher_assignments(course_id:Id,user:User=Depends(current_user),db:Session=Depends(get_db),
+                        limit:int=Query(default=20,ge=1,le=100),offset:int=Query(default=0,ge=0)):
+    return assignment_service.list_assignments(db,course_id,user,limit,offset)
+
+
+@router.post('/courses/{course_id}/assignments',status_code=201)
+def create_assignment(course_id:Id,body:AssignmentInput,user:User=Depends(current_user),db:Session=Depends(get_db)):
+    with write_transaction(db):
+        return assignment_service.create(db,course_id,user,body)
+
+
+@router.get('/assignments/{assignment_id}')
+def teacher_assignment(assignment_id:Id,user:User=Depends(current_user),db:Session=Depends(get_db)):
+    return assignment_service.view(db,assignment_service.context(db,assignment_id,user))
+
+
+@router.put('/assignments/{assignment_id}')
+def update_assignment(assignment_id:Id,body:AssignmentUpdate,user:User=Depends(current_user),db:Session=Depends(get_db)):
+    with write_transaction(db):
+        return assignment_service.update(db,assignment_id,user,body)
+
+
+@router.post('/assignments/{assignment_id}/publish')
+def publish_assignment(assignment_id:Id,body:AssignmentPublish,user:User=Depends(current_user),db:Session=Depends(get_db)):
+    with write_transaction(db):
+        return assignment_service.publish(db,assignment_id,user,body)
+
+
+@router.post('/assignments/{assignment_id}/schedule')
+def schedule_assignment(assignment_id:Id,body:AssignmentSchedule,user:User=Depends(current_user),db:Session=Depends(get_db)):
+    with write_transaction(db):
+        return assignment_service.schedule(db,assignment_id,user,body)
 
 
 @router.get('/courses/{course_id}/overview')

@@ -32,7 +32,9 @@ def foreign_key(column) -> str:
 def render() -> str:
     dialect = postgresql.dialect()
     tables = sorted(Base.metadata.tables.values(), key=lambda table: table.name)
-    head = 'pg0003'
+    from alembic.config import Config
+    from alembic.script import ScriptDirectory
+    head = ScriptDirectory.from_config(Config(str(Path(__file__).resolve().parents[1] / 'alembic.ini'))).get_current_head()
     lines = [HEADER.format(head=head, count=len(tables))]
     for table in tables:
         lines.append(f'## {table.name}\n')

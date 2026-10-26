@@ -8,7 +8,7 @@
 - ID在JSON中是十进制字符串，前端不转Number；URL和查询参数按其字符串形式拼接。
 - 时间为UTC ISO8601，例如 `2026-10-21T08:00:00+00:00`，页面转北京时间；分数/权重用字符串，例如 `100.00`、`0.250000`。
 - 成功响应直接返回对象，没有统一data外壳。当前列表返回 `{items:[...]}`，教师提交、题库和学生列表增加total/limit/offset。
-- 除health、ready、login外均需 `Authorization: Bearer <access_token>`。密码仅在登录body中发送，token不放URL或日志。会话有效2小时，401重新登录。
+- 除health、ready、login外均需 `Authorization: Bearer <access_token>`。密码仅在认证请求body与教师专用一次性发放响应中传输，token不放URL或日志。空闲2小时失效、绝对24小时上限，401重新登录。
 - 每个响应有X-Request-ID。错误格式如下，details通常为空，字段校验错误时是field/type数组。
 
 ```json
@@ -253,3 +253,7 @@ role为TEACHER或STUDENT，导航选择应以当前课程为单位。
 | `409 JUDGE_RETRY_NOT_ALLOWED` / `JUDGE_RETRY_BUDGET_EXHAUSTED` / `JUDGE_CONFIGURATION_UNSUPPORTED` | 状态不允许重评、累计预算耗尽、永久配置故障 |
 
 CORS 已暴露 `X-Request-ID` 与 `Retry-After`。所有 429／503 表示“未接收”，前端保留草稿，不自动延长截止时间。
+
+## 8. 教师与学生联调增量（2026-10-25）
+
+教师账号开通/一次性发放/重置、作业草稿/发布/截止开关与共享采用查询已实现，准确DTO见[教师API第6节](../teacher/api.md)。数据库head为pg0004，沿用pg0002认证与pg0003评测结构，新增测试集总预算。学生题目只追加安全execution_budget字段，含预算及TEACHER/LEGACY_DERIVED来源；学生作答页只读展示，接口不下发隐藏内容。全部旧会话在教师重置时失效，首次改密及续期策略仍由共享认证统一执行。

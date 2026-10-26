@@ -50,8 +50,7 @@ async function choose(course: Course) {
   error.value = "";
   selectCourse(course.id);
   startActivityTracking();
-  const target =
-    course.role === "TEACHER" ? "/teacher" : `/student/courses/${course.id}`;
+  const target = courseEntryTarget(next.value, course);
   await router.replace(target);
   busy.value = "";
 }
@@ -64,7 +63,10 @@ async function leave() {
 
 onMounted(() => {
   const existing = currentCourse();
-  if (existing && session.courses.length) return;
+  if (existing && session.coursesLoaded) {
+    loading.value = false;
+    return;
+  }
   void load();
 });
 </script>
