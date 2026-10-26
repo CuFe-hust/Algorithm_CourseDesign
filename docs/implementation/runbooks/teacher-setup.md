@@ -88,3 +88,19 @@ pnpm format:check
 ## 5. 实测界面
 
 截图来自实际 Vue 页面与本地 PostgreSQL 合成数据，包含 [课程概览](../evidence/screenshots/teacher/01-course-overview.jpg)、[名册预览](../evidence/screenshots/teacher/02-student-import-preview.jpg) 和 [标准代码预览](../evidence/screenshots/teacher/03-reference-code.jpg)。截图与数据说明见 [截图索引](../evidence/screenshots/teacher/README.md)。
+
+## 6. 2026-10-25：学生端联调增量
+
+前述1～5节保留首轮（2026-10-22）的运行与验收记录；其“不提供账户激活/作业发布”限制已由本节更新，当前实现与边界以 [最新架构](../../design/teacher/architecture.md) 和 [本轮证据](../evidence/teacher/2026-10-25-student-integration.md) 为准。
+
+1. 切换最新功能分支，先备份自己的本机PostgreSQL库。学生端head为pg0003，本轮head为pg0004；旧库在backend目录执行 `../.venv/bin/python -m alembic upgrade head`，不要改写旧迁移。Windows沿用相应Scripts路径。
+2. 重启API和前端。仅发题时使用教师“只读发布”；受控本机开发要验证真实执行，API与执行器均设置 `JUDGE_EXECUTION_MODE=LOCAL`，另开终端运行 `../.venv/bin/python -m scripts.run_judge --mode LOCAL --loop`。生产隔离和安全边界见 [学生运行说明](student-setup.md)。
+3. 登录 → 显式选教师课程 → CSV导入合成学生 → 学生名单开通 → 本次页面分别发放初始密码或下载清单。学生首次改密后才可进入课程。再次导入不会重置密码；重置后旧密码/会话失效，需再次改密。
+4. 题库冻结完整题目，配置合理总预算；作业管理创建草稿、选固定版本、分值和权重、按班或指定学生选名单，保存后发布。只读发布学生能看不能交；开放前检查节点语言和预算。发布后名单/题目不可改，只能管理截止和开关。
+5. 在学生名单点提交进度，查看共享采用候选、历史和只读代码/评测；Mock与未解决任务不当成绩。互评与正式成绩尚未交付。
+
+默认节点总预算上限300000 ms，环境变量 `JUDGE_MAX_TOTAL_BUDGET_MS` 可调整，最大3600000。最低预算随CPU限额与测试数变化；历史NULL配置明确推导，不回写旧快照。Java需实际JDK，只有系统启动器不算支持。
+
+工程根可执行 `.venv/bin/python scripts/smoke_teacher_student_http.py` 完成真实HTTP闭环；只创建合成学生与关闭的验收作业，不打印凭据。后端pytest仍只使用algorithm_review_test，前端运行 `pnpm test`、`pnpm build`、`pnpm format:check`。本轮准确结果见上述证据文档。
+
+API与执行器必须使用相同的评测模式、预算上限和工具链配置；安装或更换工具链后重启两者，以重新检测能力。

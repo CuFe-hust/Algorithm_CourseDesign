@@ -1,6 +1,6 @@
 # 统一前端工程
 
-已建立 Vue 3 / TypeScript / Vite 应用，提供教师登录、课程概览、四类题目管理与学生 CSV 预览/导入。三个模块使用唯一 frontend 工程。
+已建立 Vue 3 / TypeScript / Vite 应用，提供统一登录与选课、教师题库/CSV/账号管理/作业发布及学生作答/历史/LOCAL评测界面。三个模块使用唯一 frontend 工程。
 
 ```bash
 pnpm install --frozen-lockfile
@@ -14,7 +14,7 @@ Node 22.12+（或兼容的20.19+）、pnpm 11。开发服务为 `http://127.0.0.
 - [启动与验收](../docs/implementation/runbooks/teacher-setup.md)
 - [教师API](../docs/design/teacher/api.md)
 
-学生与互评模块分别接入 `src/features/student`、`analytics`，路由注册在 `src/app/router.ts`；共享请求位于 `src/shared/api.ts`，会话和课程位于 `session.ts`。当前非教师登录进入待接入提示，由学生负责人接入实际主页。不要创建第二套前端或登录协议。
+学生与互评模块分别接入 `src/features/student`、`analytics`，路由注册在 `src/app/router.ts`；共享请求位于 `src/shared/api.ts`，会话和课程位于 `session.ts`。教师和学生均在统一选课后进入对应工作区，互评/分析页面仍待接入。不要创建第二套前端或登录协议。
 
 ID全程字符串，分值/权重保留十进制字符串，时间按UTC接收后本地化。token仅通过Authorization传递，保存在当前标签页sessionStorage；401清理身份并重登。禁止把教师参考库放进public或学生静态资源。
 

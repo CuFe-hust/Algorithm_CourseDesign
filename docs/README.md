@@ -32,7 +32,7 @@ docs/
 ├── implementation/    实施：做到哪
 │   ├── plan/          foundation-plan · progress · student-implementation-plan
 │   ├── runbooks/      collaboration · data-import · teacher-setup · postgresql-migration · student-setup
-│   └── evidence/      screenshots/teacher/ · student/
+│   └── evidence/      screenshots/teacher/ · teacher/ · student/
 ├── issues/            任务单：01-teacher · 02-student · 03-database-analysis
 ├── reviews/           评审闭环：student-review-resolution
 ├── archive/           历史：meeting-2026-10-21 · database-design-v0.1 · team-handoff
@@ -83,3 +83,4 @@ docs/
 - [分析框架设计、全业务依赖与黑盒契约](superpowers/specs/2026-10-26-analysis-framework-design.md)
 - [六条链路与黑盒输入输出4K图](assets/diagrams/analysis/README.md)
 - [会议讲解与算法认领](design/analysis/meeting-walkthrough.md)
+教师端2026-10-25联调实现与边界：[交付记录](implementation/evidence/teacher/2026-10-25-student-integration.md)。

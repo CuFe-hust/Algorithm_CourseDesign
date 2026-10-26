@@ -129,3 +129,62 @@ student_no,full_name,class_name,class_code
 | 409 / WRITE_CONFLICT | 事务已回滚；刷新或重新预览 |
 
 未列出的字段校验错误沿用共享 422 格式。客户端不能以 HTTP 200 预览响应作为实际写入成功的依据。
+
+## 6. 学生作答联调接口（2026-10-25 已实现）
+
+以下接口全部要求有效、已完成首次改密的当前课程教师。未加入课程404，学生身份403。成功写入原子提交；ID保持字符串，时间带时区。
+
+| 方法与路径（相对 `/api/v1/teacher`） | 输入与结果 |
+|---|---|
+| `POST /courses/{course_id}/students/credentials` | action为ACTIVATE/RESET；students为1～50个 `{student_id,expected_updated_at}`。仅本次响应返回credentials及issued_at，no-store |
+| `GET /courses/{course_id}/judge-capabilities` | 当前execution_mode、driver_available、实际supported_languages、maximum_budget_ms与预算公式参数 |
+| `GET /courses/{course_id}/assignment-choices` | 冻结且在用题目的各版本，q/limit/offset；返回版本和最新冻结配置ID，不返回隐藏测试正文 |
+| `GET /courses/{course_id}/assignments` | 作业列表，limit/offset；标题、状态、截止、更新时间、题数和人数 |
+| `POST /courses/{course_id}/assignments` | 下述草稿DTO，201返回教师完整详情 |
+| `GET /assignments/{assignment_id}` | 课程、标题、状态、截止、发布信息、更新时间、固定items与participants班级快照 |
+| `PUT /assignments/{assignment_id}` | `{expected_updated_at,assignment:草稿DTO}`；仅DRAFT可完整替换 |
+| `POST /assignments/{assignment_id}/publish` | `{expected_updated_at,submission_status:"CLOSED"或"OPEN"}`；默认CLOSED，仅发布一次 |
+| `POST /assignments/{assignment_id}/schedule` | `{expected_updated_at,submission_deadline,review_deadline,submission_status}`；已发布作业的截止与开关 |
+| `GET /courses/{course_id}/students/{student_id}/progress` | 可选assignment_id、limit/offset；复用学生progress结构，追加student姓名/学号，仅当前授权课程 |
+
+### 6.1 凭据管理
+
+ACTIVATE仅接受PENDING，RESET仅接受ACTIVE；DISABLED不会自动启用。目标须为本课程有效STUDENT成员且有学生资料，不能有有效教师身份。重复目标、未知字段、无时区时间拒绝。更新时间过期409 `ACCOUNT_CONFLICT`，状态不符409 `ACCOUNT_STATE_CONFLICT`。任何一人失败整批回滚。
+
+每人生成独立随机初始密码，保存哈希，设置 `must_change_password=true`、`password_updated_at` 和ACTIVE，删除全部旧会话。响应只在 `credentials[].initial_password` 返回一次，普通名单永不包含密码；名单追加 `updated_at` 和 `must_change_password`。教师逐人发放或下载清单，不调用外部消息服务。响应丢失后刷新名单并显式重置，不能查询旧明文。
+
+### 6.2 作业草稿DTO
+
+```json
+{
+  "title": "算法分析第一阶段作业",
+  "description_md": "请给出推导过程。",
+  "submission_deadline": "2026-11-01T12:00:00Z",
+  "review_deadline": "2026-11-03T12:00:00Z",
+  "items": [{
+    "problem_version_id": "31",
+    "test_suite_id": null,
+    "rubric_id": "21",
+    "max_score": "100.00",
+    "score_weight": "1.000000",
+    "required_reviewers": 3
+  }],
+  "student_ids": ["11", "12"]
+}
+```
+
+items数组顺序就是题目顺序，最多100题；student_ids最多2000且唯一。编程题必须test_suite_id、rubric_id=null、required_reviewers=0；主观题反之且评审人数1～10。分值为正且最多两位小数，权重(0,1]且最多六位小数。草稿可无题或无名单；引用的题目仍必须冻结、同课程且配置属于该版本。发布要求至少一题/一人、权重和精确为1、未来截止及完整题干/参考/知识点/配置。
+
+发布事务重取学生当前班级，保存班级快照并固定发布者和时间；PENDING学生允许进入名单，但需教师开通才可登录。之后导入学生不会自动改变旧名单。发布后PUT返回409 `ASSIGNMENT_PUBLISHED`，只能通过schedule调整截止和开关；不改历史答案或评测。OPEN需未来截止并通过当前节点检查，CLOSED保持可读；评审截止若存在必须晚于提交截止。作业更新时间过期409 `ASSIGNMENT_CONFLICT`。
+
+### 6.3 测试集总预算
+
+教师SuiteInput和教师版本详情新增 `total_budget_ms`（整数ms，可空输入）。新保存的空输入会生成当前配置的预算值，写入独立配置快照；旧冻结测试集保持NULL，读取/执行时推导并标记来源。
+
+`minimum = 30000 + N * (max(1000, 3 * cpu_limit_ms) + 250) + 5000`；编译、逐点墙钟、启动和清理预留都纳入。节点上限默认300000 ms，通过 `JUDGE_MAX_TOTAL_BUDGET_MS` 调整，绝对不超过3600000。冻结、发布与重开校验最低值和节点上限；OPEN还检查驱动与实际工具链。非法配置422，requirements列出原因，不生成永远等待的任务。
+
+学生题目详情只追加安全字段 `execution_budget:{total_budget_ms,minimum_budget_ms,maximum_budget_ms,budget_source}`，来源为TEACHER或LEGACY_DERIVED，不返回参考代码或隐藏输入输出。预算由调度读取固定suite并传入LOCAL执行，编译与用例共用全题截止；LOCAL仍不测CPU/内存，不伪造值。
+
+### 6.4 查询采用候选
+
+教师progress调用共享 `student.records.course_progress()`，不以最新编程提交替代最佳；Mock及其他环境结果不混比。通过数、空资源、最近版本和未解决任务口径与学生端一致。仅有候选不代表正式成绩，互评和成绩发布仍未交付。查看源码及结果复用既有 `GET /api/v1/submissions/{id}` 教师权限；历史复用教师submissions筛选。

@@ -13,6 +13,7 @@ from app.db.models import (
 )
 from app.student.service import iso
 from app.teacher.schemas import VersionInput
+from app.judge import config as judge_config
 
 VERSION_FIELDS = (
     'title', 'statement_md', 'answer_requirements_md', 'input_spec_md',
@@ -75,6 +76,7 @@ def version_view(db, problem, version):
             'id': str(suite.id), 'version_no': suite.version_no, 'cpu_limit_ms': suite.cpu_limit_ms,
             'memory_limit_kib': suite.memory_limit_kib, 'allowed_languages': suite.allowed_languages,
             'checker': suite.checker,
+            'total_budget_ms': suite.total_budget_ms,
             'cases': [{'input_text': case.input_text, 'expected_output': case.expected_output,
                        'weight': str(case.weight), 'is_public': case.is_public} for case in cases],
         } if suite else None,
@@ -153,7 +155,8 @@ def write_configuration(db, problem, version, payload, actor_id):
         suite = TestSuite(problem_version_id=version.id,
             version_no=previous.version_no + 1 if previous else 1, cpu_limit_ms=body.cpu_limit_ms,
             memory_limit_kib=body.memory_limit_kib, allowed_languages=body.allowed_languages,
-            checker=body.checker, frozen_at=now)
+            checker=body.checker, total_budget_ms=body.total_budget_ms if body.total_budget_ms is not None
+                else min(3600000, judge_config.minimum_total_budget_ms(body.cpu_limit_ms, len(body.cases))), frozen_at=now)
         db.add(suite)
         db.flush()
         for order, case in enumerate(body.cases):
@@ -236,7 +239,32 @@ def fork_version(db, problem_id, user, body):
 def freeze_version(db, version_id, user, body):
     problem, version = version_context(db, version_id, user, lock=True)
     ensure_editable(db, problem, version, body.expected_updated_at)
+    validate_ready(db, problem, version)
+    version.status = 'FROZEN'
+    version.frozen_at = utcnow()
+    version.updated_at = utcnow()
+    problem.updated_at = utcnow()
+    db.flush()
+    return version_view(db, problem, version)
+
+
+def validate_ready(db, problem, version, *, suite_id=None, rubric_id=None, check_node=False):
+    """One completeness rule for freezing, assignment publication and reopening."""
     view = version_view(db, problem, version)
+    if suite_id is not None:
+        selected = db.get(TestSuite, suite_id)
+        if selected is None or selected.problem_version_id != version.id or selected.status != 'FROZEN':
+            raise AppError(422, 'INVALID_ASSIGNMENT_CONFIGURATION', '测试集不属于选定题目版本')
+        cases = list(db.scalars(select(TestCase).where(TestCase.test_suite_id == selected.id)))
+        view['test_suite'] = {'cases': [{'weight': str(c.weight)} for c in cases],
+            'cpu_limit_ms': selected.cpu_limit_ms, 'total_budget_ms': selected.total_budget_ms,
+            'allowed_languages': selected.allowed_languages, 'checker': selected.checker}
+    if rubric_id is not None:
+        selected = db.get(Rubric, rubric_id)
+        if selected is None or selected.problem_version_id != version.id or selected.status != 'FROZEN':
+            raise AppError(422, 'INVALID_ASSIGNMENT_CONFIGURATION', '量表不属于选定题目版本')
+        view['rubric'] = {'items': [{'name': d.name, 'description': d.description} for d in
+            db.scalars(select(RubricItem).where(RubricItem.rubric_id == rubric_id))]}
     missing = []
     if not view['knowledge_point_ids']:
         missing.append('至少一个课程知识点')
@@ -256,6 +284,17 @@ def freeze_version(db, version_id, user, body):
             missing.append('输入说明')
         if not version.output_spec_md or not version.output_spec_md.strip():
             missing.append('输出说明')
+        if suite:
+            try:
+                judge_config.validate_budget(suite['cpu_limit_ms'], len(suite['cases']), suite['total_budget_ms'])
+            except ValueError as error:
+                missing.append(str(error))
+            if suite['checker'] != 'TEXT_TRIM_TRAILING' or not suite['allowed_languages'] or any(
+                    lang not in {'python3', 'cpp', 'c', 'java'} for lang in suite['allowed_languages']):
+                missing.append('当前支持的比较方式与编程语言')
+            if check_node and (not judge_config.driver_available() or any(
+                    judge_config.toolchain(lang) is None for lang in suite['allowed_languages'])):
+                missing.append('当前评测节点尚不支持此题全部语言，请配置工具链或先只读发布')
     else:
         rubric = view['rubric']
         if not rubric or not rubric['items']:
@@ -264,12 +303,6 @@ def freeze_version(db, version_id, user, body):
             missing.append('各评分维度的名称与具体评分说明')
     if missing:
         raise AppError(422, 'FREEZE_VALIDATION_FAILED', '请补齐题目配置后再冻结', {'requirements': missing})
-    version.status = 'FROZEN'
-    version.frozen_at = utcnow()
-    version.updated_at = utcnow()
-    problem.updated_at = utcnow()
-    db.flush()
-    return version_view(db, problem, version)
 
 
 def create_knowledge(db, course_id, user, body):

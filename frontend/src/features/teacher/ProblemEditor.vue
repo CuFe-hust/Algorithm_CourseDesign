@@ -56,6 +56,14 @@ const locked = computed(
     current.value?.status === "FROZEN" || detail.value?.status === "ARCHIVED",
 );
 const issues = computed(() => validationMessages(errors.value));
+const maximumBudget = ref<number>();
+const minimumBudget = computed(() => {
+  const suite = form.value.test_suite;
+  return suite
+    ? 35000 +
+        suite.cases.length * (Math.max(1000, 3 * suite.cpu_limit_ms) + 250)
+    : 0;
+});
 const fingerprint = () =>
   JSON.stringify({ form: form.value, code: code.value, type: type.value });
 const dirty = computed(
@@ -77,6 +85,11 @@ async function reload(versionId?: string) {
   loading.value = true;
   error.value = "";
   try {
+    maximumBudget.value = (
+      await request<{ maximum_budget_ms: number }>(
+        `/teacher/courses/${session.courseId}/judge-capabilities`,
+      )
+    ).maximum_budget_ms;
     tags.value = (
       await request<{ items: typeof tags.value }>(
         `/teacher/courses/${session.courseId}/knowledge-points`,
@@ -558,6 +571,20 @@ watch(tab, () => {
                       max="1048576"
                   /></label>
                 </div>
+                <label
+                  >测试集总预算（ms）<input
+                    v-model.number="form.test_suite.total_budget_ms"
+                    type="number"
+                    min="1000"
+                    max="3600000"
+                    placeholder="留空时按当前配置生成"
+                /></label>
+                <p class="hint">
+                  按编译、启动清理和逐点墙钟计算，当前至少
+                  {{ minimumBudget.toLocaleString() }} ms；节点上限
+                  {{ maximumBudget?.toLocaleString() }}
+                  ms。留空保存时生成预算；冻结与发布受节点上限校验。旧版本未配置时使用明确标注的推导预算。
+                </p>
                 <label>允许语言</label>
                 <div class="check-row">
                   <label

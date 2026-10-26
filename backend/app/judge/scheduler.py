@@ -36,6 +36,7 @@ class Claim:
     language: str | None
     test_suite_id: int
     cpu_limit_ms: int
+    total_budget_ms: int | None = None
 
 
 def _mode_filter(mode: str):
@@ -149,7 +150,8 @@ class Scheduler:
                           item_id=submission.assignment_item_id, source=submission.content,
                           language=submission.language,
                           test_suite_id=int(suite_id) if suite_id is not None else 0,
-                          cpu_limit_ms=suite.cpu_limit_ms if suite else 1000)
+                          cpu_limit_ms=suite.cpu_limit_ms if suite else 1000,
+                          total_budget_ms=suite.total_budget_ms if suite else None)
             db.commit()
             return claim
 
@@ -200,7 +202,8 @@ class Scheduler:
                 cases = results.case_inputs(db, claim.test_suite_id)
             outcome = SUPERVISOR.run(claim.job_id, claim.attempt_token,
                                      self._verify(claim.job_id, claim.attempt_token),
-                                     claim.source, claim.language or '', cases, claim.cpu_limit_ms)
+                                     claim.source, claim.language or '', cases, claim.cpu_limit_ms,
+                                     total_budget_ms=claim.total_budget_ms)
         except OwnershipLost:
             stop.set()
             return 'aborted'

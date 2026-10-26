@@ -22,7 +22,15 @@ describe("shared API contract", () => {
       );
     vi.stubGlobal("fetch", fetch);
     const blob = await requestBlob("/teacher/template");
-    const content = await blob.text();
+    const content =
+      typeof blob.text === "function"
+        ? await blob.text()
+        : await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(String(reader.result));
+            reader.onerror = () => reject(reader.error);
+            reader.readAsText(blob);
+          });
     expect(content).toContain("student_no");
     expect(
       (fetch.mock.calls[0]![1].headers as Headers).get("Authorization"),
