@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160">
+<rect width="3840" height="2160" fill="#F4F7FB"/>
+<text x="90.0" y="63.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">ALGORITHM COURSE REVIEW  /  TEAM BRIEFING  /  04</text>
+<text x="90.0" y="170.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="74" font-weight="700" fill="#102A43">算法黑盒：输入、输出与研究边界</text>
+<text x="90.0" y="235.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#53677F">每人认领1–2个主黑盒。算法不直接读写数据库；服务固定输入、验证输出并记录版本。</text>
+<rect x="2680" y="98" width="1070" height="82" rx="18" fill="#E6EDF7" stroke="none" stroke-width="2"/>
+<text x="2979.5" y="154.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="28" font-weight="400" fill="#102A43">接口设计 · 真实 / 基线 / 模拟必须标明</text>
+<polyline points="90,270 3750,270" fill="none" stroke="#CCD7E4" stroke-width="2" stroke-linejoin="round"/>
+<rect x="110" y="330" width="1150" height="310" rx="14" fill="#FFFFFF" stroke="#059669" stroke-width="3"/>
+<text x="135.0" y="389.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="39" font-weight="700" fill="#059669">ALG-JUDGE · 评测适配</text>
+<text x="135.0" y="434.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#53677F">已有能力，复用，不重复研究</text>
+<text x="135.0" y="486.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输入：提交 / 测试集 / 执行上下文</text>
+<text x="220.0" y="526.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">现有JudgeResult与采用候选</text>
+<text x="135.0" y="581.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输出：评测摘要 / 可用计分证据</text>
+<text x="220.0" y="621.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">缺加权依据 → UNAVAILABLE</text>
+<rect x="1340" y="330" width="1150" height="310" rx="14" fill="#FFFFFF" stroke="#C87914" stroke-width="3"/>
+<text x="1365.0" y="389.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="39" font-weight="700" fill="#C87914">ALG-ALLOC · 评审匹配</text>
+<text x="1365.0" y="434.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#53677F">研究：约束、公平性、历史关系</text>
+<text x="1365.0" y="486.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输入：答案作者 / 候选人 / 每份人数</text>
+<text x="1450.0" y="526.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">禁止关系 / 已有分配 / 历史 / seed</text>
+<text x="1365.0" y="581.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输出：完整分配边 / 负载指标</text>
+<text x="1450.0" y="621.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">或不可行报告，不私自少分配</text>
+<rect x="2570" y="330" width="1150" height="310" rx="14" fill="#FFFFFF" stroke="#C87914" stroke-width="3"/>
+<text x="2595.0" y="389.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="39" font-weight="700" fill="#C87914">ALG-AGG · 评分聚合</text>
+<text x="2595.0" y="434.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#53677F">研究：稳定性、权重、分歧处理</text>
+<text x="2595.0" y="486.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输入：固定量表 / 分项评价 / 有效性</text>
+<text x="2680.0" y="526.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">最终权重 / 最低样本 / 参数</text>
+<text x="2595.0" y="581.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输出：归一化候选分 / 分歧 / 样本数</text>
+<text x="2680.0" y="621.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">无有效评价 → null，不是0分</text>
+<rect x="110" y="675" width="1150" height="310" rx="14" fill="#FFFFFF" stroke="#C87914" stroke-width="3"/>
+<text x="135.0" y="734.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="39" font-weight="700" fill="#C87914">ALG-DEV · 单次偏离</text>
+<text x="135.0" y="779.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#53677F">异常检测子算法①</text>
+<text x="135.0" y="831.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输入：某条评价 / 同作品评分</text>
+<text x="220.0" y="871.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">固定初步聚合基准 / 阈值</text>
+<text x="135.0" y="926.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输出：异常对象 / 程度 / 证据</text>
+<text x="220.0" y="966.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">样本不足独立表示</text>
+<rect x="1340" y="675" width="1150" height="310" rx="14" fill="#FFFFFF" stroke="#C87914" stroke-width="3"/>
+<text x="1365.0" y="734.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="39" font-weight="700" fill="#C87914">ALG-BIAS · 长期偏差</text>
+<text x="1365.0" y="779.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#53677F">异常检测子算法②</text>
+<text x="1365.0" y="831.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输入：某评审者跨题评分与历史</text>
+<text x="1450.0" y="871.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">各作品固定基准 / 时间范围</text>
+<text x="1365.0" y="926.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输出：偏高 / 偏低方向及程度</text>
+<text x="1450.0" y="966.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">样本与依据，不自动降权</text>
+<rect x="2570" y="675" width="1150" height="310" rx="14" fill="#FFFFFF" stroke="#C87914" stroke-width="3"/>
+<text x="2595.0" y="734.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="39" font-weight="700" fill="#C87914">ALG-TIME · 评价时长</text>
+<text x="2595.0" y="779.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#53677F">异常检测子算法③</text>
+<text x="2595.0" y="831.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输入：首次打开 / 提交的服务端时间</text>
+<text x="2680.0" y="871.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">任务 / 题目特征 / 阈值</text>
+<text x="2595.0" y="926.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输出：时长指标 / 信号 / 证据</text>
+<text x="2680.0" y="966.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">未记录事件 → 缺数据</text>
+<rect x="110" y="1020" width="1150" height="310" rx="14" fill="#FFFFFF" stroke="#C87914" stroke-width="3"/>
+<text x="135.0" y="1079.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="39" font-weight="700" fill="#C87914">ALG-REL · 异常关系</text>
+<text x="135.0" y="1124.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#53677F">异常检测子算法④</text>
+<text x="135.0" y="1176.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输入：分配边 / 原评分 / 历史关系</text>
+<text x="220.0" y="1216.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">固定基准 / 最低样本数</text>
+<text x="135.0" y="1271.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输出：疑似边或群体 / 关联证据</text>
+<text x="220.0" y="1311.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">不直接判定作弊</text>
+<rect x="1340" y="1020" width="1150" height="310" rx="14" fill="#FFFFFF" stroke="#C87914" stroke-width="3"/>
+<text x="1365.0" y="1079.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="39" font-weight="700" fill="#C87914">ALG-CODE · 代码相似</text>
+<text x="1365.0" y="1124.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#53677F">研究：表示、比较、可解释片段</text>
+<text x="1365.0" y="1176.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输入：同题代码集合 / 语言</text>
+<text x="1450.0" y="1216.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">题干模板 / 比较范围</text>
+<text x="1365.0" y="1271.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输出：相似作品对 / 相似度</text>
+<text x="1450.0" y="1311.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">对应代码片段与方法版本</text>
+<rect x="2570" y="1020" width="1150" height="310" rx="14" fill="#FFFFFF" stroke="#C87914" stroke-width="3"/>
+<text x="2595.0" y="1079.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="39" font-weight="700" fill="#C87914">ALG-TEXT · 文本相似</text>
+<text x="2595.0" y="1124.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#53677F">研究：排除题干模板与公共表述</text>
+<text x="2595.0" y="1176.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输入：同题主观答案集合</text>
+<text x="2680.0" y="1216.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">题干 / 参考 / 公共模板</text>
+<text x="2595.0" y="1271.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输出：相似作品对 / 相似度</text>
+<text x="2680.0" y="1311.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">相似片段与方法局限</text>
+<rect x="110" y="1365" width="1150" height="310" rx="14" fill="#FFFFFF" stroke="#C87914" stroke-width="3"/>
+<text x="135.0" y="1424.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="39" font-weight="700" fill="#C87914">ALG-AI · AI辅助信号</text>
+<text x="135.0" y="1469.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#53677F">研究接口，不预设可靠AI百分率</text>
+<text x="135.0" y="1521.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输入：答案 / 方法所需数据</text>
+<text x="220.0" y="1561.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">方法配置 / 适用范围</text>
+<text x="135.0" y="1616.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输出：信号 / 证据 / 局限</text>
+<text x="220.0" y="1656.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">未实现 → NOT_IMPLEMENTED</text>
+<rect x="1340" y="1365" width="1150" height="310" rx="14" fill="#FFFFFF" stroke="#C87914" stroke-width="3"/>
+<text x="1365.0" y="1424.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="39" font-weight="700" fill="#C87914">ALG-KNOW · 知识点掌握</text>
+<text x="1365.0" y="1469.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#53677F">研究：得分与知识点映射</text>
+<text x="1365.0" y="1521.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输入：固定成绩 / 满分 / 标签权重</text>
+<text x="1450.0" y="1561.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">学生范围 / 发布版本</text>
+<text x="1365.0" y="1616.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输出：学生×知识点掌握估计</text>
+<text x="1450.0" y="1656.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">样本数 / 缺失 / 方法依据</text>
+<rect x="2570" y="1365" width="1150" height="310" rx="14" fill="#FFFFFF" stroke="#C87914" stroke-width="3"/>
+<text x="2595.0" y="1424.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="39" font-weight="700" fill="#C87914">ALG-ABILITY · 学生能力</text>
+<text x="2595.0" y="1469.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#53677F">研究：多题表现与题目难度</text>
+<text x="2595.0" y="1521.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输入：多题成绩 / 难度 / 范围</text>
+<text x="2680.0" y="1561.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">固定发布版本 / 模型参数</text>
+<text x="2595.0" y="1616.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输出：能力估计 / 依据 / 样本</text>
+<text x="2680.0" y="1656.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">不反向改本轮原始分数</text>
+<rect x="110" y="1710" width="1150" height="310" rx="14" fill="#FFFFFF" stroke="#C87914" stroke-width="3"/>
+<text x="135.0" y="1769.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="39" font-weight="700" fill="#C87914">ALG-BEHAV · 学习行为</text>
+<text x="135.0" y="1814.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#53677F">先做实际事件可解释指标</text>
+<text x="135.0" y="1866.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输入：提交 / 修改 / 撤回 / 评价事件</text>
+<text x="220.0" y="1906.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">固定时段 / 数据缺失类型</text>
+<text x="135.0" y="1961.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输出：节奏 / 次数 / 覆盖率</text>
+<text x="220.0" y="2001.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">不直接推断学习态度</text>
+<rect x="1340" y="1710" width="1150" height="310" rx="14" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="1365.0" y="1769.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="39" font-weight="700" fill="#2563EB">ALG-STATS · 基础统计</text>
+<text x="1365.0" y="1814.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#53677F">规则与查询，通常不是研究重点</text>
+<text x="1365.0" y="1866.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输入：名单 / 状态 / 有效成绩</text>
+<text x="1450.0" y="1906.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">分母 / 分组 / 发布版本</text>
+<text x="1365.0" y="1961.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输出：分布 / 完成率 / 通过率</text>
+<text x="1450.0" y="2001.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">分子分母 / 缺交 / 待评</text>
+<rect x="2570" y="1710" width="1150" height="310" rx="14" fill="#FFFFFF" stroke="#C87914" stroke-width="3"/>
+<text x="2595.0" y="1769.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="39" font-weight="700" fill="#C87914">ALG-DIFF · 经验难度</text>
+<text x="2595.0" y="1814.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#53677F">研究或统计，与教师难度分开</text>
+<text x="2595.0" y="1866.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输入：题目有效得分 / 满分</text>
+<text x="2680.0" y="1906.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">指定人群 / 最低样本</text>
+<text x="2595.0" y="1961.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">输出：经验难度 / 样本量</text>
+<text x="2680.0" y="2001.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#102A43">不足时返回不可用原因</text>
+<text x="110.0" y="2109.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#53677F">统一元信息：schema版本 / 输入hash / 算法与实现版本 / 参数 / seed / is_mock / 业务状态 / 证据 / 局限</text>
+</svg>

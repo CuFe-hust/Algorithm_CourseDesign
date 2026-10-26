@@ -75,3 +75,11 @@ docs/
 - 项目启动与运行：[../README.md](../README.md)
 - 分工与开发顺序：[../MAIN.md](../MAIN.md)
 - 三人交接的原始摘要（历史）：[archive/team-handoff.md](archive/team-handoff.md)
+
+## 分析模块设计与会议材料（2026-10-26）
+
+当前为待确认设计，新分析代码尚未实现。
+
+- [分析框架设计、全业务依赖与黑盒契约](superpowers/specs/2026-10-26-analysis-framework-design.md)
+- [六条链路与黑盒输入输出4K图](assets/diagrams/analysis/README.md)
+- [会议讲解与算法认领](design/analysis/meeting-walkthrough.md)

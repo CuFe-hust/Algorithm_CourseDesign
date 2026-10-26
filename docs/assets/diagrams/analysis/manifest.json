@@ -1,0 +1,25 @@
+{
+  "status": "DESIGN_PENDING_APPROVAL",
+  "base_main": "77f7cbc",
+  "teacher_reference": "9865289",
+  "diagrams": [
+    {
+      "file": "03-analysis-data-flow-4k.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "labels": 109,
+      "sha256": "0fe45b45192c987a043d11ecdd250bedaa5afcda7d4a181c3bb2b2e0c3f0d268"
+    },
+    {
+      "file": "04-algorithm-black-boxes-4k.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "labels": 95,
+      "sha256": "067e10caab39843732d90a7ff9be8ce4fe37d1e1a1123a6abb27c2f063a5cb4e"
+    }
+  ]
+}
