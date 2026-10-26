@@ -6,8 +6,9 @@ import pytest
 
 # The managed sandbox denies directory creation under the default per-user temp
 # root, so keep pytest's temporary directories inside /tmp.
-os.environ['TMPDIR'] = '/tmp'
-tempfile.tempdir = '/tmp'
+if os.name != 'nt':
+    os.environ['TMPDIR'] = '/tmp'
+    tempfile.tempdir = '/tmp'
 
 from sqlalchemy import delete
 from sqlalchemy.orm import Session
