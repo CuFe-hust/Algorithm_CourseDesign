@@ -2,19 +2,26 @@
 import argparse
 import json
 import uuid
-from sqlalchemy import select
+import time
+from sqlalchemy import select,func
 from sqlalchemy.orm import Session
 from app.db.session import make_engine
 from app.db.models import Course,User
+from app.db.models.analytics import AnalysisRun
 from app.analysis.framework import service
 from app.analysis.framework.runner import process_one
 from app.analysis.framework.graph import BY_KEY
 
 
-def settle(db):
-    for _ in range(100):
-        if not process_one(db):return
-    raise RuntimeError('Worker did not settle within the bounded demonstration.')
+def settle(db,batch_id):
+    deadline=time.monotonic()+15
+    while time.monotonic()<deadline:
+        worked=process_one(db)
+        pending=db.scalar(select(func.count()).select_from(AnalysisRun).where(
+            AnalysisRun.batch_id==batch_id,AnalysisRun.status.in_(['READY','RUNNING'])))
+        if not pending:return
+        if not worked:time.sleep(.05)
+    raise RuntimeError('Batch still running after 15 seconds; resume with --batch-id.')
 
 
 def summary(view):
@@ -42,11 +49,11 @@ def main():
             view=service.batch_view(db,args.batch_id,actor) if args.batch_id else service.create_batch(db,course.id,actor,
                 dict(mode='DEMO',seed=args.seed,assignment_id=None,assignment_item_id=None,request_id='demo-'+uuid.uuid4().hex))
             if view['mode']!='DEMO':raise RuntimeError('This CLI only advances synthetic DEMO batches.')
-            bid=int(view['id']);settle(db);view=service.batch_view(db,bid,actor)
+            bid=int(view['id']);settle(db,bid);view=service.batch_view(db,bid,actor)
             if args.event:
                 view=service.demo_event(db,bid,actor,dict(event=args.event,request_id='cli-'+uuid.uuid4().hex,
                     expected_version=view['revision_no'],action='SUPPLEMENT' if args.supplement else 'KEEP'))
-                settle(db);view=service.batch_view(db,bid,actor)
+                settle(db,bid);view=service.batch_view(db,bid,actor)
             if args.auto_events:
                 for _ in range(8):
                     waiting=next((s for s in view['steps'] if s['status']=='WAITING_HUMAN'),None)
@@ -54,7 +61,7 @@ def main():
                     view=service.demo_event(db,bid,actor,dict(event=BY_KEY[waiting['key']].event,
                         request_id='cli-'+uuid.uuid4().hex,expected_version=view['revision_no'],
                         action='SUPPLEMENT' if args.supplement and waiting['key']=='resolve' else 'KEEP'))
-                    settle(db);view=service.batch_view(db,bid,actor)
+                    settle(db,bid);view=service.batch_view(db,bid,actor)
             print(json.dumps(summary(view),ensure_ascii=True))
     finally:engine.dispose()
 

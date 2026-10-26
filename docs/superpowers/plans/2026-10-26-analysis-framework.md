@@ -84,7 +84,9 @@
 - Task3: missing service/router RED→persisted six-line flow, human gates, supplement, permissions/idempotency/lease tests GREEN.14initial focused tests then24analysis cases after review fixes.
 - Ruling: imported POSIX-only fcntl prevented Windows API import. Added cross-platform lifecycle locking and truthful LOCAL capability guard; POSIX process execution tests skip only on non-POSIX. CSV test case IDs made short to avoid Windows environment-variable size failures, not to remove cases.
 - Review: one independent final review found output semantic validation, item scope leakage and unpinned implementation versions. All3fixed with observed RED→GREEN regression tests. Algorithm versions now pinned even for delayed steps; scope applied before queries.
-- Verification: whole backend128passed/19POSIX-only skipped, frontend51passed/buildPASS, pipcheckPASS. Real project pg0005; CLI normal/supplement COMPLETE; real HTTP supplement24steps PASS with student403 and formal_grade_release=false.
+- Verification: whole backend129passed/19POSIX-only skipped, frontend51passed/buildPASS, pipcheckPASS. Real project pg0005; CLI normal/supplement COMPLETE; real HTTP supplement24steps PASS with student403 and formal_grade_release=false.
 - Local demo evidence: batches1/2complete, batch3waitingOPEN_REVIEW for tonight, batch4complete via realHTTP. IDs are local and not portable.
 
-追加UTC回归：数据库时区Asia/Shanghai时，批次查询和快照时间仍统一转UTC；先复现+08:00响应，再修复并验证。最后全套128passed/19POSIX-only skipped。
+追加UTC回归：数据库时区Asia/Shanghai时，批次查询和快照时间仍统一转UTC；先复现+08:00响应，再修复并验证。最后全套129passed/19POSIX-only skipped。
+
+最终CLI并发验证：分析watch worker同时工作时，演示/HTTP smoke会等待本批次READY/RUNNING清空再进入人工事件；并发回归与真实HTTP补评通过，整套129passed/19POSIX-only skipped。

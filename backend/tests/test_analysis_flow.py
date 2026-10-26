@@ -163,3 +163,23 @@ def test_delayed_steps_keep_version_pinned_at_batch_creation(db,demo,monkeypatch
 def test_batch_view_always_serializes_utc_after_database_reload(db,demo):
     bid=int(create(db,demo)['id']);db.expire_all()
     assert batch_view(db,bid,teacher(db))['created_at'].endswith('+00:00')
+
+
+def test_cli_settle_waits_for_another_workers_inflight_step(db,demo):
+    import time
+    from concurrent.futures import ThreadPoolExecutor
+    from sqlalchemy.orm import Session
+    from scripts.demo_analysis import settle
+    from app.analysis.framework.catalog import invoke
+    bid=int(create(db,demo)['id']);ticket=claim(db);engine=db.bind
+    def complete_elsewhere():
+        time.sleep(.4)
+        result=invoke(ticket['algorithm'],ticket['payload'],mode=ticket['mode'],seed=ticket['seed'],
+            input_hash=ticket['input_hash']).model_dump(mode='json')
+        with Session(engine) as session:finish(session,ticket,result)
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        future=pool.submit(complete_elsewhere)
+        settle(db,bid)
+        db.expire_all()
+        assert db.get(AnalysisRun,int(ticket['run_id'])).status=='SUCCEEDED'
+        future.result()

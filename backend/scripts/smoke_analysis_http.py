@@ -7,7 +7,7 @@ from dotenv import dotenv_values
 from sqlalchemy.orm import Session
 from app.core.config import ROOT
 from app.db.session import make_engine
-from app.analysis.framework.runner import process_one
+from scripts.demo_analysis import settle as settle_batch
 
 
 def main():
@@ -32,8 +32,7 @@ def main():
             assert client.get(url,headers=student).status_code==403
             def settle():
                 with Session(engine) as db:
-                    for _ in range(200):
-                        if not process_one(db):break
+                    settle_batch(db,int(bid))
                 result=client.get(url,headers=teacher);assert result.status_code==200
                 return result.json()
             view=settle()

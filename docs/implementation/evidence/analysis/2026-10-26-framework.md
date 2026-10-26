@@ -6,7 +6,7 @@
 
 ## 验证
 
-- 原生Windows PostgreSQL18.6，后端pytest：128passed、19skipped（POSIX启动门实际执行用例），仅上游Starlette弃用提示。
+- 原生Windows PostgreSQL18.6，后端pytest：129passed、19skipped（POSIX启动门实际执行用例），仅上游Starlette弃用提示。
 - 前端15测试文件、51测试通过；vue-tsc与Vite构建通过，未新增分析页面。
 - pg0005从教师pg0004升级，测试库升级/往返与28模型一致；真实项目库完成升级且原数据保留。
 - 新分析测试含坏插件输出、自评/外部引用/重复/人数不足、聚合零分与缺失、范围隔离、延迟任务版本变更、并发领取、过期token、补评/原评分保留、权限/幂等、真实模式不借用模拟。
@@ -28,4 +28,6 @@
 
 本机批次3保留在教师开放前，可通过demo_analysis --batch-id 3 --event OPEN_REVIEW继续；克隆后的ID不同，按运行手册新建。运行命令见../../runbooks/analysis-setup.md；会议图与讲解稿见docs/design/analysis/meeting-walkthrough.md。
 
-追加UTC回归：数据库时区Asia/Shanghai时，批次查询和快照时间仍统一转UTC；先复现+08:00响应，再修复并验证。最后全套128passed/19POSIX-only skipped。
+追加UTC回归：数据库时区Asia/Shanghai时，批次查询和快照时间仍统一转UTC；先复现+08:00响应，再修复并验证。最后全套129passed/19POSIX-only skipped。
+
+最终CLI并发验证：分析watch worker同时工作时，演示/HTTP smoke会等待本批次READY/RUNNING清空再进入人工事件；并发回归与真实HTTP补评通过，整套129passed/19POSIX-only skipped。
