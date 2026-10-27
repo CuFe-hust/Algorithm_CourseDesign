@@ -1,8 +1,51 @@
 # 当前数据库字段
 
-实现版本：PostgreSQL迁移pg0004；24张业务表，另有alembic_version。由SQLAlchemy模型自动生成类型与外键。
+实现版本：PostgreSQL迁移pg0005；28张业务表，另有alembic_version。由SQLAlchemy模型自动生成类型与外键。
 
 时间戳均带时区，服务端按UTC输出；ID为有符号64位整数，API以字符串传输。JSON列使用JSONB。
+
+## analysis_artifacts
+
+| 字段 | PostgreSQL类型 | 可空 | 外键 |
+|---|---|---|---|
+| run_id | BIGINT | 否 | analysis_runs.id |
+| attempt_no | INTEGER | 否 | — |
+| output_hash | VARCHAR(64) | 否 | — |
+| payload | JSONB | 否 | — |
+| is_mock | BOOLEAN | 否 | — |
+| id | BIGINT | 否 | — |
+| created_at | TIMESTAMP WITH TIME ZONE | 否 | — |
+
+## analysis_batches
+
+| 字段 | PostgreSQL类型 | 可空 | 外键 |
+|---|---|---|---|
+| course_id | BIGINT | 否 | courses.id |
+| assignment_id | BIGINT | 是 | assignments.id |
+| created_by | BIGINT | 否 | users.id |
+| mode | VARCHAR(16) | 否 | — |
+| status | VARCHAR(16) | 否 | — |
+| request_id | VARCHAR(64) | 否 | — |
+| request_hash | VARCHAR(64) | 否 | — |
+| seed | INTEGER | 否 | — |
+| configuration | JSONB | 否 | — |
+| events | JSONB | 否 | — |
+| revision_no | INTEGER | 否 | — |
+| updated_at | TIMESTAMP WITH TIME ZONE | 否 | — |
+| id | BIGINT | 否 | — |
+| created_at | TIMESTAMP WITH TIME ZONE | 否 | — |
+
+## analysis_input_snapshots
+
+| 字段 | PostgreSQL类型 | 可空 | 外键 |
+|---|---|---|---|
+| batch_id | BIGINT | 否 | analysis_batches.id |
+| scope | VARCHAR(64) | 否 | — |
+| input_hash | VARCHAR(64) | 否 | — |
+| payload | JSONB | 否 | — |
+| is_mock | BOOLEAN | 否 | — |
+| id | BIGINT | 否 | — |
+| created_at | TIMESTAMP WITH TIME ZONE | 否 | — |
 
 ## analysis_jobs
 
@@ -27,6 +70,31 @@
 | recovery_cycle_no | INTEGER | 否 | — |
 | automatic_retries_used | INTEGER | 否 | — |
 | last_manual_retry_at | TIMESTAMP WITH TIME ZONE | 是 | — |
+| updated_at | TIMESTAMP WITH TIME ZONE | 否 | — |
+| id | BIGINT | 否 | — |
+| created_at | TIMESTAMP WITH TIME ZONE | 否 | — |
+
+## analysis_runs
+
+| 字段 | PostgreSQL类型 | 可空 | 外键 |
+|---|---|---|---|
+| batch_id | BIGINT | 否 | analysis_batches.id |
+| step_key | VARCHAR(64) | 否 | — |
+| algorithm_key | VARCHAR(64) | 是 | — |
+| implementation_name | VARCHAR(64) | 是 | — |
+| implementation_version | VARCHAR(32) | 否 | — |
+| snapshot_id | BIGINT | 是 | analysis_input_snapshots.id |
+| dependencies | JSONB | 否 | — |
+| dependency_refs | JSONB | 否 | — |
+| status | VARCHAR(24) | 否 | — |
+| business_status | VARCHAR(32) | 是 | — |
+| reason | JSONB | 否 | — |
+| attempt_no | INTEGER | 否 | — |
+| attempt_token | VARCHAR(64) | 是 | — |
+| attempt_history | JSONB | 否 | — |
+| lease_expires_at | TIMESTAMP WITH TIME ZONE | 是 | — |
+| started_at | TIMESTAMP WITH TIME ZONE | 是 | — |
+| finished_at | TIMESTAMP WITH TIME ZONE | 是 | — |
 | updated_at | TIMESTAMP WITH TIME ZONE | 否 | — |
 | id | BIGINT | 否 | — |
 | created_at | TIMESTAMP WITH TIME ZONE | 否 | — |

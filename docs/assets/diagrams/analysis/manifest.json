@@ -1,0 +1,25 @@
+{
+  "status": "FRAMEWORK_AND_SYNTHETIC_DEMO_IMPLEMENTED",
+  "base_main": "77f7cbc",
+  "teacher_reference": "9865289",
+  "diagrams": [
+    {
+      "file": "03-analysis-data-flow-4k.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "labels": 109,
+      "sha256": "4fdbf738e04cc5f3720cd8754ab0d8b8c78cc7d19533da4a45192c74b6c9c90f"
+    },
+    {
+      "file": "04-algorithm-black-boxes-4k.png",
+      "size": [
+        3840,
+        2160
+      ],
+      "labels": 95,
+      "sha256": "067e10caab39843732d90a7ff9be8ce4fe37d1e1a1123a6abb27c2f063a5cb4e"
+    }
+  ]
+}

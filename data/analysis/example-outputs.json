@@ -1,0 +1,571 @@
+{
+  "judge_adapter": {
+    "schema_version": "analysis-v1",
+    "algorithm_key": "judge_adapter",
+    "implementation_name": "existing_judge_adapter",
+    "implementation_version": "1",
+    "input_hash": "46147a690198c802d69c93f2410d351ecd50e3b557c4c0d8bf27250136495113",
+    "is_mock": true,
+    "status": "OK",
+    "payload": {
+      "results": [
+        {
+          "student_key": "demo-u1",
+          "submission_key": "demo-code-0",
+          "passed_cases": 3,
+          "total_cases": 5,
+          "verdict": "WRONG_ANSWER",
+          "execution_mode": "MOCK",
+          "runtime_profile": "analysis-demo-v1",
+          "is_mock": true
+        },
+        {
+          "student_key": "demo-u2",
+          "submission_key": "demo-code-1",
+          "passed_cases": 4,
+          "total_cases": 5,
+          "verdict": "WRONG_ANSWER",
+          "execution_mode": "MOCK",
+          "runtime_profile": "analysis-demo-v1",
+          "is_mock": true
+        },
+        {
+          "student_key": "demo-u3",
+          "submission_key": "demo-code-2",
+          "passed_cases": 5,
+          "total_cases": 5,
+          "verdict": "ACCEPTED",
+          "execution_mode": "MOCK",
+          "runtime_profile": "analysis-demo-v1",
+          "is_mock": true
+        },
+        {
+          "student_key": "demo-u4",
+          "submission_key": "demo-code-3",
+          "passed_cases": 3,
+          "total_cases": 5,
+          "verdict": "WRONG_ANSWER",
+          "execution_mode": "MOCK",
+          "runtime_profile": "analysis-demo-v1",
+          "is_mock": true
+        },
+        {
+          "student_key": "demo-u5",
+          "submission_key": "demo-code-4",
+          "passed_cases": 4,
+          "total_cases": 5,
+          "verdict": "WRONG_ANSWER",
+          "execution_mode": "MOCK",
+          "runtime_profile": "analysis-demo-v1",
+          "is_mock": true
+        },
+        {
+          "student_key": "demo-u6",
+          "submission_key": "demo-code-5",
+          "passed_cases": 5,
+          "total_cases": 5,
+          "verdict": "ACCEPTED",
+          "execution_mode": "MOCK",
+          "runtime_profile": "analysis-demo-v1",
+          "is_mock": true
+        }
+      ],
+      "score_available": false,
+      "reason": "WEIGHTED_CASE_EVIDENCE_UNAVAILABLE"
+    },
+    "evidence": [],
+    "limitations": []
+  },
+  "code_similarity": {
+    "schema_version": "analysis-v1",
+    "algorithm_key": "code_similarity",
+    "implementation_name": "synthetic_demo",
+    "implementation_version": "1",
+    "input_hash": "a5ef15efefa9a598b9b01487b634632a66b30cbbcccd1cef258fce39eb7f6c34",
+    "is_mock": true,
+    "status": "OK",
+    "payload": {
+      "pairs": [
+        {
+          "left_key": "c1",
+          "right_key": "c2",
+          "similarity": "0.46",
+          "matching_spans": []
+        }
+      ],
+      "method": "synthetic-demo-only"
+    },
+    "evidence": [],
+    "limitations": [
+      "Synthetic demonstration only; not research evidence or a formal grade."
+    ]
+  },
+  "text_similarity": {
+    "schema_version": "analysis-v1",
+    "algorithm_key": "text_similarity",
+    "implementation_name": "synthetic_demo",
+    "implementation_version": "1",
+    "input_hash": "b4363337e13c0b5aeb91942635b7c1e06fc9a470a56386ebac6f3aa79f106641",
+    "is_mock": true,
+    "status": "OK",
+    "payload": {
+      "pairs": [
+        {
+          "left_key": "a1",
+          "right_key": "a2",
+          "similarity": "0.73",
+          "matching_spans": []
+        }
+      ],
+      "method": "synthetic-demo-only"
+    },
+    "evidence": [],
+    "limitations": [
+      "Synthetic demonstration only; not research evidence or a formal grade."
+    ]
+  },
+  "ai_signal": {
+    "schema_version": "analysis-v1",
+    "algorithm_key": "ai_signal",
+    "implementation_name": "synthetic_demo",
+    "implementation_version": "1",
+    "input_hash": "b4363337e13c0b5aeb91942635b7c1e06fc9a470a56386ebac6f3aa79f106641",
+    "is_mock": true,
+    "status": "OK",
+    "payload": {
+      "signals": [
+        {
+          "object_key": "a1",
+          "kind": "SYNTHETIC_EXAMPLE",
+          "value": null,
+          "explanation": "Demonstration fixture; not a real detected anomaly."
+        }
+      ],
+      "sample_count": 6,
+      "missing_count": 0
+    },
+    "evidence": [],
+    "limitations": [
+      "Synthetic demonstration only; not research evidence or a formal grade."
+    ]
+  },
+  "behavior": {
+    "schema_version": "analysis-v1",
+    "algorithm_key": "behavior",
+    "implementation_name": "event_counts_baseline",
+    "implementation_version": "1",
+    "input_hash": "82ccc5e0616f0863a93dd45a9c4611331a6cdd2b59c0937db422749323962c4a",
+    "is_mock": true,
+    "status": "OK",
+    "payload": {
+      "counts": {
+        "SUBMITTED": 6
+      },
+      "available_event_types": [
+        "SUBMITTED"
+      ],
+      "limitations": [
+        "Counts describe recorded events only; no inference of effort or AI usage."
+      ]
+    },
+    "evidence": [],
+    "limitations": []
+  },
+  "allocation": {
+    "schema_version": "analysis-v1",
+    "algorithm_key": "allocation",
+    "implementation_name": "balanced_greedy_baseline",
+    "implementation_version": "1",
+    "input_hash": "328db5ea3f09afb743ea46587c3050cee57dda4ca5166df2bbb2efe0825c502a",
+    "is_mock": true,
+    "status": "OK",
+    "payload": {
+      "feasible": true,
+      "edges": [
+        {
+          "answer_key": "a1",
+          "reviewer_key": "demo-u2"
+        },
+        {
+          "answer_key": "a1",
+          "reviewer_key": "demo-u3"
+        },
+        {
+          "answer_key": "a2",
+          "reviewer_key": "demo-u1"
+        },
+        {
+          "answer_key": "a2",
+          "reviewer_key": "demo-u4"
+        },
+        {
+          "answer_key": "a3",
+          "reviewer_key": "demo-u5"
+        },
+        {
+          "answer_key": "a3",
+          "reviewer_key": "demo-u6"
+        },
+        {
+          "answer_key": "a4",
+          "reviewer_key": "demo-u1"
+        },
+        {
+          "answer_key": "a4",
+          "reviewer_key": "demo-u2"
+        },
+        {
+          "answer_key": "a5",
+          "reviewer_key": "demo-u3"
+        },
+        {
+          "answer_key": "a5",
+          "reviewer_key": "demo-u4"
+        },
+        {
+          "answer_key": "a6",
+          "reviewer_key": "demo-u5"
+        },
+        {
+          "answer_key": "a6",
+          "reviewer_key": "demo-u1"
+        }
+      ],
+      "unmet_constraints": [],
+      "load_metrics": {
+        "demo-u1": 3,
+        "demo-u2": 2,
+        "demo-u3": 2,
+        "demo-u4": 2,
+        "demo-u5": 2,
+        "demo-u6": 1
+      }
+    },
+    "evidence": [],
+    "limitations": []
+  },
+  "aggregation": {
+    "schema_version": "analysis-v1",
+    "algorithm_key": "aggregation",
+    "implementation_name": "weighted_mean_baseline",
+    "implementation_version": "1",
+    "input_hash": "023b97e4a4877ebbd517dbb8bd96b1f1f601dc9e4e1d5a480b69fc0b05204172",
+    "is_mock": true,
+    "status": "OK",
+    "payload": {
+      "scores": [
+        {
+          "answer_key": "a1",
+          "normalized_score": "0.555000",
+          "valid_count": 2,
+          "dispersion": "0.01",
+          "reason": null
+        },
+        {
+          "answer_key": "a2",
+          "normalized_score": "0.645000",
+          "valid_count": 2,
+          "dispersion": "0.01",
+          "reason": null
+        },
+        {
+          "answer_key": "a3",
+          "normalized_score": "0.930000",
+          "valid_count": 2,
+          "dispersion": "0.04",
+          "reason": null
+        },
+        {
+          "answer_key": "a4",
+          "normalized_score": "0.575000",
+          "valid_count": 2,
+          "dispersion": "0.01",
+          "reason": null
+        },
+        {
+          "answer_key": "a5",
+          "normalized_score": "0.825000",
+          "valid_count": 2,
+          "dispersion": "0.01",
+          "reason": null
+        },
+        {
+          "answer_key": "a6",
+          "normalized_score": "0.735000",
+          "valid_count": 2,
+          "dispersion": "0.01",
+          "reason": null
+        }
+      ]
+    },
+    "evidence": [],
+    "limitations": []
+  },
+  "review_timing": {
+    "schema_version": "analysis-v1",
+    "algorithm_key": "review_timing",
+    "implementation_name": "synthetic_demo",
+    "implementation_version": "1",
+    "input_hash": "146d0e265733a519da8e4630e3bccc3f2476d57bec56314843b50a9dd438ab1f",
+    "is_mock": true,
+    "status": "OK",
+    "payload": {
+      "signals": [
+        {
+          "object_key": "collect_reviews-0",
+          "kind": "SYNTHETIC_EXAMPLE",
+          "value": null,
+          "explanation": "Demonstration fixture; not a real detected anomaly."
+        }
+      ],
+      "sample_count": 12,
+      "missing_count": 0
+    },
+    "evidence": [],
+    "limitations": [
+      "Synthetic demonstration only; not research evidence or a formal grade."
+    ]
+  },
+  "deviation": {
+    "schema_version": "analysis-v1",
+    "algorithm_key": "deviation",
+    "implementation_name": "synthetic_demo",
+    "implementation_version": "1",
+    "input_hash": "dbf1b51abef2bdd43111d1496996c1fb01c338c9dfdb35cedc69890bc10fa6de",
+    "is_mock": true,
+    "status": "OK",
+    "payload": {
+      "signals": [
+        {
+          "object_key": "collect_reviews-0",
+          "kind": "SYNTHETIC_EXAMPLE",
+          "value": null,
+          "explanation": "Demonstration fixture; not a real detected anomaly."
+        }
+      ],
+      "sample_count": 12,
+      "missing_count": 0
+    },
+    "evidence": [],
+    "limitations": [
+      "Synthetic demonstration only; not research evidence or a formal grade."
+    ]
+  },
+  "reviewer_bias": {
+    "schema_version": "analysis-v1",
+    "algorithm_key": "reviewer_bias",
+    "implementation_name": "synthetic_demo",
+    "implementation_version": "1",
+    "input_hash": "dbf1b51abef2bdd43111d1496996c1fb01c338c9dfdb35cedc69890bc10fa6de",
+    "is_mock": true,
+    "status": "OK",
+    "payload": {
+      "signals": [
+        {
+          "object_key": "collect_reviews-0",
+          "kind": "SYNTHETIC_EXAMPLE",
+          "value": null,
+          "explanation": "Demonstration fixture; not a real detected anomaly."
+        }
+      ],
+      "sample_count": 12,
+      "missing_count": 0
+    },
+    "evidence": [],
+    "limitations": [
+      "Synthetic demonstration only; not research evidence or a formal grade."
+    ]
+  },
+  "relationship": {
+    "schema_version": "analysis-v1",
+    "algorithm_key": "relationship",
+    "implementation_name": "synthetic_demo",
+    "implementation_version": "1",
+    "input_hash": "dbf1b51abef2bdd43111d1496996c1fb01c338c9dfdb35cedc69890bc10fa6de",
+    "is_mock": true,
+    "status": "OK",
+    "payload": {
+      "signals": [
+        {
+          "object_key": "collect_reviews-0",
+          "kind": "SYNTHETIC_EXAMPLE",
+          "value": null,
+          "explanation": "Demonstration fixture; not a real detected anomaly."
+        }
+      ],
+      "sample_count": 12,
+      "missing_count": 0
+    },
+    "evidence": [],
+    "limitations": [
+      "Synthetic demonstration only; not research evidence or a formal grade."
+    ]
+  },
+  "mastery": {
+    "schema_version": "analysis-v1",
+    "algorithm_key": "mastery",
+    "implementation_name": "synthetic_demo",
+    "implementation_version": "1",
+    "input_hash": "0c9e8fe4cd75a8d127428745cd180baa09c99b86fb1f53922468ae47832b3945",
+    "is_mock": true,
+    "status": "OK",
+    "payload": {
+      "estimates": [
+        {
+          "object_key": "demo-u1",
+          "dimension": "algorithm",
+          "value": "0.73",
+          "sample_count": 2,
+          "missing_count": 0
+        },
+        {
+          "object_key": "demo-u2",
+          "dimension": "algorithm",
+          "value": "0.35",
+          "sample_count": 2,
+          "missing_count": 0
+        },
+        {
+          "object_key": "demo-u3",
+          "dimension": "algorithm",
+          "value": "0.32",
+          "sample_count": 2,
+          "missing_count": 0
+        },
+        {
+          "object_key": "demo-u4",
+          "dimension": "algorithm",
+          "value": "0.2",
+          "sample_count": 2,
+          "missing_count": 0
+        },
+        {
+          "object_key": "demo-u5",
+          "dimension": "algorithm",
+          "value": "0.45",
+          "sample_count": 2,
+          "missing_count": 0
+        },
+        {
+          "object_key": "demo-u6",
+          "dimension": "algorithm",
+          "value": "0.31",
+          "sample_count": 2,
+          "missing_count": 0
+        }
+      ]
+    },
+    "evidence": [],
+    "limitations": [
+      "Synthetic demonstration only; not research evidence or a formal grade."
+    ]
+  },
+  "ability": {
+    "schema_version": "analysis-v1",
+    "algorithm_key": "ability",
+    "implementation_name": "synthetic_demo",
+    "implementation_version": "1",
+    "input_hash": "0c9e8fe4cd75a8d127428745cd180baa09c99b86fb1f53922468ae47832b3945",
+    "is_mock": true,
+    "status": "OK",
+    "payload": {
+      "estimates": [
+        {
+          "object_key": "demo-u1",
+          "dimension": "ability",
+          "value": "0.6",
+          "sample_count": 2,
+          "missing_count": 0
+        },
+        {
+          "object_key": "demo-u2",
+          "dimension": "ability",
+          "value": "0.73",
+          "sample_count": 2,
+          "missing_count": 0
+        },
+        {
+          "object_key": "demo-u3",
+          "dimension": "ability",
+          "value": "0.3",
+          "sample_count": 2,
+          "missing_count": 0
+        },
+        {
+          "object_key": "demo-u4",
+          "dimension": "ability",
+          "value": "0.58",
+          "sample_count": 2,
+          "missing_count": 0
+        },
+        {
+          "object_key": "demo-u5",
+          "dimension": "ability",
+          "value": "0.37",
+          "sample_count": 2,
+          "missing_count": 0
+        },
+        {
+          "object_key": "demo-u6",
+          "dimension": "ability",
+          "value": "0.55",
+          "sample_count": 2,
+          "missing_count": 0
+        }
+      ]
+    },
+    "evidence": [],
+    "limitations": [
+      "Synthetic demonstration only; not research evidence or a formal grade."
+    ]
+  },
+  "statistics": {
+    "schema_version": "analysis-v1",
+    "algorithm_key": "statistics",
+    "implementation_name": "descriptive_statistics",
+    "implementation_version": "1",
+    "input_hash": "e3eeaa1ecc6d65954bf2ca9a3b7ec84fe0c3dbc9979bead57351c8fec13c543f",
+    "is_mock": true,
+    "status": "OK",
+    "payload": {
+      "denominator": 6,
+      "submitted_count": 6,
+      "completed_count": 6,
+      "missing_count": 0,
+      "mean_score": "0.7554166666666666666666666667"
+    },
+    "evidence": [],
+    "limitations": []
+  },
+  "empirical_difficulty": {
+    "schema_version": "analysis-v1",
+    "algorithm_key": "empirical_difficulty",
+    "implementation_name": "synthetic_demo",
+    "implementation_version": "1",
+    "input_hash": "0c9e8fe4cd75a8d127428745cd180baa09c99b86fb1f53922468ae47832b3945",
+    "is_mock": true,
+    "status": "OK",
+    "payload": {
+      "estimates": [
+        {
+          "object_key": "demo-programming",
+          "dimension": "demo-programming",
+          "value": "0.55",
+          "sample_count": 6,
+          "missing_count": 0
+        },
+        {
+          "object_key": "demo-subjective",
+          "dimension": "demo-subjective",
+          "value": "0.8",
+          "sample_count": 6,
+          "missing_count": 0
+        }
+      ]
+    },
+    "evidence": [],
+    "limitations": [
+      "Synthetic demonstration only; not research evidence or a formal grade."
+    ]
+  }
+}

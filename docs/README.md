@@ -23,7 +23,7 @@ docs/
 ├── design/            设计：怎么建
 │   ├── shared/        跨模块共用
 │   │   ├── database.md            业务地图与写入边界
-│   │   ├── database-schema.md     24 张表字段字典（由 SQLAlchemy 模型生成）
+│   │   ├── database-schema.md     28 张表字段字典（由 SQLAlchemy 模型生成）
 │   │   ├── data-flows.md          信息流、状态与失败处理
 │   │   └── api-v1.md              当前 API 格式 v1（已实现）
 │   ├── teacher/       architecture · backend · frontend · database · api
@@ -76,4 +76,13 @@ docs/
 - 分工与开发顺序：[../MAIN.md](../MAIN.md)
 - 三人交接的原始摘要（历史）：[archive/team-handoff.md](archive/team-handoff.md)
 
+## 分析模块设计与会议材料（2026-10-26）
+
+分析框架与合成演示已实现；研究算法、正式互评/成绩业务仍待接入。
+
+- [分析框架设计、全业务依赖与黑盒契约](superpowers/specs/2026-10-26-analysis-framework-design.md)
+- [六条链路与黑盒输入输出4K图](assets/diagrams/analysis/README.md)
+- [会议讲解与算法认领](design/analysis/meeting-walkthrough.md)
 教师端2026-10-25联调实现与边界：[交付记录](implementation/evidence/teacher/2026-10-25-student-integration.md)。
+
+- [分析API](design/analysis/api.md) · [黑盒研究交接](design/analysis/black-boxes.md) · [运行与演示](implementation/runbooks/analysis-setup.md)

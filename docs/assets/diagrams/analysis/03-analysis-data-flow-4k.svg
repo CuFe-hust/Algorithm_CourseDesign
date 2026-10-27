@@ -1,0 +1,193 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160">
+<rect width="3840" height="2160" fill="#F4F7FB"/>
+<text x="90.0" y="63.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">ALGORITHM COURSE REVIEW  /  TEAM BRIEFING  /  03</text>
+<text x="90.0" y="170.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="74" font-weight="700" fill="#102A43">分析模块：六条业务链路</text>
+<text x="90.0" y="235.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#53677F">箭头表示数据依赖；跨步骤通过数据库快照与结果交接。横向串行，不同链路可按条件并行。</text>
+<rect x="2680" y="98" width="1070" height="82" rx="18" fill="#E6EDF7" stroke="none" stroke-width="2"/>
+<text x="2965.5" y="154.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="28" font-weight="400" fill="#102A43">框架 / 合成演示已实现 · 研究算法待替换</text>
+<polyline points="90,270 3750,270" fill="none" stroke="#CCD7E4" stroke-width="2" stroke-linejoin="round"/>
+<text x="110.0" y="384.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">01 编程评测线</text>
+<rect x="110" y="400" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="132.0" y="454.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">固定提交与测试集</text>
+<text x="132.0" y="504.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">代码 / 语言 / 测试版本</text>
+<text x="132.0" y="540.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">提交后立即入已有评测队列</text>
+<rect x="850" y="400" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#059669" stroke-width="3"/>
+<text x="872.0" y="454.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#059669">ALG-JUDGE · 已有评测</text>
+<text x="872.0" y="504.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">复用 app/judge</text>
+<text x="872.0" y="540.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">LOCAL真实运行，资源不可用为空</text>
+<rect x="1590" y="400" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#059669" stroke-width="3"/>
+<text x="1612.0" y="454.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#059669">评测摘要与采用候选</text>
+<text x="1612.0" y="504.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">通过点数 / 判定 / 运行上下文</text>
+<text x="1612.0" y="540.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">沿用现有最佳候选规则</text>
+<rect x="2330" y="400" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#C87914" stroke-width="3"/>
+<text x="2352.0" y="454.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#C87914">题目计分适配</text>
+<text x="2352.0" y="504.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">需要明确计分规则与证据</text>
+<text x="2352.0" y="540.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">缺依据 → UNAVAILABLE</text>
+<rect x="3070" y="400" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="3092.0" y="454.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">候选成绩数据</text>
+<text x="3092.0" y="504.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">提供给第05线</text>
+<text x="3092.0" y="540.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">候选 ≠ 已发布成绩</text>
+<polyline points="760,476 850,476" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="850.0,476.0 837.4,482.1 837.4,469.9" fill="#637A93"/>
+<polyline points="1500,476 1590,476" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="1590.0,476.0 1577.4,482.1 1577.4,469.9" fill="#637A93"/>
+<polyline points="2240,476 2330,476" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="2330.0,476.0 2317.4,482.1 2317.4,469.9" fill="#637A93"/>
+<polyline points="2980,476 3070,476" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="3070.0,476.0 3057.4,482.1 3057.4,469.9" fill="#637A93"/>
+<text x="110.0" y="601.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#53677F">P1逐提交执行；复用队友LOCAL评测。通过点数不直接冒充加权正式得分。</text>
+<text x="110.0" y="639.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">02 内容证据线</text>
+<rect x="110" y="655" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="132.0" y="709.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">同题作品集合快照</text>
+<text x="132.0" y="759.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">固定比较范围 / 提交版本</text>
+<text x="132.0" y="795.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">去除姓名学号等非必要信息</text>
+<rect x="850" y="655" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#C87914" stroke-width="3"/>
+<text x="872.0" y="709.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#C87914">三个独立黑盒 ∥</text>
+<text x="872.0" y="759.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">ALG-CODE / ALG-TEXT</text>
+<text x="872.0" y="795.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">ALG-AI：辅助信号接口</text>
+<rect x="1590" y="655" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#C87914" stroke-width="3"/>
+<text x="1612.0" y="709.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#C87914">相似对 / 片段 / 信号</text>
+<text x="1612.0" y="759.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">输入hash / 方法版本 / 局限</text>
+<text x="1612.0" y="795.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">未实现、样本不足单独表示</text>
+<rect x="2330" y="655" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#7C3AED" stroke-width="3"/>
+<text x="2352.0" y="709.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#7C3AED">教师查看与决定</text>
+<text x="2352.0" y="759.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">需要处置时记录理由与版本</text>
+<text x="2352.0" y="795.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">算法结果不是自动处罚</text>
+<rect x="3070" y="655" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="3092.0" y="709.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">版本化证据 / 处置</text>
+<text x="3092.0" y="759.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">教师显式处置才影响后续</text>
+<text x="3092.0" y="795.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">算法不直接改学生原始记录</text>
+<polyline points="760,731 850,731" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="850.0,731.0 837.4,737.1 837.4,724.9" fill="#637A93"/>
+<polyline points="1500,731 1590,731" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="1590.0,731.0 1577.4,737.1 1577.4,724.9" fill="#637A93"/>
+<polyline points="2240,731 2330,731" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="2330.0,731.0 2317.4,737.1 2317.4,724.9" fill="#637A93"/>
+<polyline points="2980,731 3070,731" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="3070.0,731.0 3057.4,737.1 3057.4,724.9" fill="#637A93"/>
+<text x="110.0" y="856.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#53677F">P2 / X1 / X2快照后并行；不等待评测或互评。不自动扣分，先作为教师复核证据。</text>
+<text x="110.0" y="894.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">03 主观互评线</text>
+<rect x="110" y="910" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="132.0" y="964.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">冻结答案与评审人群</text>
+<text x="132.0" y="1014.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">截止后最后有效主观答案</text>
+<text x="132.0" y="1050.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">题目 / 量表 / 名单 / 截止版本</text>
+<rect x="850" y="910" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#C87914" stroke-width="3"/>
+<text x="872.0" y="964.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#C87914">ALG-ALLOC · 匹配</text>
+<text x="872.0" y="1014.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">人数 / 禁止关系 / 历史</text>
+<text x="872.0" y="1050.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">输出完整映射或不可行原因</text>
+<rect x="1590" y="910" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#7C3AED" stroke-width="3"/>
+<text x="1612.0" y="964.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#7C3AED">教师确认开放</text>
+<text x="1612.0" y="1014.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">发布前检查输入hash未变</text>
+<text x="1612.0" y="1050.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">WAITING_HUMAN</text>
+<rect x="2330" y="910" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#7C3AED" stroke-width="3"/>
+<text x="2352.0" y="964.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#7C3AED">学生按量表评分</text>
+<text x="2352.0" y="1014.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">校验本人任务与评分范围</text>
+<text x="2352.0" y="1050.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">WAITING_HUMAN</text>
+<rect x="3070" y="910" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="3092.0" y="964.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">原始评价快照</text>
+<text x="3092.0" y="1014.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">分项分 / 评语 / 服务端时间</text>
+<text x="3092.0" y="1050.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">作为第04线的固定输入</text>
+<polyline points="760,986 850,986" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="850.0,986.0 837.4,992.1 837.4,979.9" fill="#637A93"/>
+<polyline points="1500,986 1590,986" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="1590.0,986.0 1577.4,992.1 1577.4,979.9" fill="#637A93"/>
+<polyline points="2240,986 2330,986" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="2330.0,986.0 2317.4,992.1 2317.4,979.9" fill="#637A93"/>
+<polyline points="2980,986 3070,986" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="3070.0,986.0 3057.4,992.1 3057.4,979.9" fill="#637A93"/>
+<text x="110.0" y="1111.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#53677F">S1 → S2 → S3 → S4。必须等待教师开放与学生提交；补评复用匹配并排除作者/已评者。</text>
+<text x="110.0" y="1149.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">04 聚合与异常线</text>
+<rect x="110" y="1165" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="132.0" y="1219.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">原始评价与事件</text>
+<text x="132.0" y="1269.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">固定评价集 / 量表 / 历史</text>
+<text x="132.0" y="1305.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">缺评与缺事件明确记录</text>
+<rect x="850" y="1165" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#C87914" stroke-width="3"/>
+<text x="872.0" y="1219.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#C87914">ALG-AGG · 初步聚合</text>
+<text x="872.0" y="1269.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">候选综合分 / 分歧 / 样本</text>
+<text x="872.0" y="1305.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">保存固定基准版本</text>
+<rect x="1590" y="1165" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#C87914" stroke-width="3"/>
+<text x="1612.0" y="1219.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#C87914">四类异常检测 ∥</text>
+<text x="1612.0" y="1269.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">DEV / BIAS / TIME / REL</text>
+<text x="1612.0" y="1305.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">证据不足 ≠ 未发现异常</text>
+<rect x="2330" y="1165" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#7C3AED" stroke-width="3"/>
+<text x="2352.0" y="1219.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#7C3AED">教师复核与处置</text>
+<text x="2352.0" y="1269.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">保留 / 降权 / 作废 / 改分</text>
+<text x="2352.0" y="1305.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">补评 → 回第03线</text>
+<rect x="3070" y="1165" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#C87914" stroke-width="3"/>
+<text x="3092.0" y="1219.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#C87914">ALG-AGG · 新版重算</text>
+<text x="3092.0" y="1269.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">复用聚合黑盒，不覆盖原分</text>
+<text x="3092.0" y="1305.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">有效候选供第05线</text>
+<polyline points="760,1241 850,1241" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="850.0,1241.0 837.4,1247.1 837.4,1234.9" fill="#637A93"/>
+<polyline points="1500,1241 1590,1241" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="1590.0,1241.0 1577.4,1247.1 1577.4,1234.9" fill="#637A93"/>
+<polyline points="2240,1241 2330,1241" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="2330.0,1241.0 2317.4,1247.1 2317.4,1234.9" fill="#637A93"/>
+<polyline points="2980,1241 3070,1241" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="3070.0,1241.0 3057.4,1247.1 3057.4,1234.9" fill="#637A93"/>
+<text x="110.0" y="1366.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#53677F">A4时长可早算；A2/A3/A5等待初步聚合。复核后重算新增版本，补评形成下一轮输入。</text>
+<text x="110.0" y="1404.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">05 成绩结算线</text>
+<rect x="110" y="1420" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="132.0" y="1474.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">编程 / 主观有效结果</text>
+<text x="132.0" y="1524.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">采用来源 / 版本 / 模拟标记</text>
+<text x="132.0" y="1560.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">等待必需的结果与教师处置</text>
+<rect x="850" y="1420" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="872.0" y="1474.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">题目候选分</text>
+<text x="872.0" y="1524.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">按题目满分归一化</text>
+<text x="872.0" y="1560.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">保留缺交 / 待评 / 系统失败</text>
+<rect x="1590" y="1420" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="1612.0" y="1474.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">作业候选总分</text>
+<text x="1612.0" y="1524.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">固定权重与缺交政策</text>
+<text x="1612.0" y="1560.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">输出总分或阻塞原因</text>
+<rect x="2330" y="1420" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#7C3AED" stroke-width="3"/>
+<text x="2352.0" y="1474.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#7C3AED">教师确认发布</text>
+<text x="2352.0" y="1524.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">检查完整性 / 当前版本</text>
+<text x="2352.0" y="1560.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">更正必须另存新版本</text>
+<rect x="3070" y="1420" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="3092.0" y="1474.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">成绩发布快照</text>
+<text x="3092.0" y="1524.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">正式发布只接真实有效来源</text>
+<text x="3092.0" y="1560.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">演示发布始终标为模拟</text>
+<polyline points="760,1496 850,1496" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="850.0,1496.0 837.4,1502.1 837.4,1489.9" fill="#637A93"/>
+<polyline points="1500,1496 1590,1496" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="1590.0,1496.0 1577.4,1502.1 1577.4,1489.9" fill="#637A93"/>
+<polyline points="2240,1496 2330,1496" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="2330.0,1496.0 2317.4,1502.1 2317.4,1489.9" fill="#637A93"/>
+<polyline points="2980,1496 3070,1496" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="3070.0,1496.0 3057.4,1502.1 3057.4,1489.9" fill="#637A93"/>
+<text x="110.0" y="1621.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#53677F">第01与第04线在此汇合；模拟分、缺依据、待评不自动补零，也不进入正式发布。</text>
+<text x="110.0" y="1659.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">06 学习分析线</text>
+<rect x="110" y="1675" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="132.0" y="1729.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">成绩 / 标签 / 事件</text>
+<text x="132.0" y="1779.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">固定发布版本与时间范围</text>
+<text x="132.0" y="1815.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">事件分支无需等待成绩</text>
+<rect x="850" y="1675" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#C87914" stroke-width="3"/>
+<text x="872.0" y="1729.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#C87914">五个分析黑盒 ∥</text>
+<text x="872.0" y="1779.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">掌握 / 能力 / 行为</text>
+<text x="872.0" y="1815.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">统计 / 经验难度</text>
+<rect x="1590" y="1675" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="1612.0" y="1729.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">结果与数据覆盖</text>
+<text x="1612.0" y="1779.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">样本数 / 缺失 / 待评</text>
+<text x="1612.0" y="1815.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">教师难度与经验难度分开</text>
+<rect x="2330" y="1675" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="2352.0" y="1729.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">权限投影与查询</text>
+<text x="2352.0" y="1779.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">教师看本课，学生仅本人</text>
+<text x="2352.0" y="1815.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">不从完成快推断态度或AI使用</text>
+<rect x="3070" y="1675" width="650" height="155" rx="14" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="3092.0" y="1729.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="700" fill="#2563EB">班级 / 个人面板</text>
+<text x="3092.0" y="1779.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">相同范围与版本才能比较</text>
+<text x="3092.0" y="1815.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#102A43">三类业务模块读取同一结果</text>
+<polyline points="760,1751 850,1751" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="850.0,1751.0 837.4,1757.1 837.4,1744.9" fill="#637A93"/>
+<polyline points="1500,1751 1590,1751" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="1590.0,1751.0 1577.4,1757.1 1577.4,1744.9" fill="#637A93"/>
+<polyline points="2240,1751 2330,1751" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="2330.0,1751.0 2317.4,1757.1 2317.4,1744.9" fill="#637A93"/>
+<polyline points="2980,1751 3070,1751" fill="none" stroke="#637A93" stroke-width="4" stroke-linejoin="round"/>
+<polygon points="3070.0,1751.0 3057.4,1757.1 3057.4,1744.9" fill="#637A93"/>
+<text x="110.0" y="1876.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#53677F">成绩后KNOW / ABILITY / STATS / DIFF可并行；BEHAV基于事件可独立运行，最后按版本汇合。</text>
+<rect x="90" y="1940" width="3660" height="175" rx="16" fill="#E6EDF7" stroke="none" stroke-width="2"/>
+<text x="120.0" y="1997.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="31" font-weight="700" fill="#102A43">绿：已有代码能力　橙：可替换算法　紫：必须有人参与　蓝：数据 / 规则 / 查询</text>
+<text x="120.0" y="2051.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="29" font-weight="400" fill="#53677F">DEMO合成数据与REAL_INPUT分开；真实缺输入就等待，模拟来源沿链传播。</text>
+<text x="120.0" y="2097.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="400" fill="#53677F">图中“并行”指数据依赖与研究可并行；首版可单worker运行。正式互评与成绩发布仍需后续业务接入。</text>
+</svg>

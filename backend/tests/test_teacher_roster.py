@@ -47,7 +47,7 @@ def test_preview_readonly_confirm_pending_idempotent_and_template(client, teache
 
 @pytest.mark.parametrize('raw', [b'', b'bad,headers\n1,2', b'\xff', b'student_no,full_name,class_name\n',
     b'student_no,full_name,class_name\n' + b'a' * (2 * 1024 * 1024),
-    ('student_no,full_name,class_name\n' + '\n'.join(f'{i},Test,Class' for i in range(2001))).encode()])
+    ('student_no,full_name,class_name\n' + '\n'.join(f'{i},Test,Class' for i in range(2001))).encode()], ids=['empty','headers','encoding','no-rows','file-too-large','too-many-rows'])
 def test_invalid_csv_rejected(client, teacher, raw):
     assert preview(client, teacher, raw).status_code == 422
 

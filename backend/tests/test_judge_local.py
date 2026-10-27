@@ -19,6 +19,7 @@ def test_checker_normalizes_line_endings_and_trailing_whitespace_only():
     assert not checker.matches(b'\xff', b'\xfe')
 
 
+@pytest.mark.skipif(os.name != 'posix', reason='LOCAL start gate requires POSIX')
 def test_python_accepted_wrong_answer_runtime_and_compilation(judge_work_root):
     cases = [CaseInput(1, '1 2\n', '3\n'), CaseInput(2, '5 7\n', '12\n')]
     accepted = local.execute('a,b=map(int,input().split())\nprint(a+b)\n', 'python3', cases, 1000)
@@ -36,6 +37,7 @@ def test_python_accepted_wrong_answer_runtime_and_compilation(judge_work_root):
     assert syntax.compiler_message and str(judge_work_root) not in syntax.compiler_message
 
 
+@pytest.mark.skipif(os.name != 'posix', reason='LOCAL start gate requires POSIX')
 def test_wall_clock_and_output_limits(judge_work_root):
     endless = local.execute('while True:\n    pass\n', 'python3', [CaseInput(1, '', '')], 200)
     assert endless.verdict == 'TIME_LIMIT_EXCEEDED'
@@ -45,6 +47,7 @@ def test_wall_clock_and_output_limits(judge_work_root):
     assert noisy.verdict == 'OUTPUT_LIMIT_EXCEEDED'
 
 
+@pytest.mark.skipif(os.name != 'posix', reason='LOCAL start gate requires POSIX')
 def test_gate_rejection_never_runs_the_student_program(judge_work_root, tmp_path):
     marker = tmp_path / 'executed.txt'
     source = f"open({str(marker)!r}, 'w').write('ran')\nprint('ok')\n"
@@ -85,6 +88,7 @@ def test_unavailable_language_is_a_configuration_error(judge_work_root):
 
 
 @pytest.mark.skipif(config.toolchain('cpp') is None, reason='g++ is not available on this host')
+@pytest.mark.skipif(os.name != 'posix', reason='LOCAL start gate requires POSIX')
 def test_cpp_local_execution(judge_work_root):
     source = '#include <iostream>\nint main(){long long a,b; if(!(std::cin>>a>>b)) return 0; std::cout<<a+b<<"\\n";}\n'
     outcome = local.execute(source, 'cpp', [CaseInput(1, '1 2\n', '3\n')], 1000)
@@ -92,6 +96,7 @@ def test_cpp_local_execution(judge_work_root):
 
 
 @pytest.mark.skipif(config.toolchain('c') is None, reason='gcc is not available on this host')
+@pytest.mark.skipif(os.name != 'posix', reason='LOCAL start gate requires POSIX')
 def test_c_local_execution_and_compile_error(judge_work_root):
     source = '#include <stdio.h>\nint main(){long long a,b; if(scanf("%lld %lld",&a,&b)!=2) return 0; printf("%lld\\n",a+b); return 0;}\n'
     outcome = local.execute(source, 'c', [CaseInput(1, '2 3\n', '5\n')], 1000)
@@ -102,6 +107,7 @@ def test_c_local_execution_and_compile_error(judge_work_root):
 
 
 @pytest.mark.skipif(config.toolchain('java') is None, reason='javac is not available on this host')
+@pytest.mark.skipif(os.name != 'posix', reason='LOCAL start gate requires POSIX')
 def test_java_local_execution(judge_work_root):
     source = ('import java.util.*;\npublic class Main{public static void main(String[] a){'
               'Scanner s=new Scanner(System.in); long x=s.nextLong(),y=s.nextLong(); System.out.println(x+y);}}\n')
@@ -109,6 +115,7 @@ def test_java_local_execution(judge_work_root):
     assert outcome.verdict == 'ACCEPTED', outcome.compiler_message
 
 
+@pytest.mark.skipif(os.name != 'posix', reason='LOCAL start gate requires POSIX')
 def test_temporary_directories_are_cleaned_up(judge_work_root):
     local.execute('print(1)\n', 'python3', [CaseInput(1, '', '1\n')], 1000)
     assert list(judge_work_root.glob('judge-*')) == []
