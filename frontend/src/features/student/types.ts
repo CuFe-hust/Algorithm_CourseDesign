@@ -191,3 +191,143 @@ export interface BatchStatusEntry {
   job: JobView | null;
   result: ResultSummary | null;
 }
+
+/* ---------------------------------------------------------- complexity report */
+
+export type ComplexityClass =
+  | "O(1)"
+  | "O(log n)"
+  | "O(n)"
+  | "O(n log n)"
+  | "O(n^2)"
+  | "O(n^2 log n)"
+  | "O(n^3)"
+  | "O(2^n)"
+  | "UNKNOWN";
+
+export type Confidence = "LOW" | "MEDIUM" | "HIGH";
+
+export interface StaticEvidence {
+  line: number;
+  reason: string;
+  kind: string;
+}
+
+export interface StaticAnalysis {
+  time_class: ComplexityClass;
+  space_class: ComplexityClass;
+  confidence: Confidence;
+  evidence: StaticEvidence[];
+  loop_depth: number;
+  max_loop_lines: number[];
+  recursive: boolean;
+  recursion_kind: string | null;
+  logarithmic_loops: number;
+  sorts: number;
+  dynamic_allocations: number;
+  notes: string[];
+  profile_family?: string | null;
+}
+
+export interface GrowthPoint {
+  n: number;
+  wall_ms: number;
+  reference_ms?: number | null;
+  io_ratio?: number | null;
+  peak_rss_kib?: number | null;
+  verdict: string;
+  detail?: string | null;
+  repeats?: number;
+}
+
+export interface GrowthCurvePoint {
+  n: number;
+  time_ms: number;
+}
+
+export interface GrowthFitPayload {
+  fitted_class: ComplexityClass;
+  r2: number;
+  exponent: number;
+  coefficient: number;
+  offset_ms: number;
+  floor_ms: number;
+  confidence: Confidence;
+  notes: string[];
+  used_points: GrowthPoint[];
+  discarded: GrowthPoint[];
+}
+
+export interface DynamicAnalysis {
+  measured_class: ComplexityClass;
+  io_class: ComplexityClass;
+  informative: boolean;
+  r2: number;
+  exponent: number | null;
+  confidence: Confidence;
+  floor_ms: number;
+  fit: GrowthFitPayload | null;
+  reference_fit: GrowthFitPayload | null;
+  accounting: {
+    n: number;
+    wall_ms: number;
+    reference_ms: number | null;
+    io_ratio: number | null;
+    peak_rss_kib: number | null;
+    verdict: string;
+  }[];
+  stop_reason?: string;
+  rungs?: GrowthPoint[];
+  curve?: GrowthCurvePoint[];
+}
+
+export interface ComplexitySummary {
+  time: {
+    class: ComplexityClass;
+    confidence: Confidence;
+    source: "DYNAMIC" | "STATIC";
+    static_class: ComplexityClass;
+    measured_class: ComplexityClass;
+    agreement: boolean | null;
+    r2?: number;
+    exponent?: number;
+    offset_ms?: number;
+    coefficient?: number;
+  };
+  space: {
+    class: ComplexityClass;
+    confidence: Confidence;
+    source: string;
+    static_class: ComplexityClass;
+  };
+  limitations: string[];
+}
+
+export interface ComplexityReport {
+  status:
+    | "SUCCEEDED"
+    | "STATIC_ONLY"
+    | "INELIGIBLE"
+    | "FAILED"
+    | "PENDING"
+    | "RUNNING";
+  language: string | null;
+  implementation_name: string;
+  implementation_version: string;
+  time: ComplexitySummary["time"];
+  space: ComplexitySummary["space"];
+  static: StaticAnalysis;
+  dynamic: DynamicAnalysis;
+  limitations: string[];
+  error: string | null;
+  requested_at: string | null;
+  finished_at: string | null;
+}
+
+export interface ComplexityResponse {
+  submission_id: string;
+  status: ComplexityReport["status"] | "NONE";
+  eligible: boolean | null;
+  report: ComplexityReport | null;
+  reason: string | null;
+}

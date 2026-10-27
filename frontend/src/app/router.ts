@@ -57,6 +57,11 @@ export const teacherRoutes = [
     component: () => import("../features/teacher/ProblemEditor.vue"),
   },
   {
+    path: "similarity",
+    name: "teacher-similarity",
+    component: () => import("../features/teacher/Similarity.vue"),
+  },
+  {
     path: "students",
     name: "teacher-students",
     component: () => import("../features/teacher/Students.vue"),

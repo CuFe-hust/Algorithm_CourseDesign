@@ -20,8 +20,8 @@ PLUGINS={p.key:p for p in [
     *[Plugin(k,label,c.DetectionInput,c.SignalOutput,'not_implemented') for k,label in
       [('deviation','单次偏离'),('reviewer_bias','长期偏差'),('relationship','异常关系')]],
     Plugin('review_timing','评价时长',c.TimingInput,c.SignalOutput,'not_implemented'),
-    *[Plugin(k,label,c.ContentInput,c.SimilarityOutput,'not_implemented') for k,label in
-      [('code_similarity','代码相似'),('text_similarity','文本相似')]],
+    Plugin('code_similarity','代码相似',c.ContentInput,c.SimilarityOutput,'winnowing_token','2'),
+    Plugin('text_similarity','文本相似',c.ContentInput,c.SimilarityOutput,'not_implemented'),
     Plugin('ai_signal','AI辅助信号',c.ContentInput,c.SignalOutput,'not_implemented'),
     *[Plugin(k,label,c.LearningInput,c.LearningOutput,'not_implemented') for k,label in
       [('mastery','知识点掌握'),('ability','学生能力'),('empirical_difficulty','经验难度')]],

@@ -4,3 +4,4 @@ from .assignments import Assignment, AssignmentItem, AssignmentParticipant
 from .submissions import Submission
 from .analysis import AnalysisJob, JudgeAttempt, JudgeRetryRequest, JudgeResult
 from .analytics import AnalysisBatch, AnalysisInputSnapshot, AnalysisRun, AnalysisArtifact
+from .complexity import ProblemComplexityProfile, ComplexityReport

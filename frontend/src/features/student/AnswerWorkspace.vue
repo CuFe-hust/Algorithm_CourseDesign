@@ -12,6 +12,7 @@ import SubjectiveEditor from "./components/SubjectiveEditor.vue";
 import DraftStatus from "./components/DraftStatus.vue";
 import JudgeFeedback from "./components/JudgeFeedback.vue";
 import SubmissionStatus from "./components/SubmissionStatus.vue";
+import ComplexityPanel from "./components/ComplexityPanel.vue";
 import { useDraft } from "./composables/useDraft";
 import { useSubmission } from "./composables/useSubmission";
 import { useJudgePolling } from "./composables/useJudgePolling";
@@ -49,6 +50,18 @@ const dirty = ref(false);
 const pendingLoad = ref<SubmissionDetail | null>(null);
 
 const programming = computed(() => item.value?.question_type === "PROGRAMMING");
+/** A real full pass is the only thing the complexity analysis accepts. */
+const analysable = computed(() => {
+  const result = detail.value?.result;
+  return Boolean(
+    programming.value &&
+    result &&
+    result.verdict === "ACCEPTED" &&
+    !result.is_mock &&
+    result.total_cases !== null &&
+    result.passed_cases === result.total_cases,
+  );
+});
 const draftContext = () => ({
   userId: userId.value,
   itemId: itemId.value,
@@ -441,6 +454,11 @@ onMounted(load);
           </RouterLink>
         </div>
       </section>
+
+      <ComplexityPanel
+        v-if="analysable && detail"
+        :submission-id="detail.submission_id"
+      />
 
       <section class="card">
         <div class="card-heading">

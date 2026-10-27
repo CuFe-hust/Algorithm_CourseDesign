@@ -26,6 +26,8 @@
 | PostgreSQL自动化验证和真实HTTP联调 | 最新测试与HTTP证据见教师/学生implementation/evidence |
 | 教师Vue工作台、CSV导入、四类题目与版本写接口 | 已实现，并含账号开通/重置、作业发布和截止管理 |
 | 匹配、互评原始分、聚合、异常、发布成绩 | 待分析Issue先补契约/表，再各模块接入 |
+| 同题相似代码检测 | 已实现，词法规格化 + Winnowing；教师证据页含行号区间与相似簇 |
+| 已通过代码复杂度分析 | 已实现，结构分析 + 伸缩档实测；学生端增长曲线与适用范围 |
 | 真实沙箱评测与复杂算法 | 后续实现与实验，不以随机值冒充真实效果 |
 
 **底座完成**指三个人可以使用同一工程、数据库结构、模拟数据和已实现接口并行开发，不表示课程项目的全部功能已经完成。另两台电脑仍需按README首次启动验证。
@@ -121,6 +123,10 @@ flowchart TB
 ## PostgreSQL与全量快照更新
 
 默认数据库已切换PostgreSQL，独立迁移pg0001，21张业务表不变。data/formatted提交120题、350组测试和217名脱敏学生/8班；默认导入ALGO_FULL_2026，演示课程独立保留。真实名册只在本机私有目录，公开仓库不含原姓名、学号或班名。三位成员拉取后按README重新配置本地PostgreSQL、升级迁移、演示种子和全量导入；原MySQL数据不直接混入新库。分析业务流程本轮未扩展，后续另行对齐。
+
+## 相似检测与复杂度分析交付
+
+`code_similarity` 插件由 `not_implemented` 升级为 `winnowing_token` v2，新增 `CODE_SIMILARITY` 批次（每题一个任务，绝不跨题）；新增迁移 pg0007 与两张表，承接每题的规模伸缩档与每次提交的复杂度报告。复杂度测量在独立 worker 中真实执行学生代码，明确区分“实测高于读取输入成本”和“实测只能给上界”两种情况，后一种回落到结构分析并把原因写进报告。详细设计与验证见[相似检测](docs/design/analysis/code-similarity.md)、[复杂度分析](docs/design/analysis/complexity.md)与[实现记录](docs/implementation/evidence/similarity-complexity/2026-10-28-implementation.md)。
 
 ## 分析运行框架交付
 

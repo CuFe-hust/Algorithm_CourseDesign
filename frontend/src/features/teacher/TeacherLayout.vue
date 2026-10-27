@@ -11,6 +11,7 @@ import {
   Menu,
   GraduationCap,
   ClipboardList,
+  Layers,
 } from "@lucide/vue";
 import { session, selectCourse, logout } from "../../shared/session";
 import { errorText } from "../../shared/api";
@@ -74,6 +75,10 @@ async function leave() {
           to="/teacher/problems"
           :class="{ selected: $route.path.startsWith('/teacher/problems') }"
           ><LibraryBig :size="19" />题库管理</RouterLink
+        ><RouterLink
+          to="/teacher/similarity"
+          :class="{ selected: $route.path.startsWith('/teacher/similarity') }"
+          ><Layers :size="19" />相似检测</RouterLink
         ><RouterLink
           to="/teacher/students"
           :class="{ selected: $route.path.startsWith('/teacher/students') }"

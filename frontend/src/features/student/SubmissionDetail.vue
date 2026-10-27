@@ -7,6 +7,7 @@ import { renderCode } from "../../shared/markdown";
 import * as api from "./api";
 import JudgeFeedback from "./components/JudgeFeedback.vue";
 import SubmissionStatus from "./components/SubmissionStatus.vue";
+import ComplexityPanel from "./components/ComplexityPanel.vue";
 import { newRequestKey } from "./composables/useSubmission";
 import type { SubmissionDetail } from "./types";
 
@@ -24,6 +25,15 @@ const code = computed(() =>
   detail.value?.language
     ? renderCode(detail.value.content, detail.value.language)
     : "",
+);
+
+/** Only a real full pass can be analysed; the backend re-checks this. */
+const analysable = computed(
+  () =>
+    detail.value?.result?.verdict === "ACCEPTED" &&
+    !detail.value.result.is_mock &&
+    detail.value.result.total_cases !== null &&
+    detail.value.result.passed_cases === detail.value.result.total_cases,
 );
 
 async function load() {
@@ -171,5 +181,13 @@ onMounted(load);
       <pre v-else class="mono code-block">{{ detail.content }}</pre>
     </section>
     <JudgeFeedback :result="detail.result" :job-status="detail.job_status" />
+    <ComplexityPanel
+      v-if="analysable"
+      :submission-id="detail.submission_id"
+      auto-load
+    />
+    <p v-else-if="detail.result && !detail.result.is_mock" class="hint">
+      复杂度分析只对真实通过（全部测试点通过）的代码开放。
+    </p>
   </template>
 </template>

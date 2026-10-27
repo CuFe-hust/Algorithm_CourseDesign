@@ -1,6 +1,7 @@
 from collections import Counter
 from decimal import Decimal
 from app.analysis.framework.contracts import AllocationOutput, AggregationOutput, AggregatedScore
+from app.analysis.algorithms import similarity as similarity_engine
 
 
 def allocation(data):
@@ -59,3 +60,31 @@ def statistics(data):
     completed={g.student_key for g in data.grades if g.normalized_score is not None}
     return dict(denominator=len(roster),submitted_count=len(set(data.submitted)),completed_count=len(completed),
         missing_count=len(roster-completed),mean_score=sum(valid)/len(valid) if valid else None)
+
+
+def code_similarity(data):
+    """Token-level code similarity over submissions of one assignment item.
+
+    The scope guard lives here as well as in the framework so a direct offline
+    call cannot compare answers of different questions: a pair spanning two
+    items would be meaningless evidence for a teacher.
+    """
+    items = {answer.answer_key: getattr(answer, 'item_key', None) for answer in data.answers}
+    scopes = {value for value in items.values() if value is not None}
+    if len(scopes) > 1:
+        raise ValueError('Similarity requires a single assignment item scope')
+    result = similarity_engine.compare(
+        [dict(answer_key=answer.answer_key, content=answer.content, language=answer.language)
+         for answer in data.answers],
+        minimum_tokens=data.minimum_tokens,
+        threshold=float(data.threshold))
+    return {
+        'pairs': result.pairs,
+        'method': 'winnowing_token_k12_w4',
+        'clusters': result.clusters,
+        'insufficient': result.insufficient,
+        'submission_count': result.submission_count,
+        'parameters': {'k': similarity_engine.KGRAM, 'window': similarity_engine.WINDOW,
+                       'minimum_tokens': data.minimum_tokens,
+                       'threshold': str(data.threshold)},
+    }

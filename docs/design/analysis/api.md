@@ -40,3 +40,29 @@ DEMO总是六名合成学生/编程与主观两类题，真实作业身份不进
 常见错误：401未登录；403非任课教师/首次改密；404跨课程或不存在；409 IDEMPOTENCY_CONFLICT、VERSION_CONFLICT、EVENT_NOT_READY、DEMO_ONLY、RETRY_NOT_ALLOWED、WRITE_CONFLICT；422未知字段/非法ID/seed、ANALYSIS_SCOPE_TOO_LARGE。ROOT快照上限8MiB、每批最多100个幂等命令。
 
 第六条线可独立运行：只调用现有ability占位黑盒，不等待其他线路。见[独立线路说明](student-ability-line.md)。
+
+## 相似代码检测与复杂度分析接口（2026-10-28 已实现）
+
+两族接口都挂在 `/api/v1/analysis` 下，沿用 Bearer 认证、字符串 ID、统一错误格式。相似检测仅教师可用；复杂度报告学生只能读自己的、教师可读本课程。
+
+| 方法 / 相对路径 | 权限 | 行为 |
+|---|---|---|
+| GET /courses/{course_id}/code-similarity/scope | 教师 | 可选作业范围：每题有多少人已提交，用于决定比对哪道题 |
+| POST /courses/{course_id}/code-similarity/batches | 教师 | 201；创建 `pipeline=CODE_SIMILARITY` 批次，每题一个 `code_similarity@<item_id>` 任务；不等待计算完成 |
+| GET /batches/{batch_id}/similarity | 教师 | 相似证据：配对、行号区间、相似簇、未参与比较的提交及原因；补学号与姓名 |
+| POST /submissions/{submission_id}/complexity | 本人 / 本课程教师 | 202；已存在报告时直接返回，不重跑；不合格返回 409 并说明原因 |
+| GET /submissions/{submission_id}/complexity | 本人 / 本课程教师 | 报告，或 `status=NONE` 表示尚未请求 |
+| GET /courses/{course_id}/complexity | 教师 | 班级概览：每生每题最新一份报告的类别与置信度 |
+| GET /courses/{course_id}/complexity/items | 教师 | 哪些编程题配置了规模伸缩档 |
+
+创建相似批次示例：
+
+```json
+{"request_id":"sim-001","assignment_id":"1","assignment_item_id":"1","threshold":"0.5"}
+```
+
+`assignment_item_id` 省略时比较该作业全部编程题，但每道题仍然独立成组，绝不跨题配对。
+
+复杂度资格（任一不满足即 409）：`SUBMISSION_WITHDRAWN`、`NOT_A_PROGRAMMING_ITEM`、`NOT_JUDGED_YET`、`MOCK_RESULT_NOT_ANALYSABLE`、`SUBMISSION_NOT_ACCEPTED`、`JUDGE_CONTEXT_CHANGED`、`JUDGE_CONFIGURATION_UNSUPPORTED`、`UNSUPPORTED_LANGUAGE`。
+
+批次计算由 `python -m scripts.run_analysis --watch` 消费；复杂度测量由 `python -m scripts.run_complexity --watch` 消费，两者分开，测量不会拖慢评测。批次与报告都持久化，刷新页面看到的是同一份结果。

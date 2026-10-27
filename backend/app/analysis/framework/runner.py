@@ -32,7 +32,7 @@ def claim(db):
     ticket=dict(run_id=str(run.id),batch_id=str(batch.id),token=run.attempt_token,algorithm=run.algorithm_key,
         step=run.step_key,payload=snapshot.payload,input_hash=snapshot.input_hash,is_mock=snapshot.is_mock,
         mode=batch.mode,seed=batch.seed,implementation=run.implementation_name,implementation_version=run.implementation_version,
-        root=root_snapshot(db,batch).payload)
+        root=(root_snapshot(db,batch).payload if root_snapshot(db,batch) is not None else {}))
     db.commit();return ticket
 
 

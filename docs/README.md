@@ -88,3 +88,11 @@ docs/
 - [分析API](design/analysis/api.md) · [黑盒研究交接](design/analysis/black-boxes.md) · [运行与演示](implementation/runbooks/analysis-setup.md)
 
 第六条线可独立运行：只调用现有ability占位黑盒，不等待其他线路。见[独立线路说明](design/analysis/student-ability-line.md)。
+
+## 相似代码检测与复杂度分析（2026-10-28）
+
+两个研究插件从占位升级为真实实现；迁移 head 为 pg0007，30 张业务表。
+
+- [同题代码相似检测](design/analysis/code-similarity.md)：词法规格化 + Winnowing 指纹，输出相似对、行号区间与相似簇。
+- [已通过代码的复杂度分析](design/analysis/complexity.md)：结构分析 + 伸缩档实测，给出类别、置信度、增长曲线与适用范围。
+- [实现与验证记录](implementation/evidence/similarity-complexity/2026-10-28-implementation.md) · [设计说明](superpowers/specs/2026-10-28-similarity-and-complexity-design.md)

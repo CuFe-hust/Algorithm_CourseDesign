@@ -76,12 +76,15 @@ class Content(Contract):
     answer_key: Key
     content: str
     language: str | None = None
+    item_key: Key | None = None
 
 
 class ContentInput(Contract):
     answers: list[Content]
     templates: list[str] = Field(default_factory=list)
     comparison_scope: str = 'SAME_ITEM'
+    threshold: Ratio = Decimal('0.5')
+    minimum_tokens: int = Field(default=40, ge=1)
 
 
 class SimilarPair(Contract):
@@ -89,11 +92,39 @@ class SimilarPair(Contract):
     right_key: Key
     similarity: Ratio
     matching_spans: list[dict[str, int]] = Field(default_factory=list)
+    # Both directions of containment are stored: a short submission copied into
+    # a long one scores high in one direction only, which is exactly the
+    # pattern a teacher needs to see.
+    containment_left: Ratio | None = None
+    containment_right: Ratio | None = None
+    jaccard: Ratio | None = None
+    shared_fingerprints: int | None = Field(default=None, ge=0)
+    left_fingerprints: int | None = Field(default=None, ge=0)
+    right_fingerprints: int | None = Field(default=None, ge=0)
+    matched_tokens: int | None = Field(default=None, ge=0)
+    longest_run_tokens: int | None = Field(default=None, ge=0)
+
+
+class SimilarCluster(Contract):
+    member_keys: list[Key]
+    size: int = Field(ge=3)
+    max_similarity: Ratio
+
+
+class SkippedSubmission(Contract):
+    answer_key: Key
+    reason: Literal['INSUFFICIENT_TOKENS', 'NOT_A_PROGRAMMING_LANGUAGE', 'TOKENIZATION_FAILED']
+    tokens: int = Field(ge=0)
+    detail: str | None = None
 
 
 class SimilarityOutput(Contract):
     pairs: list[SimilarPair]
     method: str
+    clusters: list[SimilarCluster] = Field(default_factory=list)
+    insufficient: list[SkippedSubmission] = Field(default_factory=list)
+    submission_count: int = Field(default=0, ge=0)
+    parameters: dict[str, str | int | float] = Field(default_factory=dict)
 
 
 class Evidence(Contract):

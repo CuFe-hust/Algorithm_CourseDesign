@@ -112,6 +112,19 @@ Remove-Item Env:DB_NAME
 
 ## 分析框架与算法研究
 
-新增分析批次、快照、任务与结果记录（28业务表，pg0006），与既有JUDGE队列分开。15插件契约与23步骤，六条合成链路可运行，真实缺输入明确等待；真实互评与正式成绩发布仍待接入。见[运行/逐段演示](docs/implementation/runbooks/analysis-setup.md)、[黑盒输入输出](docs/design/analysis/black-boxes.md)和[4K会议图](docs/assets/diagrams/analysis/README.md)。原生Windows支持API/MOCK/分析，当前POSIX LOCAL启动门不支持原生Windows。
+分析批次、快照、任务与结果记录（pg0006 起），与既有JUDGE队列分开。15插件契约与23步骤，六条合成链路可运行，真实缺输入明确等待；真实互评与正式成绩发布仍待接入。
+
+同题相似检测与已通过代码的复杂度分析已接入（pg0007，30业务表）：
+
+```powershell
+..\.venv\Scripts\python.exe -m alembic upgrade head
+..\.venv\Scripts\python.exe -m scripts.seed_complexity_profiles
+..\.venv\Scripts\python.exe -m scripts.run_analysis --watch      # 相似批次
+..\.venv\Scripts\python.exe -m scripts.run_complexity --watch    # 复杂度测量
+```
+
+复杂度测量会真实执行学生代码，与评测一样只适合受控开发环境，没有 Linux 沙箱。见[相似检测](docs/design/analysis/code-similarity.md)、[复杂度分析](docs/design/analysis/complexity.md)。真实 HTTP 冒烟：`scripts/smoke_similarity_complexity_http.py`。
+
+逐段演示见[运行手册](docs/implementation/runbooks/analysis-setup.md)、[黑盒输入输出](docs/design/analysis/black-boxes.md)和[4K会议图](docs/assets/diagrams/analysis/README.md)。原生Windows支持API/MOCK/分析，当前POSIX LOCAL启动门不支持原生Windows。原生Windows支持API/MOCK/分析，当前POSIX LOCAL启动门不支持原生Windows。
 
 第六条线可独立运行：只调用现有ability占位黑盒，不等待其他线路。见[独立线路说明](docs/design/analysis/student-ability-line.md)。
