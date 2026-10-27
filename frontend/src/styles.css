@@ -401,7 +401,9 @@ code {
 }
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  /* auto-fit keeps three-card panels (student home) and four-card panels
+     (teacher overview) both balanced instead of leaving an empty column. */
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 18px;
   margin-bottom: 24px;
 }
@@ -2206,4 +2208,10 @@ tr.selected td {
     grid-template-columns: 1fr;
     padding: 0 18px 18px;
   }
+}
+
+.complexity-hint {
+  display: block;
+  margin-top: 4px;
+  color: #6b7a93;
 }

@@ -4,7 +4,11 @@ import { useRoute } from "vue-router";
 import { History } from "@lucide/vue";
 import { errorText } from "../../shared/api";
 import * as api from "./api";
-import type { AssignmentSummary, HistoryEntry } from "./types";
+import type {
+  AssignmentSummary,
+  ComplexityResponse,
+  HistoryEntry,
+} from "./types";
 
 const route = useRoute();
 const courseId = computed(() => String(route.params.courseId));
@@ -27,6 +31,55 @@ const items = computed(() => {
 });
 const pages = computed(() => Math.max(1, Math.ceil(total.value / limit)));
 
+/**
+ * Complexity verdict per submission, fetched only for rows that are really
+ * accepted. The list stays readable without it: a missing entry simply renders
+ * no badge, it never guesses a class.
+ */
+const complexity = ref<Record<string, ComplexityResponse>>({});
+const COMPLEXITY_BATCH = 8;
+
+function analysable(entry: HistoryEntry) {
+  const summary = entry.summary;
+  return Boolean(
+    entry.status === "SUBMITTED" &&
+    summary &&
+    summary.verdict === "ACCEPTED" &&
+    !summary.is_mock &&
+    summary.total_cases !== null &&
+    summary.passed_cases === summary.total_cases,
+  );
+}
+
+async function loadComplexity(entries: HistoryEntry[]) {
+  const targets = entries
+    .filter(analysable)
+    .map((entry) => entry.submission_id);
+  for (let index = 0; index < targets.length; index += COMPLEXITY_BATCH) {
+    const chunk = targets.slice(index, index + COMPLEXITY_BATCH);
+    const results = await Promise.all(
+      chunk.map((id) =>
+        api
+          .getComplexity(id)
+          .then((value) => [id, value] as const)
+          .catch(() => null),
+      ),
+    );
+    const next = { ...complexity.value };
+    for (const row of results) if (row) next[row[0]] = row[1];
+    complexity.value = next;
+  }
+}
+
+function complexityLabel(entry: HistoryEntry): string {
+  const report = complexity.value[entry.submission_id]?.report;
+  if (!report) return "";
+  if (report.status === "PENDING" || report.status === "RUNNING")
+    return "分析中";
+  if (report.status === "FAILED") return "分析失败";
+  return `时间 ${report.time.class} · 空间 ${report.space.class}`;
+}
+
 async function load() {
   loading.value = true;
   error.value = "";
@@ -41,6 +94,7 @@ async function load() {
     });
     entries.value = page.items;
     total.value = page.total;
+    void loadComplexity(page.items);
   } catch (e) {
     error.value = errorText(e);
   } finally {
@@ -167,6 +221,12 @@ onMounted(async () => {
               <span class="badge" :class="verdict(entry).tone">{{
                 verdict(entry).label
               }}</span>
+              <small
+                v-if="complexityLabel(entry)"
+                class="secondary-line complexity-hint mono"
+              >
+                {{ complexityLabel(entry) }}
+              </small>
             </td>
           </tr>
         </tbody>

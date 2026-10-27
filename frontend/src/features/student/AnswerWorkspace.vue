@@ -291,6 +291,10 @@ onMounted(load);
   <div v-else-if="item" class="answer-layout">
     <div class="answer-main">
       <ProblemStatement :item="item" />
+      <ComplexityPanel
+        v-if="analysable && detail"
+        :submission-id="detail.submission_id"
+      />
       <section v-if="pendingLoad" class="alert warning">
         即将载入第
         {{ pendingLoad.version_no }} 版内容。这会替换当前草稿，且不会自动提交。
@@ -454,11 +458,6 @@ onMounted(load);
           </RouterLink>
         </div>
       </section>
-
-      <ComplexityPanel
-        v-if="analysable && detail"
-        :submission-id="detail.submission_id"
-      />
 
       <section class="card">
         <div class="card-heading">
