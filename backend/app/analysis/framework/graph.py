@@ -35,3 +35,9 @@ STEPS=(
     Step('empirical_difficulty',('result_snapshot',),algorithm='empirical_difficulty'),
 )
 BY_KEY={step.key:step for step in STEPS}
+
+
+def steps_for(batch):
+    if batch.configuration.get('pipeline')=='STUDENT_ABILITY':
+        return (Step('ability',algorithm='ability'),)
+    return STEPS

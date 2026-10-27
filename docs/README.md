@@ -86,3 +86,5 @@ docs/
 教师端2026-10-25联调实现与边界：[交付记录](implementation/evidence/teacher/2026-10-25-student-integration.md)。
 
 - [分析API](design/analysis/api.md) · [黑盒研究交接](design/analysis/black-boxes.md) · [运行与演示](implementation/runbooks/analysis-setup.md)
+
+第六条线可独立运行：只调用现有ability占位黑盒，不等待其他线路。见[独立线路说明](design/analysis/student-ability-line.md)。

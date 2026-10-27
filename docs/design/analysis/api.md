@@ -38,3 +38,5 @@ DEMO总是六名合成学生/编程与主观两类题，真实作业身份不进
 批次创建时固定全部算法实现名与版本，包括尚未就绪的任务；worker检查当前注册项是否仍一致，变更后旧批次记IMPLEMENTATION_CHANGED_CREATE_NEW_BATCH。失败重试输入不变，每次attempt使用新token和120秒租约；迟到结果拒收，过期任务需显式重试，不自动反复跑。
 
 常见错误：401未登录；403非任课教师/首次改密；404跨课程或不存在；409 IDEMPOTENCY_CONFLICT、VERSION_CONFLICT、EVENT_NOT_READY、DEMO_ONLY、RETRY_NOT_ALLOWED、WRITE_CONFLICT；422未知字段/非法ID/seed、ANALYSIS_SCOPE_TOO_LARGE。ROOT快照上限8MiB、每批最多100个幂等命令。
+
+第六条线可独立运行：只调用现有ability占位黑盒，不等待其他线路。见[独立线路说明](student-ability-line.md)。

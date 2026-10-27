@@ -8,7 +8,7 @@ from app.db.models import User
 from app.db.models.analytics import AnalysisBatch,AnalysisRun,AnalysisArtifact,AnalysisInputSnapshot
 from .contracts import digest
 from .catalog import PLUGINS
-from .graph import STEPS,BY_KEY
+from .graph import STEPS,BY_KEY,steps_for
 from .snapshots import capture
 from .payloads import prepare,human_output,MissingInput,NotApplicable,body
 
@@ -54,7 +54,7 @@ def save_output(db,run,output,is_mock):
 def refresh(db,batch):
     """Called with the batch lock held. Never runs algorithms or invents human input."""
     runs,artifacts=records(db,batch);root=root_snapshot(db,batch).payload
-    for step in STEPS:
+    for step in steps_for(batch):
         run=runs[step.key]
         if run.status not in ('WAITING_INPUT','WAITING_HUMAN'):continue
         blocked=[k for k in step.dependencies if runs[k].status not in TERMINAL]
@@ -123,6 +123,7 @@ def batch_view(db,batch_id,actor):
     batch=context(db,batch_id,actor);runs,artifacts=records(db,batch);root=root_snapshot(db,batch)
     return dict(id=str(batch.id),course_id=str(batch.course_id),mode=batch.mode,status=batch.status,
         revision_no=batch.revision_no,seed=batch.seed,schema_version='analysis-v2',input_hash=root.input_hash,
+        pipeline=batch.configuration.get('pipeline','FULL'),
         is_mock=root.is_mock,created_at=batch.created_at.astimezone(timezone.utc).isoformat(),
         steps=[dict(id=str(r.id),key=r.step_key,algorithm=r.algorithm_key,status=r.status,
             business_status=r.business_status,dependencies=r.dependencies,dependency_refs=r.dependency_refs,
@@ -159,7 +160,7 @@ def demo_event(db,batch_id,actor,body):
     if replay:db.commit();return batch_view(db,batch_id,actor)
     if batch.revision_no!=body['expected_version']:
         raise AppError(409,'VERSION_CONFLICT','批次已变化，请重新读取')
-    step=next((s for s in STEPS if s.event==body['event']),None)
+    step=next((s for s in steps_for(batch) if s.event==body['event']),None)
     if step is None:raise AppError(422,'INVALID_DEMO_EVENT','未知演示事件')
     run=db.scalar(select(AnalysisRun).where(AnalysisRun.batch_id==batch.id,AnalysisRun.step_key==step.key).with_for_update())
     if run.status!='WAITING_HUMAN':raise AppError(409,'EVENT_NOT_READY','当前步骤尚未等待此事件')
@@ -184,3 +185,42 @@ def retry_run(db,batch_id,run_id,actor,request_id):
         run.status='READY';run.reason={};run.attempt_token=None;run.lease_expires_at=None
         _remember(batch,key,h)
     db.commit();return batch_view(db,batch_id,actor)
+
+
+def create_ability_batch(db,course_id,actor,body):
+    from .ability_line import capture_input
+    require_teacher(db,course_id,actor.id)
+    db.scalar(select(User).where(User.id==actor.id).with_for_update())
+    h=digest(dict(body,course_id=str(course_id),pipeline='STUDENT_ABILITY'))
+    existing=db.scalar(select(AnalysisBatch).where(AnalysisBatch.created_by==actor.id,
+        AnalysisBatch.request_id==body['request_id']))
+    if existing:
+        if existing.request_hash!=h:raise AppError(409,'IDEMPOTENCY_CONFLICT','同一请求标识不能对应不同分析输入')
+        db.commit();return batch_view(db,existing.id,actor)
+    data=capture_input(db,course_id,actor,body['mode'],body.get('source_batch_id'))
+    if len(str(data).encode('utf-8'))>8*1024*1024:
+        raise AppError(422,'ANALYSIS_SCOPE_TOO_LARGE','输入快照超过8MiB，请缩小范围')
+    batch=AnalysisBatch(course_id=course_id,created_by=actor.id,mode=body['mode'],request_id=body['request_id'],
+        request_hash=h,seed=body['seed'],configuration=dict(schema_version='analysis-v2',pipeline='STUDENT_ABILITY',
+        source_batch_id=body.get('source_batch_id')),events={})
+    db.add(batch);db.flush()
+    db.add(AnalysisInputSnapshot(batch_id=batch.id,scope='ROOT',input_hash=digest(data),payload=data,is_mock=data['is_mock']))
+    plugin=PLUGINS['ability']
+    db.add(AnalysisRun(batch_id=batch.id,step_key='ability',algorithm_key='ability',dependencies=[],
+        implementation_name=plugin.implementation,implementation_version=plugin.version))
+    db.flush();refresh(db,batch);db.commit()
+    return batch_view(db,batch.id,actor)
+
+
+def ability_input_view(db,batch_id,actor):
+    batch=context(db,batch_id,actor)
+    if batch.configuration.get('pipeline')!='STUDENT_ABILITY':
+        raise AppError(404,'NOT_FOUND','此入口仅用于第六条独立线路')
+    snap=root_snapshot(db,batch)
+    run=db.scalar(select(AnalysisRun).where(AnalysisRun.batch_id==batch.id,AnalysisRun.step_key=='ability'))
+    algorithm_input=db.get(AnalysisInputSnapshot,run.snapshot_id) if run.snapshot_id else None
+    return dict(batch_id=str(batch.id),schema_version='analysis-v2',algorithm_key='ability',seed=batch.seed,parameters={},
+        snapshot_id=str(algorithm_input.id) if algorithm_input else None,
+        input_hash=algorithm_input.input_hash if algorithm_input else None,is_mock=snap.is_mock,
+        source_snapshot_id=str(snap.id),source_hash=snap.input_hash,
+        source=snap.payload['source'],payload=snap.payload['learning_input'])

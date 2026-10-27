@@ -113,3 +113,5 @@ Remove-Item Env:DB_NAME
 ## 分析框架与算法研究
 
 新增分析批次、快照、任务与结果记录（28业务表，pg0006），与既有JUDGE队列分开。15插件契约与23步骤，六条合成链路可运行，真实缺输入明确等待；真实互评与正式成绩发布仍待接入。见[运行/逐段演示](docs/implementation/runbooks/analysis-setup.md)、[黑盒输入输出](docs/design/analysis/black-boxes.md)和[4K会议图](docs/assets/diagrams/analysis/README.md)。原生Windows支持API/MOCK/分析，当前POSIX LOCAL启动门不支持原生Windows。
+
+第六条线可独立运行：只调用现有ability占位黑盒，不等待其他线路。见[独立线路说明](docs/design/analysis/student-ability-line.md)。

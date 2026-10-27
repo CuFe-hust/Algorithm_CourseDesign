@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160">
+<rect width="3840" height="2160" fill="#F4F7FB"/>
+<text x="90.0" y="63.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">ALGORITHM COURSE REVIEW  /  TEAM BRIEFING  /  06</text>
+<text x="90.0" y="170.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="74" font-weight="700" fill="#102A43">第六条线：先贯通，再研究算法</text>
+<text x="90.0" y="235.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#53677F">独立运行：固定输入 → 一个学生能力黑盒 → 保存并查询输出。当前只验证线路，不定义能力模型。</text>
+<rect x="2680" y="98" width="1070" height="82" rx="18" fill="#E6EDF7" stroke="none" stroke-width="2"/>
+<text x="3021.5" y="154.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="28" font-weight="400" fill="#102A43">线路已贯通 · 黑盒实现保持原样</text>
+<polyline points="90,270 3750,270" fill="none" stroke="#CCD7E4" stroke-width="2" stroke-linejoin="round"/>
+<rect x="120" y="660" width="900" height="650" rx="18" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="155.0" y="746.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="46" font-weight="700" fill="#2563EB">输入从哪里来</text>
+<text x="155.0" y="844.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="400" fill="#102A43">数据库中的题目结果快照</text>
+<text x="155.0" y="922.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="400" fill="#102A43">或：明确标记的演示样例</text>
+<text x="155.0" y="1000.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="400" fill="#102A43">核对课程、版本与数据来源</text>
+<text x="155.0" y="1078.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="400" fill="#102A43">复制并保存本次输入</text>
+<text x="155.0" y="1156.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="400" fill="#102A43">输入hash用于复现与核对</text>
+<rect x="1350" y="500" width="1120" height="980" rx="28" fill="#152A47" stroke="none" stroke-width="2"/>
+<text x="1712.0" y="716.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="66" font-weight="700" fill="#FFFFFF">学生能力分析</text>
+<text x="1765.0" y="818.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="58" font-weight="700" fill="#FFCB78">一个大黑盒</text>
+<text x="1754.0" y="999.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="39" font-weight="400" fill="#FFFFFF">内部算法暂不展开</text>
+<text x="1715.0" y="1091.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="39" font-weight="400" fill="#FFFFFF">继续使用现有占位实现</text>
+<text x="1695.5" y="1183.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="39" font-weight="400" fill="#FFFFFF">先确认输入和输出能接通</text>
+<text x="1715.0" y="1275.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="39" font-weight="400" fill="#FFFFFF">论文调研后再替换实现</text>
+<rect x="2790" y="660" width="900" height="650" rx="18" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="2825.0" y="746.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="46" font-weight="700" fill="#2563EB">输出保存与查询</text>
+<text x="2825.0" y="844.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="400" fill="#102A43">保存黑盒返回内容</text>
+<text x="2825.0" y="922.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="400" fill="#102A43">记录输入hash与实现版本</text>
+<text x="2825.0" y="1000.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="400" fill="#102A43">标明模拟 / 未实现状态</text>
+<text x="2825.0" y="1078.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="400" fill="#102A43">查询本次输入和结果</text>
+<text x="2825.0" y="1156.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="400" fill="#102A43">不将占位值当作真实能力</text>
+<polyline points="1020,980 1350,980" fill="none" stroke="#2563EB" stroke-width="6" stroke-linejoin="round"/>
+<polygon points="1350.0,980.0 1337.4,986.1 1337.4,973.9" fill="#2563EB"/>
+<polyline points="2470,980 2790,980" fill="none" stroke="#2563EB" stroke-width="6" stroke-linejoin="round"/>
+<polygon points="2790.0,980.0 2777.4,986.1 2777.4,973.9" fill="#2563EB"/>
+<rect x="120" y="1680" width="3570" height="310" rx="20" fill="#E6EDF7" stroke="none" stroke-width="2"/>
+<text x="160.0" y="1766.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="36" font-weight="700" fill="#102A43">当前独立批次只有一个 ability 任务，复用现有快照、任务、结果表与 worker。</text>
+<text x="160.0" y="1854.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="400" fill="#53677F">DEMO可直接演示；真实输入缺题目结果就等待；来源和模拟标记全程保留。</text>
+<text x="160.0" y="1934.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="34" font-weight="400" fill="#53677F">调用入口、输入查询、结果查询已接通。能力维度与具体算法留待后续调研决定。</text>
+</svg>

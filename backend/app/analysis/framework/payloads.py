@@ -12,6 +12,9 @@ def body(outputs,key):
 
 
 def prepare(key,root,outputs):
+    if key=='ability' and 'learning_input' in root:
+        if root['learning_input'] is None:raise MissingInput('QUESTION_RESULTS_REQUIRED')
+        return root['learning_input']
     if key=='judge_adapter':
         return dict(results=root['judge_results'],test_suite_key=root['test_suite_key'],evaluation_context=root['evaluation_context'])
     if key=='behavior':

@@ -40,6 +40,13 @@ class DemoEvent(Request):
     action:Literal['KEEP','SUPPLEMENT']='KEEP'
 
 
+class AbilityBatchCreate(Request):
+    mode:Literal['DEMO','REAL_INPUT']='DEMO'
+    seed:int=Field(default=20261026,strict=True,ge=-2147483648,le=2147483647)
+    source_batch_id:StrictStr|None=Field(default=None,pattern=r'^[1-9][0-9]{0,18}$')
+    _valid_source_id=field_validator('source_batch_id')(BatchCreate.valid_id.__func__)
+
+
 def write(db,fn,*args):
     try:return fn(db,*args)
     except IntegrityError:
@@ -61,6 +68,16 @@ def create(course_id:Id,body:BatchCreate,user:User=Depends(current_user),db:Sess
 @router.get('/batches/{batch_id}')
 def detail(batch_id:Id,user:User=Depends(current_user),db:Session=Depends(get_db)):
     return service.batch_view(db,batch_id,user)
+
+
+@router.post('/courses/{course_id}/student-ability/batches',status_code=201)
+def create_ability(course_id:Id,body:AbilityBatchCreate,user:User=Depends(current_user),db:Session=Depends(get_db)):
+    return write(db,service.create_ability_batch,course_id,user,body.model_dump())
+
+
+@router.get('/batches/{batch_id}/input')
+def ability_input(batch_id:Id,user:User=Depends(current_user),db:Session=Depends(get_db)):
+    return service.ability_input_view(db,batch_id,user)
 
 
 @router.post('/batches/{batch_id}/run')
