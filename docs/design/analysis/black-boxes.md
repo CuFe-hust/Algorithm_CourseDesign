@@ -17,7 +17,7 @@ output=invoke(sample['algorithm_key'],sample['payload'],mode='REAL_INPUT',
 print(output.model_dump_json())
 ```
 
-REAL_INPUT在这里表示不用模拟研究算法回退；独立函数本身不读取真实数据库。匹配/聚合/事件计数/基础统计有基线，其他研究插件目前明确NOT_IMPLEMENTED。DEMO调用未实现插件时才使用固定seed的演示输出，带is_mock=true。相同输入/seed/版本可复现，查询页面不重新生成随机值。
+REAL_INPUT在这里表示不用模拟研究算法回退；独立函数本身不读取真实数据库。匹配/聚合/事件计数/基础统计/代码相似有基线，其他研究插件目前明确NOT_IMPLEMENTED。DEMO调用未实现插件时才使用固定seed的演示输出，带is_mock=true。相同输入/seed/版本可复现，查询页面不重新生成随机值。
 
 替换步骤：
 
@@ -28,6 +28,8 @@ REAL_INPUT在这里表示不用模拟研究算法回退；独立函数本身不�
 5. 运行`python -m scripts.export_analysis_contracts`更新合成样例/schema。不得把真实名册、实际答案或真实评分导入公开样例。
 
 当前分派保留简单显式结构，未来插件多时再拆注册handler，不为本轮引入额外插件依赖。只改一个函数并不完成研究，仍需要基线对比与失败场景。
+
+`code_similarity` 已经从占位升级为真实实现（`winnowing_token` v2）：词法规格化 + Winnowing 指纹，输出相似对、行号区间与相似簇。参数 `k=12`、`window=4`、`minimum_tokens=40`、`threshold` 随输入快照保存，同一快照重算结果一致。算法说明、复杂度与失效场景见[同题代码相似检测](code-similarity.md)；DEMO 样例使用六份合成提交，其中四份互为改名版本，因此样例输出能看到 6 对证据与一个 4 成员簇。复杂度分析不使用这套插件，走独立的 `complexity_reports` 表与 `scripts/run_complexity.py`，见[复杂度分析](complexity.md)。
 
 共同元信息包含schema_version、algorithm_key、input_hash、implementation_name/version、is_mock、status、payload、evidence、limitations。样例输入另带snapshot_id、parameters、seed供框架/实验记录；调用时参数阈值等目前已显式放入payload，parameters保留为空，不会偷偷影响计算。
 
