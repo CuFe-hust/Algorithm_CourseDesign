@@ -34,8 +34,8 @@ def item_rows(db, assignment):
 
 
 def validate_items(db, course_id, items, *, publishing=False, check_node=False, allow_archived=False):
-    if publishing and (not items or sum(i.score_weight for i in items) != Decimal(1)):
-        raise AppError(422, 'INVALID_ASSIGNMENT_WEIGHTS', '发布需至少一道题，各题权重之和必须等于 1')
+    if publishing and (not items):
+        raise AppError(422, 'EMPTY_ASSIGNMENT_ITEMS', '发布需至少一道题')
     for item in items:
         version = db.get(ProblemVersion, item.problem_version_id)
         problem = db.get(Problem, version.problem_id) if version else None
@@ -86,7 +86,7 @@ def view(db, assignment):
             'code': p.code, 'title': v.title, 'question_type': p.question_type, 'version_no': v.version_no,
             'test_suite_id': str(i.test_suite_id) if i.test_suite_id else None,
             'rubric_id': str(i.rubric_id) if i.rubric_id else None,
-            'max_score': str(i.max_score), 'score_weight': str(i.score_weight),
+            'max_score': str(i.max_score),
             'required_reviewers': i.required_reviewers} for i, v, p in rows],
         'student_ids': [str(p.student_id) for p, _ in people],
         'participants': [{'student_id': str(p.student_id), 'student_no': u.student_no,

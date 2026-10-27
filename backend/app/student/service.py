@@ -55,7 +55,7 @@ def item_view(db,item_id,user):
         'input_spec_md':v.input_spec_md,'output_spec_md':v.output_spec_md,'data_constraints_md':v.data_constraints_md,
         'public_examples_md':v.public_examples_md,'difficulty_level':v.difficulty_level,'version_no':v.version_no,
         'problem_version_id':str(v.id),'server_time':utcnow().isoformat(),
-        'max_score':str(item.max_score),'score_weight':str(item.score_weight),'required_reviewers':item.required_reviewers,
+        'max_score':str(item.max_score),'required_reviewers':item.required_reviewers,
         'submission_deadline':iso(a.submission_deadline),'review_deadline':iso(a.review_deadline),
         'submission_open':a.submission_status=='OPEN' and utcnow()<a.submission_deadline,
         'allowed_languages':suite.allowed_languages if suite else [],

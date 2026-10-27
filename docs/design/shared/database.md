@@ -1,6 +1,6 @@
 # 数据库业务地图与写入边界
 
-当前：PostgreSQL，28张业务表+alembic_version，迁移head为pg0005。SQLAlchemy模型是开发入口，Alembic迁移是建库/升级入口，字段见[数据字典](database-schema.md)。
+当前：PostgreSQL，28张业务表+alembic_version，迁移head为pg0006。SQLAlchemy模型是开发入口，Alembic迁移是建库/升级入口，字段见[数据字典](database-schema.md)。
 
 ## 1. 当前表分组
 
@@ -29,7 +29,7 @@
 | version_no | 所属对象内的版本 | 题目/测试集/量表按对象；提交按学生+作业题目，不是全库流水号 |
 | problem_version_id | 本次题干与要求 | 作业引用冻结版本，修改题库不改变已布置作业 |
 | test_suite_id、rubric_id | 题目专用配置 | 编程题仅测试集，主观题仅量表；必须对应同一题目版本 |
-| max_score、score_weight | 题目满分、作业总分权重 | 分别保存；总分按100×Σ(题分/满分×权重)汇总，待评不能自动当0 |
+| max_score | 单题满分 | 每题独立记录，不提供作业总分权重 |
 | required_reviewers | 本次主观题的评审人数 | 编程为0，主观>0；真正是否能分配由A的约束检查决定 |
 | class_id_at_publish、class_name_at_publish | 布置时班级 | 历史统计使用快照，学生后来转班/班级改名不改变旧作业 |
 | submitted_at | 服务端接收时间 | UTC，严格早于deadline才接收新提交，不能用浏览器自报时间 |
@@ -37,7 +37,7 @@
 | parameters | 算法输入引用/参数 | 当前JUDGE含test_suite_id及problem_version_id；不是存随机结果的位置 |
 | is_mock、algorithm_name/version | 结果来源 | 消费者必须显示模拟标记，实验需记录算法版本 |
 
-示例：主观题满分80、量表满分100，原始评价先按量表规则归一化，再换算到80；作业权重0.25参与最终总分。具体聚合公式由A后续实现，此处只固定尺度。
+示例：主观题满分80、量表满分100，原始评价先按量表规则归一化，再换算到80；不跨题计算作业总分。具体聚合公式由A后续实现，此处只固定尺度。
 
 ## 3. 当前约束与事务
 

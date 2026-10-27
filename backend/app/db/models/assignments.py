@@ -29,13 +29,12 @@ class AssignmentItem(Mutable, Base):
     problem_version_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('problem_versions.id'))
     sort_order: Mapped[int] = mapped_column(Integer)
     max_score: Mapped[Decimal] = mapped_column(Numeric(8, 2))
-    score_weight: Mapped[Decimal] = mapped_column(Numeric(8, 6))
     required_reviewers: Mapped[int] = mapped_column(SmallInteger, default=0)
     test_suite_id: Mapped[int | None] = mapped_column(BigInteger, ForeignKey('test_suites.id'))
     rubric_id: Mapped[int | None] = mapped_column(BigInteger, ForeignKey('rubrics.id'))
     __table_args__ = (UniqueConstraint('assignment_id', 'sort_order'), UniqueConstraint('assignment_id', 'problem_version_id'),
         CheckConstraint('sort_order >= 0 AND required_reviewers >= 0', name='ck_item_nonnegative'),
-        CheckConstraint('max_score > 0 AND score_weight > 0 AND score_weight <= 1', name='ck_item_scores'),
+        CheckConstraint('max_score > 0', name='ck_item_scores'),
         CheckConstraint('(test_suite_id IS NOT NULL AND rubric_id IS NULL AND required_reviewers=0) OR (test_suite_id IS NULL AND rubric_id IS NOT NULL AND required_reviewers>0)', name='ck_item_config'))
 
 

@@ -12,7 +12,6 @@ export interface ItemSummary {
   title: string;
   question_type: QuestionType;
   max_score: string;
-  score_weight: string;
   sort_order?: number;
 }
 export interface AssignmentSummary {
@@ -62,7 +61,6 @@ export interface ItemDetail {
   problem_version_id: string;
   server_time: string;
   max_score: string;
-  score_weight: string;
   submission_deadline: string;
   review_deadline: string | null;
   submission_open: boolean;

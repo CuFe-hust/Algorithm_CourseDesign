@@ -44,8 +44,7 @@ def test_complete_demo_preserves_human_gates_and_parallel_branches(db,demo):
     steps={s['key']:s for s in batch_view(db,bid,teacher(db))['steps']}
     assert steps['resolve']['status']=='WAITING_HUMAN'
     event(db,bid,'RESOLVE');drain(db)
-    assert next(s for s in batch_view(db,bid,teacher(db))['steps'] if s['key']=='release')['status']=='WAITING_HUMAN'
-    event(db,bid,'RELEASE');drain(db)
+    assert next(s for s in batch_view(db,bid,teacher(db))['steps'] if s['key']=='result_snapshot')['status']=='SUCCEEDED'
     result=batch_view(db,bid,teacher(db))
     assert result['status']=='COMPLETE'
     assert all(s['status'] in ('SUCCEEDED','SKIPPED') for s in result['steps'])

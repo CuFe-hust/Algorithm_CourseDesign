@@ -35,7 +35,7 @@ class BatchCreate(Request):
 
 
 class DemoEvent(Request):
-    event:Literal['OPEN_REVIEW','SUBMIT_REVIEWS','RESOLVE','SUBMIT_SUPPLEMENT','RELEASE']
+    event:Literal['OPEN_REVIEW','SUBMIT_REVIEWS','RESOLVE','SUBMIT_SUPPLEMENT']
     expected_version:int=Field(ge=0,strict=True)
     action:Literal['KEEP','SUPPLEMENT']='KEEP'
 
@@ -50,7 +50,7 @@ def write(db,fn,*args):
 
 @router.get('/catalog')
 def catalog(user:User=Depends(current_user)):
-    return {'schema_version':'analysis-v1','items':catalogue()}
+    return {'schema_version':'analysis-v2','items':catalogue()}
 
 
 @router.post('/courses/{course_id}/batches',status_code=201)

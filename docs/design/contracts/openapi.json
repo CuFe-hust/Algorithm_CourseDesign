@@ -3180,19 +3180,6 @@
             ],
             "title": "Max Score"
           },
-          "score_weight": {
-            "anyOf": [
-              {
-                "type": "number",
-                "maximum": 1.0,
-                "exclusiveMinimum": 0.0
-              },
-              {
-                "type": "string"
-              }
-            ],
-            "title": "Score Weight"
-          },
           "required_reviewers": {
             "type": "integer",
             "maximum": 10.0,
@@ -3205,8 +3192,7 @@
         "type": "object",
         "required": [
           "problem_version_id",
-          "max_score",
-          "score_weight"
+          "max_score"
         ],
         "title": "AssignmentItemInput"
       },
@@ -3474,8 +3460,7 @@
               "OPEN_REVIEW",
               "SUBMIT_REVIEWS",
               "RESOLVE",
-              "SUBMIT_SUPPLEMENT",
-              "RELEASE"
+              "SUBMIT_SUPPLEMENT"
             ],
             "title": "Event"
           },

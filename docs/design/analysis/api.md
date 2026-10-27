@@ -5,7 +5,7 @@
 | 方法 / 相对路径 | 输入 | 行为 |
 |---|---|---|
 | GET /catalog | 无 | 15插件及输入/输出JSON Schema、实现名/版本、是否有演示实现 |
-| POST /courses/{course_id}/batches | 下述创建DTO | 201；保存ROOT快照和24步骤，独立步骤置READY；不在HTTP内执行算法 |
+| POST /courses/{course_id}/batches | 下述创建DTO | 201；保存ROOT快照和23步骤，独立步骤置READY；不在HTTP内执行算法 |
 | GET /batches/{batch_id} | 无 | 各任务状态、依赖、阻塞原因、attempt、完成结果；不返回原始ROOT内容 |
 | POST /batches/{batch_id}/run | `{request_id}` | 重新检查依赖，只将可执行任务置READY，不越过人工节点 |
 | POST /batches/{batch_id}/demo-events | 下述事件DTO | 仅DEMO；固定合成fixture推进人工步骤，不接受真实评分数据 |
@@ -19,7 +19,7 @@
 
 REAL_INPUT支持可选字符串`assignment_id`、`assignment_item_id`，均须属于当前课程；指定item时先解析所属作业，再读取其固定应交名单、提交、事件和评测摘要，不混入其他题。未指定item的多题快照仍可做整体行为统计，要求单题范围的算法明确等待SINGLE_ITEM_SCOPE_REQUIRED。
 
-DEMO总是六名合成学生/编程与主观两类题，真实作业身份不进入合成fixture。所有派生输出is_mock=true，formal_grade_release=false。真实模式读取当前执行上下文中的非mock评测候选，缺互评/量表/发布适配就等待；插件未实现时返回NOT_IMPLEMENTED，不自动用mock替代。
+DEMO总是六名合成学生/编程与主观两类题，真实作业身份不进入合成fixture。所有派生输出is_mock=true，。真实模式读取当前执行上下文中的非mock评测候选，缺互评/量表/发布适配就等待；插件未实现时返回NOT_IMPLEMENTED，不自动用mock替代。
 
 演示事件示例：
 
@@ -27,7 +27,7 @@ DEMO总是六名合成学生/编程与主观两类题，真实作业身份不进
 {"event":"OPEN_REVIEW","request_id":"open-001","expected_version":0,"action":"KEEP"}
 ```
 
-顺序：OPEN_REVIEW→SUBMIT_REVIEWS→RESOLVE→RELEASE。每次先运行worker并GET检查WAITING_HUMAN及revision_no。RESOLVE可选action=SUPPLEMENT，之后先等补充分配，再提交SUBMIT_SUPPLEMENT，再等重算与RELEASE。评分、计时和决定全部来自合成样例，不接收任意原始评价字段。
+顺序：OPEN_REVIEW→SUBMIT_REVIEWS→RESOLVE。每次先运行worker并GET检查WAITING_HUMAN及revision_no。RESOLVE可选action=SUPPLEMENT，之后先等补充分配，再提交SUBMIT_SUPPLEMENT，再等重算与题目结果快照。评分、计时和决定全部来自合成样例，不接收任意原始评价字段。
 
 创建幂等键为当前教师+request_id，包含课程及完整输入摘要；批次命令为当前教师+request_id，重用为不同操作返回409。完全相同事件重试不会重复写分；重试仍须使用原始请求正文（含原expected_version）。响应可返回当前批次视图，不保证回放旧JSON。
 

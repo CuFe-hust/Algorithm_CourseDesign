@@ -21,6 +21,8 @@ def context(db,batch_id,actor,lock=False):
     batch=db.scalar(stmt)
     if batch is None:raise AppError(404,'NOT_FOUND','分析批次不存在或不可访问')
     require_teacher(db,batch.course_id,actor.id)
+    if batch.configuration.get('schema_version')!='analysis-v2':
+        raise AppError(409,'ANALYSIS_BATCH_SCHEMA_OUTDATED','分析批次结构已更新，请新建批次')
     return batch
 
 
@@ -105,7 +107,7 @@ def create_batch(db,course_id,actor,body):
         raise AppError(422,'ANALYSIS_SCOPE_TOO_LARGE','输入快照超过8MiB，请缩小范围')
     batch=AnalysisBatch(course_id=course_id,assignment_id=int(body['assignment_id']) if body.get('assignment_id') else None,
         created_by=actor.id,mode=body['mode'],request_id=body['request_id'],request_hash=h,
-        seed=body['seed'],configuration={k:v for k,v in body.items() if k!='request_id'},events={})
+        seed=body['seed'],configuration={**{k:v for k,v in body.items() if k!='request_id'},'schema_version':'analysis-v2'},events={})
     db.add(batch);db.flush()
     db.add(AnalysisInputSnapshot(batch_id=batch.id,scope='ROOT',input_hash=digest(data),payload=data,is_mock=data['is_mock']))
     for step in STEPS:
@@ -120,8 +122,8 @@ def create_batch(db,course_id,actor,body):
 def batch_view(db,batch_id,actor):
     batch=context(db,batch_id,actor);runs,artifacts=records(db,batch);root=root_snapshot(db,batch)
     return dict(id=str(batch.id),course_id=str(batch.course_id),mode=batch.mode,status=batch.status,
-        revision_no=batch.revision_no,seed=batch.seed,schema_version='analysis-v1',input_hash=root.input_hash,
-        is_mock=root.is_mock,created_at=batch.created_at.astimezone(timezone.utc).isoformat(),formal_grade_release=False,
+        revision_no=batch.revision_no,seed=batch.seed,schema_version='analysis-v2',input_hash=root.input_hash,
+        is_mock=root.is_mock,created_at=batch.created_at.astimezone(timezone.utc).isoformat(),
         steps=[dict(id=str(r.id),key=r.step_key,algorithm=r.algorithm_key,status=r.status,
             business_status=r.business_status,dependencies=r.dependencies,dependency_refs=r.dependency_refs,
             reason=r.reason,attempt_no=r.attempt_no,result=artifacts[r.id].payload if r.id in artifacts and r.status in TERMINAL else None)
@@ -163,7 +165,7 @@ def demo_event(db,batch_id,actor,body):
     if run.status!='WAITING_HUMAN':raise AppError(409,'EVENT_NOT_READY','当前步骤尚未等待此事件')
     root=root_snapshot(db,batch).payload;runs,artifacts=records(db,batch)
     payload=human_output(step.key,root,outputs(runs,artifacts),body.get('action','KEEP'))
-    output=dict(schema_version='analysis-v1',algorithm_key=step.key,implementation_name='synthetic_human_event',
+    output=dict(schema_version='analysis-v2',algorithm_key=step.key,implementation_name='synthetic_human_event',
         implementation_version='1',input_hash=digest(dict(root_hash=digest(root),event=body)),
         is_mock=True,status='OK',payload=payload,evidence=[],limitations=['Synthetic event, not a real domain action.'])
     save_output(db,run,output,True)

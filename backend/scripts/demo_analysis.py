@@ -25,7 +25,7 @@ def settle(db,batch_id):
 
 
 def summary(view):
-    return {k:view[k] for k in ('id','mode','status','revision_no','is_mock','formal_grade_release')} | {
+    return {k:view[k] for k in ('id','mode','status','revision_no','is_mock')} | {
         'steps':[{'key':s['key'],'status':s['status'],'business_status':s['business_status'],'reason':s['reason']}
                  for s in view['steps']]}
 
@@ -36,7 +36,7 @@ def main():
     parser.add_argument('--teacher-login',default='demo.teacher')
     parser.add_argument('--seed',type=int,default=20261026)
     parser.add_argument('--batch-id',type=int)
-    parser.add_argument('--event',choices=['OPEN_REVIEW','SUBMIT_REVIEWS','RESOLVE','SUBMIT_SUPPLEMENT','RELEASE'])
+    parser.add_argument('--event',choices=['OPEN_REVIEW','SUBMIT_REVIEWS','RESOLVE','SUBMIT_SUPPLEMENT'])
     parser.add_argument('--auto-events',action='store_true',help='Explicitly simulate all human gates in DEMO only')
     parser.add_argument('--supplement',action='store_true')
     args=parser.parse_args()

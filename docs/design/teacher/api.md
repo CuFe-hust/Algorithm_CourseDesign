@@ -166,14 +166,13 @@ ACTIVATE仅接受PENDING，RESET仅接受ACTIVE；DISABLED不会自动启用。�
     "test_suite_id": null,
     "rubric_id": "21",
     "max_score": "100.00",
-    "score_weight": "1.000000",
     "required_reviewers": 3
   }],
   "student_ids": ["11", "12"]
 }
 ```
 
-items数组顺序就是题目顺序，最多100题；student_ids最多2000且唯一。编程题必须test_suite_id、rubric_id=null、required_reviewers=0；主观题反之且评审人数1～10。分值为正且最多两位小数，权重(0,1]且最多六位小数。草稿可无题或无名单；引用的题目仍必须冻结、同课程且配置属于该版本。发布要求至少一题/一人、权重和精确为1、未来截止及完整题干/参考/知识点/配置。
+items数组顺序就是题目顺序，最多100题；student_ids最多2000且唯一。编程题必须test_suite_id、rubric_id=null、required_reviewers=0；主观题反之且评审人数1～10。分值为正且最多两位小数，权重(0,1]且最多六位小数。草稿可无题或无名单；引用的题目仍必须冻结、同课程且配置属于该版本。发布要求至少一题/一人、未来截止及完整题干/参考/知识点/配置。
 
 发布事务重取学生当前班级，保存班级快照并固定发布者和时间；PENDING学生允许进入名单，但需教师开通才可登录。之后导入学生不会自动改变旧名单。发布后PUT返回409 `ASSIGNMENT_PUBLISHED`，只能通过schedule调整截止和开关；不改历史答案或评测。OPEN需未来截止并通过当前节点检查，CLOSED保持可读；评审截止若存在必须晚于提交截止。作业更新时间过期409 `ASSIGNMENT_CONFLICT`。
 

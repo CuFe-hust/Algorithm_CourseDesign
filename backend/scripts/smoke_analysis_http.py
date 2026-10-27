@@ -21,7 +21,7 @@ def main():
                 assert response.status_code==200,'Demo login failed'
                 return {'Authorization':'Bearer '+response.json()['access_token']}
             teacher=login('demo.teacher');student=login('demo.student01')
-            assert client.get('/api/v1/ready').json()['migration']=='pg0005'
+            assert client.get('/api/v1/ready').json()['migration']=='pg0006'
             courses=client.get('/api/v1/courses',headers=teacher).json()['items']
             course=next(c for c in courses if '合成演示' in c['name'])
             assert len(client.get('/api/v1/analysis/catalog',headers=teacher).json()['items'])==15
@@ -36,17 +36,17 @@ def main():
                 result=client.get(url,headers=teacher);assert result.status_code==200
                 return result.json()
             view=settle()
-            for event in ('OPEN_REVIEW','SUBMIT_REVIEWS','RESOLVE','SUBMIT_SUPPLEMENT','RELEASE'):
+            for event in ('OPEN_REVIEW','SUBMIT_REVIEWS','RESOLVE','SUBMIT_SUPPLEMENT'):
                 response=client.post(url+'/demo-events',headers=teacher,json=dict(event=event,
                     request_id='http-'+uuid.uuid4().hex,expected_version=view['revision_no'],
                     action='SUPPLEMENT' if event=='RESOLVE' else 'KEEP'))
                 assert response.status_code==200,response.text
                 view=settle()
-            assert view['status']=='COMPLETE' and view['is_mock'] and not view['formal_grade_release']
+            assert view['status']=='COMPLETE' and view['is_mock']
             assert all(s['status']=='SUCCEEDED' for s in view['steps'])
             assert all(s['result']['is_mock'] for s in view['steps'])
             print(json.dumps(dict(status='PASS',transport='real HTTP',batch_id=bid,steps=len(view['steps']),
-                catalogue=15,student_denied=True,supplement_path=True,is_mock=True,formal_grade_release=False,
+                catalogue=15,student_denied=True,supplement_path=True,is_mock=True,
                 credentials_printed=False)))
     finally:engine.dispose()
 

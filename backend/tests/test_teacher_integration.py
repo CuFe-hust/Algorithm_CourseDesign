@@ -36,7 +36,7 @@ def assignment_body(client, setup, mixed=False):
     return {'title': '教师学生联调作业', 'description_md': '固定版本的合成作业',
         'submission_deadline': (utcnow()+timedelta(days=2)).isoformat(), 'review_deadline': None,
         'items': [{'problem_version_id': c['problem_version_id'], 'test_suite_id': c['test_suite_id'],
-            'rubric_id': c['rubric_id'], 'max_score': '100.00', 'score_weight': str(1 / len(chosen)),
+            'rubric_id': c['rubric_id'], 'max_score': '100.00',
             'required_reviewers': 0 if c['test_suite_id'] else 3} for c in chosen],
         'student_ids': [students(client, setup)[0]['id']]}
 
@@ -179,9 +179,9 @@ def test_assignment_stale_draft_invalid_configs_and_atomic_failures(client, setu
     invalid = deepcopy(body); invalid['items'][0]['test_suite_id'] = '9223372036854775806'
     assert client.post(f'/api/v1/teacher/courses/{setup[1]}/assignments', headers=setup[0], json=invalid).status_code == 422
     assert db.scalar(select(func.count()).select_from(Assignment)) == count
-    body['items'][0]['score_weight'] = '.5'; a = create(client, setup, body)
-    assert publish(client, setup, a).status_code == 422
-    db.expire_all(); assert db.get(Assignment, int(a['id'])).published_at is None
+    a = create(client, setup, body)
+    assert all('score_weight' not in item for item in a['items'])
+    assert publish(client, setup, a).status_code == 200
     assert client.post(f'/api/v1/teacher/courses/{setup[1]}/assignments', headers=setup[2], json=body).status_code == 403
 
 

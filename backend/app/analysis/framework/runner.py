@@ -22,7 +22,7 @@ def recover_expired(db):
 
 
 def claim(db):
-    run=db.scalar(select(AnalysisRun).where(AnalysisRun.status=='READY').order_by(AnalysisRun.id)
+    run=db.scalar(select(AnalysisRun).join(AnalysisBatch).where(AnalysisRun.status=='READY', AnalysisBatch.status=='ACTIVE', AnalysisBatch.configuration['schema_version'].astext=='analysis-v2').order_by(AnalysisRun.id)
         .with_for_update(skip_locked=True).limit(1))
     if run is None:db.commit();return None
     batch=db.get(AnalysisBatch,run.batch_id);snapshot=db.get(AnalysisInputSnapshot,run.snapshot_id)
@@ -66,7 +66,7 @@ def process_one(db):
                 input_hash=ticket['input_hash']).model_dump(mode='json')
         else:
             if digest(ticket['payload'])!=ticket['input_hash']:raise ValueError('Input changed')
-            result=dict(schema_version='analysis-v1',algorithm_key=ticket['step'],implementation_name='deterministic_rule',
+            result=dict(schema_version='analysis-v2',algorithm_key=ticket['step'],implementation_name='deterministic_rule',
                 implementation_version='1',input_hash=ticket['input_hash'],is_mock=ticket['is_mock'],status='OK',
                 payload=rule_output(ticket['step'],ticket['payload'],ticket['root']),evidence=[],limitations=[])
         finish(db,ticket,result)

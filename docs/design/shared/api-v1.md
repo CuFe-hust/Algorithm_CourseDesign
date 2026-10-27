@@ -88,7 +88,7 @@ role为TEACHER或STUDENT，导航选择应以当前课程为单位。
     "id":"2", "title":"演示作业：四类混合题", "submission_status":"OPEN",
     "submission_deadline":"2026-10-28T08:00:00+00:00",
     "review_deadline":"2026-10-30T08:00:00+00:00",
-    "items":[{"id":"3","title":"有序数组中的左边界查找","question_type":"ALGORITHM_ANALYSIS","max_score":"100.00","score_weight":"0.250000"}]
+    "items":[{"id":"3","title":"有序数组中的左边界查找","question_type":"ALGORITHM_ANALYSIS","max_score":"100.00"}]
   }]
 }
 ```
@@ -107,7 +107,7 @@ role为TEACHER或STUDENT，导航选择应以当前课程为单位。
 | answer_requirements_md | string/null | 作答要求 |
 | input_spec_md、output_spec_md、data_constraints_md、public_examples_md | string/null | 编程说明、范围与公开样例 |
 | difficulty_level、version_no | integer | 教师难度1～5、题目内容版本 |
-| max_score、score_weight | string | 本次题目满分及作业权重 |
+| max_score | string | 本次本次题目满分 |
 | required_reviewers | integer | 主观题评审人数，编程为0 |
 | submission_deadline、review_deadline | datetime string/null | 提交截止必有，评审截止可空 |
 | submission_open | boolean | 当前状态与服务端截止综合判断 |

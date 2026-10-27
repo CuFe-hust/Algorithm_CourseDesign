@@ -1,12 +1,12 @@
 {
-  "schema_version": "analysis-v1",
+  "schema_version": "analysis-v2",
   "items": [
     {
       "key": "judge_adapter",
       "label": "已有评测适配",
       "implementation": "existing_judge_adapter",
       "implementation_version": "1",
-      "schema_version": "analysis-v1",
+      "schema_version": "analysis-v2",
       "input_schema": {
         "$defs": {
           "JudgeSummary": {
@@ -226,7 +226,7 @@
       "label": "评审匹配",
       "implementation": "balanced_greedy_baseline",
       "implementation_version": "1",
-      "schema_version": "analysis-v1",
+      "schema_version": "analysis-v2",
       "input_schema": {
         "$defs": {
           "Answer": {
@@ -386,7 +386,7 @@
       "label": "评分聚合",
       "implementation": "weighted_mean_baseline",
       "implementation_version": "1",
-      "schema_version": "analysis-v1",
+      "schema_version": "analysis-v2",
       "input_schema": {
         "$defs": {
           "Evaluation": {
@@ -572,7 +572,7 @@
       "label": "单次偏离",
       "implementation": "not_implemented",
       "implementation_version": "1",
-      "schema_version": "analysis-v1",
+      "schema_version": "analysis-v2",
       "input_schema": {
         "$defs": {
           "AggregatedScore": {
@@ -849,7 +849,7 @@
       "label": "长期偏差",
       "implementation": "not_implemented",
       "implementation_version": "1",
-      "schema_version": "analysis-v1",
+      "schema_version": "analysis-v2",
       "input_schema": {
         "$defs": {
           "AggregatedScore": {
@@ -1126,7 +1126,7 @@
       "label": "异常关系",
       "implementation": "not_implemented",
       "implementation_version": "1",
-      "schema_version": "analysis-v1",
+      "schema_version": "analysis-v2",
       "input_schema": {
         "$defs": {
           "AggregatedScore": {
@@ -1403,7 +1403,7 @@
       "label": "评价时长",
       "implementation": "not_implemented",
       "implementation_version": "1",
-      "schema_version": "analysis-v1",
+      "schema_version": "analysis-v2",
       "input_schema": {
         "$defs": {
           "Timing": {
@@ -1533,7 +1533,7 @@
       "label": "代码相似",
       "implementation": "not_implemented",
       "implementation_version": "1",
-      "schema_version": "analysis-v1",
+      "schema_version": "analysis-v2",
       "input_schema": {
         "$defs": {
           "Content": {
@@ -1661,7 +1661,7 @@
       "label": "文本相似",
       "implementation": "not_implemented",
       "implementation_version": "1",
-      "schema_version": "analysis-v1",
+      "schema_version": "analysis-v2",
       "input_schema": {
         "$defs": {
           "Content": {
@@ -1789,7 +1789,7 @@
       "label": "AI辅助信号",
       "implementation": "not_implemented",
       "implementation_version": "1",
-      "schema_version": "analysis-v1",
+      "schema_version": "analysis-v2",
       "input_schema": {
         "$defs": {
           "Content": {
@@ -1926,7 +1926,7 @@
       "label": "知识点掌握",
       "implementation": "not_implemented",
       "implementation_version": "1",
-      "schema_version": "analysis-v1",
+      "schema_version": "analysis-v2",
       "input_schema": {
         "$defs": {
           "Grade": {
@@ -1991,8 +1991,8 @@
         },
         "additionalProperties": false,
         "properties": {
-          "release_version": {
-            "title": "Release Version",
+          "results_snapshot_version": {
+            "title": "Results Snapshot Version",
             "type": "string"
           },
           "grades": {
@@ -2010,7 +2010,7 @@
           }
         },
         "required": [
-          "release_version",
+          "results_snapshot_version",
           "grades"
         ],
         "title": "LearningInput",
@@ -2085,7 +2085,7 @@
       "label": "学生能力",
       "implementation": "not_implemented",
       "implementation_version": "1",
-      "schema_version": "analysis-v1",
+      "schema_version": "analysis-v2",
       "input_schema": {
         "$defs": {
           "Grade": {
@@ -2150,8 +2150,8 @@
         },
         "additionalProperties": false,
         "properties": {
-          "release_version": {
-            "title": "Release Version",
+          "results_snapshot_version": {
+            "title": "Results Snapshot Version",
             "type": "string"
           },
           "grades": {
@@ -2169,7 +2169,7 @@
           }
         },
         "required": [
-          "release_version",
+          "results_snapshot_version",
           "grades"
         ],
         "title": "LearningInput",
@@ -2244,7 +2244,7 @@
       "label": "经验难度",
       "implementation": "not_implemented",
       "implementation_version": "1",
-      "schema_version": "analysis-v1",
+      "schema_version": "analysis-v2",
       "input_schema": {
         "$defs": {
           "Grade": {
@@ -2309,8 +2309,8 @@
         },
         "additionalProperties": false,
         "properties": {
-          "release_version": {
-            "title": "Release Version",
+          "results_snapshot_version": {
+            "title": "Results Snapshot Version",
             "type": "string"
           },
           "grades": {
@@ -2328,7 +2328,7 @@
           }
         },
         "required": [
-          "release_version",
+          "results_snapshot_version",
           "grades"
         ],
         "title": "LearningInput",
@@ -2403,7 +2403,7 @@
       "label": "学习行为",
       "implementation": "event_counts_baseline",
       "implementation_version": "1",
-      "schema_version": "analysis-v1",
+      "schema_version": "analysis-v2",
       "input_schema": {
         "$defs": {
           "Event": {
@@ -2503,7 +2503,7 @@
       "label": "基础统计",
       "implementation": "descriptive_statistics",
       "implementation_version": "1",
-      "schema_version": "analysis-v1",
+      "schema_version": "analysis-v2",
       "input_schema": {
         "$defs": {
           "Grade": {
@@ -2589,7 +2589,7 @@
             "title": "Grades",
             "type": "array"
           },
-          "release_version": {
+          "results_snapshot_version": {
             "anyOf": [
               {
                 "type": "string"
@@ -2599,7 +2599,7 @@
               }
             ],
             "default": null,
-            "title": "Release Version"
+            "title": "Results Snapshot Version"
           }
         },
         "required": [

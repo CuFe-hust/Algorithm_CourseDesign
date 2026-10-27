@@ -19,7 +19,7 @@ def build_examples():
         if step.algorithm:
             result=invoke(step.algorithm,payload,mode='DEMO',seed=20261026,input_hash=digest(payload)).model_dump(mode='json')
             if step.algorithm not in examples:
-                examples[step.algorithm]={'input':dict(schema_version='analysis-v1',algorithm_key=step.algorithm,
+                examples[step.algorithm]={'input':dict(schema_version='analysis-v2',algorithm_key=step.algorithm,
                     snapshot_id=f'synthetic-{step.key}',input_hash=digest(payload),parameters={},seed=20261026,payload=payload),
                     'output':result}
         else:result={'payload':rule_output(step.key,payload,root)}
@@ -34,7 +34,7 @@ def write(path,value):
 def main():
     directory=ROOT/'data/analysis';directory.mkdir(parents=True,exist_ok=True)
     examples=build_examples()
-    write(directory/'catalog.json',{'schema_version':'analysis-v1','items':catalogue()})
+    write(directory/'catalog.json',{'schema_version':'analysis-v2','items':catalogue()})
     write(directory/'example-inputs.json',{k:v['input'] for k,v in examples.items()})
     write(directory/'example-outputs.json',{k:v['output'] for k,v in examples.items()})
     print(json.dumps({'plugins':len(examples),'privacy':'synthetic-only','database_used':False}))

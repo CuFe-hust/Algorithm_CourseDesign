@@ -1,3 +1,5 @@
+> 2026-10-27更新：作业不提供总分或跨题权重。下文成绩/结果均指逐题记录，学习分析读取题目结果快照，不等待成绩发布。已实现接口以OpenAPI及各模块API为准。
+
 # 下一阶段协作接口提案与实施状态
 
 状态：教师题库、版本与名册导入已在本轮实现，精确请求格式以 [teacher_api.md](../teacher/api.md) 和 OpenAPI 为准。作业创建/发布已在2026-10-25实现，以下成绩、互评与分析仍为提案，未实现接口调用会404。不得把提案当作已上线能力。
@@ -12,9 +14,9 @@
 | POST /teacher/courses/{course_id}/students/import/confirm | 同文件+expected_sha256+preview_token+allow_updates | 已实现；确认时重校验数据库现状 |
 | GET/POST /teacher/courses/{course_id}/problems | 课程、题型、题号；详情包含草稿/版本 | 已实现；创建返回完整版本；教师专用DTO |
 | POST /teacher/problems/{problem_id}/versions | source_version_id；复制冻结版本后编辑草稿 | 已实现；不覆盖旧冻结版本 |
-| POST /teacher/courses/{course_id}/assignments | 标题、截止、选题/分值/权重、目标名单 | 草稿作业ID，尚不可被学生访问 |
+| POST /teacher/courses/{course_id}/assignments | 标题、截止、选题/单题满分、目标名单 | 草稿作业ID，尚不可被学生访问 |
 | POST /teacher/assignments/{assignment_id}/publish | 明确发布该草稿 | 发布信息、固定名单人数和题目版本 |
-| GET /teacher/courses/{course_id}/grades | assignment_id/student_id/class_id与分页 | 已发布成绩、缺交/待评分类、发布版本；不能引用mock判定给分 |
+| GET /teacher/courses/{course_id}/grades | assignment_id/student_id/class_id与分页 | 逐题有效结果、缺交/待评分类、结果快照版本；不能引用mock判定给分 |
 
 导入确认不得信任预览时的旧数据库状态，重新检查并事务写入。参考答案/隐藏测试只能在教师专用配置接口返回，不复用学生详情DTO。
 
@@ -25,7 +27,7 @@
   "title":"第一阶段作业",
   "submission_deadline":"2026-11-01T12:00:00+00:00",
   "review_deadline":"2026-11-03T12:00:00+00:00",
-  "items":[{"problem_version_id":"31","max_score":"100.00","score_weight":"1.000000","rubric_id":"21","required_reviewers":2}],
+  "items":[{"problem_version_id":"31","max_score":"100.00","rubric_id":"21","required_reviewers":2}],
   "student_ids":["11","12","13","14","15","16"]
 }
 ```
@@ -40,7 +42,6 @@
 | POST /teacher/review-previews/{preview_id}/publish | 检查预览未过期、输入未变，原子发布任务 | round_id、任务数、开放时间/操作人 |
 | POST /teacher/review-rounds/{round_id}/close | 锁定评价，创建聚合/检测任务或预览 | 计算任务ID与状态 |
 | POST /teacher/anomalies/{anomaly_id}/resolution | 验证教师决定并统一执行，必要时重算/补评 | resolution_id、状态、受影响结果版本 |
-| POST /teacher/assignments/{assignment_id}/grades/release | 完整性检查，冻结题分/总分/依据，新增发布 | release_id、version_no、发布时间 |
 
 处置请求建议包含action、reason、expected_version与request_id；action候选KEEP、DOWNWEIGHT、INVALIDATE_AND_REVIEW、OVERRIDE_SCORE。具体降权范围和手工分字段在AN02前共同确认；相同评价多规则命中不得重复乘权重。失败不先显示“已处理”。
 
@@ -80,7 +81,7 @@
 
 ## 4. A：统计和算法接口建议
 
-教师统计建议GET /analysis/courses/{course_id}/overview，学生统计GET /analysis/me/overview。均需权限；响应至少标明time_range、sample_count、missing_count、pending_count、grade_release_version和is_mock。经验难度与教师设定难度分开。
+教师统计建议GET /analysis/courses/{course_id}/overview，学生统计GET /analysis/me/overview。均需权限；响应至少标明time_range、sample_count、missing_count、pending_count、grade_results_snapshot_version和is_mock。经验难度与教师设定难度分开。
 
 算法核心应独立于FastAPI和SQLAlchemy，使用稳定DTO：
 

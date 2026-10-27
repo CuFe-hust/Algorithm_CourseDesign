@@ -122,9 +122,7 @@ onMounted(load);
           <span class="item-main">
             <strong>{{ item.title }}</strong>
             <small>
-              {{ typeName(item.question_type) }} · 满分 {{ item.max_score }} ·
-              权重
-              {{ item.score_weight }}
+              {{ typeName(item.question_type) }} · 满分 {{ item.max_score }}
               <template v-if="entries.get(item.id)">
                 · 已提交 {{ entries.get(item.id)?.submission_count ?? 0 }} 次
               </template>

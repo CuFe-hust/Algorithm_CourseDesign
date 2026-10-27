@@ -97,7 +97,7 @@ def _capture(db,course_id,assignment_id,assignment_item_id=None):
             selected.append(str(chosen.id))
     # REAL_INPUT batch-level algorithms intentionally wait for explicit item selection.
     # Never compare answers from different items in one similarity/matching task.
-    return dict(schema_version='analysis-v1',is_mock=False,roster=roster,reviewers=reviewers,answers=answers,code=code,
+    return dict(schema_version='analysis-v2',is_mock=False,roster=roster,reviewers=reviewers,answers=answers,code=code,
         rubric_max=None,required_reviewers=scopes[0]['required_reviewers'] if assignment_item_id and answers else None,
         reference_scores={},judge_results=judge,evaluations=None,grades=None,
         events=events,available_event_types=['SUBMITTED'],time_range={'to':now.isoformat()},

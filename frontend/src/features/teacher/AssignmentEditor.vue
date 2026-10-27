@@ -20,7 +20,6 @@ import {
   assignmentPayload,
   assignmentStates,
   localDate,
-  equalWeights,
   utcDate,
 } from "./assignmentTypes";
 import Pagination from "../../shared/Pagination.vue";
@@ -150,14 +149,11 @@ function add(choice: AssignmentChoice) {
   items.value.push({
     ...choice,
     max_score: "100.00",
-    score_weight: "1.000000",
     required_reviewers: choice.question_type === "PROGRAMMING" ? 0 : 3,
   });
-  equalWeights(items.value);
 }
 function remove(index: number) {
   items.value.splice(index, 1);
-  equalWeights(items.value);
 }
 function selectPage() {
   for (const s of students.value?.items || [])
@@ -398,16 +394,9 @@ onBeforeUnmount(() => window.removeEventListener("beforeunload", beforeUnload));
     <section class="card teacher-form">
       <div class="section-heading">
         <h2>已选题目 · {{ items.length }} 题</h2>
-        <button
-          v-if="draft"
-          :disabled="busy || !items.length"
-          @click="equalWeights(items)"
-        >
-          平均分配权重
-        </button>
       </div>
       <p class="hint">
-        发布时各题权重之和须为 1。主观题的评审人数仅保留配置，不触发互评。
+        各题独立记录表现。主观题的评审人数仅保留配置，不触发互评。
       </p>
       <div class="table-scroll">
         <table>
@@ -415,7 +404,6 @@ onBeforeUnmount(() => window.removeEventListener("beforeunload", beforeUnload));
             <tr>
               <th>固定题目版本</th>
               <th>满分</th>
-              <th>权重</th>
               <th>评审人数</th>
               <th v-if="draft">操作</th>
             </tr>
@@ -437,17 +425,6 @@ onBeforeUnmount(() => window.removeEventListener("beforeunload", beforeUnload));
                   type="number"
                   min="0.01"
                   step="0.01"
-                  :disabled="!draft || busy"
-                />
-              </td>
-              <td>
-                <input
-                  v-model="item.score_weight"
-                  aria-label="题目权重"
-                  type="number"
-                  min="0.000001"
-                  max="1"
-                  step="0.000001"
                   :disabled="!draft || busy"
                 />
               </td>

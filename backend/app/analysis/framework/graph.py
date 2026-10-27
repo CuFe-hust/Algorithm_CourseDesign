@@ -28,11 +28,10 @@ STEPS=(
     Step('collect_supplement',('supplement_allocation',),event='SUBMIT_SUPPLEMENT'),
     Step('reaggregation',('resolve','collect_supplement'),algorithm='aggregation'),
     Step('item_scores',('judge_adapter','reaggregation')),
-    Step('total_scores',('item_scores',)),
-    Step('release',('total_scores',),event='RELEASE'),
-    Step('mastery',('release',),algorithm='mastery'),
-    Step('ability',('release',),algorithm='ability'),
-    Step('statistics',('release',),algorithm='statistics'),
-    Step('empirical_difficulty',('release',),algorithm='empirical_difficulty'),
+    Step('result_snapshot',('item_scores',)),
+    Step('mastery',('result_snapshot',),algorithm='mastery'),
+    Step('ability',('result_snapshot',),algorithm='ability'),
+    Step('statistics',('result_snapshot',),algorithm='statistics'),
+    Step('empirical_difficulty',('result_snapshot',),algorithm='empirical_difficulty'),
 )
 BY_KEY={step.key:step for step in STEPS}

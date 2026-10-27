@@ -152,7 +152,7 @@
   "submission_deadline":"2026-11-01T12:00:00Z",
   "submission_open":true,
   "server_time":"2026-10-24T08:00:00Z",
-  "items":[{"id":"31","title":"示例编程题","question_type":"PROGRAMMING","max_score":"100.00","score_weight":"1.000000"}]
+  "items":[{"id":"31","title":"示例编程题","question_type":"PROGRAMMING","max_score":"100.00"}]
 }
 ```
 

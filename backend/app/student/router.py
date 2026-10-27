@@ -37,7 +37,7 @@ def assignments(course_id:Id,user:User=Depends(current_user),db:Session=Depends(
             .join(Problem,ProblemVersion.problem_id==Problem.id).where(AssignmentItem.assignment_id==a.id).order_by(AssignmentItem.sort_order)).all()
         output.append({'id':str(a.id),'title':a.title,'submission_status':a.submission_status,'submission_deadline':iso(a.submission_deadline),
             'review_deadline':iso(a.review_deadline),'items':[{'id':str(i.id),'title':v.title,'question_type':p.question_type,
-                'max_score':str(i.max_score),'score_weight':str(i.score_weight)} for i,v,p in items]})
+                'max_score':str(i.max_score),} for i,v,p in items]})
     return {'items':output}
 
 

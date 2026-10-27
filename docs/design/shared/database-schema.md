@@ -1,6 +1,6 @@
 # 当前数据库字段
 
-实现版本：PostgreSQL迁移pg0005；28张业务表，另有alembic_version。由SQLAlchemy模型自动生成类型与外键。
+实现版本：PostgreSQL迁移pg0006；28张业务表，另有alembic_version。由SQLAlchemy模型自动生成类型与外键。
 
 时间戳均带时区，服务端按UTC输出；ID为有符号64位整数，API以字符串传输。JSON列使用JSONB。
 
@@ -107,7 +107,6 @@
 | problem_version_id | BIGINT | 否 | problem_versions.id |
 | sort_order | INTEGER | 否 | — |
 | max_score | NUMERIC(8, 2) | 否 | — |
-| score_weight | NUMERIC(8, 6) | 否 | — |
 | required_reviewers | SMALLINT | 否 | — |
 | test_suite_id | BIGINT | 是 | test_suites.id |
 | rubric_id | BIGINT | 是 | rubrics.id |

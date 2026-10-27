@@ -152,7 +152,6 @@ class AssignmentItemInput(Input):
     test_suite_id: DbId | None = None
     rubric_id: DbId | None = None
     max_score: Decimal = Field(gt=0, le=999999, max_digits=8, decimal_places=2)
-    score_weight: Weight
     required_reviewers: int = Field(default=0, ge=0, le=10)
 
 

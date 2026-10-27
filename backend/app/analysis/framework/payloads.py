@@ -54,15 +54,15 @@ def prepare(key,root,outputs):
     if key=='review_timing':
         return dict(timings=body(outputs,'collect_reviews')['timings'],minimum_samples=2)
     if key in ('mastery','ability','empirical_difficulty','statistics'):
-        release=body(outputs,'release')
-        if 'grades' not in release:raise MissingInput('RELEASE_SNAPSHOT_REQUIRED')
-        data=dict(grades=release['grades'],release_version=release['release_version'])
+        snapshot=body(outputs,'result_snapshot')
+        if 'grades' not in snapshot:raise MissingInput('QUESTION_RESULTS_SNAPSHOT_REQUIRED')
+        data=dict(grades=snapshot['grades'],results_snapshot_version=snapshot['results_snapshot_version'])
         if key=='statistics':return dict(data,roster=root['roster'],submitted=root['submitted'])
         return dict(data,minimum_samples=2)
     if key=='item_scores':
         if not root['is_mock']:raise MissingInput('FORMAL_SCORE_POLICY_AND_EVIDENCE_REQUIRED')
         return dict(subjective_scores=body(outputs,'reaggregation')['scores'],judge_results=root['judge_results'])
-    if key=='total_scores':return dict(grades=body(outputs,'item_scores')['grades'])
+    if key=='result_snapshot':return dict(grades=body(outputs,'item_scores')['grades'])
     raise MissingInput('NO_ADAPTER_INSTALLED')
 
 
@@ -77,14 +77,9 @@ def rule_output(key,payload,root):
             grades.append(dict(student_key=result['student_key'],item_key='demo-programming',
                 normalized_score=str(Decimal(result['passed_cases'])/result['total_cases']),
                 knowledge_weights={'algorithm':'1'},difficulty=3))
-        return dict(grades=grades,policy='DEMO_EQUAL_CASES_AND_EQUAL_ITEMS_ONLY')
-    if key=='total_scores':
-        totals=[]
-        for student in root['roster']:
-            scores=[Decimal(g['normalized_score']) for g in payload['grades'] if g['student_key']==student]
-            if len(scores)!=2:raise MissingInput('DEMO_EXPECTS_TWO_ITEMS_PER_STUDENT')
-            totals.append(dict(student_key=student,score=str((sum(scores)/2*100).quantize(Decimal('.01')))))
-        return dict(grades=payload['grades'],totals=totals,policy='DEMO_EQUAL_CASES_AND_EQUAL_ITEMS_ONLY')
+        return dict(grades=grades,policy='DEMO_EQUAL_CASES_ONLY')
+    if key=='result_snapshot':
+        return dict(grades=payload['grades'],results_snapshot_version='question-results-'+digest(payload['grades'])[:16])
     raise ValueError('Unknown rule step')
 
 
@@ -107,8 +102,4 @@ def human_output(key,root,outputs,action='KEEP'):
                 if e['answer_key'] not in seen:removed.append(e['evaluation_key']);seen.add(e['answer_key'])
         return dict(action=action,invalidated_evaluations=removed,synthetic=True,
             reason='Synthetic meeting demonstration; no real student decision.')
-    if key=='release':
-        totals=body(outputs,'total_scores')
-        return dict(grades=totals['grades'],totals=totals['totals'],
-            release_version='demo-release-'+digest(totals)[:16],synthetic=True,formal=False)
     raise ValueError('Unsupported human step')

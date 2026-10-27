@@ -77,7 +77,7 @@ def main():
     body={'title':'HTTP联调：教师发布与学生作答 '+number[-4:], 'description_md':'仅使用合成身份的端到端验收。',
         'submission_deadline':deadline,'review_deadline':None,'student_ids':[target['id']],
         'items':[{'problem_version_id':c['problem_version_id'],'test_suite_id':c['test_suite_id'],'rubric_id':c['rubric_id'],
-                  'required_reviewers':0 if c['test_suite_id'] else 3,'max_score':'100.00','score_weight':'.250000'} for c in chosen]}
+                  'required_reviewers':0 if c['test_suite_id'] else 3,'max_score':'100.00'} for c in chosen]}
     a=api(f'/teacher/courses/{course}/assignments',token=teacher,method='POST',body=body,expected=201)
     api(f"/assignments/{a['id']}",token=student,expected=404)
     a=api(f"/teacher/assignments/{a['id']}/publish",token=teacher,method='POST',body={'expected_updated_at':a['updated_at'],'submission_status':'CLOSED'})

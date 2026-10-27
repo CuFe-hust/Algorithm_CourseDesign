@@ -1,6 +1,6 @@
 # 算法课程评审平台
 
-已实现统一教师/学生前端与共享FastAPI、PostgreSQL后端，28张业务表、迁移head为pg0005。教师可管理四类题目、导入及开通学生账号、发放/重置初始密码、创建发布作业、调整截止和查看采用结果；学生可改密、作答、提交、查看历史与LOCAL真实评测。匿名互评、评分聚合、正式成绩与Linux沙箱仍待后续模块。
+已实现统一教师/学生前端与共享FastAPI、PostgreSQL后端，28张业务表、迁移head为pg0006。教师可管理四类题目、导入及开通学生账号、发放/重置初始密码、创建发布作业、调整截止和查看采用结果；学生可改密、作答、提交、查看历史与LOCAL真实评测。匿名互评、评分聚合、正式成绩与Linux沙箱仍待后续模块。
 
 ## 三人从这里开始
 
@@ -12,7 +12,7 @@
 |---|---|---|
 | T：教师队友 | [教师Issue](docs/issues/01-teacher.md) | TH00统一Vue骨架，然后CSV、题库和作业写入 |
 | S：学生队友 | [学生Issue](docs/issues/02-student.md) | 当前真实作答页面，接着历史，再接AN01互评 |
-| A：数据库与分析负责人 | [分析Issue](docs/issues/03-database-analysis.md) | 在底座上补互评契约/数据/基础流程，再聚合/检测/发布 |
+| A：数据库与分析负责人 | [分析Issue](docs/issues/03-database-analysis.md) | 在底座上补互评契约/数据/基础流程，再聚合/检测/题目结果保存 |
 
 阅读顺序：本README启动 → MAIN和自己的Issue → [数据库与归属](docs/design/shared/database.md) → [信息流](docs/design/shared/data-flows.md) → [当前API格式](docs/design/shared/api-v1.md)。规划接口另见[下一阶段提案](docs/design/contracts/next-phase.md)，未标记为已实现的接口不能当作可调用。
 
@@ -106,10 +106,10 @@ Remove-Item Env:DB_NAME
 
 队友运行`python -m scripts.import_full_data`默认使用公开脱敏快照，导入ALGO_FULL_2026课程：70编程题、50主观题、350组测试、275份参考答案/代码、217名学生、8班。DEMO_ALGO仍用于四类题的登录与提交流程演示。全量课程不会自动发布作业，名册账号PENDING且无密码，教师端已提供显式开通和作业发布入口，导入不会自动替教师执行这两步。
 
-真实名册只供本机显式导入；不要把数据库备份、身份映射或原始xlsx上传GitHub。不同身份模式不能覆盖同一数据库的已有身份，请选定一种，详见[数据导入](docs/implementation/runbooks/data-import.md)。当前API业务格式保持兼容，迁移head为pg0005；互评和成绩分析框架继续由对应模块推进。
+真实名册只供本机显式导入；不要把数据库备份、身份映射或原始xlsx上传GitHub。不同身份模式不能覆盖同一数据库的已有身份，请选定一种，详见[数据导入](docs/implementation/runbooks/data-import.md)。当前API业务格式保持兼容，迁移head为pg0006；互评和成绩分析框架继续由对应模块推进。
 
 教师与学生的完整联调见[2026-10-25验证记录](docs/implementation/evidence/teacher/2026-10-25-student-integration.md)，先备份本机库再执行增量迁移。
 
 ## 分析框架与算法研究
 
-新增分析批次、快照、任务与结果记录（28业务表，pg0005），与既有JUDGE队列分开。15插件契约与24步骤，六条合成链路可运行，真实缺输入明确等待；真实互评与正式成绩发布仍待接入。见[运行/逐段演示](docs/implementation/runbooks/analysis-setup.md)、[黑盒输入输出](docs/design/analysis/black-boxes.md)和[4K会议图](docs/assets/diagrams/analysis/README.md)。原生Windows支持API/MOCK/分析，当前POSIX LOCAL启动门不支持原生Windows。
+新增分析批次、快照、任务与结果记录（28业务表，pg0006），与既有JUDGE队列分开。15插件契约与23步骤，六条合成链路可运行，真实缺输入明确等待；真实互评与正式成绩发布仍待接入。见[运行/逐段演示](docs/implementation/runbooks/analysis-setup.md)、[黑盒输入输出](docs/design/analysis/black-boxes.md)和[4K会议图](docs/assets/diagrams/analysis/README.md)。原生Windows支持API/MOCK/分析，当前POSIX LOCAL启动门不支持原生Windows。

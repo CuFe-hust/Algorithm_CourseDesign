@@ -137,7 +137,7 @@ class Grade(Contract):
 
 
 class LearningInput(Contract):
-    release_version: Key
+    results_snapshot_version: Key
     grades: list[Grade]
     minimum_samples: int = Field(default=2, ge=1)
 
@@ -176,7 +176,7 @@ class StatisticsInput(Contract):
     roster: list[Key]
     submitted: list[Key]
     grades: list[Grade]
-    release_version: Key | None = None
+    results_snapshot_version: Key | None = None
 
 
 class StatisticsOutput(Contract):
@@ -211,7 +211,7 @@ class JudgeOutput(Contract):
 
 
 class AlgorithmOutput(Contract):
-    schema_version: Literal['analysis-v1'] = 'analysis-v1'
+    schema_version: Literal['analysis-v2'] = 'analysis-v2'
     algorithm_key: str
     implementation_name: str
     implementation_version: str = '1'

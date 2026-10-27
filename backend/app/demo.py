@@ -88,7 +88,7 @@ def seed_demo(session: Session, password: str, deadline_days: int = 7) -> dict:
         session.add(assignment); session.flush()
         for n, (version, suite, rubric) in enumerate(selected, 1):
             session.add(AssignmentItem(assignment_id=assignment.id, problem_version_id=version.id, sort_order=n,
-                max_score=100, score_weight=Decimal('1')/len(selected), required_reviewers=2 if rubric else 0,
+                max_score=100, required_reviewers=2 if rubric else 0,
                 test_suite_id=suite.id if suite else None, rubric_id=rubric.id if rubric else None))
         for n, student in enumerate(students):
             cls = classes[n // 3]

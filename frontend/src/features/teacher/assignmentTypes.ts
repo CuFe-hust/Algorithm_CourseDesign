@@ -11,7 +11,6 @@ export interface AssignmentChoice {
 export interface AssignmentItem extends AssignmentChoice {
   id?: string;
   max_score: string;
-  score_weight: string;
   required_reviewers: number;
 }
 export interface AssignmentDetail {
@@ -72,20 +71,10 @@ export function assignmentPayload(
       test_suite_id: i.test_suite_id,
       rubric_id: i.rubric_id,
       max_score: i.max_score,
-      score_weight: i.score_weight,
       required_reviewers: i.required_reviewers,
     })),
     student_ids: [...studentIds],
   };
-}
-export function equalWeights(items: AssignmentItem[]) {
-  if (!items.length) return;
-  const part = Math.floor(1_000_000 / items.length);
-  items.forEach((item, index) => {
-    item.score_weight = (
-      (index === items.length - 1 ? 1_000_000 - part * index : part) / 1_000_000
-    ).toFixed(6);
-  });
 }
 export const assignmentStates = {
   DRAFT: "草稿",

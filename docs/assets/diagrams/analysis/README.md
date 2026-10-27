@@ -1,16 +1,19 @@
-# 分析模块会议图（设计稿）
+# 当前分析流程（2026-10-27）
 
-日期2026-10-26。两图均为3840×2160，原生绘制；附可编辑SVG。框架与合成演示已实现（pg0005），研究插件和真实互评/发布领域服务仍待接入。图中的“已有”依据main 77f7cbc的学生LOCAL评测及已有查询，教师最新接入参照独立分支9865289。
+已按会议决定取消作业总分与总分发布依赖；作业仍负责出题、名单和截止管理。单题满分、主观题互评分聚合、知识点权重均保留。
 
-- [六条业务链路 PNG](03-analysis-data-flow-4k.png) / [SVG](03-analysis-data-flow-4k.svg)：串行、并行条件、人工等待、反馈与汇合点。
-- [算法黑盒输入输出 PNG](04-algorithm-black-boxes-4k.png) / [SVG](04-algorithm-black-boxes-4k.svg)：15个插件槽位，其中JUDGE复用、基础统计优先用规则，其余可选择研究实现。
-- [完整设计与依赖表](../../../superpowers/specs/2026-10-26-analysis-framework-design.md)：输入输出、范围、版本、拟新增持久化、拟定接口及验收。
-- [会议讲解稿](../../../design/analysis/meeting-walkthrough.md)：建议讲解顺序及认领问题。
+当前流程：题目结果 → result_snapshot → 掌握 / 能力 / 基础统计 / 经验难度；行为指标独立。analysis-v2，pg0006，23步骤，15插件。
 
-六条线是业务场景分组，不是六个微服务，也不等于每条都必须并行执行。异常时长不依赖初步聚合；学习行为不依赖成绩。图中的聚合/检测框是概览，精确依赖以设计表为准。
+会议分工：学生同学负责原第1–2线，教师同学负责第3–4线，第5线撤销，你负责第6线。
 
-DEMO与真实输入模式分开，人工节点不能自动跳过；真实缺数据就等待，未实现就明确返回。分析批次接口与合成演示已实现；真实互评与成绩发布仍不能依据本图当作已经上线。
+在backend目录按README安装依赖后执行：
 
-重绘：在仓库根执行`python scripts/build_analysis_diagrams.py`，依赖Pillow、SQLAlchemy及已有制图字体；不连接数据库、不读取凭据或名册。PNG SHA256见manifest.json。
+```powershell
+..\.venv\Scripts\python.exe -m alembic upgrade head
+..\.venv\Scripts\python.exe -m scripts.seed_demo
+..\.venv\Scripts\python.exe -m scripts.demo_analysis --auto-events --supplement
+```
 
-实际运行见[分析运行手册](../../../implementation/runbooks/analysis-setup.md)，接口见[分析API](../../../design/analysis/api.md)。
+逐段事件为OPEN_REVIEW → SUBMIT_REVIEWS → RESOLVE，需要补评时追加SUBMIT_SUPPLEMENT；之后自动保存题目结果快照并运行学习分析，不再等待发布动作。原schema批次只保留为历史，更新后新建批次，不再使用旧批次3继续演示。
+
+研究算法大多仍是模拟槽位；真实模式缺输入明确等待，不以模拟值代替真实结果。精确契约、JSON样例、当前数据流图见仓库的docs/design/analysis和data/analysis。

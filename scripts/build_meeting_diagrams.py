@@ -114,7 +114,7 @@ NODES = [
  ('rubrics',3,2,'评分量表版本',['problem_version_id FK','version_no · name','status · frozen_at'],'#0D9488'),
  ('rubric_items',3,3,'评分维度',['rubric_id FK','name · max_score','description · sort_order'],'#0D9488'),
  ('assignments',4,0,'一次作业',['course_id FK · created_by FK','submission_deadline / review_deadline','submission_status'],BLUE),
- ('assignment_items',4,1,'作业中的题目',['problem_version_id FK','test_suite_id FK / rubric_id FK','max_score · score_weight · 互评人数'],BLUE),
+ ('assignment_items',4,1,'作业中的题目',['problem_version_id FK','test_suite_id FK / rubric_id FK','max_score · 互评人数'],BLUE),
  ('assignment_participants',4,2,'应交名单快照',['assignment_id FK · student_id FK','class_id_at_publish FK','class_name_at_publish'],BLUE),
  ('submissions',5,0,'学生正式提交',['assignment_item_id FK · student_id FK','version_no · content · language','UQ(student_id, client_request_id)'],GREEN),
  ('analysis_jobs',5,1,'代码分析任务',['submission_id FK','kind=JUDGE · status','parameters · 输入版本引用'],AMBER),

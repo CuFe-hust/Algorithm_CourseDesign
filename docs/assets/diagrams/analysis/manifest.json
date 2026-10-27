@@ -9,8 +9,8 @@
         3840,
         2160
       ],
-      "labels": 109,
-      "sha256": "4fdbf738e04cc5f3720cd8754ab0d8b8c78cc7d19533da4a45192c74b6c9c90f"
+      "labels": 92,
+      "sha256": "6cda80c54aef8c41c474f5c245a2d9b57c397b9deb1785b8fc3e4bd321c48597"
     },
     {
       "file": "04-algorithm-black-boxes-4k.png",
@@ -19,7 +19,7 @@
         2160
       ],
       "labels": 95,
-      "sha256": "067e10caab39843732d90a7ff9be8ce4fe37d1e1a1123a6abb27c2f063a5cb4e"
+      "sha256": "daee294717deabec2b69ae4e45b432dba1528cc9e8077475c66b95ba207f734c"
     }
   ]
 }

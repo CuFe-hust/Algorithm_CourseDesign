@@ -8,7 +8,7 @@ def demo_snapshot(seed):
     answers=[dict(answer_key=f'a{i}',author_key=u,content=f'Synthetic proof {i}: induction.',language=None)
              for i,u in enumerate(roster,1)]
     code=[dict(answer_key=f'c{i}',author_key=u,content=f'print({i})',language='python3') for i,u in enumerate(roster,1)]
-    return dict(schema_version='analysis-v1',is_mock=True,roster=roster,reviewers=roster,answers=answers,code=code,
+    return dict(schema_version='analysis-v2',is_mock=True,roster=roster,reviewers=roster,answers=answers,code=code,
         rubric_max='100',required_reviewers=2,reference_scores={a['answer_key']:rng.randint(50,95) for a in answers},
         judge_results=[dict(student_key=u,submission_key=f'demo-code-{i}',passed_cases=3+i%3,total_cases=5,
             verdict='ACCEPTED' if i%3==2 else 'WRONG_ANSWER',execution_mode='MOCK',runtime_profile='analysis-demo-v1',is_mock=True)

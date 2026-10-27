@@ -18,7 +18,7 @@
 
 | 能力 | 当前状态 |
 |---|---|
-| 统一Python后端、PostgreSQL连接与迁移 | 已实现，28张业务表，迁移pg0005 |
+| 统一Python后端、PostgreSQL连接与迁移 | 已实现，28张业务表，迁移pg0006 |
 | 账户/课程权限/数据库会话 | 已实现，首次改密、空闲2小时与绝对24小时上限 |
 | 四类演示题、量表、测试配置、班级与名单 | 已实现，1教师+6合成学生、2班、2作业 |
 | 学生读题、正式提交、版本、撤回、幂等 | 已实现 |
@@ -124,4 +124,4 @@ flowchart TB
 
 ## 分析运行框架交付
 
-已完成15黑盒槽位、24步骤、四类持久化记录与独立worker，普通/补评合成链路均可运行。研究者从data/analysis取成对样例，按docs/design/analysis/black-boxes.md替换实现；会议按docs/design/analysis/meeting-walkthrough.md讲解。正式互评/发布仍需领域服务接入，不把DEMO当作正式成绩。
+已完成15黑盒槽位、23步骤、四类持久化记录与独立worker，普通/补评合成链路均可运行。研究者从data/analysis取成对样例，按docs/design/analysis/black-boxes.md替换实现；会议按docs/design/analysis/meeting-walkthrough.md讲解。正式互评/发布仍需领域服务接入，不把DEMO当作正式成绩。

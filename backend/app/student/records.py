@@ -89,7 +89,7 @@ def assignment_view(db: Session, assignment_id: int, user: User) -> dict:
         'submission_open': assignment.submission_status == 'OPEN' and now < assignment.submission_deadline,
         'server_time': now.isoformat(),
         'items': [{'id': str(item.id), 'title': version.title, 'question_type': problem.question_type,
-                   'max_score': str(item.max_score), 'score_weight': str(item.score_weight),
+                   'max_score': str(item.max_score),
                    'sort_order': item.sort_order} for item, version, problem in items],
     }
 

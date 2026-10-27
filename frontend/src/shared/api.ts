@@ -150,7 +150,6 @@ const fieldNames: Record<string, string> = {
   total_budget_ms: "测试集总预算",
   submission_deadline: "提交截止",
   review_deadline: "评审截止",
-  score_weight: "题目权重",
   student_ids: "应交名单",
   problem_version_id: "题目版本",
   required_reviewers: "评审人数",
