@@ -26,7 +26,7 @@
 - `tests/test_similarity_and_complexity_api.py`：12 项，真实 PostgreSQL + FastAPI TestClient。
 - `tests/test_migrations.py` 更新为 pg0007、30 张业务表。
 
-前端：`vitest run` **70 passed**（19 个文件，基线 50，新增 20）；`vue-tsc --noEmit` 通过；`prettier --check` 全库通过；`vite build` 通过。
+前端：`vitest run` **78 passed**（20 个文件，基线 50，新增 28）；`vue-tsc --noEmit` 通过；`prettier --check` 全库通过；`vite build` 通过。
 
 真实 HTTP：`python scripts/smoke_similarity_complexity_http.py`，**59 项检查通过**。最后一次运行（当前代码）输出摘要：
 
@@ -90,9 +90,12 @@ headless Chrome 1440×1000 实跑：
 | 面板头部徽章对 FAILED/INELIGIBLE 显示“已完成” | 同一屏同时出现“已完成”和“分析失败” | 五种终态各有文案，与教师端一致 |
 | 教师概览轮询出错后文案仍说“页面会自动刷新” | 文案与行为相反 | 错误也计入“已停止自动刷新” |
 | 教师概览每轮为每个失败行重新拉原因 | 1 行 PENDING + 9 行 FAILED 时每 5 秒 10 个请求 | 按 submission_id 缓存原因 |
+| 教师概览卸载后仍继续轮询 | 中途切页 120 秒内又发 24 次请求 | 加卸载标记与令牌失效 |
+| `business_status` 声明了但没人读 | 运行成功、业务无数据时照常画出证据表格 | 增加 `businessWarning`，无可用数据时只显示提示 |
+| 截断提示写进 `else-if` | 提示出现时整张表格被隐藏，教师看不到任何一对 | 提示放到表格上方，表格照常渲染 |
 | `.code-compare` 子项缺 `min-width: 0` | 390 宽点开代码对比横向溢出 205px | 改用 `minmax(0, 1fr)` 并给子项 `min-width: 0` |
 | `GrowthChart` 未过滤非有限值 | NaN/Infinity 会写出非法 SVG 坐标 | 只画有限正数；刻度按像素距离去重叠 |
-| 三个 select 无 `aria-label`、操作列表头为空 | 屏幕阅读器读不出控件名 | 补 `aria-label` 与 `visually-hidden` 文本 |
+| 三个 select 无 `aria-label`、操作列表头为空 | 屏幕阅读器读不出控件名 | 补 `aria-label`；表头改用 `th aria-label`（`visually-hidden` 是绝对定位元素，会把 390 宽页面撑到 505） |
 | 两处测试断言过宽（`toBeTruthy`、`toContain("过短")`） | 文案退化仍通过 | 改为精确字符串并断言键值一一对应 |
 
 ## 6. 实验暴露并修好的缺陷
