@@ -129,6 +129,12 @@ it("keeps the table visible when the evidence list was truncated", async () => {
   expect(host.textContent).toContain("80.0%");
 });
 
+it("says a running batch is still computing, not that it has no results", async () => {
+  const host = await mount("7", evidence({ status: "RUNNING" }));
+  expect(host.textContent).toContain("仍在计算");
+  expect(host.textContent).not.toContain("没有可用结果");
+});
+
 it("warns when a run succeeded but the business outcome is unusable", async () => {
   const host = await mount(
     "7",

@@ -59,12 +59,17 @@ const assignmentTitle = computed(
     assignments.value.find((row) => row.id === assignmentId.value)?.title ?? "",
 );
 
-/** Highlight the matched lines of both submissions for a chosen pair. */
+/** True while the worker has not finished; that is "still computing", not "failed". */
+function stillComputing(item: SimilarityItem): boolean {
+  return ["READY", "RUNNING", "WAITING_INPUT"].includes(item.status);
+}
+
 /** A run can succeed technically while the business outcome has no usable data. */
 function businessWarning(item: SimilarityItem): boolean {
   return Boolean(item.business_status && item.business_status !== "OK");
 }
 
+/** Highlight the matched lines of both submissions for a chosen pair. */
 function markedLines(span: { start: number; end: number } | null): string {
   if (!span) return "";
   return span.start === span.end
@@ -339,8 +344,13 @@ onMounted(async () => {
       </div>
 
       <template v-if="currentItem">
+        <p v-if="stillComputing(currentItem)" class="alert warning">
+          该题比对仍在计算（运行状态
+          {{ currentItem.status }}）。本页已停止自动刷新，
+          稍后重新打开本页即可看到同一批结果。
+        </p>
         <p
-          v-if="
+          v-else-if="
             currentItem.status !== 'SUCCEEDED' || businessWarning(currentItem)
           "
           class="alert warning"
@@ -348,9 +358,9 @@ onMounted(async () => {
           该题比对没有可用结果（运行状态 {{ currentItem.status }}，业务状态
           {{
             currentItem.business_status || "未知"
-          }}）。稍后重新打开本页或再次查询。
+          }}）。该批次已完成但未产出可比对的数据。
         </p>
-        <template v-else-if="!businessWarning(currentItem)">
+        <template v-else>
           <section v-if="currentItem.clusters.length" class="card">
             <div class="card-heading">
               <h2><Copy :size="17" /> 相似簇</h2>

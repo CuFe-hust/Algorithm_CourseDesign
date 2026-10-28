@@ -351,7 +351,10 @@ it("renders a report with no request time without crashing", async () => {
     return overviewResponse([{ ...report, requested_at: null }]);
   });
   await settle();
-  expect(body(host)).toContain("DEMO2026001");
-  expect(body(host)).not.toContain("undefined");
-  expect(body(host)).not.toContain("Invalid Date");
+  const cells = rowCells(host, "DEMO2026001");
+  expect(cells[0]).toContain("演示同学");
+  // An em dash, not "1970年1月1日": formatting a null timestamp still yields a
+  // date, so asserting only "no undefined" would not catch it.
+  expect(cells[7]).toBe("—");
+  expect(body(host)).not.toContain("1970");
 });
