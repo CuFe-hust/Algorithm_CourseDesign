@@ -26,6 +26,8 @@
 - `tests/test_similarity_and_complexity_api.py`：12 项，真实 PostgreSQL + FastAPI TestClient。
 - `tests/test_migrations.py` 更新为 pg0007、30 张业务表。
 
+有一处已知的偶发失败：`tests/test_judge_scheduler.py::test_service_pause_keeps_jobs_queued_and_resumes_after_switch` 在完整套件里偶发失败一次（单独运行与随后两次完整运行均通过）。该测试属评测调度，与本轮改动无关，也未修改；记录在此避免把它误当成稳定现象。
+
 前端：`vitest run` **78 passed**（20 个文件，基线 50，新增 28）；`vue-tsc --noEmit` 通过；`prettier --check` 全库通过；`vite build` 通过。
 
 真实 HTTP：`python scripts/smoke_similarity_complexity_http.py`，**59 项检查通过**。最后一次运行（当前代码）输出摘要：
