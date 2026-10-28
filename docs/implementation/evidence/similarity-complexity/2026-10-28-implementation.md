@@ -28,7 +28,7 @@
 
 有一处已知的偶发失败：`tests/test_judge_scheduler.py::test_service_pause_keeps_jobs_queued_and_resumes_after_switch` 在完整套件里偶发失败一次（单独运行与随后两次完整运行均通过）。该测试属评测调度，与本轮改动无关，也未修改；记录在此避免把它误当成稳定现象。
 
-前端：`vitest run` **78 passed**（20 个文件，基线 50，新增 28）；`vue-tsc --noEmit` 通过；`prettier --check` 全库通过；`vite build` 通过。
+前端：`vitest run` **79 passed**（20 个文件，基线 50，新增 29）；`vue-tsc --noEmit` 通过；`prettier --check` 全库通过；`vite build` 通过。
 
 真实 HTTP：`python scripts/smoke_similarity_complexity_http.py`，**59 项检查通过**。最后一次运行（当前代码）输出摘要：
 
@@ -95,6 +95,7 @@ headless Chrome 1440×1000 实跑：
 | 教师概览卸载后仍继续轮询 | 中途切页 120 秒内又发 24 次请求 | 加卸载标记与令牌失效 |
 | `business_status` 声明了但没人读 | 运行成功、业务无数据时照常画出证据表格 | 增加 `businessWarning`，无可用数据时只显示提示 |
 | 截断提示写进 `else-if` | 提示出现时整张表格被隐藏，教师看不到任何一对 | 提示放到表格上方，表格照常渲染 |
+| 正在计算的批次被说成“没有可用结果” | `RUNNING`/`READY` 的任务显示成失败 | 按状态分两句：“仍在计算”与“没有可用结果” |
 | `.code-compare` 子项缺 `min-width: 0` | 390 宽点开代码对比横向溢出 205px | 改用 `minmax(0, 1fr)` 并给子项 `min-width: 0` |
 | `GrowthChart` 未过滤非有限值 | NaN/Infinity 会写出非法 SVG 坐标 | 只画有限正数；刻度按像素距离去重叠 |
 | 三个 select 无 `aria-label`、操作列表头为空 | 屏幕阅读器读不出控件名 | 补 `aria-label`；表头改用 `th aria-label`（`visually-hidden` 是绝对定位元素，会把 390 宽页面撑到 505） |
