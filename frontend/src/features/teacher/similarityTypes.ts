@@ -53,6 +53,8 @@ export interface SimilarityItem {
   implementation_version: string;
   method: string | null;
   parameters: Record<string, string | number> | null;
+  /** True when the pair list hit the 500-pair cap; clusters remain complete. */
+  pairs_truncated: boolean;
   pairs: SimilarityPair[];
   clusters: SimilarityCluster[];
   insufficient: SimilarityInsufficient[];

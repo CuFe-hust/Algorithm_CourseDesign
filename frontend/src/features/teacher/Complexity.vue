@@ -114,9 +114,16 @@ const pendingCount = computed(
       (row) => row.status === "PENDING" || row.status === "RUNNING",
     ).length,
 );
-/** True once the bounded polling window closed while rows still run. */
+/**
+ * True once automatic refresh is over: either the bounded window closed or a poll
+ * failed. Without the error case the page kept promising "页面会自动刷新" while
+ * polling had already stopped.
+ */
+const pollError = ref(false);
 const pollStopped = computed(
-  () => pendingCount.value > 0 && pollAttempts.value >= POLL_LIMIT,
+  () =>
+    pendingCount.value > 0 &&
+    (pollAttempts.value >= POLL_LIMIT || pollError.value),
 );
 
 function shown(value: string | null | undefined): string {
@@ -151,6 +158,7 @@ function schedulePoll() {
 
 function resetRows() {
   clearPoll();
+  pollError.value = false;
   pollAttempts.value = 0;
   rows.value = [];
   total.value = 0;
@@ -158,9 +166,13 @@ function resetRows() {
 }
 
 async function loadReasons(list: OverviewRow[], token: number) {
-  const next: Record<string, string> = {};
+  // Reasons for a finished failure do not change between polls; re-fetching them
+  // every 5 s turned a 10-row table into 10 extra requests per cycle in review.
+  const next: Record<string, string> = { ...reasons.value };
   const targets = list.filter(
-    (row) => row.status === "FAILED" || row.status === "INELIGIBLE",
+    (row) =>
+      (row.status === "FAILED" || row.status === "INELIGIBLE") &&
+      next[row.submission_id] === undefined,
   );
   if (!targets.length) {
     reasons.value = next;
@@ -201,11 +213,13 @@ async function loadRows(silent = false) {
     if (token !== tableToken) return;
     rows.value = result.items;
     total.value = result.total;
+    pollError.value = false;
     void loadReasons(result.items, token);
     schedulePoll();
   } catch (e) {
     if (token !== tableToken) return;
     clearPoll();
+    pollError.value = true;
     error.value = errorText(e);
   } finally {
     if (token === tableToken) loadingRows.value = false;

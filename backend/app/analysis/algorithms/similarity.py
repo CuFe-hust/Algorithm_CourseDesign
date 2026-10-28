@@ -46,9 +46,6 @@ _IDENTIFIER = re.compile(r'[A-Za-z_][A-Za-z_0-9]*')
 _NUMBER = re.compile(r'\d+(?:\.\d+)?(?:[eE][+-]?\d+)?[fFlLuU]*|0[xX][0-9A-Fa-f]+')
 _OPERATOR = re.compile(r'>>=|<<=|->\*|\.\.\.|::|->|\+\+|--|&&|\|\||==|!=|<=|>=|\+=|-=|\*=|/=|%=|&=|\|=|\^=|<<|>>'
                        r'|[+\-*/%&|^!~=<>?:;,.(){}\[\]]')
-_LINE_COMMENT = re.compile(r'//[^\n]*|#[^\n]*')
-_BLOCK_COMMENT = re.compile(r'/\*.*?\*/', re.S)
-_STRING = re.compile(r'"(?:\\.|[^"\\\n])*"|\'(?:\\.|[^\'\\\n])*\'')
 _KEYWORDS = frozenset({
     # C / C++
     'auto', 'break', 'case', 'char', 'const', 'continue', 'default', 'do', 'double', 'else', 'enum',
@@ -167,10 +164,58 @@ def tokenize_python(source: str) -> list[Token]:
 
 
 def _strip_comments_and_strings(source: str) -> str:
-    text = _BLOCK_COMMENT.sub(' ', source)
-    text = _STRING.sub('STRTOKEN ', text)
-    text = _LINE_COMMENT.sub(' ', text)
-    return text
+    """Blank out comments and string literals in one left-to-right pass.
+
+    A single pass is required for two reasons found in review:
+
+    * Substituting block comments before strings let a literal ``"/*"`` open a
+      comment that swallowed the rest of the file, so two extra print statements
+      were enough to drop a 152-token program to 18 tokens and evade comparison
+      entirely. Scanning left to right knows whether ``/*`` is inside a literal.
+    * Each replaced comment keeps its newlines, so every token keeps its real
+      line number; replacing a multi-line comment with one space shifted every
+      following line.
+    """
+    out: list[str] = []
+    index = 0
+    length = len(source)
+    while index < length:
+        char = source[index]
+        if char == '/' and index + 1 < length and source[index + 1] == '/':
+            while index < length and source[index] != '\n':
+                index += 1
+            continue
+        if char == '#' and not source.startswith('#include', index):
+            while index < length and source[index] != '\n':
+                index += 1
+            continue
+        if char == '/' and index + 1 < length and source[index + 1] == '*':
+            index += 2
+            while index + 1 < length and not (source[index] == '*' and source[index + 1] == '/'):
+                if source[index] == '\n':
+                    out.append('\n')
+                index += 1
+            index = min(length, index + 2)
+            out.append(' ')
+            continue
+        if char in '"\'':
+            quote = char
+            index += 1
+            while index < length:
+                if source[index] == '\\' and index + 1 < length:
+                    index += 2
+                    continue
+                if source[index] == quote:
+                    index += 1
+                    break
+                if source[index] == '\n':
+                    break
+                index += 1
+            out.append('STRTOKEN ')
+            continue
+        out.append(char)
+        index += 1
+    return ''.join(out)
 
 
 def tokenize_c_like(source: str) -> list[Token]:
@@ -330,6 +375,11 @@ def _merge_spans(anchors: list[_Anchor], k: int) -> list[dict[str, int]]:
     ``left_pos``/``right_pos``. Two anchors belong to the same span when both
     sides advance by at most ``k`` tokens; a deleted or moved statement breaks
     the span instead of merging everything into one misleading range.
+
+    Both bounds matter. Anchors are sorted by the left position only, so without
+    the lower bound a run of matches that moves backwards on the right side -- the
+    classic "cut the last lines and paste them at the top" edit -- was merged into
+    a single span whose reported range did not cover the tokens it claimed.
     """
     if not anchors:
         return []
@@ -350,7 +400,9 @@ def _merge_spans(anchors: list[_Anchor], k: int) -> list[dict[str, int]]:
         })
 
     for anchor in ordered[1:]:
-        if anchor.left_pos - last.left_pos <= k and anchor.right_pos - last.right_pos <= k:
+        left_step = anchor.left_pos - last.left_pos
+        right_step = anchor.right_pos - last.right_pos
+        if -k <= left_step <= k and -k <= right_step <= k:
             last = anchor
             run += 1
             run_best = max(run_best, run)
@@ -388,6 +440,10 @@ class ItemResult:
     insufficient: list[dict]
     submission_count: int
     method: str = 'winnowing_token'
+    # True when the evidence list hit ``MAX_PAIRS``. The cluster list is built
+    # from the full threshold graph, so a truncated result still reports every
+    # similar group; only the per-pair evidence is cut.
+    pairs_truncated: bool = False
 
 
 def compare(item: list[dict], *, minimum_tokens: int = DEFAULT_MINIMUM_TOKENS,
@@ -506,11 +562,8 @@ def compare(item: list[dict], *, minimum_tokens: int = DEFAULT_MINIMUM_TOKENS,
         })
     clusters.sort(key=lambda row: (-row['size'], -float(row['max_similarity'])))
 
-    result = ItemResult(pairs=pairs, clusters=clusters, insufficient=insufficient,
-                        submission_count=len(sketches))
-    if truncated:
-        result.pairs_truncated = True  # type: ignore[attr-defined]
-    return result
+    return ItemResult(pairs=pairs, clusters=clusters, insufficient=insufficient,
+                      submission_count=len(sketches), pairs_truncated=truncated)
 
 
 def _ratio(value: float) -> str:

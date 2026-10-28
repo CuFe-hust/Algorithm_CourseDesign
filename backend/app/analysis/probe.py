@@ -22,6 +22,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Iterator
 
+from app.analysis.algorithms import complexity as growth_rules
 from app.judge import config as judge_config
 from app.judge import local as judge_local
 
@@ -48,6 +49,11 @@ MAX_SIZES = (256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072,
              262144, 524288, 1048576)
 MAX_INPUT_BYTES = 12 * 1024 * 1024
 TARGET_TOP_MS = 250.0
+# Stop the ladder only once this many rungs completed. It is the fitter's own
+# publishable floor, not a separate number: the two drifting apart once silently
+# disabled measurement for every quadratic program (the ladder stopped at four
+# while the fitter demanded five).
+MINIMUM_RUNGS_BEFORE_STOPPING = growth_rules.MINIMUM_PUBLISHABLE_RUNGS
 
 # Reference readers per family. They perform exactly the input work every
 # submission must do (read, split, convert, print) and nothing else. Measuring
@@ -161,23 +167,6 @@ def ladder(family: str, seed: int, spec: dict | None = None,
             break
         rungs.append(Rung(n=size, input_text=generate(family, size, seed, spec)))
     return rungs
-
-
-@dataclass
-class RungOutcome:
-    n: int
-    walls_ms: list[float]
-    peak_rss_kib: int | None
-    verdict: str
-    detail: str | None = None
-
-    def to_measurement(self, static_overhead_ms: float = 0.0):
-        from app.analysis.algorithms import complexity
-        ordered = sorted(self.walls_ms)
-        median = ordered[len(ordered) // 2] if ordered else 0.0
-        return complexity.Measurement(
-            n=self.n, wall_ms=median, adjusted_ms=max(0.0, median - static_overhead_ms),
-            peak_rss_kib=self.peak_rss_kib, verdict=self.verdict, repeats=len(self.walls_ms))
 
 
 def _peak_rss_kib(usage) -> int | None:
@@ -483,7 +472,7 @@ def escalating_measure(source: str, language: str, family: str, spec: dict | Non
             if outcome.verdict == 'BUDGET_EXHAUSTED':
                 return outcomes, 'BUDGET_EXHAUSTED'
             executed = [row for row in outcomes if row.verdict == 'OK' and row.walls_ms]
-            if len(executed) >= 4:
+            if len(executed) >= MINIMUM_RUNGS_BEFORE_STOPPING:
                 smallest = min(row.median_ms for row in executed)
                 largest = max(row.median_ms for row in executed)
                 if largest >= max(4.0 * smallest, INFORMATIVE_MS) and executed[-1].n >= 8 * executed[0].n:
@@ -491,7 +480,8 @@ def escalating_measure(source: str, language: str, family: str, spec: dict | Non
                 if largest >= TARGET_TOP_MS:
                     return outcomes, 'OK'
         executed = [row for row in outcomes if row.verdict == 'OK' and row.walls_ms]
-        if len(executed) >= 4 and max(row.median_ms for row in executed) >= INFORMATIVE_MS:
+        if len(executed) >= MINIMUM_RUNGS_BEFORE_STOPPING \
+                and max(row.median_ms for row in executed) >= INFORMATIVE_MS:
             return outcomes, 'LADDER_EXHAUSTED'
         return outcomes, 'FLOOR_REACHED'
     finally:

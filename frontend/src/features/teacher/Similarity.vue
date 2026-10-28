@@ -7,7 +7,7 @@
  * teacher compares the code and decides; the platform only saves the run so the
  * numbers cannot change between page loads.
  */
-import { computed, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { AlignLeft, Copy, Play, ShieldAlert } from "@lucide/vue";
 import { errorText, query, request } from "../../shared/api";
@@ -38,6 +38,12 @@ const leftCode = ref<SubmissionDetail | null>(null);
 const rightCode = ref<SubmissionDetail | null>(null);
 const loading = ref(true);
 const running = ref(false);
+/**
+ * Set when the component goes away. Every await in the polling loop re-checks it,
+ * otherwise navigating to another page leaves a timer chain firing requests
+ * against a batch nobody is looking at.
+ */
+let unmounted = false;
 const error = ref("");
 const notice = ref("");
 
@@ -125,29 +131,54 @@ async function loadExistingBatch(batchId: string) {
 }
 
 /**
- * The worker computes in the background. Poll at a bounded rate and stop as
- * soon as the batch settles: an unbounded polling loop would keep hammering the
- * server while a teacher leaves the tab open.
+ * The worker computes in the background. Poll at a bounded rate and stop as soon
+ * as the batch settles.
+ *
+ * Two rules found in review: the deadline bounds the *polling*, so hitting it
+ * must not be reported as a finished comparison -- a batch that is still running
+ * gets told to the teacher as still running and the evidence request is skipped.
+ * And every wait re-checks ``unmounted`` so leaving the page stops the chain.
  */
 async function pollBatch(batchId: string) {
   const deadline = Date.now() + 90_000;
-  while (Date.now() < deadline) {
+  let settled = false;
+  let lastStatus = "UNKNOWN";
+  while (Date.now() < deadline && !unmounted) {
     const view = await request<{ status: string; steps: { status: string }[] }>(
       `/analysis/batches/${batchId}`,
     );
+    if (unmounted) return;
+    lastStatus = view.status;
     const pending = view.steps.some((step) =>
       ["READY", "RUNNING", "WAITING_INPUT"].includes(step.status),
     );
-    if (!pending || view.status === "COMPLETE") break;
+    if (!pending || view.status === "COMPLETE") {
+      settled = true;
+      break;
+    }
     await new Promise((resolve) => setTimeout(resolve, 1200));
+  }
+  if (unmounted) return;
+  if (!settled) {
+    notice.value = `比对仍在进行（批次状态 ${lastStatus}）。页面已停止自动刷新，请稍后重新打开本页查看同一批结果。`;
+    return;
   }
   evidence.value = await request<SimilarityEvidence>(
     `/analysis/batches/${batchId}/similarity`,
   );
+  if (unmounted) return;
   activeItem.value = 0;
   selected.value = null;
   leftCode.value = null;
   rightCode.value = null;
+  const pendingItems = evidence.value.items.filter(
+    (item) => item.status !== "SUCCEEDED",
+  );
+  if (pendingItems.length) {
+    notice.value =
+      "比对任务已创建，但计算还没完成。请确认分析 worker 正在运行（python -m scripts.run_analysis --watch），完成后重新打开本页即可看到同一批结果。";
+    return;
+  }
   const pairs = evidence.value.items.reduce(
     (sum, item) => sum + item.pairs.length,
     0,
@@ -197,6 +228,10 @@ function changeAssignment(value: string) {
   selected.value = null;
 }
 
+onBeforeUnmount(() => {
+  unmounted = true;
+});
+
 onMounted(async () => {
   await loadScope();
   const batchId =
@@ -224,6 +259,7 @@ onMounted(async () => {
       <label>
         作业
         <select
+          aria-label="作业"
           :value="assignmentId"
           @change="changeAssignment(($event.target as HTMLSelectElement).value)"
         >
@@ -234,7 +270,7 @@ onMounted(async () => {
       </label>
       <label>
         题目
-        <select v-model="itemFilter">
+        <select v-model="itemFilter" aria-label="题目">
           <option value="">全部编程题</option>
           <option
             v-for="item in scopeItems"
@@ -250,7 +286,7 @@ onMounted(async () => {
       </label>
       <label>
         相似度阈值
-        <select v-model="threshold">
+        <select v-model="threshold" aria-label="相似度阈值">
           <option value="0.4">40%（更宽，更多线索）</option>
           <option value="0.5">50%（默认）</option>
           <option value="0.7">70%（更严，只看高度相似）</option>
@@ -341,6 +377,11 @@ onMounted(async () => {
             <p v-if="!currentItem.pairs.length" class="muted">
               没有达到阈值的相似对。
             </p>
+            <p v-else-if="currentItem.pairs_truncated" class="alert warning">
+              证据列表已截断：达到证据上限，这里只显示相似度最高的
+              {{ currentItem.pairs.length }}
+              对。下方的相似簇按全部配对计算，仍然完整。
+            </p>
             <div v-else class="table-scroll">
               <table>
                 <thead>
@@ -350,7 +391,7 @@ onMounted(async () => {
                     <th>相似度</th>
                     <th>包含度</th>
                     <th>连续匹配</th>
-                    <th></th>
+                    <th><span class="visually-hidden">操作</span></th>
                   </tr>
                 </thead>
                 <tbody>

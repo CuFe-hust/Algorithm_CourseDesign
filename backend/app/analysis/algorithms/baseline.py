@@ -84,6 +84,7 @@ def code_similarity(data):
         'clusters': result.clusters,
         'insufficient': result.insufficient,
         'submission_count': result.submission_count,
+        'pairs_truncated': result.pairs_truncated,
         'parameters': {'k': similarity_engine.KGRAM, 'window': similarity_engine.WINDOW,
                        'minimum_tokens': data.minimum_tokens,
                        'threshold': str(data.threshold)},

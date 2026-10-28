@@ -123,7 +123,7 @@ Remove-Item Env:DB_NAME
 ..\.venv\Scripts\python.exe -m scripts.run_complexity --watch    # 复杂度测量
 ```
 
-复杂度测量会真实执行学生代码，与评测一样只适合受控开发环境，没有 Linux 沙箱。见[相似检测](docs/design/analysis/code-similarity.md)、[复杂度分析](docs/design/analysis/complexity.md)。真实 HTTP 冒烟：`scripts/smoke_similarity_complexity_http.py`。
+复杂度测量会真实执行学生代码，与评测一样只适合受控开发环境，没有 Linux 沙箱。见[相似检测](docs/design/analysis/code-similarity.md)、[复杂度分析](docs/design/analysis/complexity.md)、[算法实验报告](docs/design/analysis/algorithm-experiments.md)。真实 HTTP 冒烟：`scripts/smoke_similarity_complexity_http.py`。
 
 逐段演示见[运行手册](docs/implementation/runbooks/analysis-setup.md)、[黑盒输入输出](docs/design/analysis/black-boxes.md)和[4K会议图](docs/assets/diagrams/analysis/README.md)。原生Windows支持API/MOCK/分析，当前POSIX LOCAL启动门不支持原生Windows。原生Windows支持API/MOCK/分析，当前POSIX LOCAL启动门不支持原生Windows。
 

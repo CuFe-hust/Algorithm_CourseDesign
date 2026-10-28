@@ -126,7 +126,7 @@ flowchart TB
 
 ## 相似检测与复杂度分析交付
 
-`code_similarity` 插件由 `not_implemented` 升级为 `winnowing_token` v2，新增 `CODE_SIMILARITY` 批次（每题一个任务，绝不跨题）；新增迁移 pg0007 与两张表，承接每题的规模伸缩档与每次提交的复杂度报告。复杂度测量在独立 worker 中真实执行学生代码，明确区分“实测高于读取输入成本”和“实测只能给上界”两种情况，后一种回落到结构分析并把原因写进报告。详细设计与验证见[相似检测](docs/design/analysis/code-similarity.md)、[复杂度分析](docs/design/analysis/complexity.md)与[实现记录](docs/implementation/evidence/similarity-complexity/2026-10-28-implementation.md)。
+`code_similarity` 插件由 `not_implemented` 升级为 `winnowing_token` v2，新增 `CODE_SIMILARITY` 批次（每题一个任务，绝不跨题）；新增迁移 pg0007 与两张表，承接每题的规模伸缩档与每次提交的复杂度报告。复杂度测量在独立 worker 中真实执行学生代码，明确区分“实测高于读取输入成本”和“实测只能给上界”两种情况，后一种回落到结构分析并把原因写进报告。详细设计与验证见[相似检测](docs/design/analysis/code-similarity.md)、[复杂度分析](docs/design/analysis/complexity.md)、[算法实验报告](docs/design/analysis/algorithm-experiments.md)与[实现记录](docs/implementation/evidence/similarity-complexity/2026-10-28-implementation.md)。项目验收要求“至少 2-3 个核心问题说明算法思想、流程、时空复杂度并做实验”，算法实验报告逐项对应。
 
 ## 分析运行框架交付
 

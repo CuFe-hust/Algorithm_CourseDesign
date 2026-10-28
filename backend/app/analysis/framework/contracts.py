@@ -125,6 +125,8 @@ class SimilarityOutput(Contract):
     insufficient: list[SkippedSubmission] = Field(default_factory=list)
     submission_count: int = Field(default=0, ge=0)
     parameters: dict[str, str | int | float] = Field(default_factory=dict)
+    # Stated so a teacher never reads a cut list as a complete one.
+    pairs_truncated: bool = False
 
 
 class Evidence(Contract):

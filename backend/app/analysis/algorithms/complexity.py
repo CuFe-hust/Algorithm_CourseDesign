@@ -111,9 +111,12 @@ class _CostStack:
     """Multiplicative cost of the currently open loops.
 
     A plain ``for`` loop multiplies the work by ``n``; a ``while`` loop whose own
-    bound halves multiplies by ``log n``. Keeping them as a pair (polynomial
-    degree, log count) is enough for every class the platform reports, and it
-    avoids the classic mistake of treating a binary search as ``O(n log n)``.
+    bound halves multiplies by ``log n``; a loop with a literal bound multiplies by
+    a constant. Keeping the first two as a pair (polynomial degree, log count) is
+    enough for every class the platform reports, and it avoids the classic mistake
+    of treating a binary search as ``O(n log n)``. ``push`` and ``pop`` must agree
+    on which kinds touch the stack, or leaving a constant loop would silently
+    remove an enclosing factor of ``n``.
     """
 
     def __init__(self):
@@ -129,7 +132,7 @@ class _CostStack:
     def pop(self, kind: str) -> None:
         if kind == 'log':
             self.log = max(0, self.log - 1)
-        else:
+        elif kind != 'const':
             self.poly = max(0, self.poly - 1)
 
     def snapshot(self) -> tuple[int, int]:
@@ -347,16 +350,14 @@ class _PythonVisitor(ast.NodeVisitor):
             self.visit(child)
 
 
-_CONSTANT_ITERABLES = {'range', 'enumerate', 'zip'}
-
-
 def _constant_iteration(iterable: ast.AST) -> bool:
     """True when a ``for`` target cannot grow with the input size.
 
-    Only literal counts qualify. ``range(10)``, ``range(0, 10)``, ``range(2, 10, 2)``
-    and ``range(len(TEMPLATE))`` over a module-level literal are constant; anything
-    mentioning a variable is treated as input-dependent, which is the conservative
-    choice because a variable bound usually does scale.
+    Only literal counts qualify: ``range(10)``, ``range(0, 10)``, ``range(2, 10, 2)``.
+    ``range(len(TEMPLATE))`` is not treated as constant, because ``len`` of a name is
+    a variable expression the visitor cannot resolve; anything not provably constant
+    is treated as input-dependent, which is the conservative choice because a
+    variable bound usually does scale.
     """
     if not isinstance(iterable, ast.Call):
         return False
@@ -791,16 +792,25 @@ _EXPECTED_EXPONENT = {'O(1)': 0.0, 'O(log n)': 0.1, 'O(n)': 1.0, 'O(n log n)': 1
                       'O(n^2)': 2.0, 'O(n^2 log n)': 2.15, 'O(n^3)': 3.0, 'O(2^n)': 4.0}
 EXPONENT_TOLERANCE = 0.7
 
+# Minimum number of completed rungs before a measured growth class may be
+# published with MEDIUM confidence. The ladder stops after this many rungs once it
+# has 8x range (see ``probe.escalating_measure``), so the two must not drift: an
+# earlier version stopped the ladder at four while the fitter demanded five, which
+# silently disabled measurement for every quadratic program.
+MINIMUM_PUBLISHABLE_RUNGS = 5
+
 # Two classes whose R^2 differ by less than this are treated as explaining the
 # data equally well. On a short ladder ``n`` and ``n log n`` are almost
 # collinear, so their R^2 usually differ by ~0.001 and the absolute value says
 # nothing about which is right.
 R2_TIE_MARGIN = 0.005
-# Inside a tie, a higher class is only kept when it cuts the *unexplained*
-# variance by enough to pay for one extra parameter. AIC charges 2 units for that
-# parameter, which on m points means a factor of exp(2/m): 1.33 on a 7-rung
-# ladder, 1.17 on a 13-rung one. Deriving it from the ladder length keeps a short
-# ladder from being over-read and a long one from discarding real structure.
+# Inside a tie, a higher class is only kept when it cuts the unexplained variance
+# by this factor. Every candidate class fits the same two parameters (a and b), so
+# no candidate is "more complex" in the parameter-count sense and this is not an
+# information-criterion derivation: it is a deliberately conservative shrinkage
+# factor. Shrinking with the rung count (exp(2/m): 1.33 on 7 rungs, 1.17 on 13)
+# encodes the fact that more rungs mean a real log factor is easier to see and a
+# spurious one is easier to reject.
 def sse_improvement_fold(point_count: int) -> float:
     return math.exp(2.0 / max(3, point_count))
 
@@ -885,7 +895,9 @@ def classify_growth(measurements: list[Measurement],
             'peak_rss_kib': item.peak_rss_kib, 'verdict': item.verdict,
         })
     floor = min((item.wall_ms for item in ok), default=0.0)
-    fit = fit_growth(ok, floor_ms=floor)
+    # Pass every measurement, not just the completed ones: fit_growth filters
+    # internally and is the only place that can state which rungs were dropped.
+    fit = fit_growth(measurements, floor_ms=floor)
     reference_points = [Measurement(n=n, wall_ms=value, adjusted_ms=value, peak_rss_kib=None,
                                     verdict='OK')
                         for n, value in sorted(reference_ms.items()) if value and value > 0]
@@ -954,16 +966,17 @@ def _choose_class(candidates: list[tuple[str, float, float, float]],
     data being reported as ``O(n)`` five times out of five for exactly this
     reason.
 
-    So rank by unexplained variance inside the R^2 tie, and step down to a
-    simpler class only when doing so barely costs anything:
+    So rank by unexplained variance inside the R^2 tie, then walk *one rank at a
+    time* towards simpler models:
 
     1. The champion is the tied candidate with the smallest residual sum of
-       squares (ties broken towards the lower class, which is the conservative
-       choice).
-    2. A lower-order tied candidate replaces it only if its residual is at most
-       ``sse_improvement_fold(point_count)`` times the champion's. A real log factor
-       leaves the simpler model with a much larger residual, so the log factor
-       survives.
+       squares (ties broken towards the lower class, the conservative choice).
+    2. Step down one rank at a time. A step is taken only if the next simpler
+       tied candidate's residual is at most ``sse_improvement_fold(point_count)``
+       times the current one's. Stepping only one rank matters: a single scan for
+       "the lowest rank that passes" could jump from ``O(n^2)`` straight to
+       ``O(1)`` when several coarse classes happen to sit inside the same R^2
+       window.
     """
     ordered = sorted(candidates, key=lambda row: row[1], reverse=True)
     champion_r2 = ordered[0][1]
@@ -973,14 +986,19 @@ def _choose_class(candidates: list[tuple[str, float, float, float]],
     def sse(row: tuple[str, float, float, float]) -> float:
         return max(0.0, (1.0 - row[1]) * total_variance)
 
-    champion = min(tied, key=lambda row: (sse(row), CLASS_RANK[row[0]]))
-    for row in sorted(tied, key=lambda item: CLASS_RANK[item[0]]):
-        if CLASS_RANK[row[0]] >= CLASS_RANK[champion[0]]:
+    # Adjacency is over the candidates that are actually tied, not over the global
+    # rank scale: the log classes usually drop out of the window, and stepping by
+    # rank number would then jump over a present intermediate class.
+    ladder = sorted(tied, key=lambda row: CLASS_RANK[row[0]])
+    position = next(index for index, row in enumerate(ladder)
+                    if row[0] == min(tied, key=lambda item: (sse(item), CLASS_RANK[item[0]]))[0])
+    champion = ladder[position]
+    while position > 0:
+        candidate = ladder[position - 1]
+        if sse(candidate) > sse(champion) * fold:
             break
-        simpler = sse(row)
-        if simpler <= sse(champion) * fold:
-            champion = row
-            break
+        champion = candidate
+        position -= 1
     return champion
 
 
@@ -997,6 +1015,10 @@ def fit_growth(measurements: Iterable[Measurement], *, minimum_points: int = 3,
     2. The log-log slope, which must land within :data:`EXPONENT_TOLERANCE` of
        the class's expected exponent. This rejects a steep class that happens to
        fit a single noisy top rung.
+
+    Ties are broken by residual sum of squares rather than by R^2, because R^2
+    cannot separate ``n`` from ``n log n`` on a doubling ladder; see
+    :func:`_choose_class`.
 
     ``floor_ms`` marks the measured start-up constant; rungs at or below it are
     reported but excluded from the slope, and a ladder where every rung sits on
@@ -1045,12 +1067,13 @@ def fit_growth(measurements: Iterable[Measurement], *, minimum_points: int = 3,
     best = _choose_class(admissible, total, len(all_points))
     name, r2, a, b = best
     confidence = 'LOW'
-    # Five rungs is the floor for publishable growth: with four the experiment
-    # recorded in docs/design/analysis/algorithm-experiments.md saw an O(n^2)
-    # program land on O(n log n), because four points do not pin a curve.
-    if r2 >= 0.985 and len(all_points) >= 5 and len(elevated) >= 3:
+    # Below the publishable floor the class is still reported, but never with the
+    # confidence that would let it overrule the structural analysis: with four
+    # rungs the experiment in docs/design/analysis/algorithm-experiments.md saw an
+    # O(n^2) program land on O(n log n), because four points do not pin a curve.
+    if r2 >= 0.985 and len(all_points) >= MINIMUM_PUBLISHABLE_RUNGS and len(elevated) >= 3:
         confidence = 'HIGH'
-    elif r2 >= 0.90 and len(all_points) >= 5:
+    elif r2 >= 0.90 and len(all_points) >= MINIMUM_PUBLISHABLE_RUNGS:
         confidence = 'MEDIUM'
     if slope is not None and name == 'O(1)' and len(elevated) >= 3 and slope > 0.5:
         confidence = 'LOW'
@@ -1129,25 +1152,29 @@ def combine(static: StaticAnalysis, dynamic: DynamicConclusion,
     agreement = None
     if static.time_class != 'UNKNOWN' and dynamic.measured_class != 'UNKNOWN':
         agreement = static.time_class == dynamic.measured_class
-        if not agreement and dynamic.informative and dynamic_usable:
+        # Only the branch that actually let the measurement decide may claim
+        # "以实测为准"; the log-factor branch reports structure and has already
+        # explained the disagreement.
+        if not agreement and dynamic.informative and dynamic_usable and log_pair is None:
             limitations.append(
                 f'结构分析给出 {static.time_class}，实测增长为 {dynamic.measured_class}；'
                 '以实测为准，但两者不一致说明结论只能作为参考')
     if fit.discarded:
         limitations.append(f'{len(fit.discarded)} 个档位未能完成测量（超时或运行错误），已从拟合中剔除')
-    if len(fit.used_points) < 4:
-        limitations.append('有效测量档位少于 4 个，增长拟合容易受常数开销影响')
+    if len(fit.used_points) < MINIMUM_PUBLISHABLE_RUNGS:
+        limitations.append(
+            f'有效测量档位只有 {len(fit.used_points)} 个，少于 {MINIMUM_PUBLISHABLE_RUNGS} 个，'
+            '增长拟合容易受常数开销影响，实测不作为最终依据')
 
     space_class = static.space_class
     space_confidence = static.confidence
-    if memory:
-        growth = memory.get('growth')
-        dynamic_space = memory.get('class')
-        if dynamic_space and growth is not None and growth > 1.5:
-            if CLASS_RANK.get(dynamic_space, 0) > CLASS_RANK.get(space_class, 0):
-                space_class = dynamic_space
-                space_confidence = 'MEDIUM'
-                limitations.append('实测内存随规模增长，空间结论取静态与实测中较高的一项')
+    dynamic_space = (memory or {}).get('class')
+    if dynamic_space and CLASS_RANK.get(dynamic_space, 0) > CLASS_RANK.get(space_class, 0):
+        space_class = dynamic_space
+        space_confidence = 'MEDIUM'
+        limitations.append(
+            f'实测峰值内存随规模增长的阶为 {dynamic_space}，高于结构分析的 {static.space_class}，'
+            '空间结论取较高的一项')
 
     summary = {
         'time': {'class': time_class, 'confidence': time_confidence, 'source': time_source,

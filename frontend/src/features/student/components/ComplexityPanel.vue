@@ -27,6 +27,14 @@ const loading = ref(false);
 const requesting = ref(false);
 const error = ref("");
 let timer: ReturnType<typeof setTimeout> | undefined;
+// A measurement may legitimately run for 150 s, so poll at 1.5 s intervals but
+// only this many times. Review measured 401 requests in ten minutes without a
+// cap, and requests kept firing after the component was gone.
+const MAX_POLLS = 45;
+const POLL_MS = 1500;
+let polls = 0;
+let sequence = 0;
+let unmounted = false;
 
 const report = computed<ComplexityReport | null>(
   () => response.value?.report ?? null,
@@ -36,6 +44,8 @@ const busy = computed(
     response.value?.status === "PENDING" ||
     response.value?.status === "RUNNING",
 );
+/** True once automatic refresh gave up; the panel says so instead of spinning. */
+const stopping = ref(false);
 
 const confidenceText: Record<string, string> = {
   HIGH: "高",
@@ -52,37 +62,69 @@ const sourceText: Record<string, string> = {
   STATIC: "代码结构",
 };
 
-function schedule(delay = 1500) {
+function schedule(delay = POLL_MS) {
+  if (unmounted) return;
+  if (polls >= MAX_POLLS) {
+    stopping.value = true;
+    return;
+  }
+  polls += 1;
   if (timer) clearTimeout(timer);
   timer = setTimeout(() => void load(), delay);
 }
 
 async function load() {
+  const token = ++sequence;
   loading.value = true;
   error.value = "";
   try {
-    response.value = await api.getComplexity(props.submissionId);
+    const value = await api.getComplexity(props.submissionId);
+    // A late response from an earlier request, or from a component that has been
+    // torn down, must not overwrite state nor start another timer.
+    if (unmounted || token !== sequence) return;
+    response.value = value;
     if (busy.value) schedule();
   } catch (e) {
+    if (unmounted || token !== sequence) return;
     error.value = errorText(e);
   } finally {
-    loading.value = false;
+    if (!unmounted && token === sequence) loading.value = false;
   }
 }
 
 async function request() {
   requesting.value = true;
   error.value = "";
+  polls = 0;
+  stopping.value = false;
   try {
     await api.requestComplexity(props.submissionId);
+    if (unmounted) return;
     await load();
-    if (busy.value) schedule(1200);
   } catch (e) {
-    error.value = errorText(e);
+    if (!unmounted) error.value = errorText(e);
   } finally {
-    requesting.value = false;
+    if (!unmounted) requesting.value = false;
   }
 }
+
+// Same wording as the teacher overview: a failed or ineligible report must never
+// be labelled 已完成.
+const headerText = computed(() => {
+  if (busy.value) return stopping.value ? "已停止自动刷新" : "分析中";
+  const status = report.value?.status;
+  if (status === "STATIC_ONLY") return "仅结构分析";
+  if (status === "FAILED") return "分析失败";
+  if (status === "INELIGIBLE") return "无法分析";
+  return "已完成";
+});
+const headerTone = computed(() => {
+  const status = report.value?.status;
+  if (busy.value) return "amber";
+  if (status === "FAILED") return "red";
+  if (status === "INELIGIBLE") return "amber";
+  return "type";
+});
 
 const evidence = computed(() =>
   (report.value?.static?.evidence ?? []).filter(
@@ -98,6 +140,8 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
+  unmounted = true;
+  sequence += 1;
   if (timer) clearTimeout(timer);
 });
 </script>
@@ -106,14 +150,8 @@ onBeforeUnmount(() => {
   <section class="card complexity-panel">
     <div class="card-heading">
       <h2><Activity :size="17" /> 复杂度分析</h2>
-      <span v-if="report" class="badge" :class="busy ? 'amber' : 'type'">
-        {{
-          busy
-            ? "分析中"
-            : report.status === "STATIC_ONLY"
-              ? "仅结构分析"
-              : "已完成"
-        }}
+      <span v-if="report" class="badge" :class="headerTone">
+        {{ headerText }}
       </span>
     </div>
 
@@ -121,7 +159,14 @@ onBeforeUnmount(() => {
 
     <p v-if="loading && !response" class="loading">正在读取复杂度报告…</p>
     <p v-else-if="busy" class="loading">
-      正在测量运行时间，通常需要几秒到一分钟。
+      <template v-if="stopping">
+        已停止自动刷新（等待超过 {{ Math.round((MAX_POLLS * POLL_MS) / 1000) }}
+        秒）。分析可能仍在进行，稍后手动刷新本页即可。
+        <button class="small" @click="request">
+          <RefreshCw :size="14" />继续等待
+        </button>
+      </template>
+      <template v-else>正在测量运行时间，通常需要几秒到一分钟。</template>
     </p>
 
     <template v-else-if="!report">

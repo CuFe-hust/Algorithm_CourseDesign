@@ -226,6 +226,7 @@ def evidence_view(db, batch_id: int, actor: User) -> dict:
             'implementation_name': step['implementation_name'],
             'implementation_version': step['implementation_version'],
             'method': payload.get('method'), 'parameters': payload.get('parameters'),
+            'pairs_truncated': payload.get('pairs_truncated', False),
             'pairs': pairs, 'clusters': clusters, 'insufficient': insufficient,
         })
     items.sort(key=lambda row: row['item_id'])

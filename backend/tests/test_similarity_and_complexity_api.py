@@ -9,6 +9,8 @@ import pytest
 
 from sqlalchemy import func, select
 
+from app.analysis import complexity_service
+from app.analysis.algorithms import complexity
 from app.analysis.framework.contracts import digest
 from app.analysis.profiles import seed_profiles
 from app.db.base import utcnow

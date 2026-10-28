@@ -2178,9 +2178,14 @@ tbody tr:hover {
 }
 .code-compare {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* minmax(0, ...) keeps the columns from being widened by the code inside them;
+     without it a long line made the page scroll sideways at narrow widths. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 18px;
   padding: 0 24px 24px;
+}
+.code-compare > div {
+  min-width: 0;
 }
 .code-compare h3 {
   margin: 0 0 8px;
@@ -2255,4 +2260,18 @@ tr.selected td {
 }
 .complexity-limitations li {
   margin: 7px 0;
+}
+
+/* Accessible-only text: keeps an empty table header and icon-only controls
+   readable for screen readers without adding visual noise. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

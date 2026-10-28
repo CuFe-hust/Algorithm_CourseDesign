@@ -20,15 +20,15 @@
 
 ## 2. 自动验证
 
-后端 `python -m pytest -q`：**199 passed**（基线 156，新增 43）。其中：
+后端 `python -m pytest -q`：**220 passed**（基线 156，新增 64）。其中：
 
-- `tests/test_similarity_algorithm.py`：31 项，含倒排索引与朴素集合求交的 12 组随机对拍。
+- `tests/test_similarity_algorithm.py`：52 项，含倒排索引与朴素集合求交的 12 组随机对拍、6 个类别的无噪声还原、降阶规则的残差级验证、log 因子三对的双向合并用例。
 - `tests/test_similarity_and_complexity_api.py`：12 项，真实 PostgreSQL + FastAPI TestClient。
 - `tests/test_migrations.py` 更新为 pg0007、30 张业务表。
 
-前端：`vitest run` **57 passed**（基线 50，新增 7）；`vue-tsc --noEmit` 通过；`prettier --check` 全库通过；`vite build` 通过。
+前端：`vitest run` **70 passed**（19 个文件，基线 50，新增 20）；`vue-tsc --noEmit` 通过；`prettier --check` 全库通过；`vite build` 通过。
 
-真实 HTTP：`python scripts/smoke_similarity_complexity_http.py`，**59 项检查通过**。输出摘要：
+真实 HTTP：`python scripts/smoke_similarity_complexity_http.py`，**59 项检查通过**。最后一次运行（当前代码）输出摘要：
 
 ```
   demo.student01: v3 ACCEPTED (5/5)
@@ -38,7 +38,7 @@
   demo.student05: v3 WRONG_ANSWER (0/5)
   demo.student06: v3 WRONG_ANSWER (0/5)
   similarity: 3 pairs, 1 clusters, top=1.000000
-  complexity: SUCCEEDED time=O(n) space=O(n) source=DYNAMIC
+  complexity: SUCCEEDED time=O(n) space=O(n) source=STATIC
   unaccepted: refused with SUBMISSION_NOT_ACCEPTED
 ```
 
@@ -61,11 +61,58 @@ headless Chrome 1440×1000 实跑：
 
 验证库 `algorithm_review_test` 覆盖 upgrade → downgrade pg0006 → upgrade，`compare_metadata` 差异为空。业务表从 28 张增到 30 张。
 
-## 5. 一处需要说明的测量结论
+## 5. 独立审核发现并修好的问题
+
+两个只读审核（一个审后端与算法，一个审前端）在交付前各给出一份不通过结论。修完复核项如下。审核的原始结论不在仓库里，这里只记录被采纳的问题与修复。
+
+**算法与后端**
+
+| 问题 | 后果 | 修复 |
+|---|---|---|
+| `_CostStack.pop` 没跟上 `push` 新增的 `const` 权重 | `for i in range(n)` 里先出现 `for b in range(8)` 再出现内层 n 循环时，外层代价被抹掉，`O(n^2)` 报成 `O(n)`；题库 CODE-P37 受影响 | `pop` 与 `push` 用同一套判断，`const` 直接返回；三种排列顺序加单测 |
+| 档位停止条件（4）与拟合发布门槛（5）各写各的 | 平方及更高阶程序永远拿不到 5 档，实测永久失效 | 抽出 `MINIMUM_PUBLISHABLE_RUNGS`，`probe` 直接引用 |
+| `exp(2/m)` 被写成 AIC 推导 | 八类候选参数个数相同，推导不成立 | 改注为经验性保守折减系数，文档同步 |
+| 降阶可一次跨多个等级 | 可能从 `O(n^2)` 直接跳到 `O(1)` | 只允许在“实际并列的候选”里逐级下降，加两个单测 |
+| `classify_growth` 只把 OK 档传给拟合 | “剔除 N 档”永远不出现 | 传全部测量，`fit_growth` 自己筛并记录 |
+| 内存判定用总 RSS 除以 n | 解释器底噪占大头，`O(n)` 空间永远测不出 | 改为对“超出最小档的增量”做双对数斜率 |
+| C 类词法先删块注释再删字符串 | 字符串里的 `"/*"` 会吞掉后续代码，加两句 print 即可规避检测 | 改成单遍扫描，同时保留换行修正行号 |
+| `_merge_spans` 无下界 | 移动代码块时行号区间可向后跳跃，报出的范围与实际匹配不符 | 两侧都加 `-k` 下界 |
+| `pairs_truncated` 挂属性不传字段 | 教师无法知道证据列表被截断 | 成为正式字段，贯穿契约、baseline、接口与页面 |
+
+**前端**
+
+| 问题 | 后果 | 修复 |
+|---|---|---|
+| 相似检测在 90 秒轮询窗口后无条件写“完成” | 批次仍在跑时教师读到“完成：没有达到阈值的相似对” | 按最后一次批次状态判断，未完成时只说仍在进行且不拉证据 |
+| 相似检测轮询不检查组件卸载 | 切走后仍持续请求，实测 30 秒 25 次 | 加 `unmounted` 标记，每次 await 后返回 |
+| 学生端复杂度面板无轮询上限且卸载后继续请求 | 10 分钟 401 次请求 | 上限 45 次并提示已停止自动刷新；序号令牌丢弃迟到响应 |
+| 提交历史把 INELIGIBLE 渲染成“时间 undefined” | 页面上出现 undefined | 按响应 status 分支，缺类别时显示“无法分析/仅结构分析” |
+| 面板头部徽章对 FAILED/INELIGIBLE 显示“已完成” | 同一屏同时出现“已完成”和“分析失败” | 五种终态各有文案，与教师端一致 |
+| 教师概览轮询出错后文案仍说“页面会自动刷新” | 文案与行为相反 | 错误也计入“已停止自动刷新” |
+| 教师概览每轮为每个失败行重新拉原因 | 1 行 PENDING + 9 行 FAILED 时每 5 秒 10 个请求 | 按 submission_id 缓存原因 |
+| `.code-compare` 子项缺 `min-width: 0` | 390 宽点开代码对比横向溢出 205px | 改用 `minmax(0, 1fr)` 并给子项 `min-width: 0` |
+| `GrowthChart` 未过滤非有限值 | NaN/Infinity 会写出非法 SVG 坐标 | 只画有限正数；刻度按像素距离去重叠 |
+| 三个 select 无 `aria-label`、操作列表头为空 | 屏幕阅读器读不出控件名 | 补 `aria-label` 与 `visually-hidden` 文本 |
+| 两处测试断言过宽（`toBeTruthy`、`toContain("过短")`） | 文案退化仍通过 | 改为精确字符串并断言键值一一对应 |
+
+## 6. 实验暴露并修好的缺陷
+
+`backend/scripts/experiment_similarity_complexity.py` 用本实现自带的函数跑了 6 组复杂度对照，发现两个真实缺陷：
+
+| 缺陷 | 暴露它的实验 | 数字 | 修复 |
+|---|---|---|---|
+| 无噪声的 `O(n log n)` 曲线被判成 `O(n)` | fit 标定：把理想曲线喂给同一个 `fit_growth` | 5 次重复全部错 | 按残差平方和选类，降阶需通过 `exp(2/m)` 的 AIC 门槛 |
+| 实测无法分辨只差一个 log 因子的两类 | 同一组数据的带噪声重复（σ=2%/5%/10%） | 40 次里 13 次分错 | 这一类改由结构分析裁定，实测分歧写进限制 |
+
+另外两条规则从同一批数字推出：有效档位少于 5 不给 MEDIUM 以上置信度（4 档时 `O(n²)` 被判成 `O(n log n)`）；字面量边界的循环不再贡献多项式因子（`for _ in range(60000)` 是常数，旧实现把整个程序算成 `O(n log n)`）。
+
+修复后同一套实验 6/6 组一致。这不是"现在全对了"：噪声下 log 因子仍然不稳定，报告里的结论仍需配合置信度与限制说明读。完整数字见 [experiments-2026-10-28.json](experiments-2026-10-28.json)，分析见[算法实验](../../../design/analysis/algorithm-experiments.md)。
+
+## 7. 一处需要说明的测量结论
 
 最初的设计假设“实测增长总能给出复杂度”，实测发现不成立：程序读输入本身是 O(n)，二分查找的实测总时间和纯读取同阶，无法区分 O(log n) 与 O(n)。因此增加了纯输入读取基线，并把规则改为“实测必须明显超过读取成本才作为依据”，否则回落到结构分析并在报告里写明只能给出上界。这条规则在 `test_combine_does_not_claim_a_class_the_measurement_cannot_separate` 和真实冒烟中都被固定下来。
 
-## 6. 未做与边界
+## 8. 未做与边界
 
 - 没有 Linux 沙箱：测量与评测一样在服务主机执行，只适合受控开发环境。
 - C/C++/Java 只做词法结构分析，置信度固定 LOW。

@@ -276,7 +276,8 @@
         "window": 4,
         "minimum_tokens": 40,
         "threshold": "0.5"
-      }
+      },
+      "pairs_truncated": false
     },
     "evidence": [],
     "limitations": []
@@ -310,7 +311,8 @@
       "clusters": [],
       "insufficient": [],
       "submission_count": 0,
-      "parameters": {}
+      "parameters": {},
+      "pairs_truncated": false
     },
     "evidence": [],
     "limitations": [

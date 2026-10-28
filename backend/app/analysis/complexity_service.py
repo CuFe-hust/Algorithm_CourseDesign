@@ -8,6 +8,7 @@ worker cannot overwrite a result that a retry already produced.
 from __future__ import annotations
 
 import json
+import math
 from datetime import timedelta
 
 from sqlalchemy import func, select
@@ -329,18 +330,43 @@ def _analyse(db: Session, report_id: int, *, measure: bool) -> None:
     del details
 
 
+# A single measured process carries the interpreter itself; below this much growth
+# above the baseline the ladder says nothing about the program's own memory.
+MEMORY_NOISE_KIB = 2048
+
+
 def _memory_stats(outcomes) -> dict | None:
+    """Classify how peak resident memory grows with the input size.
+
+    Total RSS is ``baseline + program data``, and the baseline (interpreter, loaded
+    modules) is tens of MiB that does not move with ``n``. Dividing total RSS by
+    ``n`` -- an earlier version did that -- therefore reports an exponent near zero
+    for a genuinely linear program and can never detect ``O(n)`` space. So measure
+    the *increment* over the smallest rung and take its log-log slope instead.
+    """
     points = [(outcome.n, outcome.peak_rss_kib) for outcome in outcomes
               if outcome.verdict == 'OK' and outcome.peak_rss_kib]
     if len(points) < 3:
         return None
-    first_n, first_kib = points[0]
-    last_n, last_kib = points[-1]
-    if first_kib <= 0 or last_n <= first_n:
+    baseline_kib = min(kib for _, kib in points)
+    increments = [(n, kib - baseline_kib) for n, kib in points]
+    largest = max(value for _, value in increments)
+    if largest < MEMORY_NOISE_KIB:
+        return {'class': 'O(1)', 'exponent': 0.0,
+                'points': [{'n': n, 'peak_rss_kib': kib} for n, kib in points]}
+    usable = [(n, value) for n, value in increments if value > 0 and n > 1]
+    if len(usable) < 2:
         return None
-    growth = (last_kib / first_kib) / (last_n / first_n)
-    space = 'O(n^2)' if growth > 1.6 else 'O(n)' if growth > 1.2 else 'O(1)'
-    return {'class': space, 'growth': round(growth, 3),
+    xs = [math.log(n) for n, _ in usable]
+    ys = [math.log(value) for _, value in usable]
+    mean_x = sum(xs) / len(xs)
+    mean_y = sum(ys) / len(ys)
+    denominator = sum((x - mean_x) ** 2 for x in xs)
+    if denominator <= 0:
+        return None
+    exponent = sum((x - mean_x) * (y - mean_y) for x, y in zip(xs, ys)) / denominator
+    space = 'O(n^2)' if exponent >= 1.5 else 'O(n)' if exponent >= 0.5 else 'O(1)'
+    return {'class': space, 'exponent': round(exponent, 3),
             'points': [{'n': n, 'peak_rss_kib': kib} for n, kib in points]}
 
 

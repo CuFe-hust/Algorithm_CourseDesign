@@ -1175,8 +1175,58 @@ def experiment_repeatability(bank: dict[str, dict], workdir: pathlib.Path,
 # -------------------------------------------------------------------- report
 
 
+def experiment_fit_noise_sensitivity(trials: int = 40) -> dict:
+    """How often the fitter picks the truth when the same curve carries noise.
+
+    The noiseless calibration in :func:`experiment_fit_calibration` shows the rule
+    is internally consistent. This second view adds multiplicative noise of 2%, 5%
+    and 10% to ideal ``t = b + a*f(n)`` curves and counts what the fitter reports.
+    It is the evidence behind two claims in the report: a log factor becomes
+    unreliable under noise, and the confidence level is not a promise of accuracy.
+
+    Deterministic: the random source is seeded, so a rerun reproduces the table.
+    """
+    rng = random.Random(SEED + 17)
+    sizes = (256, 512, 1024, 2048, 4096, 8192, 16384)
+    classes = ('O(1)', 'O(log n)', 'O(n)', 'O(n log n)', 'O(n^2)', 'O(n^3)')
+    floor_ms, amplitude_ms = 12.0, 24.0
+    rows = []
+    for sigma in (0.02, 0.05, 0.10):
+        for ideal in classes:
+            function = complexity.GROWTH_FUNCTIONS[ideal]
+            base = function(sizes[0])
+            reported: dict[str, int] = {}
+            confident_wrong = 0
+            for _ in range(trials):
+                points = []
+                for n in sizes:
+                    wall = (floor_ms + amplitude_ms * function(n) / base) * (1 + rng.gauss(0, sigma))
+                    points.append(complexity.Measurement(
+                        n=n, wall_ms=wall, adjusted_ms=wall, peak_rss_kib=None, verdict='OK'))
+                fit = complexity.fit_growth(points, floor_ms=floor_ms)
+                reported[fit.fitted_class] = reported.get(fit.fitted_class, 0) + 1
+                if fit.fitted_class != ideal and fit.confidence in ('MEDIUM', 'HIGH'):
+                    confident_wrong += 1
+            rows.append({
+                'sigma': sigma, 'ideal_class': ideal, 'trials': trials,
+                'reported': dict(sorted(reported.items())),
+                'exact_hits': reported.get(ideal, 0),
+                'accuracy': round(reported.get(ideal, 0) / trials, 3),
+                'confident_wrong': confident_wrong,
+            })
+    return {
+        'name': '拟合器噪声敏感性：理想曲线加乘性噪声后重复 40 次',
+        'purpose': '量化“置信度 HIGH 不等于结论正确”，并给 log 因子在噪声下的不稳定程度一个可复现的数字',
+        'parameters': {'sizes': list(sizes), 'floor_ms': floor_ms,
+                       'amplitude_at_first_rung_ms': amplitude_ms,
+                       'sigmas': [0.02, 0.05, 0.10], 'trials': trials, 'seed': SEED + 17},
+        'rows': rows,
+    }
+
+
 def build_report(*, similarity_blocks: dict, complexity_blocks: list[dict],
-                 calibration: dict, repeatability: dict, wall_seconds: float) -> dict:
+                 calibration: dict, noise: dict, repeatability: dict,
+                 wall_seconds: float) -> dict:
     return {
         'meta': {
             'seed': SEED,
@@ -1199,6 +1249,7 @@ def build_report(*, similarity_blocks: dict, complexity_blocks: list[dict],
         },
         'similarity': similarity_blocks,
         'complexity': {'groups': complexity_blocks, 'fit_calibration': calibration,
+                       'fit_noise_sensitivity': noise,
                        'repeatability': repeatability},
     }
 
@@ -1255,11 +1306,13 @@ def main(argv: list[str] | None = None) -> int:
             bank, group, workdir, seed=SEED + index, wall_limit_ms=4000, budget_ms=60000,
             repeats=5, max_rungs=13))
     calibration = experiment_fit_calibration(bank)
+    noise = experiment_fit_noise_sensitivity()
     repeatability = experiment_repeatability(bank, workdir, ('Olog', 'Onlog'))
 
     report = build_report(similarity_blocks=similarity_blocks,
                           complexity_blocks=complexity_blocks,
                           calibration=calibration,
+                          noise=noise,
                           repeatability=repeatability,
                           wall_seconds=time.perf_counter() - started)
     if arguments.output is not None:

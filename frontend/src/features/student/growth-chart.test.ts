@@ -73,6 +73,47 @@ describe("GrowthChart", () => {
     expect(host.textContent).toContain("没有可用的测量点");
   });
 
+  it("only draws completed, finite measurements", async () => {
+    const host = mount({
+      dynamic: dynamic({
+        rungs: [
+          { n: 256, wall_ms: 14, verdict: "OK" },
+          { n: 512, wall_ms: 0, verdict: "OK" },
+          { n: 1024, wall_ms: 22, verdict: "TIME_LIMIT_EXCEEDED" },
+          { n: 2048, wall_ms: 30, verdict: "OK" },
+        ],
+        curve: [],
+      } as unknown as Partial<DynamicAnalysis>),
+    });
+    await nextTick();
+    const points = [...host.querySelectorAll("circle.point")];
+    expect(points).toHaveLength(2);
+    for (const point of points) {
+      expect(Number.isFinite(Number(point.getAttribute("cx")))).toBe(true);
+      expect(Number.isFinite(Number(point.getAttribute("cy")))).toBe(true);
+    }
+  });
+
+  it("never emits a coordinate that is not a number", async () => {
+    const host = mount({
+      dynamic: dynamic({
+        rungs: [
+          { n: 256, wall_ms: 14, verdict: "OK" },
+          { n: Number.NaN, wall_ms: 20, verdict: "OK" },
+          { n: 1024, wall_ms: Number.POSITIVE_INFINITY, verdict: "OK" },
+        ],
+        curve: [
+          { n: 256, time_ms: 13 },
+          { n: 1024, time_ms: 30 },
+        ],
+      } as unknown as Partial<DynamicAnalysis>),
+    });
+    await nextTick();
+    const markup = host.innerHTML;
+    expect(markup).not.toContain("NaN");
+    expect(markup).not.toContain("Infinity");
+  });
+
   it("renders without a report", async () => {
     const host = mount({ dynamic: null });
     await nextTick();

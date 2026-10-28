@@ -95,4 +95,5 @@ docs/
 
 - [同题代码相似检测](design/analysis/code-similarity.md)：词法规格化 + Winnowing 指纹，输出相似对、行号区间与相似簇。
 - [已通过代码的复杂度分析](design/analysis/complexity.md)：结构分析 + 伸缩档实测，给出类别、置信度、增长曲线与适用范围。
+- [算法实验与对比报告](design/analysis/algorithm-experiments.md)：70 道题、485 组相似对照、6 组复杂度对照、实验暴露的 5 个缺陷与修复
 - [实现与验证记录](implementation/evidence/similarity-complexity/2026-10-28-implementation.md) · [设计说明](superpowers/specs/2026-10-28-similarity-and-complexity-design.md)

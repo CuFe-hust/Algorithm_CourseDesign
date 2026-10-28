@@ -71,13 +71,27 @@ async function loadComplexity(entries: HistoryEntry[]) {
   }
 }
 
+/**
+ * Short complexity hint for a history row.
+ *
+ * The backend omits ``report`` entirely while a report is PENDING/RUNNING and
+ * writes an empty ``summary`` for INELIGIBLE, so the label is derived from the
+ * response ``status`` first. Interpolating a missing class produced
+ * "时间 undefined · 空间 undefined" in review.
+ */
 function complexityLabel(entry: HistoryEntry): string {
-  const report = complexity.value[entry.submission_id]?.report;
-  if (!report) return "";
-  if (report.status === "PENDING" || report.status === "RUNNING")
+  const response = complexity.value[entry.submission_id];
+  if (!response || response.status === "NONE") return "";
+  if (response.status === "PENDING" || response.status === "RUNNING")
     return "分析中";
-  if (report.status === "FAILED") return "分析失败";
-  return `时间 ${report.time.class} · 空间 ${report.space.class}`;
+  if (response.status === "FAILED") return "分析失败";
+  if (response.status === "INELIGIBLE") return "无法分析";
+  const timeClass = response.report?.time?.class;
+  const spaceClass = response.report?.space?.class;
+  if (!timeClass || !spaceClass) {
+    return response.status === "STATIC_ONLY" ? "仅结构分析" : "";
+  }
+  return `时间 ${timeClass} · 空间 ${spaceClass}`;
 }
 
 async function load() {

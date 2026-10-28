@@ -38,9 +38,16 @@ describe("similarity presentation helpers", () => {
     expect(percent(null)).toBe("—");
   });
 
-  it("labels every skip reason the backend can send", () => {
-    expect(insufficientLabels.INSUFFICIENT_TOKENS).toContain("过短");
-    expect(insufficientLabels.NOT_A_PROGRAMMING_LANGUAGE).toBeTruthy();
-    expect(insufficientLabels.TOKENIZATION_FAILED).toBeTruthy();
+  it("gives every skip reason its own explanation", () => {
+    // Exact strings, not toBeTruthy: a degenerate label such as "过短" passed the
+    // old assertion, so the test could not notice the text being gutted.
+    expect(insufficientLabels.INSUFFICIENT_TOKENS).toBe("代码过短，不参与比较");
+    expect(insufficientLabels.NOT_A_PROGRAMMING_LANGUAGE).toBe(
+      "不是可比较的编程语言",
+    );
+    expect(insufficientLabels.TOKENIZATION_FAILED).toBe("代码无法词法切分");
+    expect(new Set(Object.values(insufficientLabels)).size).toBe(
+      Object.keys(insufficientLabels).length,
+    );
   });
 });

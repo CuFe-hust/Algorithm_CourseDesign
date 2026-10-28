@@ -3,8 +3,8 @@
     "seed": 20261028,
     "python": "3.14.5",
     "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
-    "generated_at": "2026-10-28T09:49:31",
-    "wall_seconds": 77.0,
+    "generated_at": "2026-10-28T10:15:34",
+    "wall_seconds": 104.4,
     "question_bank": "data/formatted/questions.programming.json",
     "similarity_parameters": {
       "k": 12,
@@ -2676,9 +2676,9 @@
       "rows": [
         {
           "submissions": 20,
-          "seconds_median": 0.0176,
-          "seconds_min": 0.0172,
-          "seconds_max": 0.0177,
+          "seconds_median": 0.0189,
+          "seconds_min": 0.0187,
+          "seconds_max": 0.0197,
           "repeats": 3,
           "tokens_per_submission": 235,
           "unique_fingerprints_per_submission": 92,
@@ -2697,9 +2697,9 @@
         },
         {
           "submissions": 50,
-          "seconds_median": 0.0921,
-          "seconds_min": 0.0906,
-          "seconds_max": 0.0923,
+          "seconds_median": 0.0936,
+          "seconds_min": 0.0929,
+          "seconds_max": 0.0998,
           "repeats": 3,
           "tokens_per_submission": 235,
           "unique_fingerprints_per_submission": 92,
@@ -2718,9 +2718,9 @@
         },
         {
           "submissions": 100,
-          "seconds_median": 0.3409,
-          "seconds_min": 0.2914,
-          "seconds_max": 0.3549,
+          "seconds_median": 0.6244,
+          "seconds_min": 0.4408,
+          "seconds_max": 0.6326,
           "repeats": 3,
           "tokens_per_submission": 235,
           "unique_fingerprints_per_submission": 92,
@@ -2739,9 +2739,9 @@
         },
         {
           "submissions": 200,
-          "seconds_median": 1.3205,
-          "seconds_min": 1.2523,
-          "seconds_max": 1.3932,
+          "seconds_median": 1.3954,
+          "seconds_min": 1.3453,
+          "seconds_max": 1.4025,
           "repeats": 3,
           "tokens_per_submission": 235,
           "unique_fingerprints_per_submission": 92,
@@ -2760,11 +2760,11 @@
         }
       ],
       "doubling_ratios": [
-        5.233,
-        3.701,
-        3.874
+        4.952,
+        6.671,
+        2.235
       ],
-      "loglog_exponent": 1.8747
+      "loglog_exponent": 1.9482
     }
   },
   "complexity": {
@@ -2803,33 +2803,33 @@
           "notes": []
         },
         "stop_reason": "FLOOR_REACHED",
-        "elapsed_seconds": 3.48,
+        "elapsed_seconds": 3.78,
         "rungs": [
           {
             "n": 256,
-            "wall_ms": 12.844,
-            "reference_ms": 12.886,
-            "io_ratio": 0.997,
-            "peak_rss_kib": 16432,
+            "wall_ms": 13.601,
+            "reference_ms": 15.502,
+            "io_ratio": 0.877,
+            "peak_rss_kib": 16416,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 512,
-            "wall_ms": 12.124,
-            "reference_ms": 12.876,
-            "io_ratio": 0.942,
-            "peak_rss_kib": 16432,
+            "wall_ms": 15.366,
+            "reference_ms": 14.588,
+            "io_ratio": 1.053,
+            "peak_rss_kib": 16400,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 1024,
-            "wall_ms": 12.834,
-            "reference_ms": 13.584,
-            "io_ratio": 0.945,
+            "wall_ms": 12.892,
+            "reference_ms": 14.24,
+            "io_ratio": 0.905,
             "peak_rss_kib": 16416,
             "verdict": "OK",
             "detail": null,
@@ -2837,116 +2837,116 @@
           },
           {
             "n": 2048,
-            "wall_ms": 12.785,
-            "reference_ms": 12.852,
-            "io_ratio": 0.995,
-            "peak_rss_kib": 16464,
-            "verdict": "OK",
-            "detail": null,
-            "repeats": 5
-          },
-          {
-            "n": 4096,
-            "wall_ms": 13.922,
-            "reference_ms": 15.405,
-            "io_ratio": 0.904,
+            "wall_ms": 14.963,
+            "reference_ms": 15.375,
+            "io_ratio": 0.973,
             "peak_rss_kib": 16416,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
+            "n": 4096,
+            "wall_ms": 15.076,
+            "reference_ms": 13.955,
+            "io_ratio": 1.08,
+            "peak_rss_kib": 16432,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
             "n": 8192,
-            "wall_ms": 14.99,
-            "reference_ms": 13.584,
-            "io_ratio": 1.104,
-            "peak_rss_kib": 16448,
+            "wall_ms": 12.862,
+            "reference_ms": 12.854,
+            "io_ratio": 1.001,
+            "peak_rss_kib": 16416,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 16384,
-            "wall_ms": 14.052,
-            "reference_ms": 12.854,
-            "io_ratio": 1.093,
-            "peak_rss_kib": 16464,
+            "wall_ms": 13.843,
+            "reference_ms": 14.555,
+            "io_ratio": 0.951,
+            "peak_rss_kib": 16432,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 32768,
-            "wall_ms": 12.794,
-            "reference_ms": 13.384,
-            "io_ratio": 0.956,
-            "peak_rss_kib": 16448,
+            "wall_ms": 14.476,
+            "reference_ms": 13.007,
+            "io_ratio": 1.113,
+            "peak_rss_kib": 16432,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 65536,
-            "wall_ms": 12.92,
-            "reference_ms": 12.916,
-            "io_ratio": 1.0,
-            "peak_rss_kib": 16448,
+            "wall_ms": 13.858,
+            "reference_ms": 12.885,
+            "io_ratio": 1.075,
+            "peak_rss_kib": 16432,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 131072,
-            "wall_ms": 12.897,
-            "reference_ms": 12.888,
-            "io_ratio": 1.001,
-            "peak_rss_kib": 16432,
+            "wall_ms": 12.835,
+            "reference_ms": 12.834,
+            "io_ratio": 1.0,
+            "peak_rss_kib": 16416,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 262144,
-            "wall_ms": 12.759,
-            "reference_ms": 13.638,
-            "io_ratio": 0.936,
-            "peak_rss_kib": 16432,
+            "wall_ms": 15.583,
+            "reference_ms": 15.385,
+            "io_ratio": 1.013,
+            "peak_rss_kib": 16416,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 524288,
-            "wall_ms": 12.853,
-            "reference_ms": 12.877,
-            "io_ratio": 0.998,
-            "peak_rss_kib": 16400,
+            "wall_ms": 15.392,
+            "reference_ms": 16.939,
+            "io_ratio": 0.909,
+            "peak_rss_kib": 16448,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 1048576,
-            "wall_ms": 10.337,
-            "reference_ms": 12.044,
-            "io_ratio": 0.858,
-            "peak_rss_kib": 16400,
+            "wall_ms": 15.386,
+            "reference_ms": 12.924,
+            "io_ratio": 1.191,
+            "peak_rss_kib": 16416,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           }
         ],
         "conclusion": {
-          "measured_class": "O(1)",
+          "measured_class": "O(log n)",
           "io_class": "UNKNOWN",
           "informative": true,
-          "r2": 0.0,
-          "exponent": -0.0104,
+          "r2": 0.08556,
+          "exponent": 0.0079,
           "confidence": "LOW",
-          "floor_ms": 10.337,
-          "coefficient": 12.93160592,
-          "fitted_class_from_fit": "O(1)",
-          "fit_r2": 0.0,
+          "floor_ms": 12.835,
+          "coefficient": 0.07914599,
+          "fitted_class_from_fit": "O(log n)",
+          "fit_r2": 0.08556,
           "fit_notes": [
             "多数档位仍在启动开销附近，增长信号偏弱"
           ],
@@ -2956,48 +2956,54 @@
         },
         "candidate_r2": [
           {
+            "class": "O(n)",
+            "r2": 0.21077,
+            "chosen": false
+          },
+          {
+            "class": "O(n log n)",
+            "r2": 0.208106,
+            "chosen": false
+          },
+          {
+            "class": "O(n^2)",
+            "r2": 0.156198,
+            "chosen": false
+          },
+          {
+            "class": "O(n^2 log n)",
+            "r2": 0.152689,
+            "chosen": false
+          },
+          {
+            "class": "O(n^3)",
+            "r2": 0.121935,
+            "chosen": false
+          },
+          {
+            "class": "O(log n)",
+            "r2": 0.08556,
+            "chosen": true
+          },
+          {
             "class": "O(1)",
             "r2": 0.0,
-            "chosen": true
+            "chosen": false
           },
           {
             "class": "O(2^n)",
             "r2": 0.0,
             "chosen": false
-          },
-          {
-            "class": "O(log n)",
-            "r2": null
-          },
-          {
-            "class": "O(n)",
-            "r2": null
-          },
-          {
-            "class": "O(n log n)",
-            "r2": null
-          },
-          {
-            "class": "O(n^2)",
-            "r2": null
-          },
-          {
-            "class": "O(n^2 log n)",
-            "r2": null
-          },
-          {
-            "class": "O(n^3)",
-            "r2": null
           }
         ],
         "final": {
           "time_class": "O(1)",
           "source": "STATIC",
           "confidence": "HIGH",
-          "agreement": true,
+          "agreement": false,
           "space_class": "O(1)",
           "limitations": [
-            "实测增长 O(1) 的置信度偏低（R²=0.000），未超过结构分析 O(1) 的证据强度"
+            "实测增长 O(log n) 的置信度偏低（R²=0.086），未超过结构分析 O(1) 的证据强度"
           ]
         },
         "agrees_with_expected": true
@@ -3042,33 +3048,33 @@
           "notes": []
         },
         "stop_reason": "LADDER_EXHAUSTED",
-        "elapsed_seconds": 5.59,
+        "elapsed_seconds": 6.64,
         "rungs": [
           {
             "n": 256,
-            "wall_ms": 25.582,
-            "reference_ms": 12.861,
-            "io_ratio": 1.989,
-            "peak_rss_kib": 16464,
+            "wall_ms": 28.508,
+            "reference_ms": 14.907,
+            "io_ratio": 1.912,
+            "peak_rss_kib": 16480,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 512,
-            "wall_ms": 29.596,
-            "reference_ms": 12.873,
-            "io_ratio": 2.299,
-            "peak_rss_kib": 16416,
+            "wall_ms": 32.953,
+            "reference_ms": 12.908,
+            "io_ratio": 2.553,
+            "peak_rss_kib": 16496,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 1024,
-            "wall_ms": 27.859,
-            "reference_ms": 12.245,
-            "io_ratio": 2.275,
+            "wall_ms": 32.98,
+            "reference_ms": 15.008,
+            "io_ratio": 2.198,
             "peak_rss_kib": 16448,
             "verdict": "OK",
             "detail": null,
@@ -3076,49 +3082,49 @@
           },
           {
             "n": 2048,
-            "wall_ms": 34.436,
-            "reference_ms": 14.304,
-            "io_ratio": 2.407,
-            "peak_rss_kib": 16464,
+            "wall_ms": 39.976,
+            "reference_ms": 15.458,
+            "io_ratio": 2.586,
+            "peak_rss_kib": 16480,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 4096,
-            "wall_ms": 37.622,
-            "reference_ms": 14.748,
-            "io_ratio": 2.551,
-            "peak_rss_kib": 16464,
+            "wall_ms": 44.791,
+            "reference_ms": 14.964,
+            "io_ratio": 2.993,
+            "peak_rss_kib": 16448,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 8192,
-            "wall_ms": 39.954,
-            "reference_ms": 12.95,
-            "io_ratio": 3.085,
-            "peak_rss_kib": 16432,
+            "wall_ms": 47.114,
+            "reference_ms": 18.223,
+            "io_ratio": 2.585,
+            "peak_rss_kib": 16496,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 16384,
-            "wall_ms": 40.415,
-            "reference_ms": 13.717,
-            "io_ratio": 2.946,
-            "peak_rss_kib": 16464,
+            "wall_ms": 54.847,
+            "reference_ms": 13.69,
+            "io_ratio": 4.006,
+            "peak_rss_kib": 16496,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 32768,
-            "wall_ms": 47.027,
-            "reference_ms": 14.582,
-            "io_ratio": 3.225,
+            "wall_ms": 54.611,
+            "reference_ms": 17.958,
+            "io_ratio": 3.041,
             "peak_rss_kib": 16480,
             "verdict": "OK",
             "detail": null,
@@ -3126,50 +3132,50 @@
           },
           {
             "n": 65536,
-            "wall_ms": 50.708,
-            "reference_ms": 15.128,
-            "io_ratio": 3.352,
-            "peak_rss_kib": 16448,
+            "wall_ms": 62.191,
+            "reference_ms": 16.933,
+            "io_ratio": 3.673,
+            "peak_rss_kib": 16480,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 131072,
-            "wall_ms": 54.671,
-            "reference_ms": 14.9,
-            "io_ratio": 3.669,
-            "peak_rss_kib": 16432,
+            "wall_ms": 65.791,
+            "reference_ms": 17.766,
+            "io_ratio": 3.703,
+            "peak_rss_kib": 16448,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 262144,
-            "wall_ms": 56.131,
-            "reference_ms": 14.43,
-            "io_ratio": 3.89,
-            "peak_rss_kib": 16416,
+            "wall_ms": 70.331,
+            "reference_ms": 16.815,
+            "io_ratio": 4.183,
+            "peak_rss_kib": 16464,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 524288,
-            "wall_ms": 59.774,
-            "reference_ms": 15.448,
-            "io_ratio": 3.869,
-            "peak_rss_kib": 16432,
+            "wall_ms": 74.961,
+            "reference_ms": 15.382,
+            "io_ratio": 4.873,
+            "peak_rss_kib": 16416,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 1048576,
-            "wall_ms": 55.525,
-            "reference_ms": 12.694,
-            "io_ratio": 4.374,
-            "peak_rss_kib": 16480,
+            "wall_ms": 77.161,
+            "reference_ms": 22.764,
+            "io_ratio": 3.39,
+            "peak_rss_kib": 16464,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
@@ -3179,47 +3185,47 @@
           "measured_class": "O(log n)",
           "io_class": "UNKNOWN",
           "informative": true,
-          "r2": 0.960606,
-          "exponent": 0.0859,
+          "r2": 0.980462,
+          "exponent": 0.1067,
           "confidence": "MEDIUM",
-          "floor_ms": 25.582,
-          "coefficient": 2.95559118,
+          "floor_ms": 28.508,
+          "coefficient": 3.8012114,
           "fitted_class_from_fit": "O(log n)",
-          "fit_r2": 0.960606,
+          "fit_r2": 0.980462,
           "fit_notes": [],
           "reference_fitted_class": "O(log n)",
-          "reference_fit_r2": 0.244777,
+          "reference_fit_r2": 0.431067,
           "reference_fit_confidence": "LOW"
         },
         "candidate_r2": [
           {
             "class": "O(log n)",
-            "r2": 0.960606,
+            "r2": 0.980462,
             "chosen": true
           },
           {
             "class": "O(n)",
-            "r2": 0.401385,
+            "r2": 0.522486,
             "chosen": false
           },
           {
             "class": "O(n log n)",
-            "r2": 0.374577,
+            "r2": 0.496279,
             "chosen": false
           },
           {
             "class": "O(n^2)",
-            "r2": 0.20436,
+            "r2": 0.318954,
             "chosen": false
           },
           {
             "class": "O(n^2 log n)",
-            "r2": 0.197435,
+            "r2": 0.311138,
             "chosen": false
           },
           {
             "class": "O(n^3)",
-            "r2": 0.145252,
+            "r2": 0.249869,
             "chosen": false
           },
           {
@@ -3282,53 +3288,53 @@
           "notes": []
         },
         "stop_reason": "OK",
-        "elapsed_seconds": 3.35,
+        "elapsed_seconds": 7.25,
         "rungs": [
           {
             "n": 256,
-            "wall_ms": 12.89,
-            "reference_ms": 12.825,
-            "io_ratio": 1.005,
-            "peak_rss_kib": 16512,
+            "wall_ms": 20.511,
+            "reference_ms": 20.281,
+            "io_ratio": 1.011,
+            "peak_rss_kib": 16528,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 512,
-            "wall_ms": 12.707,
-            "reference_ms": 13.016,
-            "io_ratio": 0.976,
-            "peak_rss_kib": 16544,
+            "wall_ms": 17.562,
+            "reference_ms": 20.117,
+            "io_ratio": 0.873,
+            "peak_rss_kib": 16560,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 1024,
-            "wall_ms": 13.718,
-            "reference_ms": 12.927,
-            "io_ratio": 1.061,
-            "peak_rss_kib": 16592,
+            "wall_ms": 17.972,
+            "reference_ms": 18.821,
+            "io_ratio": 0.955,
+            "peak_rss_kib": 16608,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 2048,
-            "wall_ms": 12.868,
-            "reference_ms": 12.871,
-            "io_ratio": 1.0,
-            "peak_rss_kib": 16720,
+            "wall_ms": 17.857,
+            "reference_ms": 18.716,
+            "io_ratio": 0.954,
+            "peak_rss_kib": 16752,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 4096,
-            "wall_ms": 12.433,
-            "reference_ms": 12.872,
-            "io_ratio": 0.966,
+            "wall_ms": 19.719,
+            "reference_ms": 20.249,
+            "io_ratio": 0.974,
             "peak_rss_kib": 16896,
             "verdict": "OK",
             "detail": null,
@@ -3336,50 +3342,80 @@
           },
           {
             "n": 8192,
-            "wall_ms": 12.861,
-            "reference_ms": 13.96,
-            "io_ratio": 0.921,
-            "peak_rss_kib": 17152,
+            "wall_ms": 26.628,
+            "reference_ms": 20.107,
+            "io_ratio": 1.324,
+            "peak_rss_kib": 17216,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 16384,
-            "wall_ms": 12.88,
-            "reference_ms": 12.918,
-            "io_ratio": 0.997,
-            "peak_rss_kib": 17664,
+            "wall_ms": 21.918,
+            "reference_ms": 22.496,
+            "io_ratio": 0.974,
+            "peak_rss_kib": 17760,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 32768,
-            "wall_ms": 12.845,
-            "reference_ms": 15.222,
-            "io_ratio": 0.844,
-            "peak_rss_kib": 18512,
+            "wall_ms": 20.528,
+            "reference_ms": 21.997,
+            "io_ratio": 0.933,
+            "peak_rss_kib": 18544,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 65536,
-            "wall_ms": 17.47,
-            "reference_ms": 26.92,
-            "io_ratio": 0.649,
-            "peak_rss_kib": 20592,
+            "wall_ms": 22.931,
+            "reference_ms": 25.273,
+            "io_ratio": 0.907,
+            "peak_rss_kib": 20576,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 131072,
-            "wall_ms": 68.874,
-            "reference_ms": 40.48,
-            "io_ratio": 1.701,
+            "wall_ms": 31.379,
+            "reference_ms": 33.039,
+            "io_ratio": 0.95,
             "peak_rss_kib": 24592,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 262144,
+            "wall_ms": 39.446,
+            "reference_ms": 48.994,
+            "io_ratio": 0.805,
+            "peak_rss_kib": 35920,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 524288,
+            "wall_ms": 63.495,
+            "reference_ms": 88.864,
+            "io_ratio": 0.715,
+            "peak_rss_kib": 52832,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 1048576,
+            "wall_ms": 101.902,
+            "reference_ms": 142.266,
+            "io_ratio": 0.716,
+            "peak_rss_kib": 83280,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
@@ -3387,51 +3423,49 @@
         ],
         "conclusion": {
           "measured_class": "O(log n)",
-          "io_class": "UNKNOWN",
-          "informative": true,
-          "r2": 0.22632,
-          "exponent": 0.1488,
+          "io_class": "O(n)",
+          "informative": false,
+          "r2": 0.419277,
+          "exponent": 0.2495,
           "confidence": "LOW",
-          "floor_ms": 12.433,
-          "coefficient": 1.60220268,
+          "floor_ms": 17.562,
+          "coefficient": 2.47256713,
           "fitted_class_from_fit": "O(log n)",
-          "fit_r2": 0.22632,
-          "fit_notes": [
-            "多数档位仍在启动开销附近，增长信号偏弱"
-          ],
-          "reference_fitted_class": "O(log n)",
-          "reference_fit_r2": 0.449737,
-          "reference_fit_confidence": "LOW"
+          "fit_r2": 0.419277,
+          "fit_notes": [],
+          "reference_fitted_class": "O(n)",
+          "reference_fit_r2": 0.995776,
+          "reference_fit_confidence": "HIGH"
         },
         "candidate_r2": [
           {
-            "class": "O(n^3)",
-            "r2": 0.997661,
-            "chosen": false
-          },
-          {
-            "class": "O(n^2 log n)",
-            "r2": 0.975214,
-            "chosen": false
-          },
-          {
-            "class": "O(n^2)",
-            "r2": 0.970283,
+            "class": "O(n)",
+            "r2": 0.990431,
             "chosen": false
           },
           {
             "class": "O(n log n)",
-            "r2": 0.84174,
+            "r2": 0.988551,
             "chosen": false
           },
           {
-            "class": "O(n)",
-            "r2": 0.817123,
+            "class": "O(n^2)",
+            "r2": 0.903507,
+            "chosen": false
+          },
+          {
+            "class": "O(n^2 log n)",
+            "r2": 0.896101,
+            "chosen": false
+          },
+          {
+            "class": "O(n^3)",
+            "r2": 0.822384,
             "chosen": false
           },
           {
             "class": "O(log n)",
-            "r2": 0.22632,
+            "r2": 0.419277,
             "chosen": true
           },
           {
@@ -3452,7 +3486,7 @@
           "agreement": false,
           "space_class": "O(1)",
           "limitations": [
-            "实测增长 O(log n) 的置信度偏低（R²=0.226），未超过结构分析 O(n) 的证据强度"
+            "实测总时间增长约为 O(log n)，与纯输入读取（O(n)）同阶或更低；被测程序没有明显超过读取输入的开销，因此实测只能给出上界，时间结论以代码结构分析（O(n)）为准"
           ]
         },
         "agrees_with_expected": true
@@ -3521,73 +3555,73 @@
           "notes": []
         },
         "stop_reason": "OK",
-        "elapsed_seconds": 3.38,
+        "elapsed_seconds": 3.02,
         "rungs": [
           {
             "n": 256,
-            "wall_ms": 16.932,
-            "reference_ms": 17.943,
-            "io_ratio": 0.944,
-            "peak_rss_kib": 16592,
+            "wall_ms": 15.38,
+            "reference_ms": 17.076,
+            "io_ratio": 0.901,
+            "peak_rss_kib": 16560,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 512,
-            "wall_ms": 17.67,
-            "reference_ms": 16.76,
-            "io_ratio": 1.054,
-            "peak_rss_kib": 16656,
+            "wall_ms": 17.623,
+            "reference_ms": 16.159,
+            "io_ratio": 1.091,
+            "peak_rss_kib": 16640,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 1024,
-            "wall_ms": 17.241,
-            "reference_ms": 15.416,
-            "io_ratio": 1.118,
-            "peak_rss_kib": 16848,
+            "wall_ms": 15.4,
+            "reference_ms": 15.419,
+            "io_ratio": 0.999,
+            "peak_rss_kib": 16816,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 2048,
-            "wall_ms": 17.648,
-            "reference_ms": 14.927,
-            "io_ratio": 1.182,
-            "peak_rss_kib": 17120,
+            "wall_ms": 17.997,
+            "reference_ms": 15.491,
+            "io_ratio": 1.162,
+            "peak_rss_kib": 17232,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 4096,
-            "wall_ms": 17.919,
-            "reference_ms": 12.921,
-            "io_ratio": 1.387,
-            "peak_rss_kib": 17632,
+            "wall_ms": 20.294,
+            "reference_ms": 16.81,
+            "io_ratio": 1.207,
+            "peak_rss_kib": 17744,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 8192,
-            "wall_ms": 19.847,
-            "reference_ms": 15.141,
-            "io_ratio": 1.311,
-            "peak_rss_kib": 18208,
+            "wall_ms": 22.946,
+            "reference_ms": 15.868,
+            "io_ratio": 1.446,
+            "peak_rss_kib": 18240,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 16384,
-            "wall_ms": 30.471,
-            "reference_ms": 14.939,
-            "io_ratio": 2.04,
+            "wall_ms": 34.744,
+            "reference_ms": 20.372,
+            "io_ratio": 1.705,
             "peak_rss_kib": 19248,
             "verdict": "OK",
             "detail": null,
@@ -3595,20 +3629,10 @@
           },
           {
             "n": 32768,
-            "wall_ms": 45.006,
-            "reference_ms": 15.276,
-            "io_ratio": 2.946,
+            "wall_ms": 63.137,
+            "reference_ms": 19.126,
+            "io_ratio": 3.301,
             "peak_rss_kib": 21088,
-            "verdict": "OK",
-            "detail": null,
-            "repeats": 5
-          },
-          {
-            "n": 65536,
-            "wall_ms": 81.1,
-            "reference_ms": 20.047,
-            "io_ratio": 4.045,
-            "peak_rss_kib": 24800,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
@@ -3618,47 +3642,47 @@
           "measured_class": "O(n log n)",
           "io_class": "UNKNOWN",
           "informative": true,
-          "r2": 0.996389,
-          "exponent": 0.7061,
+          "r2": 0.990728,
+          "exponent": 0.7301,
           "confidence": "HIGH",
-          "floor_ms": 16.932,
-          "coefficient": 6.152e-05,
+          "floor_ms": 15.38,
+          "coefficient": 9.502e-05,
           "fitted_class_from_fit": "O(n log n)",
-          "fit_r2": 0.996389,
+          "fit_r2": 0.990728,
           "fit_notes": [],
           "reference_fitted_class": "O(log n)",
-          "reference_fit_r2": 0.005184,
+          "reference_fit_r2": 0.381083,
           "reference_fit_confidence": "LOW"
         },
         "candidate_r2": [
           {
             "class": "O(n log n)",
-            "r2": 0.996389,
+            "r2": 0.990728,
             "chosen": true
           },
           {
             "class": "O(n)",
-            "r2": 0.992198,
+            "r2": 0.983744,
             "chosen": false
           },
           {
             "class": "O(n^2)",
-            "r2": 0.95529,
+            "r2": 0.973928,
             "chosen": false
           },
           {
             "class": "O(n^2 log n)",
-            "r2": 0.948545,
+            "r2": 0.968648,
             "chosen": false
           },
           {
             "class": "O(n^3)",
-            "r2": 0.891771,
+            "r2": 0.923527,
             "chosen": false
           },
           {
             "class": "O(log n)",
-            "r2": 0.395728,
+            "r2": 0.43302,
             "chosen": false
           },
           {
@@ -3726,60 +3750,70 @@
           "notes": []
         },
         "stop_reason": "OK",
-        "elapsed_seconds": 2.26,
+        "elapsed_seconds": 8.3,
         "rungs": [
           {
             "n": 256,
-            "wall_ms": 12.974,
-            "reference_ms": 12.893,
-            "io_ratio": 1.006,
-            "peak_rss_kib": 16592,
+            "wall_ms": 21.649,
+            "reference_ms": 18.037,
+            "io_ratio": 1.2,
+            "peak_rss_kib": 16624,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 512,
-            "wall_ms": 23.403,
-            "reference_ms": 14.746,
-            "io_ratio": 1.587,
-            "peak_rss_kib": 16544,
+            "wall_ms": 30.509,
+            "reference_ms": 16.168,
+            "io_ratio": 1.887,
+            "peak_rss_kib": 16608,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 1024,
-            "wall_ms": 55.49,
-            "reference_ms": 12.436,
-            "io_ratio": 4.462,
-            "peak_rss_kib": 16576,
+            "wall_ms": 74.444,
+            "reference_ms": 17.224,
+            "io_ratio": 4.322,
+            "peak_rss_kib": 16608,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 2048,
-            "wall_ms": 197.496,
-            "reference_ms": 13.524,
-            "io_ratio": 14.604,
-            "peak_rss_kib": 16576,
+            "wall_ms": 252.363,
+            "reference_ms": 15.325,
+            "io_ratio": 16.467,
+            "peak_rss_kib": 16544,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 4096,
+            "wall_ms": 1001.615,
+            "reference_ms": 17.563,
+            "io_ratio": 57.03,
+            "peak_rss_kib": 16624,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           }
         ],
         "conclusion": {
-          "measured_class": "O(n^2)",
+          "measured_class": "O(n^2 log n)",
           "io_class": "UNKNOWN",
           "informative": true,
-          "r2": 0.999793,
-          "exponent": 1.5385,
-          "confidence": "LOW",
-          "floor_ms": 12.974,
-          "coefficient": 4.457e-05,
-          "fitted_class_from_fit": "O(n^2)",
-          "fit_r2": 0.999793,
+          "r2": 0.999925,
+          "exponent": 1.6872,
+          "confidence": "HIGH",
+          "floor_ms": 21.649,
+          "coefficient": 4.87e-06,
+          "fitted_class_from_fit": "O(n^2 log n)",
+          "fit_r2": 0.999925,
           "fit_notes": [],
           "reference_fitted_class": "O(1)",
           "reference_fit_r2": 0.0,
@@ -3787,33 +3821,33 @@
         },
         "candidate_r2": [
           {
-            "class": "O(n^2)",
-            "r2": 0.999793,
+            "class": "O(n^2 log n)",
+            "r2": 0.999925,
             "chosen": true
           },
           {
-            "class": "O(n^2 log n)",
-            "r2": 0.99975,
+            "class": "O(n^2)",
+            "r2": 0.999878,
             "chosen": false
           },
           {
             "class": "O(n^3)",
-            "r2": 0.989898,
+            "r2": 0.988522,
             "chosen": false
           },
           {
             "class": "O(n log n)",
-            "r2": 0.945708,
+            "r2": 0.925031,
             "chosen": false
           },
           {
             "class": "O(n)",
-            "r2": 0.907447,
+            "r2": 0.886963,
             "chosen": false
           },
           {
             "class": "O(log n)",
-            "r2": 0.198171,
+            "r2": 0.172825,
             "chosen": false
           },
           {
@@ -3830,11 +3864,11 @@
         "final": {
           "time_class": "O(n^2)",
           "source": "STATIC",
-          "confidence": "HIGH",
-          "agreement": true,
+          "confidence": "MEDIUM",
+          "agreement": false,
           "space_class": "O(n)",
           "limitations": [
-            "实测增长 O(n^2) 的置信度偏低（R²=1.000），未超过结构分析 O(n^2) 的证据强度"
+            "结构分析给出 O(n^2)，实测增长落在 O(n^2 log n)；两者只差一个 log 因子，这个差别在可测规模内小于常数倍，计时无法分辨，因此时间结论按代码结构报告"
           ]
         },
         "agrees_with_expected": true
@@ -3898,13 +3932,13 @@
           "notes": []
         },
         "stop_reason": "TIME_LIMIT_EXCEEDED",
-        "elapsed_seconds": 10.7,
+        "elapsed_seconds": 12.75,
         "rungs": [
           {
             "n": 256,
-            "wall_ms": 124.765,
-            "reference_ms": 10.401,
-            "io_ratio": 11.995,
+            "wall_ms": 174.66,
+            "reference_ms": 17.562,
+            "io_ratio": 9.945,
             "peak_rss_kib": 18320,
             "verdict": "OK",
             "detail": null,
@@ -3912,19 +3946,19 @@
           },
           {
             "n": 512,
-            "wall_ms": 1047.66,
-            "reference_ms": 13.915,
-            "io_ratio": 75.288,
-            "peak_rss_kib": 23296,
+            "wall_ms": 1434.059,
+            "reference_ms": 17.909,
+            "io_ratio": 80.075,
+            "peak_rss_kib": 23264,
             "verdict": "OK",
             "detail": null,
             "repeats": 5
           },
           {
             "n": 1024,
-            "wall_ms": 4002.257,
-            "reference_ms": 13.627,
-            "io_ratio": 293.705,
+            "wall_ms": 4003.502,
+            "reference_ms": 17.262,
+            "io_ratio": 231.93,
             "peak_rss_kib": null,
             "verdict": "TIME_LIMIT_EXCEEDED",
             "detail": "4000 ms 内未结束",
@@ -3938,44 +3972,44 @@
           "r2": 0.0,
           "exponent": 0.0,
           "confidence": "LOW",
-          "floor_ms": 124.765,
+          "floor_ms": 174.66,
           "coefficient": 0.0,
           "fitted_class_from_fit": "UNKNOWN",
           "fit_r2": 0.0,
           "fit_notes": [],
-          "reference_fitted_class": "O(log n)",
-          "reference_fit_r2": 0.670771,
+          "reference_fitted_class": "O(1)",
+          "reference_fit_r2": 0.0,
           "reference_fit_confidence": "LOW"
         },
         "candidate_r2": [
           {
             "class": "O(n^3)",
-            "r2": 0.999911,
+            "r2": 0.999974,
             "chosen": false
           },
           {
             "class": "O(n^2 log n)",
-            "r2": 0.973791,
+            "r2": 0.974992,
             "chosen": false
           },
           {
             "class": "O(n^2)",
-            "r2": 0.958429,
+            "r2": 0.959884,
             "chosen": false
           },
           {
             "class": "O(n log n)",
-            "r2": 0.771753,
+            "r2": 0.774143,
             "chosen": false
           },
           {
             "class": "O(n)",
-            "r2": 0.700841,
+            "r2": 0.703255,
             "chosen": false
           },
           {
             "class": "O(log n)",
-            "r2": 0.145877,
+            "r2": 0.146631,
             "chosen": false
           },
           {
@@ -3996,7 +4030,8 @@
           "agreement": null,
           "space_class": "O(n^2)",
           "limitations": [
-            "有效测量档位少于 4 个，增长拟合容易受常数开销影响"
+            "1 个档位未能完成测量（超时或运行错误），已从拟合中剔除",
+            "有效测量档位只有 2 个，少于 5 个，增长拟合容易受常数开销影响，实测不作为最终依据"
           ]
         },
         "agrees_with_expected": true
@@ -4856,6 +4891,240 @@
       "misclassified": 0,
       "misclassified_detail": []
     },
+    "fit_noise_sensitivity": {
+      "name": "拟合器噪声敏感性：理想曲线加乘性噪声后重复 40 次",
+      "purpose": "量化“置信度 HIGH 不等于结论正确”，并给 log 因子在噪声下的不稳定程度一个可复现的数字",
+      "parameters": {
+        "sizes": [
+          256,
+          512,
+          1024,
+          2048,
+          4096,
+          8192,
+          16384
+        ],
+        "floor_ms": 12.0,
+        "amplitude_at_first_rung_ms": 24.0,
+        "sigmas": [
+          0.02,
+          0.05,
+          0.1
+        ],
+        "trials": 40,
+        "seed": 20261045
+      },
+      "rows": [
+        {
+          "sigma": 0.02,
+          "ideal_class": "O(1)",
+          "trials": 40,
+          "reported": {
+            "O(1)": 15,
+            "O(log n)": 25
+          },
+          "exact_hits": 15,
+          "accuracy": 0.375,
+          "confident_wrong": 0
+        },
+        {
+          "sigma": 0.02,
+          "ideal_class": "O(log n)",
+          "trials": 40,
+          "reported": {
+            "O(log n)": 40
+          },
+          "exact_hits": 40,
+          "accuracy": 1.0,
+          "confident_wrong": 0
+        },
+        {
+          "sigma": 0.02,
+          "ideal_class": "O(n)",
+          "trials": 40,
+          "reported": {
+            "O(n)": 40
+          },
+          "exact_hits": 40,
+          "accuracy": 1.0,
+          "confident_wrong": 0
+        },
+        {
+          "sigma": 0.02,
+          "ideal_class": "O(n log n)",
+          "trials": 40,
+          "reported": {
+            "O(n log n)": 40
+          },
+          "exact_hits": 40,
+          "accuracy": 1.0,
+          "confident_wrong": 0
+        },
+        {
+          "sigma": 0.02,
+          "ideal_class": "O(n^2)",
+          "trials": 40,
+          "reported": {
+            "O(n^2 log n)": 2,
+            "O(n^2)": 38
+          },
+          "exact_hits": 38,
+          "accuracy": 0.95,
+          "confident_wrong": 2
+        },
+        {
+          "sigma": 0.02,
+          "ideal_class": "O(n^3)",
+          "trials": 40,
+          "reported": {
+            "O(n^3)": 40
+          },
+          "exact_hits": 40,
+          "accuracy": 1.0,
+          "confident_wrong": 0
+        },
+        {
+          "sigma": 0.05,
+          "ideal_class": "O(1)",
+          "trials": 40,
+          "reported": {
+            "O(1)": 23,
+            "O(log n)": 17
+          },
+          "exact_hits": 23,
+          "accuracy": 0.575,
+          "confident_wrong": 0
+        },
+        {
+          "sigma": 0.05,
+          "ideal_class": "O(log n)",
+          "trials": 40,
+          "reported": {
+            "O(log n)": 40
+          },
+          "exact_hits": 40,
+          "accuracy": 1.0,
+          "confident_wrong": 0
+        },
+        {
+          "sigma": 0.05,
+          "ideal_class": "O(n)",
+          "trials": 40,
+          "reported": {
+            "O(n log n)": 10,
+            "O(n)": 30
+          },
+          "exact_hits": 30,
+          "accuracy": 0.75,
+          "confident_wrong": 10
+        },
+        {
+          "sigma": 0.05,
+          "ideal_class": "O(n log n)",
+          "trials": 40,
+          "reported": {
+            "O(n log n)": 36,
+            "O(n)": 4
+          },
+          "exact_hits": 36,
+          "accuracy": 0.9,
+          "confident_wrong": 4
+        },
+        {
+          "sigma": 0.05,
+          "ideal_class": "O(n^2)",
+          "trials": 40,
+          "reported": {
+            "O(n^2 log n)": 6,
+            "O(n^2)": 34
+          },
+          "exact_hits": 34,
+          "accuracy": 0.85,
+          "confident_wrong": 6
+        },
+        {
+          "sigma": 0.05,
+          "ideal_class": "O(n^3)",
+          "trials": 40,
+          "reported": {
+            "O(n^3)": 40
+          },
+          "exact_hits": 40,
+          "accuracy": 1.0,
+          "confident_wrong": 0
+        },
+        {
+          "sigma": 0.1,
+          "ideal_class": "O(1)",
+          "trials": 40,
+          "reported": {
+            "O(1)": 24,
+            "O(log n)": 16
+          },
+          "exact_hits": 24,
+          "accuracy": 0.6,
+          "confident_wrong": 0
+        },
+        {
+          "sigma": 0.1,
+          "ideal_class": "O(log n)",
+          "trials": 40,
+          "reported": {
+            "O(log n)": 40
+          },
+          "exact_hits": 40,
+          "accuracy": 1.0,
+          "confident_wrong": 0
+        },
+        {
+          "sigma": 0.1,
+          "ideal_class": "O(n)",
+          "trials": 40,
+          "reported": {
+            "O(n log n)": 12,
+            "O(n)": 28
+          },
+          "exact_hits": 28,
+          "accuracy": 0.7,
+          "confident_wrong": 12
+        },
+        {
+          "sigma": 0.1,
+          "ideal_class": "O(n log n)",
+          "trials": 40,
+          "reported": {
+            "O(n log n)": 27,
+            "O(n)": 13
+          },
+          "exact_hits": 27,
+          "accuracy": 0.675,
+          "confident_wrong": 13
+        },
+        {
+          "sigma": 0.1,
+          "ideal_class": "O(n^2)",
+          "trials": 40,
+          "reported": {
+            "O(n^2 log n)": 20,
+            "O(n^2)": 20
+          },
+          "exact_hits": 20,
+          "accuracy": 0.5,
+          "confident_wrong": 20
+        },
+        {
+          "sigma": 0.1,
+          "ideal_class": "O(n^3)",
+          "trials": 40,
+          "reported": {
+            "O(n^3)": 40
+          },
+          "exact_hits": 40,
+          "accuracy": 1.0,
+          "confident_wrong": 0
+        }
+      ]
+    },
     "repeatability": {
       "name": "重复性：同一组被测程序连续测 3 次",
       "purpose": "量化墙钟测量的波动对最终类别的影响；报告正文里只写一次的数字必须带着这个前提读",
@@ -4870,63 +5139,63 @@
               "attempt": 1,
               "stop_reason": "LADDER_EXHAUSTED",
               "measured_class": "O(log n)",
-              "fit_r2": 0.939293,
-              "confidence": "MEDIUM",
+              "fit_r2": 0.734108,
+              "confidence": "LOW",
               "final_class": "O(log n)",
-              "final_source": "DYNAMIC",
-              "seconds": 5.2,
+              "final_source": "STATIC",
+              "seconds": 6.48,
               "rungs": [
                 [
                   256,
-                  27.705
+                  37.829
                 ],
                 [
                   512,
-                  27.926
+                  35.172
                 ],
                 [
                   1024,
-                  32.528
+                  41.724
                 ],
                 [
                   2048,
-                  39.834
+                  37.421
                 ],
                 [
                   4096,
-                  37.914
+                  49.173
                 ],
                 [
                   8192,
-                  39.912
+                  44.96
                 ],
                 [
                   16384,
-                  40.545
+                  56.112
                 ],
                 [
                   32768,
-                  42.975
+                  52.782
                 ],
                 [
                   65536,
-                  41.963
+                  62.186
                 ],
                 [
                   131072,
-                  47.079
+                  65.566
                 ],
                 [
                   262144,
-                  47.849
+                  64.003
                 ],
                 [
                   524288,
-                  52.58
+                  51.96
                 ],
                 [
                   1048576,
-                  54.281
+                  60.143
                 ]
               ]
             },
@@ -4934,63 +5203,63 @@
               "attempt": 2,
               "stop_reason": "LADDER_EXHAUSTED",
               "measured_class": "O(log n)",
-              "fit_r2": 0.976879,
+              "fit_r2": 0.932994,
               "confidence": "MEDIUM",
               "final_class": "O(log n)",
               "final_source": "DYNAMIC",
-              "seconds": 5.0,
+              "seconds": 5.27,
               "rungs": [
                 [
                   256,
-                  25.381
+                  27.349
                 ],
                 [
                   512,
-                  25.357
+                  30.21
                 ],
                 [
                   1024,
-                  30.38
+                  30.112
                 ],
                 [
                   2048,
-                  27.893
+                  32.628
                 ],
                 [
                   4096,
-                  34.967
+                  37.698
                 ],
                 [
                   8192,
-                  35.446
+                  32.953
                 ],
                 [
                   16384,
-                  40.206
+                  41.726
                 ],
                 [
                   32768,
-                  42.416
+                  42.614
                 ],
                 [
                   65536,
-                  43.7
+                  44.003
                 ],
                 [
                   131072,
-                  45.411
+                  50.429
                 ],
                 [
                   262144,
-                  50.299
+                  49.596
                 ],
                 [
                   524288,
-                  50.407
+                  59.603
                 ],
                 [
                   1048576,
-                  55.022
+                  55.502
                 ]
               ]
             },
@@ -4998,63 +5267,63 @@
               "attempt": 3,
               "stop_reason": "LADDER_EXHAUSTED",
               "measured_class": "O(log n)",
-              "fit_r2": 0.955743,
+              "fit_r2": 0.942205,
               "confidence": "MEDIUM",
               "final_class": "O(log n)",
               "final_source": "DYNAMIC",
-              "seconds": 5.06,
+              "seconds": 5.71,
               "rungs": [
                 [
                   256,
-                  24.425
+                  28.743
                 ],
                 [
                   512,
-                  27.856
+                  27.505
                 ],
                 [
                   1024,
-                  32.053
+                  30.199
                 ],
                 [
                   2048,
-                  30.619
+                  35.328
                 ],
                 [
                   4096,
-                  35.342
+                  32.756
                 ],
                 [
                   8192,
-                  34.307
+                  39.124
                 ],
                 [
                   16384,
-                  39.908
+                  42.613
                 ],
                 [
                   32768,
-                  38.248
+                  40.463
                 ],
                 [
                   65536,
-                  46.292
+                  48.226
                 ],
                 [
                   131072,
-                  44.867
+                  47.378
                 ],
                 [
                   262144,
-                  52.672
+                  54.56
                 ],
                 [
                   524288,
-                  50.652
+                  52.841
                 ],
                 [
                   1048576,
-                  55.5
+                  62.696
                 ]
               ]
             }
@@ -5081,151 +5350,147 @@
               "attempt": 1,
               "stop_reason": "OK",
               "measured_class": "O(n log n)",
-              "fit_r2": 0.999063,
-              "confidence": "HIGH",
+              "fit_r2": 0.984282,
+              "confidence": "MEDIUM",
               "final_class": "O(n log n)",
               "final_source": "DYNAMIC",
-              "seconds": 2.91,
+              "seconds": 3.68,
               "rungs": [
                 [
                   256,
-                  11.912
+                  20.943
                 ],
                 [
                   512,
-                  12.786
+                  20.483
                 ],
                 [
                   1024,
-                  12.788
+                  20.305
                 ],
                 [
                   2048,
-                  13.582
+                  17.363
                 ],
                 [
                   4096,
-                  15.288
+                  18.018
                 ],
                 [
                   8192,
-                  18.7
+                  20.042
                 ],
                 [
                   16384,
-                  25.164
+                  30.279
                 ],
                 [
                   32768,
-                  43.443
+                  45.309
                 ],
                 [
                   65536,
-                  75.393
+                  84.514
                 ]
               ]
             },
             {
               "attempt": 2,
               "stop_reason": "OK",
-              "measured_class": "O(n log n)",
-              "fit_r2": 0.996207,
+              "measured_class": "O(n)",
+              "fit_r2": 0.991942,
               "confidence": "HIGH",
               "final_class": "O(n log n)",
-              "final_source": "DYNAMIC",
-              "seconds": 2.87,
+              "final_source": "STATIC",
+              "seconds": 2.56,
               "rungs": [
                 [
                   256,
-                  12.958
+                  12.832
                 ],
                 [
                   512,
-                  12.851
+                  11.911
                 ],
                 [
                   1024,
-                  12.444
+                  15.059
                 ],
                 [
                   2048,
-                  14.811
+                  15.154
                 ],
                 [
                   4096,
-                  15.361
+                  15.341
                 ],
                 [
                   8192,
-                  17.795
+                  20.417
                 ],
                 [
                   16384,
-                  27.205
+                  32.843
                 ],
                 [
                   32768,
-                  40.127
-                ],
-                [
-                  65536,
-                  79.665
+                  51.204
                 ]
               ]
             },
             {
               "attempt": 3,
               "stop_reason": "OK",
-              "measured_class": "O(n)",
-              "fit_r2": 0.995902,
+              "measured_class": "O(n log n)",
+              "fit_r2": 0.994256,
               "confidence": "HIGH",
               "final_class": "O(n log n)",
-              "final_source": "STATIC",
-              "seconds": 2.87,
+              "final_source": "DYNAMIC",
+              "seconds": 3.41,
               "rungs": [
                 [
                   256,
-                  11.702
+                  17.495
                 ],
                 [
                   512,
-                  12.729
+                  15.454
                 ],
                 [
                   1024,
-                  12.803
+                  14.482
                 ],
                 [
                   2048,
-                  12.547
+                  15.363
                 ],
                 [
                   4096,
-                  15.314
+                  17.913
                 ],
                 [
                   8192,
-                  17.881
+                  17.887
                 ],
                 [
                   16384,
-                  25.287
+                  28.206
                 ],
                 [
                   32768,
-                  46.546
+                  47.124
                 ],
                 [
                   65536,
-                  76.567
+                  85.128
                 ]
               ]
             }
           ],
           "measured_classes": [
             "O(n log n)",
-            "O(n log n)",
-            "O(n)"
+            "O(n)",
+            "O(n log n)"
           ],
           "final_classes": [
             "O(n log n)",

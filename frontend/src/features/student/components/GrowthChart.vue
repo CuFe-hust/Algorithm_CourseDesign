@@ -28,13 +28,22 @@ interface Dot {
   ioDominated: boolean;
 }
 
+/** A point is drawable only when both coordinates are finite positive numbers. */
+function drawable(n: number, value: number): boolean {
+  return Number.isFinite(n) && n > 0 && Number.isFinite(value) && value > 0;
+}
+
 const rungs = computed<GrowthPoint[]>(() =>
   (props.dynamic?.rungs ?? []).filter(
-    (rung) => rung.verdict === "OK" && rung.wall_ms > 0,
+    (rung) => rung.verdict === "OK" && drawable(rung.n, rung.wall_ms),
   ),
 );
 
-const curve = computed<GrowthCurvePoint[]>(() => props.dynamic?.curve ?? []);
+const curve = computed<GrowthCurvePoint[]>(() =>
+  (props.dynamic?.curve ?? []).filter((point) =>
+    drawable(point.n, point.time_ms),
+  ),
+);
 
 const xMax = computed(() => {
   const values = [
@@ -96,22 +105,44 @@ const path = computed(() => {
 });
 
 const xTicks = computed(() =>
-  tickValues(rungs.value.map((r) => r.n).concat(curve.value.map((p) => p.n))),
+  tickValues(
+    rungs.value.map((r) => r.n).concat(curve.value.map((p) => p.n)),
+    px,
+  ),
 );
 const yTicks = computed(() =>
   tickValues(
     rungs.value.map((r) => r.wall_ms).concat(curve.value.map((p) => p.time_ms)),
+    py,
   ),
 );
 
-function tickValues(values: number[]): number[] {
-  if (!values.length) return [];
-  const sorted = [...new Set(values.filter((value) => value > 0))].sort(
-    (a, b) => a - b,
-  );
-  if (sorted.length <= 6) return sorted;
-  const step = Math.ceil(sorted.length / 6);
-  return sorted.filter((_, index) => index % step === 0).slice(0, 7);
+/**
+ * Pick at most six label positions, and drop any that would land on top of the
+ * previous one. A log axis compresses sub-millisecond values into a few pixels, so
+ * distinct numbers can be rendered at the same coordinate.
+ */
+function tickValues(
+  values: number[],
+  position: (value: number) => number,
+): number[] {
+  const sorted = [
+    ...new Set(values.filter((value) => Number.isFinite(value) && value > 0)),
+  ].sort((a, b) => a - b);
+  if (!sorted.length) return [];
+  const step = Math.max(1, Math.ceil(sorted.length / 6));
+  const picked: number[] = [];
+  for (const value of sorted.filter((_, index) => index % step === 0)) {
+    if (
+      picked.length &&
+      Math.abs(position(value) - position(picked[picked.length - 1]!)) < 14
+    ) {
+      continue;
+    }
+    picked.push(value);
+    if (picked.length === 6) break;
+  }
+  return picked;
 }
 
 function formatMs(value: number): string {

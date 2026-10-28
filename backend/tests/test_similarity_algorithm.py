@@ -168,6 +168,29 @@ def test_threshold_is_respected():
     assert similarity.compare(unrelated, threshold=0.0).pairs == []
 
 
+def test_compare_states_when_the_evidence_list_was_truncated():
+    """A cut evidence list must be labelled, and the cluster list stays complete.
+
+    The teacher page reads this flag; without it a 500-row list looks like the
+    whole result. Clusters are built from the full threshold graph, so even a
+    truncated result still names every similar group.
+    """
+    source = """n = int(input())
+items = [tuple(map(int, input().split())) for _ in range(n)]
+items.sort()
+print(len(items))
+"""
+    copies = [dict(answer_key=f'a{index}', content=source, language='python3') for index in range(30)]
+    result = similarity.compare(copies, max_pairs=10)
+    assert result.pairs_truncated is True
+    assert len(result.pairs) == 10
+    assert [cluster['size'] for cluster in result.clusters] == [30]
+
+    roomy = similarity.compare(copies, max_pairs=500)
+    assert roomy.pairs_truncated is False
+    assert len(roomy.pairs) == 30 * 29 // 2
+
+
 def test_fingerprints_are_stable_across_calls_and_processes():
     first = similarity.sketch('a', REFERENCE_ACTIVITY, 'python3')
     second = similarity.sketch('a', REFERENCE_ACTIVITY, 'python3')
@@ -402,6 +425,35 @@ def test_choose_class_keeps_a_log_factor_only_when_the_residual_really_drops():
         [('O(n)', 1 - 1.0 / total, 1.0, 0.0), ('O(n log n)', 1 - 0.85 / total, 1.0, 0.0)],
         total, 7)
     assert dropped[0] == 'O(n)'
+
+
+def test_choose_class_never_skips_an_adjacent_rank():
+    """Stepping down is one rank at a time, not "the lowest rank that passes".
+
+    Review found the single-scan form could jump from O(n^2) straight to O(1) when
+    several coarse classes sat inside the same R^2 window. A middle rank that fails
+    the fold must therefore stop the walk, not be skipped over.
+    """
+    total = 1000.0
+    # O(n) fails the fold (residual 1.4x) but O(1) would pass (residual 1.2x).
+    # The walk must stop at O(n^2), not jump over O(n) to O(1).
+    kept = complexity._choose_class(
+        [('O(1)', 1 - 1.2 / total, 1.0, 0.0),
+         ('O(n)', 1 - 1.4 / total, 1.0, 0.0),
+         ('O(n^2)', 1 - 1.0 / total, 1.0, 0.0)],
+        total, 7)
+    assert kept[0] == 'O(n^2)', kept[0]
+
+
+def test_choose_class_walks_down_two_adjacent_ranks_when_both_pass():
+    total = 1000.0
+    walked = complexity._choose_class(
+        [('O(1)', 1 - 1.2 / total, 1.0, 0.0),
+         ('O(n)', 1 - 1.25 / total, 1.0, 0.0),
+         ('O(n^2)', 1 - 1.0 / total, 1.0, 0.0)],
+        total, 7)
+    # Both steps are within the 1.33 fold, so both are taken.
+    assert walked[0] == 'O(1)', walked[0]
 
 
 def test_sse_improvement_fold_shrinks_as_the_ladder_grows():

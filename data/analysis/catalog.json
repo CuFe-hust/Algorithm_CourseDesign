@@ -1885,6 +1885,11 @@
             },
             "title": "Parameters",
             "type": "object"
+          },
+          "pairs_truncated": {
+            "default": false,
+            "title": "Pairs Truncated",
+            "type": "boolean"
           }
         },
         "required": [
@@ -2253,6 +2258,11 @@
             },
             "title": "Parameters",
             "type": "object"
+          },
+          "pairs_truncated": {
+            "default": false,
+            "title": "Pairs Truncated",
+            "type": "boolean"
           }
         },
         "required": [
