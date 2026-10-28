@@ -89,11 +89,19 @@ docs/
 
 第六条线可独立运行：只调用现有ability占位黑盒，不等待其他线路。见[独立线路说明](design/analysis/student-ability-line.md)。
 
-## 相似代码检测与复杂度分析（2026-10-28）
+## 相似代码检测与复杂度分析（2026-10-28，复杂度部分已升级）
 
-两个研究插件从占位升级为真实实现；迁移 head 为 pg0007，30 张业务表。
+两个研究插件从占位升级为真实实现；复杂度分析随后在 2026-10-29 换成执行轨迹路线（见下一节）。
 
 - [同题代码相似检测](design/analysis/code-similarity.md)：词法规格化 + Winnowing 指纹，输出相似对、行号区间与相似簇。
-- [已通过代码的复杂度分析](design/analysis/complexity.md)：结构分析 + 伸缩档实测，给出类别、置信度、增长曲线与适用范围。
-- [算法实验与对比报告](design/analysis/algorithm-experiments.md)：70 道题、485 组相似对照、6 组复杂度对照、实验暴露的 5 个缺陷与修复
+- [已通过代码的复杂度分析（旧版存档）](design/analysis/complexity.md)：结构分析 + 伸缩档实测；已被轨迹路线取代，保留作为上一版档案。
+- [算法实验与对比报告](design/analysis/algorithm-experiments.md)：相似检测实验仍然有效；复杂度实验属于旧版方案。
 - [实现与验证记录](implementation/evidence/similarity-complexity/2026-10-28-implementation.md) · [设计说明](superpowers/specs/2026-10-28-similarity-and-complexity-design.md)
+
+## 复杂度分析升级：执行轨迹计数与递推推断（2026-10-29）
+
+复杂度分析不再测墙钟时间：平台在每题的伸缩档上真实执行已通过代码，采集行事件、跳转事件与库函数规模的**精确计数**，从调用树读出递推式并用 Master 定理/求和/指数规则求解，再与实测总量交叉校验。迁移 head 到 pg0009，旧报告归档并提示重新请求。
+
+- [执行轨迹计数与递推推断](design/analysis/complexity-trace.md)：路线、工作量单位、推断算法、数据与状态机、已声明的限制
+- [2026-10-29 轨迹实验记录](implementation/evidence/similarity-complexity/2026-10-29-trace-experiments.md)：70 道题参考解语料、逐类准确率、可重复性与代价
+- 代码：`backend/app/analysis/trace/`、`backend/app/analysis/probe.py`、`backend/app/analysis/profiles.py`

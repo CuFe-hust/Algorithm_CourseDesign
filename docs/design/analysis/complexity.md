@@ -1,5 +1,7 @@
 # 已通过代码的复杂度分析（已实现）
 
+> **已被取代。** 本文描述 2026-10-28 的第一版实现（墙钟计时 + 静态结构分析）。它已被[执行轨迹计数与递推推断](complexity-trace.md)取代，代码与迁移也随之下线；保留本文作为上一版尝试的完整档案。
+
 日期：2026-10-28。实现位于 `backend/app/analysis/algorithms/complexity.py`（纯函数）、`probe.py`（输入生成与测量）、`complexity_service.py`（状态机与投影）、`scripts/run_complexity.py`（worker）与前端 `ComplexityPanel.vue`、`GrowthChart.vue`。拟合规则的依据来自[算法实验](algorithm-experiments.md)，那里的数字是用本实现本人跑出来的。
 
 ## 1. 它回答什么

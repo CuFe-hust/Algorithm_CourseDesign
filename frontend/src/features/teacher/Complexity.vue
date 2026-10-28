@@ -5,9 +5,10 @@
  * One row per student: the merged verdict the platform published, never the raw
  * measurements. The page is deliberately not a grade book. A row without a
  * class shows an em dash, not O(1); a failed row shows the stored reason; a
- * report from a static-only run is labelled as such. Reports exist only after a
- * student (or the teacher, through the API) requests one, so the empty state
- * says who can request and never invents a batch button.
+ * report that could not measure growth is labelled 无法给出结论 rather than
+ * borrowing a class from anywhere. Reports exist only after a student (or the
+ * teacher, through the API) requests one, so the empty state says who can
+ * request.
  */
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { Activity, AlertTriangle, RefreshCw, Table2 } from "@lucide/vue";
@@ -58,12 +59,12 @@ const confidenceTone: Record<string, string> = {
   LOW: "gray",
 };
 const sourceText: Record<string, string> = {
-  DYNAMIC: "实测",
-  STATIC: "代码结构",
+  TRACE: "执行轨迹",
+  NONE: "未采集",
 };
 const statusText: Record<string, string> = {
   SUCCEEDED: "已完成",
-  STATIC_ONLY: "仅结构结论",
+  NOT_MEASURABLE: "无法给出结论",
   PENDING: "分析中",
   RUNNING: "分析中",
   FAILED: "分析失败",
@@ -71,7 +72,7 @@ const statusText: Record<string, string> = {
 };
 const statusTone: Record<string, string> = {
   SUCCEEDED: "type",
-  STATIC_ONLY: "type",
+  NOT_MEASURABLE: "gray",
   PENDING: "amber",
   RUNNING: "amber",
   FAILED: "red",
@@ -137,8 +138,11 @@ function shown(value: string | null | undefined): string {
   return value === null || value === undefined || value === "" ? "—" : value;
 }
 
+/** Statuses whose stored error message is worth showing next to the badge. */
+const REASON_STATUSES = ["FAILED", "INELIGIBLE", "NOT_MEASURABLE"];
+
 function reasonFor(row: OverviewRow): string {
-  if (row.status !== "FAILED" && row.status !== "INELIGIBLE") return "";
+  if (!REASON_STATUSES.includes(row.status)) return "";
   return reasons.value[row.submission_id] ?? "正在读取原因…";
 }
 
@@ -179,7 +183,7 @@ async function loadReasons(list: OverviewRow[], token: number) {
   const next: Record<string, string> = { ...reasons.value };
   const targets = list.filter(
     (row) =>
-      (row.status === "FAILED" || row.status === "INELIGIBLE") &&
+      REASON_STATUSES.includes(row.status) &&
       next[row.submission_id] === undefined,
   );
   if (!targets.length) {
@@ -192,7 +196,10 @@ async function loadReasons(list: OverviewRow[], token: number) {
         const detail = await request<ComplexityResponse>(
           `/analysis/submissions/${row.submission_id}/complexity`,
         );
-        next[row.submission_id] = detail.reason ?? "平台没有记录原因。";
+        // A report that could not measure stores its cause on the report, while
+        // INELIGIBLE/FAILED also mirror it in the response-level reason.
+        next[row.submission_id] =
+          detail.reason ?? detail.report?.error ?? "平台没有记录原因。";
       } catch {
         next[row.submission_id] = REASON_UNAVAILABLE;
       }
@@ -333,7 +340,7 @@ onBeforeUnmount(() => {
   >
     <AlertTriangle :size="15" />
     <span>
-      该题没有配置规模伸缩档，只能给出结构结论：平台无法测量增长，报告状态是“仅结构结论”，时间与空间类别都来自代码结构。
+      该题没有配置规模伸缩档，平台无法测量增长，报告的结论会是“无法给出结论”。请先为该题配置伸缩档，再请求复杂度分析。
     </span>
   </div>
 
@@ -454,12 +461,11 @@ onBeforeUnmount(() => {
             <thead>
               <tr>
                 <th>学生</th>
-                <th>学号</th>
-                <th>时间复杂度</th>
-                <th>空间复杂度</th>
-                <th>置信度</th>
-                <th>依据来源</th>
+                <th>题目</th>
                 <th>状态</th>
+                <th>时间类别</th>
+                <th>置信度</th>
+                <th>来源</th>
                 <th>请求时间</th>
               </tr>
             </thead>
@@ -471,10 +477,24 @@ onBeforeUnmount(() => {
                     :to="`/teacher/students/${row.student_id}/progress`"
                     >{{ shown(row.name) }}</RouterLink
                   >
+                  <small class="secondary-line mono">{{
+                    shown(row.student_no)
+                  }}</small>
                 </td>
-                <td class="mono">{{ shown(row.student_no) }}</td>
+                <td>{{ shown(row.title) }}</td>
+                <td>
+                  <span
+                    class="badge"
+                    :class="statusTone[row.status] || 'gray'"
+                    >{{ statusText[row.status] || row.status }}</span
+                  >
+                  <small
+                    v-if="reasonFor(row)"
+                    class="secondary-line complexity-reason"
+                    >{{ reasonFor(row) }}</small
+                  >
+                </td>
                 <td class="mono">{{ shown(row.time_class) }}</td>
-                <td class="mono">{{ shown(row.space_class) }}</td>
                 <td>
                   <span
                     v-if="row.time_confidence"
@@ -493,18 +513,6 @@ onBeforeUnmount(() => {
                       : "—"
                   }}
                 </td>
-                <td>
-                  <span
-                    class="badge"
-                    :class="statusTone[row.status] || 'gray'"
-                    >{{ statusText[row.status] || row.status }}</span
-                  >
-                  <small
-                    v-if="reasonFor(row)"
-                    class="secondary-line complexity-reason"
-                    >{{ reasonFor(row) }}</small
-                  >
-                </td>
                 <td class="nowrap">
                   {{ row.requested_at ? dateText(row.requested_at) : "—" }}
                 </td>
@@ -516,7 +524,7 @@ onBeforeUnmount(() => {
           本页显示前 {{ rows.length }} 份，共 {{ total }} 份。
         </p>
         <p class="hint complexity-hint-line">
-          “实测”表示平台按题目的伸缩档生成输入后真实运行测量；“代码结构”表示只读代码结构给出结论。置信度只描述结论的可信程度，不表示代码好坏。
+          “执行轨迹”表示平台按题目的伸缩档生成输入后真实运行程序，统计执行轨迹里的工作量再推断类别。没有可用伸缩档或该语言没有采集器时，报告状态是“无法给出结论”。置信度只描述结论的可信程度，不表示代码好坏。
         </p>
       </template>
     </section>
@@ -526,10 +534,10 @@ onBeforeUnmount(() => {
       <ul class="complexity-limitations">
         <li>复杂度结论是估计值，不是形式化证明。</li>
         <li>
-          实测结论来自平台按题目伸缩档合成的输入，覆盖常见规模，不代表最坏情况或全部合法输入。
+          轨迹结论来自平台按题目伸缩档合成的输入，覆盖常见规模，不代表最坏情况或全部合法输入。
         </li>
         <li>
-          静态结论依据代码结构，等价改写可能改变结论；结构化语言只做词法估计。
+          轨迹只统计程序真实的执行次数，等价改写可能得到不同类别；没有采集器的语言不给出类别。
         </li>
         <li>复杂度分析不参与评分，也不改变评测结果。</li>
       </ul>

@@ -1,96 +1,164 @@
 <script setup lang="ts">
 /**
- * Growth chart for a complexity report.
+ * Workload-versus-n chart for a trace report.
  *
- * Coordinates: x is log2(n), y is measured milliseconds. A log-log view is the
- * honest default for growth: a polynomial shows up as a straight line, so a
- * student can see *that* the curve bends instead of trusting a badge.
+ * x is log2(n), y is log2(work). The counted work of the algorithm alone is
+ * ``max(1, work - baseline_work)``: the reader baseline is exact arithmetic on
+ * counts, so subtracting it removes "reading the input" without touching the
+ * machine. On that view a power law is a straight line, so the empirical slope
+ * is visible instead of being asserted by a badge.
  *
- * The component renders pure SVG with no chart library: the data is small, the
- * bundle stays lean, and every pixel is inspectable in a test.
+ * The reference curve is the fitted class scaled to the last measured point: it
+ * answers "does the published class follow the counts". Without a fit only the
+ * measured points are drawn.
+ *
+ * Pure SVG and no chart library: the data is small and every pixel stays
+ * assertable in a test.
  */
 import { computed } from "vue";
-import type { DynamicAnalysis, GrowthCurvePoint, GrowthPoint } from "../types";
+import type {
+  ComplexityClass,
+  ComplexityTime,
+  ComplexityTrace,
+  TracePoint,
+} from "../types";
 
 const props = defineProps<{
-  dynamic: DynamicAnalysis | null;
-  spacePoints?: GrowthPoint[];
+  trace: ComplexityTrace | null;
+  time?: ComplexityTime | null;
 }>();
 
 const WIDTH = 620;
 const HEIGHT = 260;
-const PAD = { left: 62, right: 22, top: 18, bottom: 40 };
+const PAD = { left: 70, right: 24, top: 18, bottom: 42 };
+const PLOT_W = WIDTH - PAD.left - PAD.right;
+const PLOT_H = HEIGHT - PAD.top - PAD.bottom;
 
-interface Dot {
-  x: number;
-  y: number;
-  rung: GrowthPoint;
-  ioDominated: boolean;
+/** Growth bases, mirroring the backend class catalogue. */
+const BASES: Record<string, (n: number) => number> = {
+  "O(1)": () => 1,
+  "O(log n)": (n) => Math.max(1, Math.log2(n)),
+  "O(n)": (n) => n,
+  "O(n log n)": (n) => n * Math.max(1, Math.log2(n)),
+  "O(n^2)": (n) => n * n,
+  "O(n^2 log n)": (n) => n * n * Math.max(1, Math.log2(n)),
+  "O(n^3)": (n) => n ** 3,
+  "O(2^n)": (n) => Math.min(2 ** n, 2 ** 60),
+  "O(n!)": (n) => factorial(n),
+};
+
+function factorial(n: number): number {
+  // Only the shape is drawn, so the double range is a fine ceiling.
+  if (n > 170) return 2 ** 60;
+  let value = 1;
+  for (let index = 2; index <= Math.floor(n); index++) value *= index;
+  return value;
+}
+
+interface Sample {
+  n: number;
+  value: number;
+  point: TracePoint;
 }
 
 /** A point is drawable only when both coordinates are finite positive numbers. */
 function drawable(n: number, value: number): boolean {
-  return Number.isFinite(n) && n > 0 && Number.isFinite(value) && value > 0;
+  return Number.isFinite(n) && n > 1 && Number.isFinite(value) && value > 0;
 }
 
-const rungs = computed<GrowthPoint[]>(() =>
-  (props.dynamic?.rungs ?? []).filter(
-    (rung) => rung.verdict === "OK" && drawable(rung.n, rung.wall_ms),
-  ),
+const samples = computed<Sample[]>(() =>
+  (props.trace?.points ?? [])
+    .filter((point) => point.verdict === "OK")
+    .map((point) => {
+      const baseline = Number.isFinite(point.baseline_work)
+        ? point.baseline_work
+        : 0;
+      return {
+        point,
+        n: point.n,
+        // A program whose own work never rises above the reader is at least
+        // constant; log2 of zero would drop the point entirely.
+        value: Math.max(1, point.work - baseline),
+      };
+    })
+    .filter((row) => drawable(row.n, row.value))
+    .sort((left, right) => left.n - right.n),
 );
 
-const curve = computed<GrowthCurvePoint[]>(() =>
-  (props.dynamic?.curve ?? []).filter((point) =>
-    drawable(point.n, point.time_ms),
-  ),
-);
-
-const xMax = computed(() => {
-  const values = [
-    ...rungs.value.map((r) => r.n),
-    ...curve.value.map((p) => p.n),
-  ];
-  return Math.max(1, ...values);
-});
-const xMin = computed(() => {
-  const values = [
-    ...rungs.value.map((r) => r.n),
-    ...curve.value.map((p) => p.n),
-  ].filter((value) => value > 0);
-  return Math.min(xMax.value, ...(values.length ? values : [1]));
-});
-const yMax = computed(() => {
-  const values = [
-    ...rungs.value.map((r) => r.wall_ms),
-    ...curve.value.map((p) => p.time_ms),
-  ].filter((value) => Number.isFinite(value) && value > 0);
-  return Math.max(1, ...values);
+const fitClass = computed<ComplexityClass | null>(() => {
+  const time = props.time ?? props.trace?.time ?? null;
+  return time?.fit?.best?.class ?? null;
 });
 
-function logScale(value: number, min: number, max: number): number {
-  const low = Math.log2(Math.max(1, min));
-  const high = Math.log2(Math.max(2, max));
-  if (high <= low) return 0.5;
-  return (Math.log2(Math.max(1, value)) - low) / (high - low);
-}
+const curve = computed<{ n: number; value: number }[]>(() => {
+  const rows = samples.value;
+  const name = fitClass.value;
+  if (!name || rows.length < 2) return [];
+  const base = BASES[name];
+  if (!base) return [];
+  const last = rows[rows.length - 1]!;
+  const anchor = base(last.n);
+  if (!Number.isFinite(anchor) || anchor <= 0) return [];
+  const low = Math.log2(rows[0]!.n);
+  const high = Math.log2(last.n);
+  if (!(high > low)) return [];
+  const steps = 48;
+  const out: { n: number; value: number }[] = [];
+  for (let index = 0; index <= steps; index++) {
+    const n = 2 ** (low + ((high - low) * index) / steps);
+    // Scale the class to the last measured point so both curves end together.
+    const value = (base(n) / anchor) * last.value;
+    if (drawable(n, value)) out.push({ n, value });
+  }
+  return out;
+});
+
+const bounds = computed(() => {
+  const xs = samples.value.map((row) => Math.log2(row.n));
+  const ys = [
+    ...samples.value.map((row) => Math.log2(row.value)),
+    ...curve.value.map((row) => Math.log2(row.value)),
+  ].filter((value) => Number.isFinite(value));
+  let xLow = Math.min(...xs);
+  let xHigh = Math.max(...xs);
+  if (!(xHigh - xLow > 1e-9)) {
+    xLow -= 0.5;
+    xHigh += 0.5;
+  }
+  let yLow = Math.min(...ys);
+  let yHigh = Math.max(...ys);
+  if (!(yHigh - yLow > 1e-9)) {
+    yLow -= 0.5;
+    yHigh += 0.5;
+  }
+  const yPad = (yHigh - yLow) * 0.08;
+  return {
+    xLow,
+    xHigh,
+    yLow: yLow - yPad,
+    yHigh: yHigh + yPad,
+  };
+});
 
 function px(n: number): number {
-  return (
-    PAD.left +
-    logScale(n, xMin.value, xMax.value) * (WIDTH - PAD.left - PAD.right)
-  );
-}
-function py(ms: number): number {
-  const ratio = logScale(ms, 0.05, yMax.value * 1.05);
-  return HEIGHT - PAD.bottom - ratio * (HEIGHT - PAD.top - PAD.bottom);
+  const { xLow, xHigh } = bounds.value;
+  const ratio = (Math.log2(Math.max(2, n)) - xLow) / (xHigh - xLow);
+  return PAD.left + Math.min(1, Math.max(0, ratio)) * PLOT_W;
 }
 
-const dots = computed<Dot[]>(() =>
-  rungs.value.map((rung) => ({
-    x: px(rung.n),
-    y: py(rung.wall_ms),
-    rung,
-    ioDominated: (rung.io_ratio ?? Number.POSITIVE_INFINITY) < 2,
+function py(value: number): number {
+  const { yLow, yHigh } = bounds.value;
+  const ratio = (Math.log2(Math.max(1, value)) - yLow) / (yHigh - yLow);
+  return HEIGHT - PAD.bottom - Math.min(1, Math.max(0, ratio)) * PLOT_H;
+}
+
+const dots = computed(() =>
+  samples.value.map((row) => ({
+    n: row.n,
+    value: row.value,
+    point: row.point,
+    x: px(row.n),
+    y: py(row.value),
   })),
 );
 
@@ -98,29 +166,32 @@ const path = computed(() => {
   if (curve.value.length < 2) return "";
   return curve.value
     .map(
-      (point, index) =>
-        `${index === 0 ? "M" : "L"}${px(point.n).toFixed(1)},${py(point.time_ms).toFixed(1)}`,
+      (row, index) =>
+        `${index === 0 ? "M" : "L"}${px(row.n).toFixed(1)},${py(row.value).toFixed(1)}`,
     )
     .join(" ");
 });
 
 const xTicks = computed(() =>
   tickValues(
-    rungs.value.map((r) => r.n).concat(curve.value.map((p) => p.n)),
+    samples.value.map((row) => row.n),
     px,
   ),
 );
 const yTicks = computed(() =>
   tickValues(
-    rungs.value.map((r) => r.wall_ms).concat(curve.value.map((p) => p.time_ms)),
+    [
+      ...samples.value.map((row) => row.value),
+      ...curve.value.map((row) => row.value),
+    ],
     py,
   ),
 );
 
 /**
- * Pick at most six label positions, and drop any that would land on top of the
- * previous one. A log axis compresses sub-millisecond values into a few pixels, so
- * distinct numbers can be rendered at the same coordinate.
+ * Pick at most six label positions and drop any that would land on top of the
+ * previous one: a log axis compresses small values into a few pixels, so two
+ * distinct numbers can share a coordinate.
  */
 function tickValues(
   values: number[],
@@ -145,39 +216,34 @@ function tickValues(
   return picked;
 }
 
-function formatMs(value: number): string {
-  if (value >= 1000) return `${(value / 1000).toFixed(1)} s`;
-  if (value >= 10) return `${Math.round(value)} ms`;
-  return `${value.toFixed(1)} ms`;
-}
-function formatN(value: number): string {
+function formatCount(value: number): string {
   if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
   if (value >= 1000) return `${Math.round(value / 1000)}k`;
-  return String(value);
+  if (value >= 10) return String(Math.round(value));
+  return value.toFixed(1);
 }
 
-const hasData = computed(() => rungs.value.length >= 2);
-const ioDominatedCount = computed(
-  () => dots.value.filter((dot) => dot.ioDominated).length,
-);
+const hasData = computed(() => samples.value.length >= 2);
 </script>
 
 <template>
   <figure class="growth-chart">
     <figcaption>
-      <strong>实测增长</strong>
-      <span class="muted"> 横轴输入规模（对数），纵轴运行时间（对数） </span>
+      <strong>工作量随 n 增长</strong>
+      <span class="muted">
+        横轴 log2(n)，纵轴 log2(工作量)；双对数下的直线表示幂律增长
+      </span>
     </figcaption>
     <div v-if="!hasData" class="growth-empty">
       <p class="muted">
-        没有可用的测量点。可能是程序在可测规模内都接近启动开销，或题目没有伸缩档案。
+        暂无可用档位。至少需要两个完成的测量档位才能画出增长趋势。
       </p>
     </div>
     <svg
       v-else
       :viewBox="`0 0 ${WIDTH} ${HEIGHT}`"
       role="img"
-      aria-label="运行时间随输入规模的增长曲线"
+      aria-label="工作量随输入规模增长的曲线"
     >
       <line
         :x1="PAD.left"
@@ -207,7 +273,7 @@ const ioDominatedCount = computed(
           text-anchor="end"
           class="tick"
         >
-          {{ formatMs(tick) }}
+          {{ formatCount(tick) }}
         </text>
       </g>
       <g v-for="tick in xTicks" :key="`x-${tick}`">
@@ -217,23 +283,23 @@ const ioDominatedCount = computed(
           text-anchor="middle"
           class="tick"
         >
-          {{ formatN(tick) }}
+          {{ formatCount(tick) }}
         </text>
       </g>
       <path v-if="path" :d="path" class="curve" />
       <circle
         v-for="dot in dots"
-        :key="dot.rung.n"
+        :key="dot.n"
         :cx="dot.x"
         :cy="dot.y"
-        :r="dot.ioDominated ? 3.2 : 4.6"
-        :class="['point', { mutedPoint: dot.ioDominated }]"
+        r="4.6"
+        class="point"
+        :data-n="dot.n"
+        :data-work="dot.value"
       >
         <title>
-          n={{ dot.rung.n }} · {{ formatMs(dot.rung.wall_ms) }} <template
-          v-if="dot.rung.reference_ms"> · 纯读取
-          {{ formatMs(dot.rung.reference_ms) }}
-          </template>
+          n={{ dot.n }} · 工作量 {{ formatCount(dot.value) }}（已减去读入基准
+          {{ formatCount(dot.point.baseline_work) }}）
         </title>
       </circle>
       <text
@@ -242,7 +308,7 @@ const ioDominatedCount = computed(
         text-anchor="end"
         class="axis-label"
       >
-        时间
+        工作量（log2）
       </text>
       <text
         :x="WIDTH - PAD.right"
@@ -250,15 +316,14 @@ const ioDominatedCount = computed(
         text-anchor="end"
         class="axis-label"
       >
-        输入规模 n
+        输入规模 n（log2）
       </text>
     </svg>
     <div v-if="hasData" class="legend">
-      <span><i class="dot" />实测点</span>
-      <span v-if="curve.length"><i class="line" />拟合曲线</span>
-      <span v-if="ioDominatedCount">
-        <i class="dot dim" />小点：与纯读取输入同阶，仅作上界
-      </span>
+      <span><i class="dot" />实测点（算法自身工作量）</span>
+      <span v-if="path && fitClass"
+        ><i class="line" />参考曲线 {{ fitClass }}</span
+      >
     </div>
   </figure>
 </template>

@@ -52,7 +52,7 @@ DEMO总是六名合成学生/编程与主观两类题，真实作业身份不进
 | GET /batches/{batch_id}/similarity | 教师 | 相似证据：配对、行号区间、相似簇、未参与比较的提交及原因；补学号与姓名 |
 | POST /submissions/{submission_id}/complexity | 本人 / 本课程教师 | 202；已存在报告时直接返回，不重跑；不合格返回 409 并说明原因 |
 | GET /submissions/{submission_id}/complexity | 本人 / 本课程教师 | 报告，或 `status=NONE` 表示尚未请求 |
-| GET /courses/{course_id}/complexity | 教师 | 班级概览：每生每题最新一份报告的类别与置信度 |
+| GET /courses/{course_id}/complexity | 教师 | 班级概览：每生每题最新一份报告的类别、置信度与来源（执行轨迹） |
 | POST /courses/{course_id}/complexity/batch | 教师 | 202；为该题全部真实通过的提交排队分析，已有报告的跳过；返回 `queued`/`skipped`/`ineligible` 与不合格原因分布 |
 | GET /courses/{course_id}/complexity/items | 教师 | 哪些编程题配置了规模伸缩档 |
 
@@ -69,4 +69,4 @@ DEMO总是六名合成学生/编程与主观两类题，真实作业身份不进
 
 复杂度资格（任一不满足即 409）：`SUBMISSION_WITHDRAWN`、`NOT_A_PROGRAMMING_ITEM`、`NOT_JUDGED_YET`、`MOCK_RESULT_NOT_ANALYSABLE`、`SUBMISSION_NOT_ACCEPTED`、`JUDGE_CONTEXT_CHANGED`、`JUDGE_CONFIGURATION_UNSUPPORTED`、`UNSUPPORTED_LANGUAGE`。
 
-批次计算由 `python -m scripts.run_analysis --watch` 消费；复杂度测量由 `python -m scripts.run_complexity --watch` 消费，两者分开，测量不会拖慢评测。批次与报告都持久化，刷新页面看到的是同一份结果。
+批次计算由 `python -m scripts.run_analysis --watch` 消费；复杂度轨迹采集由 `python -m scripts.run_complexity --watch` 消费，两者分开，采集不会拖慢评测。批次与报告都持久化，刷新页面看到的是同一份结果。复杂度报告的字段见 [complexity-trace.md](complexity-trace.md) 第 7 节：`time`/`space`/`trace`/`trace_meta`，状态包含 `NOT_MEASURABLE`（没有可伸缩输入或该语言没有轨迹采集器时明确说明原因）。

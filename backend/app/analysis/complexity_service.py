@@ -1,21 +1,27 @@
 """Complexity analysis: eligibility, request state machine and report projection.
 
 The worker claims a ``PENDING`` report, marks it ``RUNNING`` with a lease, runs
-the measurement outside the transaction, and writes the result only if the lease
-is still held. That is the same fencing discipline the judge uses, so a late
-worker cannot overwrite a result that a retry already produced.
+the trace collection outside the transaction, and writes the result only if the
+lease is still held. That is the same fencing discipline the judge uses, so a
+late worker cannot overwrite a result that a retry already produced.
+
+Only the measurement step changed with the trace-based rebuild: the state
+machine, eligibility rules, batch queue and teacher projection are the same
+ones the wall-clock implementation used. A submission whose language has no
+trace adapter (Java on this node) is rejected with a stated reason instead of
+being given a lexical guess.
 """
 from __future__ import annotations
 
 import json
-import math
 from datetime import timedelta
 
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from app.analysis.algorithms import complexity as engine
-from app.analysis import probe
+from app.analysis.trace import collect as trace_collect
+from app.analysis.trace import infer as trace_infer
+from app.analysis.trace import report as trace_report
 from app.common.permissions import course_role, require_teacher
 from app.core.errors import AppError
 from app.db.base import utcnow
@@ -23,12 +29,12 @@ from app.db.models import (Assignment, AssignmentItem, ComplexityReport, JudgeRe
                            Problem, ProblemComplexityProfile, ProblemVersion, Submission, User)
 from app.judge import config as judge_config
 
-IMPLEMENTATION_NAME = 'complexity_probe'
+IMPLEMENTATION_NAME = 'complexity_trace'
 IMPLEMENTATION_VERSION = '1'
 LEASE_SECONDS = 180
-MEASURE_BUDGET_MS = 60_000
-MEASURE_WALL_LIMIT_MS = 10_000
-MEASURE_REPEATS = 3
+# Counting is cheap compared with the old wall-clock ladder; the budget mostly
+# guards against a pathological submission.
+TRACE_BUDGET_MS = 60_000
 
 
 class Ineligible(Exception):
@@ -49,6 +55,10 @@ def eligibility(db: Session, submission: Submission, item: AssignmentItem,
     partial pass, and judged under the execution context currently configured.
     Analysing a failed program would describe a program that does not solve the
     problem, which is not what the feature promises.
+
+    A language without a trace adapter is rejected here rather than producing a
+    report with a structural guess: the feature now promises counts from a real
+    execution or an explicit statement that it cannot conclude.
     """
     if item is None or problem is None:
         return False, 'NOT_FOUND', {}
@@ -72,6 +82,8 @@ def eligibility(db: Session, submission: Submission, item: AssignmentItem,
         return False, 'JUDGE_CONFIGURATION_UNSUPPORTED', {'execution_mode': mode}
     if judge_config.toolchain(submission.language) is None:
         return False, 'UNSUPPORTED_LANGUAGE', {'language': submission.language}
+    if not trace_collect.supports_language(submission.language):
+        return False, 'NO_TRACE_ADAPTER', {'language': submission.language}
     return True, None, {'verdict': result.verdict, 'execution_mode': result.execution_mode,
                         'runtime_profile': result.runtime_profile}
 
@@ -114,7 +126,7 @@ def request_report(db: Session, submission_id: int, actor: User,
             # A new implementation must produce a new report rather than silently
             # mixing two methods under one row. The superseded conclusion is kept
             # in history: a teacher who read the old verdict can see it changed.
-            if existing.status in ('SUCCEEDED', 'STATIC_ONLY'):
+            if existing.status in ('SUCCEEDED', 'NOT_MEASURABLE'):
                 existing.history = [* (existing.history or []), {
                     'implementation_name': existing.implementation_name,
                     'implementation_version': existing.implementation_version,
@@ -128,15 +140,16 @@ def request_report(db: Session, submission_id: int, actor: User,
             existing.implementation_name = IMPLEMENTATION_NAME
             existing.implementation_version = IMPLEMENTATION_VERSION
             existing.status = 'PENDING'
-            # The verdict columns belong to the superseded run; the CHECK on
-            # status/class consistency caught this when it was left behind, and
-            # a queued row must not keep publishing the old class anyway.
+            # The verdict columns belong to the superseded run; a queued row must
+            # not keep publishing the old class.
             existing.time_class = None
             existing.space_class = None
             existing.time_confidence = None
             existing.space_confidence = None
             existing.time_source = None
             existing.summary = {}
+            existing.trace_meta = {}
+            existing.trace_series = {}
             existing.limitations = []
             existing.error_message = None
             existing.finished_at = None
@@ -151,11 +164,12 @@ def request_report(db: Session, submission_id: int, actor: User,
     profile = profile_for(db, item.problem_version_id)
     report = ComplexityReport(
         submission_id=submission.id, assignment_item_id=item.id, student_id=submission.student_id,
-        status='PENDING', language=submission.language, growth={},
-        summary={}, limitations=[], implementation_name=IMPLEMENTATION_NAME,
+        status='PENDING', language=submission.language,
+        trace_meta={'profile_family': profile.family if profile else None},
+        trace_series={}, summary={}, limitations=[],
+        implementation_name=IMPLEMENTATION_NAME,
         implementation_version=IMPLEMENTATION_VERSION, requested_by=actor.id,
-        requested_at=utcnow(), attempt_no=0,
-        static_analysis={'profile_family': profile.family if profile else None})
+        requested_at=utcnow(), attempt_no=0)
     db.add(report)
     db.commit()
     return report_view(db, submission.id, actor)
@@ -172,6 +186,7 @@ def _reason_message(code: str | None) -> str:
         'JUDGE_CONTEXT_CHANGED': '该结果来自不同的执行环境，请用当前环境重新评测',
         'JUDGE_CONFIGURATION_UNSUPPORTED': '当前评测节点不支持真实执行',
         'UNSUPPORTED_LANGUAGE': '当前节点不支持该提交语言',
+        'NO_TRACE_ADAPTER': '该语言暂不支持执行轨迹采集，无法分析复杂度（当前支持 Python、C、C++）',
     }.get(code, '该提交不满足复杂度分析条件')
 
 
@@ -200,7 +215,8 @@ def report_view(db: Session, submission_id: int, actor: User) -> dict:
     payload = report_payload(report)
     return {'submission_id': str(submission_id), 'status': report.status,
             'eligible': report.status not in ('INELIGIBLE',), 'report': payload,
-            'reason': report.error_message if report.status in ('INELIGIBLE', 'FAILED') else None}
+            'reason': report.error_message if report.status in ('INELIGIBLE', 'NOT_MEASURABLE',
+                                                                'FAILED') else None}
 
 
 def report_payload(report: ComplexityReport) -> dict | None:
@@ -214,8 +230,8 @@ def report_payload(report: ComplexityReport) -> dict | None:
         'implementation_version': report.implementation_version,
         'time': summary.get('time', {}),
         'space': summary.get('space', {}),
-        'static': report.static_analysis or {},
-        'dynamic': report.growth or {},
+        'trace': report.trace_series or {},
+        'trace_meta': report.trace_meta or {},
         'limitations': report.limitations or [],
         'error': report.error_message,
         'requested_at': report.requested_at.isoformat() if report.requested_at else None,
@@ -267,7 +283,8 @@ def batch_request(db: Session, course_id: int, actor: User, body: dict) -> dict:
         db.add(ComplexityReport(
             submission_id=submission.id, assignment_item_id=item_id,
             student_id=student_id, status='PENDING', language=submission.language,
-            summary={}, limitations=[], implementation_name=IMPLEMENTATION_NAME,
+            trace_meta={}, trace_series={}, summary={}, limitations=[],
+            implementation_name=IMPLEMENTATION_NAME,
             implementation_version=IMPLEMENTATION_VERSION, requested_by=actor.id,
             requested_at=utcnow(), attempt_no=0))
         queued += 1
@@ -299,6 +316,8 @@ def _eligibility_from_result(submission: Submission, item, problem,
         return False, 'JUDGE_CONFIGURATION_UNSUPPORTED', {}
     if judge_config.toolchain(submission.language) is None:
         return False, 'UNSUPPORTED_LANGUAGE', {}
+    if not trace_collect.supports_language(submission.language):
+        return False, 'NO_TRACE_ADAPTER', {}
     return True, None, {}
 
 
@@ -362,149 +381,68 @@ def _analyse(db: Session, report_id: int, *, measure: bool) -> None:
     if submission is None or item is None or problem is None:
         _fail(db, report_id, '来源提交已不可用')
         return
-    allowed, reason, details = eligibility(db, submission, item, problem)
+    allowed, reason, _details = eligibility(db, submission, item, problem)
     if not allowed:
-        _write(db, report_id, status='INELIGIBLE', error_message=_reason_message(reason),
-               summary={}, static_analysis={}, growth={}, limitations=[])
+        _write_plain(db, report_id, status='INELIGIBLE', error_message=_reason_message(reason),
+                     limitations=[])
         return
     language = submission.language or 'python3'
-    static = engine.analyze_static(submission.content, language)
     profile = profile_for(db, version.id)
-    limitations = [
-        '输入由平台按题目伸缩档合成，覆盖常见规模，不代表最坏情况或全部合法输入',
-        '静态分析依据代码结构，等价改写可能改变结论',
-    ]
-    if static.language_family == 'c-like':
-        limitations.append('该语言没有语法树分析，静态结论来自词法结构，置信度低')
-    dynamic_payload: dict = {}
-    memory_stats: dict | None = None
     if not measure:
-        status = 'STATIC_ONLY'
-        limitations.append('本次请求未执行测量，只给出结构分析结论')
-    elif profile is None or profile.family in ('EXISTING_CASES', 'FIXED'):
-        status = 'STATIC_ONLY'
-        if profile is not None and profile.family == 'FIXED':
-            # A fixed input has no size parameter, so the class describes the cost
-            # of that one input. Saying so avoids reading "O(n)" as "grows with n".
-            limitations.append(
-                '该题输入规模固定（没有可伸缩的规模参数），复杂度描述的是这个固定输入下的代价，'
-                '不随题目输入的 n 变化；无法测量增长')
-        else:
-            limitations.append('该题尚未配置规模伸缩档案，无法测量增长；只给出结构分析结论')
-    else:
-        outcomes, stop_reason = probe.escalating_measure(
-            submission.content, language, profile.family, profile.spec or {},
-            seed=report.id, wall_limit_ms=MEASURE_WALL_LIMIT_MS,
-            budget_ms=MEASURE_BUDGET_MS, repeats=MEASURE_REPEATS)
-        raw = [engine.Measurement(n=outcome.n, wall_ms=outcome.median_ms,
-                                  adjusted_ms=outcome.median_ms,
-                                  peak_rss_kib=outcome.peak_rss_kib,
-                                  verdict=outcome.verdict, repeats=len(outcome.walls_ms))
-               for outcome in outcomes]
-        reference = {outcome.n: outcome.reference_ms for outcome in outcomes
-                     if outcome.reference_ms is not None}
-        conclusion = engine.classify_growth(raw, reference)
-        if not any(value and value > 0 for value in reference.values()):
-            # The reader baselines are Python-only, so a C/C++/Java submission is
-            # measured without any check that it outruns input parsing.
-            limitations.append('该提交语言没有纯读取基线程序，实测未经输入开销校验，'
-                               '“实测高于读取开销”的判据不适用于这份报告')
-        memory_stats = _memory_stats(outcomes)
-        summary = engine.combine(static, conclusion, memory_stats)
-        dynamic_payload = dict(conclusion.to_payload(), stop_reason=stop_reason,
-                               rungs=[outcome.to_payload() for outcome in outcomes],
-                               curve=engine.curve_points(
-                                   conclusion.fit.fitted_class, conclusion.fit.coefficient,
-                                   [outcome.n for outcome in outcomes if outcome.verdict == 'OK'],
-                                   conclusion.fit.offset_ms))
-        limitations.extend(summary.get('limitations', []))
-        if stop_reason == 'TIME_LIMIT_EXCEEDED':
-            limitations.append('最大档位触发了墙钟上限，拟合只使用未超时的档位')
-        elif stop_reason in ('FLOOR_REACHED', 'NO_LADDER'):
-            limitations.append('程序在可测规模内始终接近启动开销，无法据此判断增长；以结构分析为准')
-        elif stop_reason == 'BUDGET_EXHAUSTED':
-            limitations.append('测量预算用尽，档位数少于计划')
-        _write(db, report_id, status='SUCCEEDED', summary=summary,
-               static_analysis=static.to_payload(), growth=dynamic_payload,
-               limitations=limitations, time_class=summary['time']['class'],
-               space_class=summary['space']['class'],
-               time_confidence=summary['time']['confidence'],
-               space_confidence=summary['space']['confidence'],
-               time_source=summary['time']['source'])
+        _write_plain(db, report_id, status='NOT_MEASURABLE',
+                     error_message='本次请求没有执行轨迹采集，报告不给出复杂度结论',
+                     limitations=[])
         return
-    summary = engine.combine(static, engine.classify_growth([]))
-    summary['limitations'] = [*limitations]
-    _write(db, report_id, status=status, summary=summary,
-           static_analysis=static.to_payload(), growth=dynamic_payload,
-           limitations=limitations, time_class=summary['time']['class'],
+    if profile is None:
+        _write_plain(db, report_id, status='NOT_MEASURABLE',
+                     error_message='该题尚未配置可伸缩的输入形态，无法采集执行轨迹，'
+                                   '因此不给出复杂度结论',
+                     limitations=['没有可伸缩输入就没有执行轨迹，本报告不做推测'],
+                     trace_meta={'profile_family': None})
+        return
+    if profile.family == 'FIXED':
+        _write_plain(db, report_id, status='NOT_MEASURABLE',
+                     error_message='该题输入规模固定（没有可伸缩的规模参数），'
+                                   '复杂度描述的是这个固定输入下的代价，无法测量增长',
+                     limitations=['固定输入下的复杂度不随 n 变化，平台不报告增长类别'],
+                     trace_meta={'profile_family': profile.family})
+        return
+    if profile.family == 'EXISTING_CASES':
+        detail = (profile.spec or {}).get('reason') or '该题的生成输入没有通过验收'
+        _write_plain(db, report_id, status='NOT_MEASURABLE',
+                     error_message=f'该题没有可用的可伸缩输入：{detail}',
+                     limitations=['没有可伸缩输入就没有执行轨迹，本报告不做推测'],
+                     trace_meta={'profile_family': profile.family})
+        return
+    language_label = trace_collect.language_label(language)
+    ladder = trace_collect.collect(submission.content, language, profile.family,
+                                   profile.spec or {}, seed=report.id,
+                                   budget_ms=TRACE_BUDGET_MS)
+    if not ladder.ok_points:
+        detail = next((point.detail for point in ladder.points if point.detail), None)
+        _fail(db, report_id,
+              f'在合成输入上无法完成轨迹采集（{ladder.stop_reason}）：{detail or "没有完成的档位"}')
+        return
+    conclusion = trace_infer.infer(ladder, language_label=language_label)
+    payload = trace_report.build(ladder, conclusion, language=language,
+                                 language_label=language_label,
+                                 profile_family=profile.family)
+    summary = payload['summary']
+    _write(db, report_id, status='SUCCEEDED', summary=summary,
+           trace_meta=payload['trace_meta'], trace_series=payload['trace_series'],
+           limitations=payload['limitations'],
+           time_class=summary['time']['class'],
            space_class=summary['space']['class'],
            time_confidence=summary['time']['confidence'],
            space_confidence=summary['space']['confidence'],
-           time_source=summary['time']['source'])
-    del details
+           time_source='TRACE')
 
 
-# RSS jitter on a shared machine is tens to hundreds of KiB, and CPython may retain
-# an arena at one size. Growth below this is indistinguishable from that noise.
-MEMORY_NOISE_KIB = 256
-# Growth must be sustained: a single rung that jumped is a spike, not a trend.
-MEMORY_MINIMUM_RISING_RUNGS = 3
-
-
-def _memory_stats(outcomes) -> dict | None:
-    """Classify how peak resident memory grows with the input size.
-
-    Total RSS is ``baseline + program data``, and the baseline (interpreter, loaded
-    modules) is tens of MiB that does not move with ``n``. Dividing total RSS by
-    ``n`` -- an earlier version did that -- reports an exponent near zero for a
-    genuinely linear program and can never detect ``O(n)`` space.
-
-    Two robustness rules come from review: the growth must be sustained across at
-    least :data:`MEMORY_MINIMUM_RISING_RUNGS` rungs, which rejects a single arena
-    retention spike; and the slope is the median of pairwise log-log slopes
-    (Theil-Sen) instead of least squares, so one outlier cannot move the class.
-    """
-    points = [(outcome.n, outcome.peak_rss_kib) for outcome in outcomes
-              if outcome.verdict == 'OK' and outcome.peak_rss_kib]
-    if len(points) < MEMORY_MINIMUM_RISING_RUNGS:
-        return None
-    baseline_kib = min(kib for _, kib in points)
-    increments = [(n, kib - baseline_kib) for n, kib in points]
-    if max(value for _, value in increments) < MEMORY_NOISE_KIB:
-        return {'class': 'O(1)', 'exponent': 0.0,
-                'points': [{'n': n, 'peak_rss_kib': kib} for n, kib in points]}
-
-    # Longest run of strictly increasing increments, in ladder order.
-    best_start = run_start = 0
-    best_length = run_length = 1
-    for index in range(1, len(increments)):
-        if increments[index][1] > increments[index - 1][1]:
-            run_length += 1
-        else:
-            run_start, run_length = index, 1
-        if run_length > best_length:
-            best_start, best_length = run_start, run_length
-    if best_length < MEMORY_MINIMUM_RISING_RUNGS:
-        return {'class': 'O(1)', 'exponent': 0.0,
-                'points': [{'n': n, 'peak_rss_kib': kib} for n, kib in points]}
-
-    usable = [(n, value) for n, value in increments[best_start:best_start + best_length]
-              if value > 0 and n > 1]
-    if len(usable) < MEMORY_MINIMUM_RISING_RUNGS:
-        return None
-    xs = [math.log(n) for n, _ in usable]
-    ys = [math.log(value) for _, value in usable]
-    slopes = sorted((ys[j] - ys[i]) / (xs[j] - xs[i])
-                    for i in range(len(xs)) for j in range(i + 1, len(xs))
-                    if xs[j] > xs[i])
-    if not slopes:
-        return None
-    middle = len(slopes) // 2
-    exponent = (slopes[middle] if len(slopes) % 2
-                else (slopes[middle - 1] + slopes[middle]) / 2)
-    space = 'O(n^2)' if exponent >= 1.5 else 'O(n)' if exponent >= 0.5 else 'O(1)'
-    return {'class': space, 'exponent': round(exponent, 3),
-            'points': [{'n': n, 'peak_rss_kib': kib} for n, kib in points]}
+def _write_plain(db: Session, report_id: int, **values) -> None:
+    values.setdefault('summary', {})
+    values.setdefault('trace_meta', {})
+    values.setdefault('trace_series', {})
+    _write(db, report_id, **values)
 
 
 def _write(db: Session, report_id: int, **values) -> None:
@@ -525,7 +463,8 @@ def _write(db: Session, report_id: int, **values) -> None:
 
 def _fail(db: Session, report_id: int, message: str) -> None:
     try:
-        _write(db, report_id, status='FAILED', error_message=message)
+        _write(db, report_id, status='FAILED', error_message=message,
+               summary={}, trace_meta={}, trace_series={})
     except Exception:  # pragma: no cover - the row is already gone or locked
         db.rollback()
 

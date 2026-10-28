@@ -27,7 +27,7 @@
 | 教师Vue工作台、CSV导入、四类题目与版本写接口 | 已实现，并含账号开通/重置、作业发布和截止管理 |
 | 匹配、互评原始分、聚合、异常、发布成绩 | 待分析Issue先补契约/表，再各模块接入 |
 | 同题相似代码检测 | 已实现，词法规格化 + Winnowing；教师证据页含行号区间与相似簇 |
-| 已通过代码复杂度分析 | 已实现，结构分析 + 伸缩档实测；学生端增长曲线与适用范围 |
+| 已通过代码复杂度分析 | 已实现，执行轨迹计数 + 递推推断；学生端递推式、闭式类别与逐档计数 |
 | 真实沙箱评测与复杂算法 | 后续实现与实验，不以随机值冒充真实效果 |
 
 **底座完成**指三个人可以使用同一工程、数据库结构、模拟数据和已实现接口并行开发，不表示课程项目的全部功能已经完成。另两台电脑仍需按README首次启动验证。
@@ -126,7 +126,11 @@ flowchart TB
 
 ## 相似检测与复杂度分析交付
 
-`code_similarity` 插件由 `not_implemented` 升级为 `winnowing_token` v2，新增 `CODE_SIMILARITY` 批次（每题一个任务，绝不跨题）；新增迁移 pg0007 与两张表，承接每题的规模伸缩档与每次提交的复杂度报告。复杂度测量在独立 worker 中真实执行学生代码，明确区分“实测高于读取输入成本”和“实测只能给上界”两种情况，后一种回落到结构分析并把原因写进报告。详细设计与验证见[相似检测](docs/design/analysis/code-similarity.md)、[复杂度分析](docs/design/analysis/complexity.md)、[算法实验报告](docs/design/analysis/algorithm-experiments.md)与[实现记录](docs/implementation/evidence/similarity-complexity/2026-10-28-implementation.md)。项目验收要求“至少 2-3 个核心问题说明算法思想、流程、时空复杂度并做实验”，算法实验报告逐项对应。
+`code_similarity` 插件由 `not_implemented` 升级为 `winnowing_token` v2，新增 `CODE_SIMILARITY` 批次（每题一个任务，绝不跨题）；新增迁移 pg0007 与两张表，承接每题的规模伸缩档与每次提交的复杂度报告。详细设计与验证见[相似检测](docs/design/analysis/code-similarity.md)、[算法实验报告](docs/design/analysis/algorithm-experiments.md)与[实现记录](docs/implementation/evidence/similarity-complexity/2026-10-28-implementation.md)。项目验收要求“至少 2-3 个核心问题说明算法思想、流程、时空复杂度并做实验”，算法实验报告逐项对应。
+
+## 复杂度分析升级：执行轨迹计数（2026-10-29）
+
+上一版复杂度分析用墙钟时间拟合增长，`n` 与 `n log n` 在可测区间内分不开、程序跑不赢读输入就只能给上界，于是靠"log 因子由结构裁定"等规则补丁，公开实验里 6 组对照只有 2 组由实测定案。新版把被测量换成**整数的执行事件计数**：Python 用 `sys.monitoring` 采集行事件、跳转事件与已知库函数的调用规模，C/C++ 用覆盖率插桩（gcov）统计被执行的源码行，两者都减去同一输入上最小读取程序的计数。计数无噪声、与机器无关，`n` 与 `n log n` 直接分得开；递归程序再从调用树里读出递推式（如归并的 `T(n)=2T(n/2)+O(n)`），用 Master 定理、求和与指数规则求解，并与实测总量交叉校验。迁移 head 到 pg0009，旧报告归档为 `NOT_MEASURABLE` 并提示重新请求；Java 没有精确循环计数采集器，请求明确拒绝而不退回词法猜测。设计与限制见[执行轨迹计数与递推推断](docs/design/analysis/complexity-trace.md)，实验数字见[2026-10-29 轨迹实验记录](docs/implementation/evidence/similarity-complexity/2026-10-29-trace-experiments.md)。
 
 ## 分析运行框架交付
 

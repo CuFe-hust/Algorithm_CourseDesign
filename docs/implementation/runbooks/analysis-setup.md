@@ -21,7 +21,7 @@
 
 ## 相似检测与复杂度分析（2026-10-28）
 
-迁移会到 pg0007，新增 `problem_complexity_profiles` 与 `complexity_reports` 两张表。升级后先给题库写入规模伸缩档，再启动两个 worker：
+迁移会到 pg0009，新增 `problem_complexity_profiles` 与 `complexity_reports` 两张表（pg0007 建表，pg0009 切换到执行轨迹证据）。升级后先给题库写入规模伸缩档，再启动两个 worker：
 
 ```powershell
 ..\.venv\Scripts\python.exe -m alembic upgrade head
@@ -35,19 +35,19 @@
 ..\.venv\Scripts\python.exe -m scripts.run_complexity --watch
 ```
 
-`seed_complexity_profiles` 幂等，重复运行不会覆盖已有行。它会给每道题生成一份 `n=256` 的输入喂题库自带的 Python 参考解做**验收**：参考解崩溃说明该题的伸缩档与真实输入格式不匹配，该题被降级为 `EXISTING_CASES`（仅结构分析）并记录原因。早期入库的伸缩档可以用 `--revalidate` 重验并修正。
+`seed_complexity_profiles` 幂等，重复运行不会覆盖已有行。它用题库自带的 Python 参考解做**验收**：参考解要能跑通生成的输入，且工作量从最小档到最大档至少增长 1.5 倍（排除格式对了但程序提前返回的题）；不通过就降级为 `EXISTING_CASES`（不可测）并记录原因。早期入库的伸缩档可以用 `--revalidate` 重验并修正。离线核对用 `python -m scripts.validate_complexity_profiles`。
 
-没有伸缩档或因验收失败被降级的题仍可分析，但报告状态是 `STATIC_ONLY`，只给结构结论。当前题库 70 道编程题里 40 道可测、31 道仅结构分析（含 7 道输出规模过大）。
+没有伸缩档或因验收失败被降级的题，报告状态是 `NOT_MEASURABLE`，明确写"无法给出结论"及原因，不做静态结构猜测。Java 目前没有精确的循环计数采集器，请求会返回 409 并说明；当前支持的采集语言是 Python、C、C++。
 
-仅想验证结构分析、不执行代码时可加 `--static-only`：
+仅想验证状态机、不执行代码时可加 `--no-trace`：
 
 ```powershell
-..\.venv\Scripts\python.exe -m scripts.run_complexity --limit 5 --static-only
+..\.venv\Scripts\python.exe -m scripts.run_complexity --limit 5 --no-trace
 ```
 
 教师想给一整道题的全班已通过提交排队分析时用教师端「复杂度分析」页的排队按钮，对应接口 `POST /analysis/courses/{course_id}/complexity/batch`，不需要逐个请求。
 
-两个 worker 都只处理自己的队列：`run_analysis` 不碰 JUDGE 与复杂度报告，`run_complexity` 不碰 JUDGE 与相似批次。测量有单档 10 秒、总计 150 秒的硬上限，超时会写进报告，不会无限跑。
+两个 worker 都只处理自己的队列：`run_analysis` 不碰 JUDGE 与复杂度报告，`run_complexity` 不碰 JUDGE 与相似批次。轨迹采集有单档 10 秒、总计 60 秒的预算上限，超时会写进报告，不会无限跑。
 
 完整链路验证（需 API 以 LOCAL 启动）：
 

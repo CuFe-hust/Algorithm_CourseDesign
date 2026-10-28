@@ -1,91 +1,52 @@
-"""Generate the size ladder for a problem family, and run one program per rung.
+"""Deterministic input generation and ladder planning.
 
-The generator is deterministic: the same profile, the same size and the same
-seed always produce byte-identical input, so a stored report can be reproduced
-later. Every family produces a *valid* input according to the problem's declared
-input format, because an invalid input would only measure the program's error
-path.
+The complexity analysis no longer times the submission, so this module only
+builds *valid, scalable inputs*. Executing them and counting work is the job of
+:mod:`app.analysis.trace`; the wall-clock ladder, the pure-reader baseline and
+the escalation rules that used to live here were removed with the timing route.
 
-Execution is delegated to :mod:`app.judge.local` through the shared supervisor,
-so the measurement inherits the start gate, process-group cleanup, output cap
-and wall-clock guard rather than re-implementing them.
+The generator is deterministic: the same family, size and seed always produce
+byte-identical input, so a stored report can be reproduced later. Every family
+must produce input that fits the problem's declared format, and seeding
+acceptance-tests that against the bank's own reference solution: an invalid
+input would only measure the program's error path.
 """
 from __future__ import annotations
 
-import os
 import random
-import subprocess
-import sys
-import threading
-import time
-from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Iterator
+from dataclasses import dataclass
 
-from app.analysis.algorithms import complexity as growth_rules
-from app.judge import config as judge_config
-from app.judge import local as judge_local
+FAMILIES = ('SINGLE_INT', 'TWO_INTS', 'THREE_INTS', 'INT_ARRAY', 'INT_ARRAY_ROWS',
+            'INT_ARRAY_QUERIES', 'INT_ARRAY_WITH_K', 'SORTED_ARRAY_QUERIES',
+            'INT_ARRAY_OPERATIONS', 'TWO_INT_ARRAYS', 'INT_ARRAY_ROWS_TWO_HEADER',
+            'GRAPH_EDGES', 'GRAPH_TREE_QUERIES', 'GRAPH_EDGE_QUERIES', 'GRAPH_COLORING',
+            'TWO_STRINGS', 'BIG_TWO_STRINGS', 'STRING_LIST', 'ONE_STRING',
+            'STRING_RANGE_QUERIES', 'POSTFIX_EXPRESSION', 'STACK_OPERATIONS',
+            'GRID', 'GRID_WITH_WORD', 'MATRIX',
+            'TRIANGLE_ROWS', 'KNAPSACK', 'FIXED', 'EXISTING_CASES')
 
-# Rungs from small to large. Small rungs are cheap and expose constant overhead;
-# large ones separate growth classes. A profile may override the list.
-DEFAULT_SIZES = (128, 256, 512, 1024, 2048, 4096)
+# Sizes are small on purpose. Counts are exact, so a handful of doublings is
+# enough to separate even n from n log n; large inputs would only cost tracing
+# time. The adapter stops early when the work budget is reached.
+DEFAULT_SIZES = (32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384)
+SMALL_MAX_N = 96
+MAX_INPUT_BYTES = 12 * 1024 * 1024
 
-FAMILIES = ('SINGLE_INT', 'TWO_INTS', 'INT_ARRAY', 'INT_ARRAY_ROWS', 'GRAPH_EDGES',
-            'TWO_STRINGS', 'ONE_STRING', 'GRID', 'MATRIX', 'FIXED', 'EXISTING_CASES')
+# Families whose ``n`` is a *number in the input* rather than the amount of data.
+# A larger n costs no extra input bytes, so the ladder can climb much higher and
+# separate logarithmic work (extended Euclid, fast power) from constant work.
+VALUE_FAMILIES = frozenset({'SINGLE_INT', 'TWO_INTS', 'THREE_INTS'})
+VALUE_SIZES = (64, 256, 1024, 4096, 16384, 65536, 262144, 1048576)
+
+
+class ProfileError(ValueError):
+    """The stored profile cannot produce a valid input for this problem."""
 
 
 @dataclass
 class Rung:
     n: int
     input_text: str
-
-
-# A rung is "informative" once its wall time clearly exceeds interpreter
-# start-up; below that the growth signal is buried in a constant.
-INFORMATIVE_MS = 40.0
-# Doubling ladder. It stops once the largest rung takes a few hundred
-# milliseconds (enough signal) or the input size cap is reached.
-MAX_SIZES = (256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072,
-             262144, 524288, 1048576)
-MAX_INPUT_BYTES = 12 * 1024 * 1024
-TARGET_TOP_MS = 250.0
-# Stop the ladder only once this many rungs completed. It is the fitter's own
-# publishable floor, not a separate number: the two drifting apart once silently
-# disabled measurement for every quadratic program (the ladder stopped at four
-# while the fitter demanded five).
-MINIMUM_RUNGS_BEFORE_STOPPING = growth_rules.MINIMUM_PUBLISHABLE_RUNGS
-
-# Reference readers per family. They perform exactly the input work every
-# submission must do (read, split, convert, print) and nothing else. Measuring
-# them on the same rung gives the input-parsing cost, which is a floor no
-# submission can go below. Without this, a binary search looks linear simply
-# because reading its input is linear.
-IO_REFERENCE = {
-    'SINGLE_INT': 'import sys\nprint(int(sys.stdin.buffer.read() or 0) % 7)\n',
-    'TWO_INTS': 'import sys\na, b = map(int, sys.stdin.buffer.read().split())\nprint((a + b) % 7)\n',
-    'INT_ARRAY': ('import sys\ndata = sys.stdin.buffer.read().split()\n'
-                  'n = int(data[0]); total = 0\n'
-                  'for token in data[1:1 + n]:\n    total += int(token)\n'
-                  'print(total % 7)\n'),
-    'INT_ARRAY_ROWS': ('import sys\ndata = sys.stdin.buffer.read().split()\n'
-                       'n = int(data[0]); total = 0\n'
-                       'for token in data[1:]:\n    total += int(token)\n'
-                       'print(total % 7)\n'),
-    'GRAPH_EDGES': ('import sys\ndata = sys.stdin.buffer.read().split()\n'
-                    'total = 0\nfor token in data: total += int(token)\nprint(total % 7)\n'),
-    'TWO_STRINGS': ('import sys\ndata = sys.stdin.buffer.read().split()\n'
-                    'print((len(data[0]) + len(data[1])) % 7)\n'),
-    'ONE_STRING': 'import sys\nprint(len(sys.stdin.buffer.read()) % 7)\n',
-    'GRID': ('import sys\ndata = sys.stdin.buffer.read().split()\n'
-             'print(sum(len(row) for row in data[2:]) % 7)\n'),
-    'MATRIX': ('import sys\ndata = sys.stdin.buffer.read().split()\n'
-               'total = 0\nfor token in data: total += int(token)\nprint(total % 7)\n'),
-}
-# How far above the reference reader a submission must be before the measured
-# growth can be attributed to the algorithm rather than to input parsing.
-IO_DOMINANCE_RATIO = 2.5
-class ProfileError(ValueError):
-    """The stored profile cannot produce a valid input for this problem."""
 
 
 def _ints(rng: random.Random, count: int, low: int, high: int) -> list[int]:
@@ -98,66 +59,361 @@ def _permutation(rng: random.Random, n: int) -> list[int]:
     return values
 
 
+def _string(rng: random.Random, n: int, alphabet: str) -> str:
+    return ''.join(rng.choice(alphabet) for _ in range(max(1, n)))
+
+
+def _value_bound(spec: dict, size: int) -> int:
+    """Upper bound for array elements: the problem's bound, else the size."""
+    return max(2, min(int(spec.get('max_value', 0) or 0) or size, max(2, size)))
+
+
 def generate(family: str, n: int, seed: int, spec: dict | None = None) -> str:
     """Return one input text for the given family and size ``n``."""
     spec = spec or {}
     rng = random.Random(f'{seed}:{family}:{n}')
+    n = max(1, int(n))
     if family == 'SINGLE_INT':
         low = int(spec.get('min', 1))
         high = int(spec.get('max', 10 ** 9))
         return f'{max(low, min(high, n))}\n'
     if family == 'TWO_INTS':
-        return f'{max(1, min(int(spec.get("max_a", 10 ** 9)), n))} ' \
-               f'{max(1, min(int(spec.get("max_b", 10 ** 9)), n + int(spec.get("offset_b", 1))))}\n'
+        # Two integers that follow n. ``scale_*`` and ``offset_*`` shape the
+        # pair: a base-conversion problem keeps the second value at the base,
+        # a Euclid-style problem keeps the two values on the same scale.
+        first = max(1, min(int(spec.get('max_a', 10 ** 9)),
+                           int(n * float(spec.get('scale_a', 1))) + int(spec.get('offset_a', 0))))
+        second = max(1, min(int(spec.get('max_b', 10 ** 9)),
+                            int(n * float(spec.get('scale_b', 1))) + int(spec.get('offset_b', 1))))
+        return f'{first} {second}\n'
+    if family == 'THREE_INTS':
+        # Fixed-width integer tuples: fast power, graph colouring header,
+        # modulo exponent problems. The extra values are derived from n but
+        # clamped to the per-problem limits.
+        first = max(1, min(int(spec.get('max_a', 10 ** 9)), n))
+        second = max(1, min(int(spec.get('max_b', 10 ** 9)), n + int(spec.get('offset_b', 1))))
+        third = max(1, min(int(spec.get('max_c', 10 ** 9)), n + int(spec.get('offset_c', 2))))
+        return f'{first} {second} {third}\n'
     if family == 'INT_ARRAY':
-        values = _permutation(rng, n) if spec.get('kind') == 'permutation' else _ints(rng, n, 1, max(2, n))
+        # ``extra_values`` covers formats that read n and then n + k numbers,
+        # e.g. matrix-chain multiplication reading the n + 1 dimensions.
+        # ``max_value`` keeps each element inside the problem's per-element
+        # bound while the array itself keeps growing.
+        count = n + max(0, int(spec.get('extra_values', 0)))
+        high = _value_bound(spec, count)
+        values = _permutation(rng, count) if spec.get('kind') == 'permutation' \
+            else _ints(rng, count, 1, high)
         return f'{n}\n' + ' '.join(map(str, values)) + '\n'
+    if family == 'INT_ARRAY_QUERIES':
+        # "n q" header, then n numbers, then q queries. Adds an optional k that
+        # rides on the header for "n k + array" problems.
+        extra = int(spec.get('header_extra', 0))
+        queries = int(spec.get('query_count', n))
+        header = f'{n} {extra}' if extra else f'{n} {queries}'
+        values = _ints(rng, n, 1, max(2, n))
+        rows = [header, ' '.join(map(str, values))]
+        if spec.get('query_values') == 'indexes':
+            rows.extend(str(rng.randint(0, max(0, n - 1))) for _ in range(queries))
+        else:
+            rows.extend(str(rng.randint(1, max(2, n))) for _ in range(queries))
+        return '\n'.join(rows) + '\n'
+    if family == 'INT_ARRAY_WITH_K':
+        # "n k" header then n numbers. The second header value is a rank, a
+        # window width, a capacity or a piece count: it rides on the header
+        # because it is not a separate array. k stays inside 1..n so it is a
+        # legal rank or window for every rung.
+        k = int(spec.get('k', 0) or 0)
+        k = max(1, min(n, k if k > 0 else (n + 1) // 2))
+        values = _permutation(rng, n) if spec.get('kind') == 'permutation' \
+            else _ints(rng, n, 1, _value_bound(spec, n))
+        return f'{n} {k}\n' + ' '.join(map(str, values)) + '\n'
+    if family == 'SORTED_ARRAY_QUERIES':
+        # "n q" header, a non-decreasing array of n numbers, then q single-value
+        # queries (each on its own line). Binary search reads the header, the
+        # sorted array and then one target per query.
+        queries = int(spec.get('query_count', n))
+        values = sorted(_ints(rng, n, 1, max(2, n)))
+        rows = [f'{n} {max(1, queries)}', ' '.join(map(str, values))]
+        rows.extend(str(rng.randint(1, max(2, n))) for _ in range(max(1, queries)))
+        return '\n'.join(rows) + '\n'
+    if family == 'INT_ARRAY_OPERATIONS':
+        # "n q" header, n numbers, then q operation lines that alternate between
+        # a point update ("1 x v") and a range query ("2 l r").
+        queries = max(1, int(spec.get('query_count', n)))
+        rows = [f'{n} {queries}', ' '.join(map(str, _ints(rng, n, -1000, 1000)))]
+        for index in range(queries):
+            if index % 2 == 0:
+                rows.append(f'1 {rng.randint(1, n)} {rng.randint(-1000, 1000)}')
+            else:
+                left = rng.randint(1, n)
+                rows.append(f'2 {left} {rng.randint(left, n)}')
+        return '\n'.join(rows) + '\n'
+    if family == 'TWO_INT_ARRAYS':
+        high = _value_bound(spec, n)
+        first = _ints(rng, n, 1, high)
+        second = _ints(rng, n, 1, high)
+        return f'{n}\n' + ' '.join(map(str, first)) + '\n' + ' '.join(map(str, second)) + '\n'
     if family == 'INT_ARRAY_ROWS':
         rows = []
+        ordered = spec.get('row_kind') == 'ordered'
         for _ in range(n):
+            if ordered:
+                # Each row is a pair "n_i m_i" with 0 <= m_i <= n_i; combination
+                # counting reads the pair as (n, m) and m must not exceed n.
+                first = rng.randint(0, n)
+                rows.append(f'{first} {rng.randint(0, first)}')
+                continue
             start = rng.randint(0, max(1, n))
             rows.append(f'{start} {start + rng.randint(1, max(1, n // 2))}')
         # Knapsack-style problems read "n W" on the first line; the capacity
         # rides along in the spec because it is not a size parameter.
         header_suffix = f' {int(spec["header_extra"])}' if 'header_extra' in spec else ''
         return f'{n}{header_suffix}\n' + '\n'.join(rows) + '\n'
-    if family == 'GRAPH_EDGES':
-        # Unweighted graphs read "u v" pairs, weighted ones "u v w"; the bank has
-        # both, so the arity comes from the per-problem spec.
-        arity = int(spec.get('edge_arity', 3))
+    if family == 'INT_ARRAY_ROWS_TWO_HEADER':
+        # "n m" header, then m rows of fixed arity values (edges, ranges,
+        # updates). The row count follows n so the ladder scales both parts.
+        arity = int(spec.get('arity', 3))
+        extra = int(spec.get('header_extra', 0) or 0)
         rows = []
         for _ in range(n):
-            u = rng.randint(1, n)
-            v = rng.randint(1, n)
-            rows.append(f'{u} {v} {rng.randint(1, 1000)}' if arity == 3 else f'{u} {v}')
-        header_suffix = f' {spec["edge_count"]}' if 'edge_count' in spec else ''
-        return f'{n}{header_suffix}\n' + '\n'.join(rows) + '\n'
+            values = [rng.randint(1, max(2, n)) for _ in range(max(1, arity))]
+            if spec.get('rows_sorted'):
+                values[0] = min(values[0], values[1]) if len(values) > 1 else values[0]
+            rows.append(' '.join(map(str, values)))
+        header = f'{n} {n + extra}' if extra >= 0 else f'{n}'
+        return f'{header}\n' + '\n'.join(rows) + '\n'
+    if family == 'GRAPH_EDGES':
+        # Unweighted graphs read "u v" pairs, weighted ones "u v w"; the bank has
+        # both, so the arity comes from the per-problem spec. ``edge_factor``
+        # scales the edge count with n and puts "n m" on the header, which is
+        # what "n m + m edges" problems read; ``simple`` keeps the graph free of
+        # self loops and duplicate edges, as graph colouring requires.
+        arity = int(spec.get('edge_arity', 3))
+        factor = max(1, int(spec.get('edge_factor', 1)))
+        wanted = n * factor
+        if spec.get('simple'):
+            edges: set[tuple[int, int]] = set()
+            wanted = min(wanted, n * (n - 1) // 2)
+            attempts = 0
+            while len(edges) < wanted and attempts < wanted * 20 + 100:
+                u, v = rng.randint(1, n), rng.randint(1, n)
+                if u != v:
+                    edges.add((min(u, v), max(u, v)))
+                attempts += 1
+            rows = [f'{u} {v}' for u, v in sorted(edges)]
+        else:
+            rows = []
+            for _ in range(wanted):
+                u = rng.randint(1, n)
+                v = rng.randint(1, n)
+                rows.append(f'{u} {v} {rng.randint(1, 1000)}' if arity == 3 else f'{u} {v}')
+        if 'edge_count' in spec:
+            header = f'{n} {int(spec["edge_count"])}'
+        elif 'edge_factor' in spec:
+            header = f'{n} {len(rows)}'
+        else:
+            header = f'{n}'
+        return f'{header}\n' + '\n'.join(rows) + '\n'
+    if family == 'GRAPH_COLORING':
+        # "n m k" header, then m distinct undirected edges "u v" with u < v.
+        # k is an upper bound on usable colours; when k >= n the greedy search
+        # never has to backtrack, so the trace measures the search, not luck.
+        k = min(n, max(1, int(spec.get('color_count', n) or n)))
+        wanted = min(max(0, int(spec.get('edge_factor', 1)) * n), n * (n - 1) // 2)
+        edges: set[tuple[int, int]] = set()
+        attempts = 0
+        while len(edges) < wanted and attempts < wanted * 20 + 100:
+            u, v = rng.randint(1, n), rng.randint(1, n)
+            if u != v:
+                edges.add((min(u, v), max(u, v)))
+            attempts += 1
+        rows = [f'{n} {len(edges)} {k}'] + [f'{u} {v}' for u, v in sorted(edges)]
+        return '\n'.join(rows) + '\n'
+    if family == 'GRAPH_TREE_QUERIES':
+        # "n root" header, n-1 parent/child edges of a tree, then the query
+        # count q and q queries on node pairs (nearest common ancestor and
+        # friends). The q line is read separately from the pairs.
+        root = int(spec.get('root', 1))
+        rows = [f'{n} {root}']
+        for node in range(2, n + 1):
+            rows.append(f'{rng.randint(1, node - 1)} {node}')
+        queries = max(1, int(spec.get('query_count', n)))
+        rows.append(str(queries))
+        rows.extend(f'{rng.randint(1, n)} {rng.randint(1, n)}' for _ in range(queries))
+        return '\n'.join(rows) + '\n'
     if family == 'TWO_STRINGS':
         alphabet = 'abcdefghijklmnopqrstuvwxyz'
-        first = ''.join(rng.choice(alphabet) for _ in range(n))
-        second = ''.join(rng.choice(alphabet) for _ in range(n))
+        first = _string(rng, n, alphabet)
+        second = _string(rng, n, alphabet)
         return f'{first}\n{second}\n'
+    if family == 'BIG_TWO_STRINGS':
+        # Two decimal integers of n digits each, as strings.
+        digits = '123456789'
+        first = str(rng.randint(1, 9)) + _string(rng, n - 1, digits)
+        second = str(rng.randint(1, 9)) + _string(rng, n - 1, digits)
+        return f'{first}\n{second}\n'
+    if family == 'STRING_LIST':
+        # "n" then n lowercase strings of bounded length, and optionally "q"
+        # then q query strings (dictionary problems read a word list first and
+        # queries after it). Each query is a prefix of one of the words, so the
+        # lookup actually walks the structure built from the list.
+        alphabet = 'abcdefghijklmnopqrstuvwxyz'
+        length = max(1, int(spec.get('word_length', max(1, 8))))
+        words = [_string(rng, rng.randint(1, length), alphabet) for _ in range(n)]
+        rows = [str(n)] + words
+        queries = n if spec.get('queries') else max(0, int(spec.get('query_count', 0) or 0))
+        if queries:
+            rows.append(str(queries))
+            for _ in range(queries):
+                word = words[rng.randrange(n)]
+                rows.append(word[:rng.randint(1, len(word))])
+        return '\n'.join(rows) + '\n'
+    if family == 'STRING_RANGE_QUERIES':
+        # A lowercase string of n characters, then the query count q, then q
+        # lines of four 1-based positions "l1 r1 l2 r2" with l <= r (substring
+        # hash comparison and friends).
+        alphabet = 'abcdefghijklmnopqrstuvwxyz'
+        queries = max(1, int(spec.get('query_count', n)))
+        rows = [_string(rng, n, alphabet), str(queries)]
+        for _ in range(queries):
+            left = rng.randint(1, n)
+            second_left = rng.randint(1, n)
+            rows.append(f'{left} {rng.randint(left, n)} '
+                        f'{second_left} {rng.randint(second_left, n)}')
+        return '\n'.join(rows) + '\n'
     if family == 'ONE_STRING':
         alphabet = spec.get('alphabet', 'abcdefghijklmnopqrstuvwxyz')
-        return ''.join(rng.choice(alphabet) for _ in range(n)) + '\n'
+        return _string(rng, n, alphabet) + '\n'
+    if family == 'GRAPH_EDGE_QUERIES':
+        # "n m" header, m edge pairs, then the query count q and q node pairs
+        # (connected-components queries: union-find over a plain graph).
+        factor = max(1, int(spec.get('edge_factor', 1)))
+        edge_count = min(n * factor, n * (n - 1) // 2)
+        rows = [f'{n} {edge_count}']
+        rows.extend(f'{rng.randint(1, n)} {rng.randint(1, n)}' for _ in range(edge_count))
+        queries = max(1, int(spec.get('query_count', n)))
+        rows.append(str(queries))
+        rows.extend(f'{rng.randint(1, n)} {rng.randint(1, n)}' for _ in range(queries))
+        return '\n'.join(rows) + '\n'
+    if family == 'POSTFIX_EXPRESSION':
+        # One line of postfix tokens: "x1 x2 + x3 + ... xk". A left fold keeps
+        # the stack at depth two, so the expression is always valid and the
+        # evaluator does one push or one operate per token.
+        operands = max(2, n)
+        values = _ints(rng, operands, 1, 1000)
+        tokens = [str(values[0]), str(values[1])]
+        for index in range(2, operands):
+            tokens.append(rng.choice(spec.get('operators', ('+',))))
+            tokens.append(str(values[index]))
+        return ' '.join(tokens) + '\n'
+    if family == 'STACK_OPERATIONS':
+        # "q" then q operation lines. The cycle push, push, front, pop keeps the
+        # queue non-empty, so a correct implementation really transfers and pops
+        # instead of printing "empty".
+        queries = max(1, int(spec.get('query_count', n)))
+        rows = [str(queries)]
+        for index in range(queries):
+            step = index % 4
+            if step <= 1:
+                rows.append(f'push {rng.randint(-2 ** 31, 2 ** 31 - 1)}')
+            elif step == 2:
+                rows.append('front')
+            else:
+                rows.append('pop')
+        return '\n'.join(rows) + '\n'
     if family == 'GRID':
         rows = []
         for _ in range(n):
-            row = ['#'] * n
+            row = ['.'] * n
             for column in range(n):
                 row[column] = '.' if rng.random() > 0.2 else '#'
             row[0] = '.'
             row[-1] = '.'
             rows.append(''.join(row))
         return f'{n} {n}\n' + '\n'.join(rows) + '\n'
+    if family == 'GRID_WITH_WORD':
+        # Grid plus one word that certainly exists as an orthogonal path, so the
+        # search algorithm actually runs instead of returning early.
+        rows = [['.'] * n for _ in range(n)]
+        path = ''.join(rng.choice('abc') for _ in range(max(2, n // 2)))
+        row = 1 if n > 2 else 0
+        for index, char in enumerate(path):
+            column = min(index, n - 1)
+            rows[row % n][column] = char
+        text = '\n'.join(''.join(line) for line in rows)
+        return f'{n} {n}\n{text}\n{path}\n'
     if family == 'MATRIX':
         rows = [f'{n} {n}']
         for _ in range(n):
             rows.append(' '.join(str(value) for value in _ints(rng, n, -100, 100)))
         return '\n'.join(rows) + '\n'
+    if family == 'TRIANGLE_ROWS':
+        # "n" followed by 1 + 2 + ... + n values.
+        values: list[int] = []
+        for width in range(1, n + 1):
+            values.extend(str(rng.randint(-100, 100)) for _ in range(width))
+        return f'{n}\n' + '\n'.join(values) + '\n'
+    if family == 'KNAPSACK':
+        # "n W" then n "weight value" rows.
+        capacity = int(spec.get('capacity', max(1, 10 * n)))
+        rows = [f'{n} {capacity}']
+        for _ in range(n):
+            weight = rng.randint(1, max(1, capacity))
+            rows.append(f'{weight} {rng.randint(1, 1000)}')
+        return '\n'.join(rows) + '\n'
     if family == 'FIXED':
         return str(spec.get('text', ''))
     raise ProfileError(f'unsupported family {family}')
+
+
+def _geometric_ladder(start: int, limit: int, count: int) -> tuple[int, ...]:
+    """``count`` sizes from ``start`` to ``limit`` in log space (both included)."""
+    start = max(4, min(start, limit))
+    if limit <= start:
+        return (start,)
+    ratio = (limit / start) ** (1 / max(1, count - 1))
+    values = {min(limit, max(start, int(round(start * ratio ** step))))
+              for step in range(count)}
+    return tuple(sorted(values))
+
+
+def _even_ladder(start: int, limit: int, steps: int) -> tuple[int, ...]:
+    """Evenly spaced sizes from ``start`` to ``limit``, always including both."""
+    values = {start, limit}
+    span = limit - start
+    for index in range(1, steps):
+        values.add(start + round(span * index / steps))
+    return tuple(sorted(size for size in values if 4 <= size <= limit))
+
+
+def plan_sizes(max_n: int, *, cap: int = 16384,
+               value_family: bool = False) -> tuple[int, ...]:
+    """Choose the input sizes for one problem.
+
+    Problems with a small size limit (Hanoi 10, permutations 8) get an evenly
+    spaced ladder from 4 to the limit: doubling would leave only two points and
+    fast-growing programs need adjacent points to show their ratio. Problems
+    without a tight limit get a doubling ladder, which is what separates
+    polynomial classes from each other. A limit between 96 and 256 leaves fewer
+    than four doublings (matrix chain n <= 100, word search 6x6), so it falls
+    back to the same even ramp instead of a two-point ladder.
+    """
+    limit = max(4, int(max_n))
+    if limit <= SMALL_MAX_N:
+        return _even_ladder(max(4, limit // 8), limit, 7)
+    if value_family:
+        sizes = [size for size in VALUE_SIZES if size <= limit]
+        return tuple(sizes) if len(sizes) >= 4 else tuple(sorted(set(
+            [size for size in DEFAULT_SIZES if size <= limit] or [limit])))
+    sizes = [size for size in DEFAULT_SIZES if size <= min(limit, cap)]
+    if len(sizes) < 4:
+        return _even_ladder(4, limit, 6)
+    if len(sizes) < 6:
+        # A five-rung ladder lets a three-parameter fit imitate a neighbouring
+        # class. Problems whose own limit stops below 4096 (for example
+        # "n <= 1000") get a finer geometric ramp instead of five doublings.
+        return _geometric_ladder(max(32, sizes[0]), limit, 7)
+    return tuple(sorted(set(sizes)))
 
 
 def ladder(family: str, seed: int, spec: dict | None = None,
@@ -166,404 +422,14 @@ def ladder(family: str, seed: int, spec: dict | None = None,
         raise ProfileError(f'unknown family {family!r}')
     if family == 'EXISTING_CASES':
         return []
-    chosen = tuple(sizes or DEFAULT_SIZES)
-    maximum = int((spec or {}).get('max_n', 0)) or None
+    spec = spec or {}
+    chosen = tuple(sizes) if sizes else plan_sizes(
+        int(spec.get('max_n', 0) or 4096),
+        value_family=family in VALUE_FAMILIES)
     rungs: list[Rung] = []
     for size in chosen:
-        if maximum is not None and size > maximum:
+        text = generate(family, size, seed, spec)
+        if len(text.encode('utf-8')) > MAX_INPUT_BYTES:
             break
-        rungs.append(Rung(n=size, input_text=generate(family, size, seed, spec)))
+        rungs.append(Rung(n=size, input_text=text))
     return rungs
-
-
-def _peak_rss_kib(usage) -> int | None:
-    """Convert one process's ``ru_maxrss`` to KiB.
-
-    ``resource.RUSAGE_CHILDREN`` is a running maximum over every child, so it
-    cannot attribute memory to one run. ``os.wait4`` returns the rusage of the
-    specific child instead. Linux reports KiB and macOS reports bytes.
-    """
-    if usage is None:
-        return None
-    value = int(usage.ru_maxrss)
-    if value <= 0:
-        return None
-    if sys.platform == 'darwin':
-        return value // 1024
-    return value
-
-
-@dataclass
-class RungOutcome:
-    n: int
-    walls_ms: list[float]
-    peak_rss_kib: int | None
-    verdict: str
-    detail: str | None = None
-
-    @property
-    def median_ms(self) -> float:
-        ordered = sorted(self.walls_ms)
-        return ordered[len(ordered) // 2] if ordered else 0.0
-
-    reference_ms: float | None = None
-
-    @property
-    def io_ratio(self) -> float | None:
-        """Submission time divided by the reference reader time on this rung."""
-        if not self.reference_ms or self.median_ms <= 0:
-            return None
-        return self.median_ms / self.reference_ms
-
-    @property
-    def io_dominated(self) -> bool:
-        """True when input parsing explains most of this rung's time."""
-        ratio = self.io_ratio
-        return ratio is not None and ratio < IO_DOMINANCE_RATIO
-
-    def to_payload(self) -> dict:
-        return {'n': self.n, 'wall_ms': round(self.median_ms, 3),
-                'reference_ms': None if self.reference_ms is None else round(self.reference_ms, 3),
-                'io_ratio': None if self.io_ratio is None else round(self.io_ratio, 3),
-                'peak_rss_kib': self.peak_rss_kib, 'verdict': self.verdict,
-                'detail': self.detail, 'repeats': len(self.walls_ms)}
-
-
-def measurements(outcomes: list[RungOutcome]):
-    """Turn raw outcomes into fitted-ready measurements.
-
-    Two corrections are applied, and both are reported rather than hidden:
-
-    * **Start-up floor.** Process launch, interpreter warm-up and module import
-      are a constant on every rung. It is estimated as the smallest observed
-      median and subtracted, so a fast program does not fit ``O(1)`` simply
-      because a constant dominates.
-    * **Input parsing floor.** Reading and converting the generated input also
-      grows with ``n`` and is work every valid solution must do. Each rung
-      carries the measured time of a pure reader on the same input; when the
-      submission is not clearly slower than that reader, its growth cannot be
-      attributed to the algorithm.
-
-    Returns ``(measurements, floor_ms, io_dominated_count)``.
-    """
-    from app.analysis.algorithms import complexity
-    ok = [outcome for outcome in outcomes if outcome.verdict == 'OK' and outcome.walls_ms]
-    floor = min((outcome.median_ms for outcome in ok), default=0.0)
-    rows = []
-    io_dominated = 0
-    for outcome in outcomes:
-        if outcome.verdict != 'OK' or not outcome.walls_ms:
-            rows.append(complexity.Measurement(n=outcome.n, wall_ms=0.0, adjusted_ms=0.0,
-                                               peak_rss_kib=outcome.peak_rss_kib,
-                                               verdict=outcome.verdict))
-            continue
-        if outcome.io_dominated:
-            io_dominated += 1
-        adjusted = max(0.0, outcome.median_ms - floor)
-        rows.append(complexity.Measurement(n=outcome.n, wall_ms=outcome.median_ms,
-                                           adjusted_ms=adjusted,
-                                           peak_rss_kib=outcome.peak_rss_kib, verdict='OK',
-                                           repeats=len(outcome.walls_ms)))
-    return rows, floor, io_dominated
-
-
-def algorithm_points(outcomes: list[RungOutcome], *, minimum_ratio: float = 2.0):
-    """Per-rung input-parsing subtraction, used by the complexity service.
-
-    Returns ``(points, accounting)`` with only rungs where the submission is at
-    least ``minimum_ratio`` times slower than the pure reader kept for fitting.
-    """
-    from app.analysis.algorithms import complexity
-    raw = [complexity.Measurement(n=outcome.n, wall_ms=outcome.median_ms,
-                                  adjusted_ms=outcome.median_ms,
-                                  peak_rss_kib=outcome.peak_rss_kib,
-                                  verdict=outcome.verdict, repeats=len(outcome.walls_ms))
-           for outcome in outcomes]
-    reference = {outcome.n: outcome.reference_ms for outcome in outcomes
-                 if outcome.reference_ms is not None}
-    return complexity.attribute_growth(raw, reference, minimum_ratio=minimum_ratio)
-
-
-def measure(source: str, language: str, rungs: list[Rung], *, seed: int = 0,
-            wall_limit_ms: int = 4000, budget_ms: int = 120_000,
-            repeats: int = 2, gate=None) -> list[RungOutcome]:
-    """Compile once and run every rung, returning one outcome per rung.
-
-    Each rung runs ``repeats`` times and the median wall time is kept, because
-    the first run of an interpreter-heavy program is systematically slower.
-    When the budget runs out, remaining rungs are recorded as not executed: the
-    ladder is never silently shortened.
-    """
-    tool = judge_config.toolchain(language)
-    if tool is None:
-        raise judge_local.ConfigurationError(f'当前节点不支持该提交语言：{language}')
-    deadline = time.monotonic() + budget_ms / 1000.0
-    workdir = Path(judge_config.work_root()) / f'cx-{seed}-{int(time.time() * 1000)}'
-    workdir.mkdir(parents=True, exist_ok=True)
-    outcomes: list[RungOutcome] = []
-    try:
-        (workdir / tool.source_name).write_text(source, encoding='utf-8')
-        diagnostics = judge_local._compile(tool, workdir, None)  # noqa: SLF001 - shared contract
-        if diagnostics is not None:
-            return [RungOutcome(n=rung.n, walls_ms=[], peak_rss_kib=None,
-                                verdict='COMPILATION_ERROR', detail=diagnostics[:400])
-                    for rung in rungs]
-        for rung in rungs:
-            walls: list[float] = []
-            verdict = 'OK'
-            detail = None
-            peak: int | None = None
-            for _ in range(max(1, repeats)):
-                remaining_ms = int((deadline - time.monotonic()) * 1000)
-                if remaining_ms < 200:
-                    verdict, detail = 'BUDGET_EXHAUSTED', '总预算已用完'
-                    break
-                limit = min(wall_limit_ms, remaining_ms)
-                try:
-                    code, output, timed_out, usage = _run_once(tool, workdir, rung.input_text,
-                                                               limit, gate)
-                except judge_local.InfrastructureError as error:
-                    verdict, detail = 'INFRASTRUCTURE', str(error)
-                    break
-                observed = _peak_rss_kib(usage)
-                if observed is not None:
-                    peak = observed if peak is None else max(peak, observed)
-                if timed_out:
-                    verdict, detail = 'TIME_LIMIT_EXCEEDED', f'{limit} ms 内未结束'
-                    walls.append(float(limit))
-                    break
-                if code not in (0, None):
-                    verdict, detail = 'RUNTIME_ERROR', f'退出码 {code}'
-                    walls.append(float(limit))
-                    break
-                walls.append(_last_elapsed[0])
-                if verdict != 'OK':
-                    break
-            outcomes.append(RungOutcome(n=rung.n, walls_ms=walls, peak_rss_kib=peak,
-                                        verdict=verdict, detail=detail))
-            if verdict == 'INFRASTRUCTURE':
-                break
-        return outcomes
-    finally:
-        import shutil
-        shutil.rmtree(workdir, ignore_errors=True)
-
-
-_last_elapsed = [0.0]
-
-
-def _run_once(tool, workdir: Path, input_text: str, limit_ms: int, gate):
-    """Run the compiled program once; return ``(code, output, timed_out, rusage)``."""
-    spawned = judge_local.spawn(tool.run_command, workdir)
-    released = False
-    output = bytearray()
-    timed_out = False
-    usage = None
-    started = time.monotonic()
-    try:
-        if gate is not None and not gate(spawned):
-            raise judge_local.InfrastructureError('执行未获放行')
-        released = True
-        threading.Thread(target=_feed, args=(spawned, input_text.encode('utf-8')),
-                         daemon=True).start()
-        threading.Thread(target=_drain, args=(spawned, output), daemon=True).start()
-        judge_local.release(spawned)
-        deadline = started + limit_ms / 1000.0
-        while True:
-            reaped = _try_reap(spawned, output)
-            if reaped is not None:
-                spawned.process.returncode, usage = reaped
-                break
-            if time.monotonic() > deadline:
-                timed_out = True
-                judge_local.terminate(spawned)
-                reaped = _try_reap(spawned, output, block_ms=2000)
-                if reaped is not None:
-                    spawned.process.returncode, usage = reaped
-                break
-            time.sleep(0.002)
-        _last_elapsed[0] = (time.monotonic() - started) * 1000.0
-        return spawned.process.returncode, bytes(output), timed_out, usage
-    finally:
-        if released and spawned.process.returncode is None:
-            judge_local.terminate(spawned)
-
-
-def _try_reap(spawned, output, block_ms: int = 0):
-    """Reap the child with ``os.wait4`` so per-run rusage is available."""
-    deadline = time.monotonic() + block_ms / 1000.0
-    while True:
-        try:
-            pid, status, usage = os.wait4(spawned.process.pid, os.WNOHANG)
-        except ChildProcessError:
-            return spawned.process.returncode, None
-        if pid == spawned.process.pid:
-            return os.waitstatus_to_exitcode(status), usage
-        if time.monotonic() > deadline:
-            return None
-        time.sleep(0.002)
-
-
-def _feed(spawned, payload: bytes) -> None:
-    try:
-        if spawned.process.stdin is not None:
-            spawned.process.stdin.write(payload)
-            spawned.process.stdin.close()
-    except (BrokenPipeError, OSError, ValueError):
-        pass
-
-
-def _drain(spawned, output: bytearray) -> None:
-    stream = spawned.process.stdout
-    if stream is None:
-        return
-    try:
-        while True:
-            chunk = stream.read(65536)
-            if not chunk:
-                break
-            if len(output) < judge_config.OUTPUT_LIMIT_BYTES:
-                output.extend(chunk[:judge_config.OUTPUT_LIMIT_BYTES - len(output)])
-    except (OSError, ValueError):
-        pass
-
-
-def escalating_measure(source: str, language: str, family: str, spec: dict | None, *,
-                       seed: int, wall_limit_ms: int = 8000, budget_ms: int = 150_000,
-                       repeats: int = 3, gate=None, max_rungs: int = 13) -> tuple[list[RungOutcome], str]:
-    """Compile once, then climb a doubling ladder until growth beats start-up.
-
-    Interpreter start-up is a constant on every rung and can exceed the whole
-    computation for a fast program. Rather than fitting noise, each rung runs
-    ``repeats`` times, the median is kept, and the ladder keeps doubling until
-    the largest median is well above the smallest (signal), the wall limit is
-    hit (a real measurement), the input cap is reached, or the budget is spent.
-    The returned reason records which stop happened.
-
-    Reasons: ``OK``, ``TIME_LIMIT_EXCEEDED``, ``RUNTIME_ERROR``,
-    ``BUDGET_EXHAUSTED``, ``NO_LADDER``, ``FLOOR_REACHED``, ``LADDER_EXHAUSTED``.
-    """
-    if family in ('EXISTING_CASES', 'FIXED'):
-        return [], 'NO_LADDER'
-    tool = judge_config.toolchain(language)
-    if tool is None:
-        raise judge_local.ConfigurationError(f'当前节点不支持该提交语言：{language}')
-    workdir = Path(judge_config.work_root()) / f'cx-{seed}-{int(time.time() * 1000)}'
-    workdir.mkdir(parents=True, exist_ok=True)
-    deadline = time.monotonic() + budget_ms / 1000.0
-    outcomes: list[RungOutcome] = []
-    try:
-        (workdir / tool.source_name).write_text(source, encoding='utf-8')
-        diagnostics = judge_local._compile(tool, workdir, None)  # noqa: SLF001 - shared contract
-        if diagnostics is not None:
-            return ([RungOutcome(n=0, walls_ms=[], peak_rss_kib=None,
-                                 verdict='COMPILATION_ERROR', detail=diagnostics[:400])],
-                    'COMPILATION_ERROR')
-        for index, size in enumerate(MAX_SIZES):
-            if index >= max_rungs:
-                return outcomes, 'LADDER_EXHAUSTED' if outcomes else 'NO_LADDER'
-            if time.monotonic() > deadline:
-                return outcomes, 'BUDGET_EXHAUSTED'
-            rung = Rung(n=size, input_text=generate(family, size, seed, spec))
-            if len(rung.input_text.encode('utf-8')) > MAX_INPUT_BYTES:
-                break
-            outcome = _run_rung(tool, workdir, rung, wall_limit_ms, repeats, gate,
-                                deadline, seed=seed + index)
-            outcome.reference_ms = _io_reference_ms(family, language, rung, wall_limit_ms,
-                                                    max(1, repeats - 1), deadline)
-            outcomes.append(outcome)
-            if outcome.verdict in ('COMPILATION_ERROR', 'INFRASTRUCTURE', 'RUNTIME_ERROR'):
-                return outcomes, outcome.verdict
-            if outcome.verdict == 'TIME_LIMIT_EXCEEDED':
-                return outcomes, 'TIME_LIMIT_EXCEEDED'
-            if outcome.verdict == 'BUDGET_EXHAUSTED':
-                return outcomes, 'BUDGET_EXHAUSTED'
-            executed = [row for row in outcomes if row.verdict == 'OK' and row.walls_ms]
-            if len(executed) >= MINIMUM_RUNGS_BEFORE_STOPPING:
-                smallest = min(row.median_ms for row in executed)
-                largest = max(row.median_ms for row in executed)
-                if largest >= max(4.0 * smallest, INFORMATIVE_MS) and executed[-1].n >= 8 * executed[0].n:
-                    return outcomes, 'OK'
-                if largest >= TARGET_TOP_MS:
-                    return outcomes, 'OK'
-        executed = [row for row in outcomes if row.verdict == 'OK' and row.walls_ms]
-        if len(executed) >= MINIMUM_RUNGS_BEFORE_STOPPING \
-                and max(row.median_ms for row in executed) >= INFORMATIVE_MS:
-            return outcomes, 'LADDER_EXHAUSTED'
-        return outcomes, 'FLOOR_REACHED'
-    finally:
-        import shutil
-        shutil.rmtree(workdir, ignore_errors=True)
-
-
-def _io_reference_ms(family: str, language: str, rung: Rung, wall_limit_ms: int,
-                     repeats: int, deadline: float) -> float | None:
-    """Measure a pure input-parsing program on the same rung.
-
-    Returns ``None`` when the family has no reference reader or when the
-    measurement could not run; a missing reference must never be replaced by a
-    guess, so the ratio stays unknown and the report says nothing about I/O.
-    """
-    source = IO_REFERENCE.get(family)
-    if source is None or language not in ('python3', 'python'):
-        return None
-    tool = judge_config.toolchain(language)
-    if tool is None:
-        return None
-    workdir = Path(judge_config.work_root()) / f'io-{int(time.time() * 1_000_000)}'
-    workdir.mkdir(parents=True, exist_ok=True)
-    try:
-        (workdir / tool.source_name).write_text(source, encoding='utf-8')
-        if judge_local._compile(tool, workdir, None) is not None:  # noqa: SLF001
-            return None
-        walls: list[float] = []
-        for _ in range(max(1, repeats)):
-            remaining = int((deadline - time.monotonic()) * 1000)
-            if remaining < 200:
-                break
-            try:
-                code, _, timed_out, _ = _run_once(tool, workdir, rung.input_text,
-                                                  min(wall_limit_ms, remaining), None)
-            except judge_local.InfrastructureError:
-                return None
-            if timed_out or code not in (0, None):
-                return None
-            walls.append(_last_elapsed[0])
-        if not walls:
-            return None
-        ordered = sorted(walls)
-        return ordered[len(ordered) // 2]
-    finally:
-        import shutil
-        shutil.rmtree(workdir, ignore_errors=True)
-
-
-def _run_rung(tool, workdir: Path, rung: Rung, wall_limit_ms: int, repeats: int,
-              gate, deadline: float, *, seed: int) -> RungOutcome:
-    walls: list[float] = []
-    peak: int | None = None
-    verdict = 'OK'
-    detail = None
-    for _ in range(max(1, repeats)):
-        remaining_ms = int((deadline - time.monotonic()) * 1000)
-        if remaining_ms < 200:
-            verdict, detail = 'BUDGET_EXHAUSTED', '总预算已用完'
-            break
-        limit = min(wall_limit_ms, remaining_ms)
-        try:
-            code, output, timed_out, usage = _run_once(tool, workdir, rung.input_text, limit, gate)
-        except judge_local.InfrastructureError as error:
-            return RungOutcome(n=rung.n, walls_ms=walls, peak_rss_kib=peak,
-                               verdict='INFRASTRUCTURE', detail=str(error))
-        observed = _peak_rss_kib(usage)
-        if observed is not None:
-            peak = observed if peak is None else max(peak, observed)
-        walls.append(_last_elapsed[0])
-        if timed_out:
-            verdict, detail = 'TIME_LIMIT_EXCEEDED', f'{limit} ms 内未结束'
-            break
-        if code not in (0, None):
-            verdict, detail = 'RUNTIME_ERROR', f'退出码 {code}'
-            break
-    del seed
-    return RungOutcome(n=rung.n, walls_ms=walls, peak_rss_kib=peak, verdict=verdict, detail=detail)

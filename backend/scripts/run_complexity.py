@@ -1,9 +1,9 @@
 """Complexity analysis worker.
 
-Claims PENDING complexity reports, runs the measured size ladder outside the
-transaction, and writes the verdict back under the same lease fencing the judge
-uses. Kept as a separate process from the code judge so an expensive measurement
-never delays a student's verdict.
+Claims PENDING complexity reports, collects the execution trace of the submission
+on the problem's size ladder outside the transaction, and writes the verdict back
+under the same lease fencing the judge uses. Kept as a separate process from the
+code judge so trace collection never delays a student's verdict.
 """
 import argparse
 import json
@@ -19,7 +19,8 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--watch', action='store_true', help='持续运行，直到 Ctrl+C')
     parser.add_argument('--limit', type=int, default=20)
-    parser.add_argument('--static-only', action='store_true', help='只做结构分析，不执行测量')
+    parser.add_argument('--no-trace', action='store_true',
+                        help='不采集轨迹，只把报告标成 NOT_MEASURABLE（用于排障）')
     parser.add_argument('--recover', action='store_true', help='立即回收过期租约后退出')
     args = parser.parse_args(argv)
     if not 1 <= args.limit <= 1000:
@@ -36,7 +37,7 @@ def main(argv=None) -> int:
             with Session(engine) as db:
                 worked = 0
                 for _ in range(args.limit):
-                    if not complexity_service.process_one(db, measure=not args.static_only):
+                    if not complexity_service.process_one(db, measure=not args.no_trace):
                         break
                     worked += 1
             processed += worked

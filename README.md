@@ -114,16 +114,16 @@ Remove-Item Env:DB_NAME
 
 分析批次、快照、任务与结果记录（pg0006 起），与既有JUDGE队列分开。15插件契约与23步骤，六条合成链路可运行，真实缺输入明确等待；真实互评与正式成绩发布仍待接入。
 
-同题相似检测与已通过代码的复杂度分析已接入（pg0007，30业务表）：
+同题相似检测与已通过代码的复杂度分析已接入（复杂度分析迁移 head 到 pg0009，30业务表）：
 
 ```powershell
 ..\.venv\Scripts\python.exe -m alembic upgrade head
 ..\.venv\Scripts\python.exe -m scripts.seed_complexity_profiles
 ..\.venv\Scripts\python.exe -m scripts.run_analysis --watch      # 相似批次
-..\.venv\Scripts\python.exe -m scripts.run_complexity --watch    # 复杂度测量
+..\.venv\Scripts\python.exe -m scripts.run_complexity --watch    # 复杂度轨迹采集
 ```
 
-复杂度测量会真实执行学生代码，与评测一样只适合受控开发环境，没有 Linux 沙箱。见[相似检测](docs/design/analysis/code-similarity.md)、[复杂度分析](docs/design/analysis/complexity.md)、[算法实验报告](docs/design/analysis/algorithm-experiments.md)。真实 HTTP 冒烟：`scripts/smoke_similarity_complexity_http.py`。
+复杂度分析会真实执行学生代码、采集执行轨迹计数并推断增长类别（不再测墙钟时间）；与评测一样只适合受控开发环境，没有 Linux 沙箱。见[相似检测](docs/design/analysis/code-similarity.md)、[执行轨迹计数与递推推断](docs/design/analysis/complexity-trace.md)、[2026-10-29 轨迹实验记录](docs/implementation/evidence/similarity-complexity/2026-10-29-trace-experiments.md)。真实 HTTP 冒烟：`scripts/smoke_similarity_complexity_http.py`。
 
 逐段演示见[运行手册](docs/implementation/runbooks/analysis-setup.md)、[黑盒输入输出](docs/design/analysis/black-boxes.md)和[4K会议图](docs/assets/diagrams/analysis/README.md)。原生Windows支持API/MOCK/分析，当前POSIX LOCAL启动门不支持原生Windows。原生Windows支持API/MOCK/分析，当前POSIX LOCAL启动门不支持原生Windows。
 

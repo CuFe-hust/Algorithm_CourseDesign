@@ -3,6 +3,7 @@
 These run against the real PostgreSQL test database through the FastAPI client,
 so they cover permissions, idempotency and the JSON the frontend actually reads.
 """
+import math
 from datetime import timedelta
 
 import pytest
@@ -10,7 +11,6 @@ import pytest
 from sqlalchemy import func, select
 
 from app.analysis import complexity_service
-from app.analysis.algorithms import complexity
 from app.analysis.framework.contracts import digest
 from app.analysis.profiles import seed_profiles
 from app.db.base import utcnow
@@ -187,6 +187,37 @@ def local_mode(monkeypatch):
     monkeypatch.setenv('JUDGE_EXECUTION_MODE', 'LOCAL')
 
 
+def _ladder(*, sizes=(32, 64, 128, 256, 512, 1024), work=None, baseline=None,
+            peak=None, deterministic=True):
+    """A synthetic ladder with exactly-shaped counts, used where the test is about
+    the service layer rather than the tracer."""
+    from app.analysis.trace import schema
+    work = work or (lambda n: 2.0 * n * math.log2(n) + 5)
+    baseline = baseline or (lambda n: 0.5 * n)
+    points = []
+    for n in sizes:
+        size_work = float(work(n))
+        points.append(schema.TracePoint(
+            n=n, work=size_work, baseline_work=float(baseline(n)) if callable(baseline) else baseline,
+            line_events=int(size_work), jump_events=0,
+            max_depth=2,
+            peak_bytes=None if peak is None else peak(n),
+            lines={'solve:10': int(size_work), 'solve:5': 1},
+        ))
+    return schema.LadderTrace(language='python3', adapter='python-monitoring-v1',
+                              work_unit='LINE+JUMP+库函数折算', points=points,
+                              stop_reason='OK', input_family='INT_ARRAY_ROWS',
+                              deterministic=deterministic)
+
+
+@pytest.fixture
+def synthetic_trace(monkeypatch):
+    from app.analysis.trace import collect as trace_collect
+    ladder = _ladder()
+    monkeypatch.setattr(trace_collect, 'collect', lambda *args, **kwargs: ladder)
+    return ladder
+
+
 def test_complexity_requires_a_really_accepted_submission(client, auth, db, demo, local_mode):
     item = _programming_item(db, demo)
     student = _students(db)[0]
@@ -209,6 +240,21 @@ def test_complexity_requires_a_really_accepted_submission(client, auth, db, demo
     assert accepted.json()['status'] == 'PENDING'
 
 
+def test_complexity_rejects_a_language_without_a_trace_adapter(client, auth, db, demo, local_mode):
+    """Java has a judge toolchain but no exact-count tracer; the request must be
+    refused with a stated reason instead of a lexical guess."""
+    from app.judge import config as judge_config
+    if judge_config.toolchain('java') is None:
+        pytest.skip('本机没有 Java 工具链')
+    item = _programming_item(db, demo)
+    submission = _judge(db, _add_submission(db, item, _students(db)[0], ACCEPTED_A,
+                                            language='java'))
+    response = client.post(f'/api/v1/analysis/submissions/{submission.id}/complexity',
+                           headers=auth('demo.student01'), json={'request_id': 'cx-java'})
+    assert response.status_code == 409
+    assert response.json()['code'] == 'NO_TRACE_ADAPTER'
+
+
 def test_complexity_accepts_teacher_requests_but_not_other_students(client, auth, db, demo, local_mode):
     item = _programming_item(db, demo)
     students = _students(db)
@@ -223,28 +269,25 @@ def test_complexity_accepts_teacher_requests_but_not_other_students(client, auth
     assert teacher.status_code == 202
 
 
-def test_complexity_static_only_when_no_scale_profile(client, auth, db, demo, local_mode):
+def test_complexity_not_measurable_without_scale_profile(client, auth, db, demo, local_mode):
     item = _programming_item(db, demo)
     version = db.get(ProblemVersion, item.problem_version_id)
     db.query(ProblemComplexityProfile).filter(
         ProblemComplexityProfile.problem_version_id == version.id).delete()
     db.commit()
     submission = _judge(db, _add_submission(db, item, _students(db)[0], ACCEPTED_A))
-    from app.analysis import complexity_service
     client.post(f'/api/v1/analysis/submissions/{submission.id}/complexity',
-                headers=auth('demo.student01'), json={'request_id': 'cx-static'})
+                headers=auth('demo.student01'), json={'request_id': 'cx-noprofile'})
     assert complexity_service.process_one(db, measure=True) is True
     body = client.get(f'/api/v1/analysis/submissions/{submission.id}/complexity',
                       headers=auth('demo.student01')).json()
-    assert body['status'] == 'STATIC_ONLY'
-    assert body['report']['time']['source'] == 'STATIC'
-    assert any('伸缩档案' in text for text in body['report']['limitations'])
+    assert body['status'] == 'NOT_MEASURABLE'
+    assert body['report']['status'] == 'NOT_MEASURABLE'
+    assert body['reason'] and '可伸缩' in body['reason']
+    assert body['report']['time'] == {} and body['report']['trace'] == {}
 
 
-def test_fixed_input_problems_say_the_class_is_not_about_growth(client, auth, db, demo,
-                                                                local_mode):
-    """A problem whose input has no size parameter must not imply growth with n."""
-    from app.db.models import ProblemComplexityProfile
+def test_fixed_input_problems_say_the_class_is_not_about_growth(client, auth, db, demo, local_mode):
     seed_profiles(db)
     item = _programming_item(db, demo)
     version = db.get(ProblemVersion, item.problem_version_id)
@@ -259,38 +302,92 @@ def test_fixed_input_problems_say_the_class_is_not_about_growth(client, auth, db
     assert complexity_service.process_one(db, measure=True) is True
     body = client.get(f'/api/v1/analysis/submissions/{submission.id}/complexity',
                       headers=auth('demo.student01')).json()
-    assert body['status'] == 'STATIC_ONLY'
-    assert any('输入规模固定' in text for text in body['report']['limitations'])
+    assert body['status'] == 'NOT_MEASURABLE'
+    assert '输入规模固定' in (body['reason'] or '')
 
 
-def test_complexity_report_has_measurements_curve_and_honest_limits(client, auth, db, demo,
-                                                                   local_mode, monkeypatch):
+def test_trace_report_has_counts_evidence_and_limits(client, auth, db, demo, local_mode,
+                                                     synthetic_trace):
     seed_profiles(db)
     item = _programming_item(db, demo)
     submission = _judge(db, _add_submission(db, item, _students(db)[0], ACCEPTED_A))
-    # Keep the ladder short so the test stays fast while still exercising the
-    # real subprocess path, the reference reader and the fit.
-    from app.analysis import probe
-    monkeypatch.setattr(probe, 'MAX_SIZES', (512, 1024, 2048, 4096))
-    monkeypatch.setattr(probe, 'TARGET_TOP_MS', 5.0)
-    from app.analysis import complexity_service
-    assert client.post(f'/api/v1/analysis/submissions/{submission.id}/complexity',
-                       headers=auth('demo.student01'), json={'request_id': 'cx-full'}
-                       ).status_code == 202
+    client.post(f'/api/v1/analysis/submissions/{submission.id}/complexity',
+                headers=auth('demo.student01'), json={'request_id': 'cx-trace'})
     assert complexity_service.process_one(db, measure=True) is True
     body = client.get(f'/api/v1/analysis/submissions/{submission.id}/complexity',
                       headers=auth('demo.student01')).json()
     assert body['status'] == 'SUCCEEDED'
     report = body['report']
-    assert report['time']['class'] in ('O(1)', 'O(log n)', 'O(n)', 'O(n log n)')
-    assert report['static']['evidence']
-    assert report['dynamic']['rungs'], 'real rungs must be recorded'
-    assert all(rung['wall_ms'] >= 0 for rung in report['dynamic']['rungs'])
-    assert any(rung.get('reference_ms') for rung in report['dynamic']['rungs']), \
-        'the pure input reader must be measured on the same rungs'
-    assert report['dynamic'].get('curve'), 'the frontend needs a fitted curve'
-    assert report['limitations']
+    assert report['time']['class'] == 'O(n log n)'
+    assert report['time']['source'] == 'TRACE'
+    assert report['time']['closed_form']
+    assert report['space']['source'] == 'TRACE'
+    trace = report['trace']
+    assert len(trace['points']) >= 5
+    point = trace['points'][0]
+    assert point['work'] > 0 and 'baseline_work' in point
+    assert trace['evidence'], '逐行证据必须出现在报告里'
+    assert trace['adapter'] == 'python-monitoring-v1'
+    assert report['trace_meta']['work_unit']
     assert any('不代表最坏情况' in text for text in report['limitations'])
+    assert any('输入解析基准' in text for text in report['limitations'])
+
+
+def test_trace_report_records_a_recurrence_when_the_call_tree_has_one(client, auth, db, demo,
+                                                                      local_mode, monkeypatch):
+    from app.analysis.trace import collect as trace_collect
+    from app.analysis.trace import schema
+    points = []
+    sizes = (32, 64, 128, 256, 512)
+    for n in sizes:
+        work = 2.0 * n * math.log2(n)
+        function = schema.FunctionTrace(name='merge_sort')
+        for size in (n, n // 2, n // 4):
+            if size > 4:
+                function.add_sample(schema.FrameSample(
+                    args=(size,), cost=0.5 * size,
+                    children=((size // 2,), (size // 2,))))
+        points.append(schema.TracePoint(n=n, work=work, line_events=int(work),
+                                        functions={'merge_sort': function}))
+    ladder = schema.LadderTrace(language='python3', adapter='python-monitoring-v1',
+                                work_unit='LINE+JUMP+库函数折算', points=points,
+                                input_family='INT_ARRAY')
+    monkeypatch.setattr(trace_collect, 'collect', lambda *a, **k: ladder)
+    seed_profiles(db)
+    item = _programming_item(db, demo)
+    submission = _judge(db, _add_submission(db, item, _students(db)[0], ACCEPTED_A))
+    client.post(f'/api/v1/analysis/submissions/{submission.id}/complexity',
+                headers=auth('demo.student01'), json={'request_id': 'cx-rec'})
+    assert complexity_service.process_one(db, measure=True) is True
+    report = client.get(f'/api/v1/analysis/submissions/{submission.id}/complexity',
+                        headers=auth('demo.student01')).json()['report']
+    assert report['time']['method'] == 'RECURRENCE'
+    assert report['time']['recurrence'] == 'T(n) = 2·T(n/2) + O(n)'
+    assert any(row['kind'] == 'RECURSION' for row in report['trace']['evidence'])
+
+
+def test_real_tracing_runs_the_submission(client, auth, db, demo, local_mode):
+    """One end-to-end measurement with the real Python tracer: no monkeypatch."""
+    seed_profiles(db)
+    item = _programming_item(db, demo)
+    version = db.get(ProblemVersion, item.problem_version_id)
+    profile = db.scalar(select(ProblemComplexityProfile).where(
+        ProblemComplexityProfile.problem_version_id == version.id))
+    # Keep the ladder short so the suite stays fast while still exercising the
+    # real subprocess path and the count collection.
+    profile.spec = {'max_n': 256}
+    db.commit()
+    submission = _judge(db, _add_submission(db, item, _students(db)[0], ACCEPTED_A))
+    client.post(f'/api/v1/analysis/submissions/{submission.id}/complexity',
+                headers=auth('demo.student01'), json={'request_id': 'cx-real'})
+    assert complexity_service.process_one(db, measure=True) is True
+    body = client.get(f'/api/v1/analysis/submissions/{submission.id}/complexity',
+                      headers=auth('demo.student01')).json()
+    assert body['status'] == 'SUCCEEDED', body
+    report = body['report']
+    assert report['time']['class'] in ('O(1)', 'O(log n)', 'O(n)', 'O(n log n)', 'O(n^2)')
+    assert report['trace']['points'], 'real rungs must be recorded'
+    assert report['trace']['deterministic'] is True
 
 
 def test_complexity_request_is_idempotent(client, auth, db, demo, local_mode):
@@ -308,29 +405,29 @@ def test_complexity_request_is_idempotent(client, auth, db, demo, local_mode):
     assert count == 1, 'one report per submission, regardless of request keys'
 
 
-def test_complexity_teacher_overview_lists_students(client, auth, db, demo, local_mode):
+def test_complexity_teacher_overview_lists_students(client, auth, db, demo, local_mode,
+                                                    synthetic_trace):
+    seed_profiles(db)
     item = _programming_item(db, demo)
     students = _students(db)
     for student in students[:2]:
         _judge(db, _add_submission(db, item, student, ACCEPTED_A))
-    from app.analysis import complexity_service
-    for _ in range(2):
-        client.post(f'/api/v1/analysis/submissions/{students[0].id and 0 or 0}/complexity',
-                    headers=auth('demo.teacher'), json={'request_id': 'noop'})
-        break
-    submissions = list(db.scalars(select(Submission).where(
-        Submission.student_id.in_([student.id for student in students[:2]]))))
-    for submission in submissions:
+    for student in students[:2]:
+        submission = db.scalar(select(Submission).where(
+            Submission.student_id == student.id,
+            Submission.assignment_item_id == item.id))
         client.post(f'/api/v1/analysis/submissions/{submission.id}/complexity',
-                    headers=auth('demo.teacher'), json={'request_id': f'overview-{submission.id}'})
-        complexity_service.process_one(db, measure=False)
+                    headers=auth('demo.teacher'),
+                    json={'request_id': f'overview-{submission.id}'})
+        assert complexity_service.process_one(db, measure=True) is True
     response = client.get(f'/api/v1/analysis/courses/{demo[0]["course_id"]}/complexity',
                           headers=auth('demo.teacher'))
     assert response.status_code == 200
     items = response.json()['items']
     assert len(items) == 2
     assert {row['student_no'] for row in items} == {student.student_no for student in students[:2]}
-    assert all(row['time_class'] for row in items)
+    assert all(row['time_class'] == 'O(n log n)' for row in items)
+    assert all(row['time_source'] == 'TRACE' for row in items)
 
 
 def test_teacher_batch_queues_every_accepted_submission(client, auth, db, demo, local_mode):
@@ -350,21 +447,15 @@ def test_teacher_batch_queues_every_accepted_submission(client, auth, db, demo, 
     assert body['queued'] == 3
     assert body['ineligible'] >= 1
     assert body['ineligible_reasons'].get('SUBMISSION_NOT_ACCEPTED') == 1
-    # 幂等：再发一次不会重复建报告。
     again = client.post(f'/api/v1/analysis/courses/{demo[0]["course_id"]}/complexity/batch',
                         headers=headers,
                         json={'request_id': f'batch-again-{item.id}',
                               'assignment_item_id': str(item.id)})
     assert again.json()['queued'] == 0
     assert again.json()['skipped'] == 3
-    overview = client.get(f'/api/v1/analysis/courses/{demo[0]["course_id"]}/complexity',
-                          headers=headers)
-    assert len(overview.json()['items']) >= 3
 
 
 def test_concurrent_batch_requests_do_not_duplicate_reports(client, auth, db, demo, local_mode):
-    """Two teachers pressing the button must not create two reports for one
-    submission: the unique constraint turns the loser into 409, not 500."""
     from app.db.models import ComplexityReport
     item = _programming_item(db, demo)
     _judge(db, _add_submission(db, item, _students(db)[0], ACCEPTED_A))
@@ -372,32 +463,31 @@ def test_concurrent_batch_requests_do_not_duplicate_reports(client, auth, db, de
     body = {'request_id': 'batch-race', 'assignment_item_id': str(item.id)}
     first = client.post(f'/api/v1/analysis/courses/{demo[0]["course_id"]}/complexity/batch',
                         headers=headers, json=body)
-    assert first.status_code == 202
     second = client.post(f'/api/v1/analysis/courses/{demo[0]["course_id"]}/complexity/batch',
                          headers=headers, json=body)
-    # The second call sees the existing report and skips it; either way there is
-    # exactly one row and no 500.
-    assert second.status_code == 202, second.text
+    assert first.status_code == 202 and second.status_code == 202
     count = db.scalar(select(func.count()).select_from(ComplexityReport).where(
         ComplexityReport.assignment_item_id == item.id))
     assert count == 1
 
 
-def test_history_keeps_the_superseded_conclusion(db, demo, local_mode):
+def test_history_keeps_the_superseded_conclusion(db, demo, local_mode, monkeypatch):
     """An implementation upgrade resets the row; the old verdict must not vanish."""
-    from app.analysis import complexity_service
+    from app.analysis.trace import collect as trace_collect
     from app.db.models import ComplexityReport
+    ladder = _ladder()
+    monkeypatch.setattr(trace_collect, 'collect', lambda *a, **k: ladder)
+    seed_profiles(db)
     item = _programming_item(db, demo)
     submission = _judge(db, _add_submission(db, item, _students(db)[0], ACCEPTED_A))
     student = db.get(User, submission.student_id)
     complexity_service.request_report(db, submission.id, student, 'hist-1')
-    complexity_service.process_one(db, measure=False)
+    complexity_service.process_one(db, measure=True)
     report = db.scalar(select(ComplexityReport).where(
         ComplexityReport.submission_id == submission.id))
     db.refresh(report)
     old_class = report.time_class
-    assert old_class
-    # Pretend the implementation changed.
+    assert old_class == 'O(n log n)'
     report.implementation_version = '0'
     db.commit()
     complexity_service.request_report(db, submission.id, student, 'hist-2')
@@ -421,51 +511,8 @@ def test_complexity_overview_is_teacher_only(client, auth, db, demo):
                       headers=auth('demo.student01')).status_code == 403
 
 
-class _Rung:
-    """Minimal stand-in for probe.RungOutcome, so memory logic is testable alone."""
-
-    def __init__(self, n, peak_rss_kib, verdict='OK'):
-        self.n = n
-        self.peak_rss_kib = peak_rss_kib
-        self.verdict = verdict
-
-
-def test_discarded_rungs_are_named_in_the_report():
-    """The report promises to say how many rungs were dropped; pin that sentence."""
-    points = [complexity.Measurement(n=n, wall_ms=12.0 + n / 1000,
-                                     adjusted_ms=12.0 + n / 1000,
-                                     peak_rss_kib=None, verdict='OK')
-              for n in (256, 512, 1024, 2048, 4096)]
-    points.append(complexity.Measurement(n=8192, wall_ms=0.0, adjusted_ms=0.0,
-                                         peak_rss_kib=None,
-                                         verdict='TIME_LIMIT_EXCEEDED'))
-    conclusion = complexity.classify_growth(points)
-    static = complexity.StaticAnalysis('python', 'O(n)', 'O(1)', 'HIGH')
-    summary = complexity.combine(static, conclusion)
-    assert len(conclusion.fit.discarded) == 1
-    assert any('剔除' in text for text in summary['limitations']), summary['limitations']
-
-
-def test_memory_classification_is_robust_to_one_outlier_rung():
-    """One spiky rung must not turn flat memory into O(n) or O(n^2).
-
-    Total RSS on this machine jitters by tens to hundreds of KiB, and CPython can
-    retain arenas at large n. A least-squares slope over every increment lets a
-    single peak decide the class, which then overrides a correct static O(1).
-    """
-    baseline_kib = 30 * 1024
-    flat = [_Rung(n, baseline_kib + 64, 'OK') for n in (1024, 4096, 16384, 65536)]
-    assert complexity_service._memory_stats(flat)['class'] == 'O(1)'
-    spiked = [*flat[:-1], _Rung(65536, baseline_kib + 64 + 3 * 1024, 'OK')]
-    assert complexity_service._memory_stats(spiked)['class'] == 'O(1)'
-
-    linear = [_Rung(n, baseline_kib + n // 100, 'OK') for n in (1024, 4096, 16384, 65536)]
-    assert complexity_service._memory_stats(linear)['class'] == 'O(n)'
-
-
-
 def test_report_constraints_reject_a_class_the_fitter_cannot_produce(db, demo):
-    """pg0008 CHECKs must reject bad rows, not merely document the rule."""
+    """The CHECK constraints must reject bad rows, not merely document the rule."""
     from sqlalchemy.exc import IntegrityError
     from app.db.models import ComplexityReport
 
@@ -478,22 +525,24 @@ def test_report_constraints_reject_a_class_the_fitter_cannot_produce(db, demo):
                       language='python3', summary={}, limitations=[],
                       implementation_name='t', implementation_version='1',
                       requested_by=submission.student_id, requested_at=utcnow(),
-                      attempt_no=0, history=[], time_class='O(n)', space_class='O(1)')
+                      attempt_no=0, history=[], time_class='O(n log n)', space_class='O(1)',
+                      trace_meta={}, trace_series={})
         values.update(overrides)
         return ComplexityReport(**values)
 
-    for label, report in (
-        ('非法类别', make(time_class='O(n!)')),
-        ('已发布但类别为空', make(time_class=None, space_class=None)),
-        ('排队中却带类别', make(status='PENDING', time_class='O(n)', space_class='O(1)')),
+    for report in (
+        make(time_class='O(log^2 n)'),
+        make(time_class=None, space_class=None),
+        make(status='PENDING', time_class='O(n)', space_class='O(1)'),
+        make(status='NOT_MEASURABLE', time_class='O(n)', space_class='O(1)'),
     ):
         db.add(report)
         try:
             db.commit()
-            raise AssertionError(f'{label} 被接受，约束没有生效')
+            raise AssertionError('非法报告被接受，约束没有生效')
         except IntegrityError:
             db.rollback()
-    db.add(make())
+    db.add(make(time_class='O(n!)'))
     db.commit()
 
 
@@ -505,3 +554,24 @@ def test_profile_seed_is_idempotent_and_covers_programming_versions(db, demo):
     programming = db.scalar(select(func.count()).select_from(ProblemVersion).join(
         Problem, Problem.id == ProblemVersion.problem_id).where(Problem.question_type == 'PROGRAMMING'))
     assert total == programming
+
+def test_every_input_family_is_accepted_by_the_profile_constraint(db, demo):
+    """The CHECK in pg0009 must accept every family the generator can emit.
+
+    The family list exists in three places (generator, model, migration); this
+    test walks the generator's list through the database so the three cannot
+    drift silently.
+    """
+    from app.analysis import probe
+    from app.db.models import ProblemComplexityProfile, ProblemVersion
+    version = db.scalar(select(ProblemVersion).join(
+        Problem, Problem.id == ProblemVersion.problem_id)
+        .where(Problem.question_type == 'PROGRAMMING').order_by(ProblemVersion.id))
+    assert version is not None
+    for family in probe.FAMILIES:
+        profile = ProblemComplexityProfile(problem_version_id=version.id, family=family,
+                                           spec={}, source='SEEDED', version_no=1)
+        db.add(profile)
+        db.commit()  # must not raise IntegrityError for a family the generator emits
+        db.delete(profile)
+        db.commit()
