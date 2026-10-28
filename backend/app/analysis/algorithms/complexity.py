@@ -1173,10 +1173,18 @@ def combine(static: StaticAnalysis, dynamic: DynamicConclusion,
         time_confidence = static.confidence
         if dynamic.measured_class != 'UNKNOWN':
             if not dynamic.informative:
+                # io_class can be UNKNOWN while the per-rung ratios still say the
+                # program never outran the reader; the wording must not claim a
+                # comparison the reader fit could not make.
+                if dynamic.io_class != 'UNKNOWN':
+                    reason = (f'实测总时间与纯输入读取（{dynamic.io_class}）同阶或更低，'
+                              '被测程序没有明显超过读取输入的开销')
+                else:
+                    reason = ('多数档位的实测耗时没有明显超过纯输入读取开销'
+                              '（不足其 1.5 倍），增长信号仍被读输入掩盖')
                 limitations.append(
-                    f'实测总时间增长约为 {dynamic.measured_class}，与纯输入读取（{dynamic.io_class}）'
-                    '同阶或更低；被测程序没有明显超过读取输入的开销，因此实测只能给出上界，'
-                    f'时间结论以代码结构分析（{static.time_class}）为准')
+                    f'实测总时间增长约为 {dynamic.measured_class}，{reason}；'
+                    f'因此实测只能给出上界，时间结论以代码结构分析（{static.time_class}）为准')
             else:
                 limitations.append(
                     f'实测增长 {dynamic.measured_class} 的置信度偏低（R²={dynamic.r2:.3f}），'

@@ -128,8 +128,19 @@ def request_report(db: Session, submission_id: int, actor: User,
             existing.implementation_name = IMPLEMENTATION_NAME
             existing.implementation_version = IMPLEMENTATION_VERSION
             existing.status = 'PENDING'
+            # The verdict columns belong to the superseded run; the CHECK on
+            # status/class consistency caught this when it was left behind, and
+            # a queued row must not keep publishing the old class anyway.
+            existing.time_class = None
+            existing.space_class = None
+            existing.time_confidence = None
+            existing.space_confidence = None
+            existing.time_source = None
+            existing.summary = {}
+            existing.limitations = []
             existing.error_message = None
             existing.finished_at = None
+            existing.lease_expires_at = None
             existing.attempt_no = 0
             existing.requested_by = actor.id
             existing.requested_at = utcnow()

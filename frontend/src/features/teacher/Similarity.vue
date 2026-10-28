@@ -376,7 +376,9 @@ onMounted(async () => {
             <div class="cluster-list">
               <p class="hint cluster-hint">
                 相似簇按连通性归组，不保证两两都相似：达标 X/Y 表示簇内有 X
-                对达到阈值，链式归组也会出现，请点开逐对核对。
+                对达到阈值，其余 X−Y
+                对未达标（可能只隔一个中间人），请点开逐对核对。
+                达标边最低只统计达到阈值的那几对。
               </p>
               <button
                 v-for="(cluster, index) in currentItem.clusters"
@@ -400,7 +402,7 @@ onMounted(async () => {
                   }}
                   · 最高 {{ percent(cluster.max_similarity) }}
                   <template v-if="cluster.min_similarity">
-                    · 最低 {{ percent(cluster.min_similarity) }}</template
+                    · 达标边最低 {{ percent(cluster.min_similarity) }}</template
                   >
                 </span>
               </button>

@@ -205,7 +205,10 @@ it("labels a chain-shaped cluster and states qualifying pairs", async () => {
   );
   expect(host.textContent).toContain("链式");
   expect(host.textContent).toContain("达标 2/3");
-  expect(host.textContent).toContain("最低 55.2%");
+  // Only qualifying edges are summarised; the pair that never reached the
+  // threshold is the weakest one and is not reflected in this number.
+  expect(host.textContent).toContain("达标边最低 55.2%");
+  expect(host.textContent).toContain("其余 X−Y 对未达标");
 });
 
 it("reports the language mix when submissions span languages", async () => {

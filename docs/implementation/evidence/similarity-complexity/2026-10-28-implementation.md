@@ -20,10 +20,10 @@
 
 ## 2. 自动验证
 
-后端 `python -m pytest -q`：**234 passed**（基线 156，新增 78）。其中：
+后端 `python -m pytest -q`：**238 passed**（基线 156，新增 82）。其中：
 
 - `tests/test_similarity_algorithm.py`：62 项，含倒排索引与朴素集合求交的 12 组随机对拍、6 个类别的无噪声还原、降阶规则的残差级验证、log 因子三对的双向合并用例。
-- `tests/test_similarity_and_complexity_api.py`：17 项，真实 PostgreSQL + FastAPI TestClient。
+- `tests/test_similarity_and_complexity_api.py`：20 项，真实 PostgreSQL + FastAPI TestClient。
 - `tests/test_migrations.py` 更新为 pg0007、30 张业务表。
 
 有两处已知的偶发失败：`tests/test_judge_scheduler.py::test_service_pause_keeps_jobs_queued_and_resumes_after_switch` 在完整套件里偶发失败一次（单独运行与随后两次完整运行均通过）。`tests/test_judge_local.py::test_cpp_local_execution` 在完整套件里也偶发失败一次（单独运行与随后两次完整运行均通过）。这两个测试都属评测调度与本地执行，与本轮改动无关，也未修改；记录在此避免把它们误当成稳定现象。
@@ -128,6 +128,25 @@ headless Chrome 1440×1000 实跑：
 | 剩余不足 1 小时显示「剩余约 0 小时」 | `remainingLabel` 覆盖 <1 小时边界，与作业详情句式一致 |
 | 草稿「尚未开始作答」与「已恢复第 N 版」同屏矛盾 | 改「没有未保存的修改」 |
 | 「恢复周期」空值渲染成 0 | 显示「—」 |
+
+## 5.8 方案修正的自验记录
+
+原计划由两个复核智能体分别验证各自领域的修复，但两者都在长任务中中断（本会话长期智能体的已知问题）。改由 Lead 逐项实测，结果如下。
+
+| 验证项 | 方法 | 结果 |
+|---|---|---|
+| informative 四条边界 | 构造测量数据 | 无基线→True、三档≥1.5→True、仅两档→False、全贴基线→False |
+| 六组自洽性 | 用 rungs 的 io_ratio 重算 | 6/6 与 `informative` 一致（O1 0 档、On 0 档、Onlog 3 档、On2 4 档、On3 2 档） |
+| **新误判方向**（最担心的） | 真实 probe 跑一个常数极小的 O(n²) 程序 | 逐档 ratio 1.0/1.21/1.17/1.85/3.81 → 仅 2 档达标 → informative=False → 回落静态 O(n²)，**结论正确** |
+| pg0008 CHECK 真的生效 | 直接 INSERT 非法类别 / 已发布空类别 / 排队带类别 | 三种全部被拒绝，合法行通过 |
+| **约束抓到我自己的 bug** | 跑 history 归档测试 | 版本重置把 status 改回 PENDING 却没清空旧类别 → 违反 `ck_cr_status_class`。已修（同时清空类别/置信度/来源） |
+| 批量并发 | 连续两次 POST | 第二次跳过已有报告，`submission_id` 唯一约束下无重复行、无 500 |
+| history 归档 | 模拟实现版本升级 | 旧结论进 `history[-1].time_class`，行回到 PENDING |
+| 旧批次兼容 | 真实浏览器开 batch 7（无新字段） | 正常渲染，缺值显示 "—"，无 NaN/undefined |
+| 新标注 | 真实浏览器开 batch 22 | 弱证据标注出现、记号数可见 |
+| 学生端 7 项修复 | 真实浏览器 390/1440 | 中文日期、无美式日期、无裸枚举、无 undefined、复杂度面板仍在、无 pageerror |
+
+约束抓到实现 bug 这件事本身说明"把规则写成数据库约束"比"写在文档里"有效：这类不一致靠人眼审是看不出来的。
 
 ## 6. 独立审核发现并修好的问题
 

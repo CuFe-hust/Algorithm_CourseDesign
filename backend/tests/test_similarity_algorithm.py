@@ -795,6 +795,24 @@ def test_fit_needs_five_rungs_before_it_claims_medium_confidence():
     assert complexity.fit_growth(five, floor_ms=12.0).confidence in ('MEDIUM', 'HIGH')
 
 
+def test_upper_bound_wording_does_not_claim_an_unknown_reader_class():
+    """When ratios are low but the reader fit never produced a class, the report
+    must not say "same class as the reader (UNKNOWN)"."""
+    static = complexity.StaticAnalysis(language_family='python', time_class='O(n^2)',
+                                       space_class='O(1)', confidence='HIGH')
+    fit = complexity.GrowthFit('O(n log n)', 0.95, 1.1, 0.0001,
+                               [{'n': 256}], [], 'MEDIUM')
+    dynamic = complexity.DynamicConclusion(
+        measured_class='O(n log n)', io_class='UNKNOWN', informative=False, r2=0.95,
+        exponent=1.1, confidence='MEDIUM', floor_ms=12.0, fit=fit,
+        reference_fit=None, accounting=[])
+    summary = complexity.combine(static, dynamic)
+    text = ' '.join(summary['limitations'])
+    assert summary['time']['class'] == 'O(n^2)'
+    assert '1.5 倍' in text
+    assert 'UNKNOWN' not in text
+
+
 def test_combine_does_not_claim_a_class_the_measurement_cannot_separate():
     """A binary search measures the same as input parsing; only structure can tell."""
     static = complexity.StaticAnalysis(language_family='python', time_class='O(log n)',

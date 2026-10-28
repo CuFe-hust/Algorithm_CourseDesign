@@ -362,6 +362,51 @@ def test_teacher_batch_queues_every_accepted_submission(client, auth, db, demo, 
     assert len(overview.json()['items']) >= 3
 
 
+def test_concurrent_batch_requests_do_not_duplicate_reports(client, auth, db, demo, local_mode):
+    """Two teachers pressing the button must not create two reports for one
+    submission: the unique constraint turns the loser into 409, not 500."""
+    from app.db.models import ComplexityReport
+    item = _programming_item(db, demo)
+    _judge(db, _add_submission(db, item, _students(db)[0], ACCEPTED_A))
+    headers = auth('demo.teacher')
+    body = {'request_id': 'batch-race', 'assignment_item_id': str(item.id)}
+    first = client.post(f'/api/v1/analysis/courses/{demo[0]["course_id"]}/complexity/batch',
+                        headers=headers, json=body)
+    assert first.status_code == 202
+    second = client.post(f'/api/v1/analysis/courses/{demo[0]["course_id"]}/complexity/batch',
+                         headers=headers, json=body)
+    # The second call sees the existing report and skips it; either way there is
+    # exactly one row and no 500.
+    assert second.status_code == 202, second.text
+    count = db.scalar(select(func.count()).select_from(ComplexityReport).where(
+        ComplexityReport.assignment_item_id == item.id))
+    assert count == 1
+
+
+def test_history_keeps_the_superseded_conclusion(db, demo, local_mode):
+    """An implementation upgrade resets the row; the old verdict must not vanish."""
+    from app.analysis import complexity_service
+    from app.db.models import ComplexityReport
+    item = _programming_item(db, demo)
+    submission = _judge(db, _add_submission(db, item, _students(db)[0], ACCEPTED_A))
+    student = db.get(User, submission.student_id)
+    complexity_service.request_report(db, submission.id, student, 'hist-1')
+    complexity_service.process_one(db, measure=False)
+    report = db.scalar(select(ComplexityReport).where(
+        ComplexityReport.submission_id == submission.id))
+    db.refresh(report)
+    old_class = report.time_class
+    assert old_class
+    # Pretend the implementation changed.
+    report.implementation_version = '0'
+    db.commit()
+    complexity_service.request_report(db, submission.id, student, 'hist-2')
+    db.refresh(report)
+    assert report.history, '旧结论必须归档'
+    assert report.history[-1]['time_class'] == old_class
+    assert report.status == 'PENDING'
+
+
 def test_teacher_batch_is_teacher_only(client, auth, db, demo, local_mode):
     item = _programming_item(db, demo)
     response = client.post(f'/api/v1/analysis/courses/{demo[0]["course_id"]}/complexity/batch',
@@ -417,6 +462,39 @@ def test_memory_classification_is_robust_to_one_outlier_rung():
     linear = [_Rung(n, baseline_kib + n // 100, 'OK') for n in (1024, 4096, 16384, 65536)]
     assert complexity_service._memory_stats(linear)['class'] == 'O(n)'
 
+
+
+def test_report_constraints_reject_a_class_the_fitter_cannot_produce(db, demo):
+    """pg0008 CHECKs must reject bad rows, not merely document the rule."""
+    from sqlalchemy.exc import IntegrityError
+    from app.db.models import ComplexityReport
+
+    item = _programming_item(db, demo)
+    submission = _judge(db, _add_submission(db, item, _students(db)[0], ACCEPTED_A))
+
+    def make(**overrides):
+        values = dict(submission_id=submission.id, assignment_item_id=item.id,
+                      student_id=submission.student_id, status='SUCCEEDED',
+                      language='python3', summary={}, limitations=[],
+                      implementation_name='t', implementation_version='1',
+                      requested_by=submission.student_id, requested_at=utcnow(),
+                      attempt_no=0, history=[], time_class='O(n)', space_class='O(1)')
+        values.update(overrides)
+        return ComplexityReport(**values)
+
+    for label, report in (
+        ('非法类别', make(time_class='O(n!)')),
+        ('已发布但类别为空', make(time_class=None, space_class=None)),
+        ('排队中却带类别', make(status='PENDING', time_class='O(n)', space_class='O(1)')),
+    ):
+        db.add(report)
+        try:
+            db.commit()
+            raise AssertionError(f'{label} 被接受，约束没有生效')
+        except IntegrityError:
+            db.rollback()
+    db.add(make())
+    db.commit()
 
 
 def test_profile_seed_is_idempotent_and_covers_programming_versions(db, demo):
