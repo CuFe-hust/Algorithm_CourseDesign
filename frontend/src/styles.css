@@ -2215,3 +2215,44 @@ tr.selected td {
   margin-top: 4px;
   color: #6b7a93;
 }
+
+/* ------------------------------------------------- complexity (teacher view) */
+
+.complexity-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 8px;
+}
+.complexity-controls label {
+  margin-bottom: 0;
+}
+.complexity-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+}
+.complexity-warning svg {
+  flex: none;
+  margin-top: 2px;
+}
+.complexity-empty .button {
+  margin-top: 6px;
+}
+.complexity-reason {
+  max-width: 260px;
+  line-height: 1.55;
+  color: #8b96a8;
+}
+.complexity-hint-line {
+  margin: 14px 24px 20px;
+}
+.complexity-limitations {
+  margin: 0;
+  padding: 18px 24px 22px 42px;
+  font-size: 12px;
+  color: #7a6540;
+}
+.complexity-limitations li {
+  margin: 7px 0;
+}

@@ -123,7 +123,7 @@ class _CostStack:
     def push(self, kind: str) -> None:
         if kind == 'log':
             self.log += 1
-        else:
+        elif kind != 'const':
             self.poly += 1
 
     def pop(self, kind: str) -> None:
@@ -238,7 +238,11 @@ class _PythonVisitor(ast.NodeVisitor):
         self.stack.pop(weight)
 
     def visit_For(self, node: ast.For) -> None:
-        self._visit_loop(node, 'for', 'n')
+        # ``for _ in range(60000)`` is a fixed amount of work however large the
+        # input grows, so it contributes no polynomial factor. Only a bound that
+        # depends on the input counts.
+        weight = 'const' if _constant_iteration(node.iter) else 'n'
+        self._visit_loop(node, 'for', weight)
 
     visit_AsyncFor = visit_For
 
@@ -341,6 +345,27 @@ class _PythonVisitor(ast.NodeVisitor):
                 self._note(node.lineno, '按规模构造二维表', 'MATRIX')
         for child in ast.iter_child_nodes(node):
             self.visit(child)
+
+
+_CONSTANT_ITERABLES = {'range', 'enumerate', 'zip'}
+
+
+def _constant_iteration(iterable: ast.AST) -> bool:
+    """True when a ``for`` target cannot grow with the input size.
+
+    Only literal counts qualify. ``range(10)``, ``range(0, 10)``, ``range(2, 10, 2)``
+    and ``range(len(TEMPLATE))`` over a module-level literal are constant; anything
+    mentioning a variable is treated as input-dependent, which is the conservative
+    choice because a variable bound usually does scale.
+    """
+    if not isinstance(iterable, ast.Call):
+        return False
+    name = _call_name(iterable.func)
+    if name != 'range':
+        return False
+    if not iterable.args or iterable.keywords:
+        return False
+    return all(_is_constant(argument) for argument in iterable.args)
 
 
 def _call_name(func: ast.AST) -> str:
@@ -766,6 +791,19 @@ _EXPECTED_EXPONENT = {'O(1)': 0.0, 'O(log n)': 0.1, 'O(n)': 1.0, 'O(n log n)': 1
                       'O(n^2)': 2.0, 'O(n^2 log n)': 2.15, 'O(n^3)': 3.0, 'O(2^n)': 4.0}
 EXPONENT_TOLERANCE = 0.7
 
+# Two classes whose R^2 differ by less than this are treated as explaining the
+# data equally well. On a short ladder ``n`` and ``n log n`` are almost
+# collinear, so their R^2 usually differ by ~0.001 and the absolute value says
+# nothing about which is right.
+R2_TIE_MARGIN = 0.005
+# Inside a tie, a higher class is only kept when it cuts the *unexplained*
+# variance by enough to pay for one extra parameter. AIC charges 2 units for that
+# parameter, which on m points means a factor of exp(2/m): 1.33 on a 7-rung
+# ladder, 1.17 on a 13-rung one. Deriving it from the ladder length keeps a short
+# ladder from being over-read and a long one from discarding real structure.
+def sse_improvement_fold(point_count: int) -> float:
+    return math.exp(2.0 / max(3, point_count))
+
 
 def observed_exponent(points: list[Measurement]) -> float | None:
     """Slope of log(time) against log(n), regressed without an intercept.
@@ -865,64 +903,6 @@ def classify_growth(measurements: list[Measurement],
         accounting=accounting)
 
 
-def _fit_with_offset(values: list[float], times: list[float]) -> tuple[float, float] | None:
-    """Least squares for ``t = a*v + b`` with ``a > 0`` and ``b >= 0``.
-
-    A plain two-parameter regression can return a negative ``b`` on a noisy
-    ladder; that is not physically meaningful (time cannot be negative at
-    ``n = 0``), so the result is clamped and the slope recomputed.
-    """
-    count = len(values)
-    if count < 2:
-        return None
-    mean_v = sum(values) / count
-    mean_t = sum(times) / count
-    denominator = sum((v - mean_v) ** 2 for v in values)
-    if denominator <= 1e-18:
-        # Constant basis function (O(1)): the only free parameter is the mean,
-        # which is a valid fit rather than a failure.
-        return (mean_t, 0.0) if mean_t > 0 else None
-    a = sum((v - mean_v) * (t - mean_t) for v, t in zip(values, times)) / denominator
-    b = mean_t - a * mean_v
-    if a <= 0:
-        return None
-    if b < 0:
-        b = 0.0
-        squared = sum(v * v for v in values)
-        if squared <= 0:
-            return None
-        a = sum(v * t for v, t in zip(values, times)) / squared
-        if a <= 0:
-            return None
-    return a, b
-
-
-# Expected log-log slope of each class. The slope is measured independently of
-# the fit, so it acts as a physical filter on which classes are even admissible.
-_EXPECTED_EXPONENT = {'O(1)': 0.0, 'O(log n)': 0.1, 'O(n)': 1.0, 'O(n log n)': 1.15,
-                      'O(n^2)': 2.0, 'O(n^2 log n)': 2.15, 'O(n^3)': 3.0, 'O(2^n)': 4.0}
-EXPONENT_TOLERANCE = 0.7
-
-
-def observed_exponent(points: list[Measurement]) -> float | None:
-    """Slope of log(time) against log(n), regressed without an intercept.
-
-    Only points above the start-up floor are used: a sub-millisecond rung is
-    dominated by process launch and would bias the slope towards zero.
-    """
-    usable = [point for point in points if point.n > 1 and point.wall_ms > 0]
-    if len(usable) < 2:
-        return None
-    xs = [math.log(point.n) for point in usable]
-    ys = [math.log(point.wall_ms) for point in usable]
-    mean_x = sum(xs) / len(xs)
-    mean_y = sum(ys) / len(ys)
-    denominator = sum((x - mean_x) ** 2 for x in xs)
-    if denominator <= 0:
-        return None
-    return sum((x - mean_x) * (y - mean_y) for x, y in zip(xs, ys)) / denominator
-
-
 def attribute_growth(measurements: list[Measurement], reference_ms: dict[int, float] | None = None,
                      *, minimum_ratio: float = 1.0) -> tuple[list[Measurement], list[dict]]:
     """Split each rung's time into input parsing and algorithm work.
@@ -961,6 +941,47 @@ def attribute_growth(measurements: list[Measurement], reference_ms: dict[int, fl
                                   peak_rss_kib=item.peak_rss_kib, verdict='OK',
                                   repeats=item.repeats))
     return points, accounting
+
+
+def _choose_class(candidates: list[tuple[str, float, float, float]],
+                  total_variance: float, point_count: int) -> tuple[str, float, float, float]:
+    """Pick a class from candidates that all fit acceptably.
+
+    Absolute R^2 is a poor discriminator between ``n`` and ``n log n``: over the
+    doubling ladder the two bases are nearly collinear, so the better model wins
+    by ~0.001 and rounding decides the answer. The experiment in
+    ``docs/design/analysis/algorithm-experiments.md`` showed noiseless ``n log n``
+    data being reported as ``O(n)`` five times out of five for exactly this
+    reason.
+
+    So rank by unexplained variance inside the R^2 tie, and step down to a
+    simpler class only when doing so barely costs anything:
+
+    1. The champion is the tied candidate with the smallest residual sum of
+       squares (ties broken towards the lower class, which is the conservative
+       choice).
+    2. A lower-order tied candidate replaces it only if its residual is at most
+       ``sse_improvement_fold(point_count)`` times the champion's. A real log factor
+       leaves the simpler model with a much larger residual, so the log factor
+       survives.
+    """
+    ordered = sorted(candidates, key=lambda row: row[1], reverse=True)
+    champion_r2 = ordered[0][1]
+    tied = [row for row in ordered if champion_r2 - row[1] <= R2_TIE_MARGIN]
+    fold = sse_improvement_fold(point_count)
+
+    def sse(row: tuple[str, float, float, float]) -> float:
+        return max(0.0, (1.0 - row[1]) * total_variance)
+
+    champion = min(tied, key=lambda row: (sse(row), CLASS_RANK[row[0]]))
+    for row in sorted(tied, key=lambda item: CLASS_RANK[item[0]]):
+        if CLASS_RANK[row[0]] >= CLASS_RANK[champion[0]]:
+            break
+        simpler = sse(row)
+        if simpler <= sse(champion) * fold:
+            champion = row
+            break
+    return champion
 
 
 def fit_growth(measurements: Iterable[Measurement], *, minimum_points: int = 3,
@@ -1021,17 +1042,15 @@ def fit_growth(measurements: Iterable[Measurement], *, minimum_points: int = 3,
         result.offset_ms = round(nearest[3], 3)
         result.notes = ['增长斜率与所有候选类别都不吻合，仅给出最接近的一个']
         return result
-    best = admissible[0]
-    for row in admissible[1:]:
-        if row[1] > best[1] + 0.005:
-            best = row
-        elif abs(row[1] - best[1]) <= 0.005 and CLASS_RANK[row[0]] < CLASS_RANK[best[0]]:
-            best = row
+    best = _choose_class(admissible, total, len(all_points))
     name, r2, a, b = best
     confidence = 'LOW'
-    if r2 >= 0.985 and len(all_points) >= 4 and len(elevated) >= 3:
+    # Five rungs is the floor for publishable growth: with four the experiment
+    # recorded in docs/design/analysis/algorithm-experiments.md saw an O(n^2)
+    # program land on O(n log n), because four points do not pin a curve.
+    if r2 >= 0.985 and len(all_points) >= 5 and len(elevated) >= 3:
         confidence = 'HIGH'
-    elif r2 >= 0.90 and len(all_points) >= 3:
+    elif r2 >= 0.90 and len(all_points) >= 5:
         confidence = 'MEDIUM'
     if slope is not None and name == 'O(1)' and len(elevated) >= 3 and slope > 0.5:
         confidence = 'LOW'
@@ -1054,23 +1073,46 @@ def combine(static: StaticAnalysis, dynamic: DynamicConclusion,
 
     Rules, in order:
 
-    1. Measurement wins when it is informative (its class is above the pure
-       input-parsing class) and its confidence is not LOW.
-    2. Otherwise the static structure is the primary source, because a
+    1. A log factor is decided by structure, not by the clock. ``n`` and
+       ``n log n`` differ by a factor that stays under about 1.2 across the whole
+       measurable ladder, so the measurement cannot separate them: the
+       experiment recorded in ``docs/design/analysis/algorithm-experiments.md``
+       lost that distinction on 13 of 40 noisy samples even though the ideal
+       curve is recovered exactly. Structure sees the sort call or the halving
+       loop that creates the factor, so it wins this specific pair.
+    2. Otherwise measurement wins when it is informative (its class is above the
+       pure input-parsing class) and its confidence is not LOW.
+    3. Otherwise the static structure is the primary source, because a
        measurement that never exceeds input parsing cannot separate a cheaper
        algorithm from a linear one.
-    3. Disagreement and every limitation are written into the report instead of
+    4. Disagreement and every limitation are written into the report instead of
        being averaged away.
     """
     limitations: list[str] = []
     fit = dynamic.fit
     dynamic_usable = (dynamic.informative and fit.fitted_class != 'UNKNOWN'
                       and fit.confidence in ('MEDIUM', 'HIGH'))
-    if dynamic_usable:
+    measured_class = fit.fitted_class if dynamic_usable else dynamic.measured_class
+    log_pair = _log_factor_pair(static.time_class, measured_class)
+    decided = False
+    if log_pair is not None and dynamic_usable:
+        # Both estimators saw one member of the pair. Structure is the one that
+        # can explain *why* a log factor exists, so its class is reported; the
+        # measurement's disagreement is recorded rather than silently dropped.
+        time_class = static.time_class
+        time_source = 'STATIC'
+        time_confidence = 'MEDIUM' if static.confidence in ('MEDIUM', 'HIGH') else static.confidence
+        limitations.append(
+            f'结构分析给出 {static.time_class}，实测增长落在 {fit.fitted_class}；'
+            f'两者只差一个 log 因子，这个差别在可测规模内小于常数倍，计时无法分辨，'
+            '因此时间结论按代码结构报告')
+        decided = True
+    elif dynamic_usable:
         time_class = fit.fitted_class
         time_source = 'DYNAMIC'
         time_confidence = fit.confidence
-    else:
+        decided = True
+    if not decided:
         time_class = static.time_class
         time_source = 'STATIC'
         time_confidence = static.confidence
@@ -1121,6 +1163,25 @@ def combine(static: StaticAnalysis, dynamic: DynamicConclusion,
         summary['time']['offset_ms'] = fit.offset_ms
         summary['time']['coefficient'] = fit.coefficient
     return summary
+
+
+# Pairs of classes that differ only by one log factor. A clock cannot separate
+# them on a doubling ladder, while structure can see what creates the factor.
+_LOG_FACTOR_PAIRS = (
+    ('O(1)', 'O(log n)'),
+    ('O(n)', 'O(n log n)'),
+    ('O(n^2)', 'O(n^2 log n)'),
+)
+
+
+def _log_factor_pair(left: str | None, right: str | None) -> tuple[str, str] | None:
+    """Return ``(lower, upper)`` when two classes differ by exactly one log factor."""
+    if not left or not right or left == right:
+        return None
+    for lower, upper in _LOG_FACTOR_PAIRS:
+        if {left, right} == {lower, upper}:
+            return lower, upper
+    return None
 
 
 def curve_points(time_class: str, coefficient: float, sizes: list[int],

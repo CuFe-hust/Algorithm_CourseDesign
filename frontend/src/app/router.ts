@@ -32,6 +32,11 @@ export const teacherRoutes = [
     component: () => import("../features/teacher/AssignmentEditor.vue"),
   },
   {
+    path: "complexity",
+    name: "teacher-complexity",
+    component: () => import("../features/teacher/Complexity.vue"),
+  },
+  {
     path: "students/:studentId/progress",
     name: "teacher-student-progress",
     component: () => import("../features/teacher/StudentProgress.vue"),

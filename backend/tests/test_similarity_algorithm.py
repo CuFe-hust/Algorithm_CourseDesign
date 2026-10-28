@@ -348,6 +348,103 @@ def _dynamic(measured, io='O(n)', informative=True, confidence='HIGH', r2=0.995)
                                         fit=fit, reference_fit=None, accounting=[])
 
 
+def _ideal_ladder(time_class: str, sizes=(256, 323, 406, 512, 645, 813, 1024),
+                  amplitude=24.0, start_up=12.0) -> list:
+    """Noiseless affine data for one class, the model the fitter is asked to invert."""
+    function = complexity.GROWTH_FUNCTIONS[time_class]
+    base = function(sizes[0])
+    points = []
+    for n in sizes:
+        wall = start_up + amplitude * function(n) / base
+        points.append(complexity.Measurement(n=n, wall_ms=wall, adjusted_ms=wall,
+                                             peak_rss_kib=None, verdict='OK'))
+    return points
+
+
+@pytest.mark.parametrize('time_class', ['O(1)', 'O(log n)', 'O(n)', 'O(n log n)', 'O(n^2)', 'O(n^3)'])
+def test_fit_recovers_every_class_from_a_noiseless_ladder(time_class):
+    """The fitter must invert its own model.
+
+    This is the regression that motivated the tie-break change: with the old
+    ``R^2 + 0.005`` rule, ideal ``n log n`` data was reported as ``O(n)`` on
+    every run, because on a doubling ladder the two bases are nearly collinear
+    and their R^2 differ by ~0.0006.
+    """
+    fit = complexity.fit_growth(_ideal_ladder(time_class), floor_ms=12.0)
+    assert fit.fitted_class == time_class, (time_class, fit.fitted_class, fit.r2)
+    assert fit.r2 > 0.999
+
+
+def test_fit_keeps_the_log_factor_when_the_residual_really_drops():
+    points = _ideal_ladder('O(n log n)')
+    fit = complexity.fit_growth(points, floor_ms=12.0)
+    assert fit.fitted_class == 'O(n log n)'
+    assert fit.coefficient > 0
+
+
+def test_choose_class_keeps_a_log_factor_only_when_the_residual_really_drops():
+    """The tie-break rule, tested on residuals directly.
+
+    End-to-end noisy data cannot state this cleanly: on a wide ladder a log factor
+    also absorbs part of the noise, so "spurious log factor" is not a reliably
+    testable claim. What the rule does guarantee is the decision procedure, and
+    that is what this asserts.
+    """
+    total = 1000.0
+    # Same R^2 window; the higher class cuts the residual by 1.43x, above the
+    # 1.33 fold for a seven-rung ladder.
+    kept = complexity._choose_class(
+        [('O(n)', 1 - 1.0 / total, 1.0, 0.0), ('O(n log n)', 1 - 0.7 / total, 1.0, 0.0)],
+        total, 7)
+    assert kept[0] == 'O(n log n)'
+    # The higher class only cuts the residual by 1.18x: not worth the parameter.
+    dropped = complexity._choose_class(
+        [('O(n)', 1 - 1.0 / total, 1.0, 0.0), ('O(n log n)', 1 - 0.85 / total, 1.0, 0.0)],
+        total, 7)
+    assert dropped[0] == 'O(n)'
+
+
+def test_sse_improvement_fold_shrinks_as_the_ladder_grows():
+    assert complexity.sse_improvement_fold(7) > complexity.sse_improvement_fold(13)
+    assert 1.1 < complexity.sse_improvement_fold(13) < complexity.sse_improvement_fold(7) < 1.5
+
+
+def _dynamic_conclusion(measured: str, confidence: str = 'HIGH'):
+    fit = complexity.GrowthFit(measured, 0.997, 1.1, 0.0001,
+                               [{'n': 256}, {'n': 512}, {'n': 1024}, {'n': 2048}], [], confidence)
+    return complexity.DynamicConclusion(measured_class=measured, io_class='UNKNOWN',
+                                        informative=True, r2=0.997, exponent=1.1,
+                                        confidence=confidence, floor_ms=12.0, fit=fit,
+                                        reference_fit=None, accounting=[])
+
+
+@pytest.mark.parametrize('static_class,measured', [
+    ('O(n log n)', 'O(n)'),
+    ('O(n)', 'O(n log n)'),
+    ('O(n^2)', 'O(n^2 log n)'),
+    ('O(log n)', 'O(1)'),
+])
+def test_combine_lets_structure_decide_a_log_factor(static_class, measured):
+    """A clock cannot separate classes that differ by one log factor."""
+    static = complexity.StaticAnalysis(language_family='python', time_class=static_class,
+                                       space_class='O(1)', confidence='HIGH')
+    summary = complexity.combine(static, _dynamic_conclusion(measured))
+    assert summary['time']['class'] == static_class
+    assert summary['time']['source'] == 'STATIC'
+    assert summary['time']['confidence'] == 'MEDIUM'
+    assert summary['time']['agreement'] is False
+    assert any('log 因子' in text for text in summary['limitations'])
+
+
+def test_combine_still_prefers_a_clearly_higher_measurement():
+    """The log-factor rule must not turn into "static always wins"."""
+    static = complexity.StaticAnalysis(language_family='python', time_class='O(n)',
+                                       space_class='O(1)', confidence='HIGH')
+    summary = complexity.combine(static, _dynamic_conclusion('O(n^2)'))
+    assert summary['time']['class'] == 'O(n^2)'
+    assert summary['time']['source'] == 'DYNAMIC'
+
+
 def test_combine_prefers_informative_measurement_and_records_conflict():
     static = complexity.StaticAnalysis(language_family='python', time_class='O(log n)',
                                        space_class='O(1)', confidence='HIGH')
@@ -364,6 +461,62 @@ def test_combine_falls_back_to_static_when_measurement_is_weak():
     summary = complexity.combine(static, _dynamic('O(n log n)', io='O(n)', confidence='LOW', r2=0.5))
     assert summary['time']['class'] == 'O(n^2)'
     assert summary['time']['source'] == 'STATIC'
+
+
+def test_static_ignores_a_loop_with_a_literal_bound():
+    """``for _ in range(10)`` is constant work; it must not become a factor of n."""
+    code = """n = int(input())
+total = 0
+for _ in range(10):
+    total += 1
+for value in range(n):
+    total += value
+print(total)
+"""
+    analysis = complexity.analyze_static(code, 'python3')
+    assert analysis.time_class == 'O(n)'
+    assert analysis.loop_depth == 1
+
+
+def test_static_counts_a_loop_whose_bound_is_the_input():
+    code = """n = int(input())
+total = 0
+for i in range(n):
+    for j in range(n):
+        total += i * j
+print(total)
+"""
+    analysis = complexity.analyze_static(code, 'python3')
+    assert analysis.time_class == 'O(n^2)'
+    assert analysis.loop_depth == 2
+
+
+def test_static_treats_an_input_sized_constant_loop_as_logarithmic():
+    """60000 fixed iterations of a halving search is O(log n), not O(n log n)."""
+    code = """import sys
+n = int(sys.stdin.buffer.read().split()[0])
+total = 0
+for _ in range(60000):
+    low, high = 0, n
+    while low < high:
+        middle = (low + high) // 2
+        if middle * middle < n:
+            low = middle + 1
+        else:
+            high = middle
+    total += low
+print(total % 7)
+"""
+    analysis = complexity.analyze_static(code, 'python3')
+    assert analysis.time_class == 'O(log n)'
+
+
+def test_fit_needs_five_rungs_before_it_claims_medium_confidence():
+    """Four points cannot pin a curve; the experiment saw O(n^2) land on O(n log n)."""
+    four = _ideal_ladder('O(n^2)', sizes=(256, 512, 1024, 2048))
+    five = _ideal_ladder('O(n^2)', sizes=(256, 512, 1024, 2048, 4096))
+    assert complexity.fit_growth(four, floor_ms=12.0).confidence == 'LOW'
+    assert complexity.fit_growth(five, floor_ms=12.0).confidence in ('MEDIUM', 'HIGH')
 
 
 def test_combine_does_not_claim_a_class_the_measurement_cannot_separate():

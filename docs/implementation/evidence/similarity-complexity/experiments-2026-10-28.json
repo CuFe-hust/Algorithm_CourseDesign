@@ -1,0 +1,5241 @@
+{
+  "meta": {
+    "seed": 20261028,
+    "python": "3.14.5",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "generated_at": "2026-10-28T09:49:31",
+    "wall_seconds": 77.0,
+    "question_bank": "data/formatted/questions.programming.json",
+    "similarity_parameters": {
+      "k": 12,
+      "window": 4,
+      "minimum_tokens": 40,
+      "threshold": 0.5,
+      "max_pairs": 500
+    },
+    "notes": [
+      "全部相似度来自 similarity.compare，复杂度来自 probe.escalating_measure + complexity.classify_growth + complexity.combine，与线上路径一致",
+      "耗时是对真实进程的墙钟测量，每次运行会有波动；结构、类别和指纹数与运行无关",
+      "脚本不连接数据库、不读名册、不联网"
+    ]
+  },
+  "similarity": {
+    "cosmetic": {
+      "name": "改名 + 改注释 + 改缩进",
+      "purpose": "验证词法规格化后，纯表面改写不应改变指纹，相似度应为 1.0",
+      "programs": 70,
+      "parameters": {
+        "k": 12,
+        "window": 4,
+        "minimum_tokens": 40,
+        "threshold": 0.5
+      },
+      "semantics_verified_programs": 70,
+      "semantics_verified_cases": 210,
+      "rewrite_failures": [],
+      "distribution": {
+        "count": 70,
+        "min": 1.0,
+        "median": 1.0,
+        "mean": 1.0,
+        "max": 1.0
+      },
+      "at_or_above_threshold": 70,
+      "below_threshold": 0,
+      "below_threshold_codes": [],
+      "rows": [
+        {
+          "code": "CODE-P01",
+          "tokens_before": 126,
+          "tokens_after": 126,
+          "fingerprints_before": 45,
+          "similarity": 1.0,
+          "shared_fingerprints": 45,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P02",
+          "tokens_before": 78,
+          "tokens_after": 78,
+          "fingerprints_before": 25,
+          "similarity": 1.0,
+          "shared_fingerprints": 25,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P03",
+          "tokens_before": 293,
+          "tokens_after": 293,
+          "fingerprints_before": 109,
+          "similarity": 1.0,
+          "shared_fingerprints": 109,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P04",
+          "tokens_before": 114,
+          "tokens_after": 114,
+          "fingerprints_before": 45,
+          "similarity": 1.0,
+          "shared_fingerprints": 45,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P05",
+          "tokens_before": 175,
+          "tokens_after": 175,
+          "fingerprints_before": 62,
+          "similarity": 1.0,
+          "shared_fingerprints": 62,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P06",
+          "tokens_before": 147,
+          "tokens_after": 147,
+          "fingerprints_before": 55,
+          "similarity": 1.0,
+          "shared_fingerprints": 55,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P07",
+          "tokens_before": 128,
+          "tokens_after": 128,
+          "fingerprints_before": 46,
+          "similarity": 1.0,
+          "shared_fingerprints": 46,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P08",
+          "tokens_before": 141,
+          "tokens_after": 141,
+          "fingerprints_before": 55,
+          "similarity": 1.0,
+          "shared_fingerprints": 55,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P09",
+          "tokens_before": 130,
+          "tokens_after": 130,
+          "fingerprints_before": 48,
+          "similarity": 1.0,
+          "shared_fingerprints": 48,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P10",
+          "tokens_before": 234,
+          "tokens_after": 234,
+          "fingerprints_before": 80,
+          "similarity": 1.0,
+          "shared_fingerprints": 80,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P11",
+          "tokens_before": 73,
+          "tokens_after": 73,
+          "fingerprints_before": 28,
+          "similarity": 1.0,
+          "shared_fingerprints": 28,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P12",
+          "tokens_before": 120,
+          "tokens_after": 120,
+          "fingerprints_before": 45,
+          "similarity": 1.0,
+          "shared_fingerprints": 45,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P13",
+          "tokens_before": 540,
+          "tokens_after": 540,
+          "fingerprints_before": 194,
+          "similarity": 1.0,
+          "shared_fingerprints": 194,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P14",
+          "tokens_before": 123,
+          "tokens_after": 123,
+          "fingerprints_before": 47,
+          "similarity": 1.0,
+          "shared_fingerprints": 47,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P15",
+          "tokens_before": 57,
+          "tokens_after": 57,
+          "fingerprints_before": 14,
+          "similarity": 1.0,
+          "shared_fingerprints": 14,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P16",
+          "tokens_before": 142,
+          "tokens_after": 142,
+          "fingerprints_before": 56,
+          "similarity": 1.0,
+          "shared_fingerprints": 56,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P17",
+          "tokens_before": 165,
+          "tokens_after": 165,
+          "fingerprints_before": 60,
+          "similarity": 1.0,
+          "shared_fingerprints": 60,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P18",
+          "tokens_before": 110,
+          "tokens_after": 110,
+          "fingerprints_before": 37,
+          "similarity": 1.0,
+          "shared_fingerprints": 37,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P19",
+          "tokens_before": 191,
+          "tokens_after": 191,
+          "fingerprints_before": 69,
+          "similarity": 1.0,
+          "shared_fingerprints": 69,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P20",
+          "tokens_before": 147,
+          "tokens_after": 147,
+          "fingerprints_before": 52,
+          "similarity": 1.0,
+          "shared_fingerprints": 52,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P21",
+          "tokens_before": 145,
+          "tokens_after": 145,
+          "fingerprints_before": 57,
+          "similarity": 1.0,
+          "shared_fingerprints": 57,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P22",
+          "tokens_before": 189,
+          "tokens_after": 189,
+          "fingerprints_before": 76,
+          "similarity": 1.0,
+          "shared_fingerprints": 76,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P23",
+          "tokens_before": 229,
+          "tokens_after": 229,
+          "fingerprints_before": 86,
+          "similarity": 1.0,
+          "shared_fingerprints": 86,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P24",
+          "tokens_before": 340,
+          "tokens_after": 340,
+          "fingerprints_before": 131,
+          "similarity": 1.0,
+          "shared_fingerprints": 131,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P25",
+          "tokens_before": 82,
+          "tokens_after": 82,
+          "fingerprints_before": 29,
+          "similarity": 1.0,
+          "shared_fingerprints": 29,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P26",
+          "tokens_before": 235,
+          "tokens_after": 235,
+          "fingerprints_before": 92,
+          "similarity": 1.0,
+          "shared_fingerprints": 92,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P27",
+          "tokens_before": 204,
+          "tokens_after": 204,
+          "fingerprints_before": 74,
+          "similarity": 1.0,
+          "shared_fingerprints": 74,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P28",
+          "tokens_before": 273,
+          "tokens_after": 273,
+          "fingerprints_before": 107,
+          "similarity": 1.0,
+          "shared_fingerprints": 107,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P29",
+          "tokens_before": 237,
+          "tokens_after": 237,
+          "fingerprints_before": 91,
+          "similarity": 1.0,
+          "shared_fingerprints": 91,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P30",
+          "tokens_before": 254,
+          "tokens_after": 254,
+          "fingerprints_before": 100,
+          "similarity": 1.0,
+          "shared_fingerprints": 100,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P31",
+          "tokens_before": 290,
+          "tokens_after": 290,
+          "fingerprints_before": 93,
+          "similarity": 1.0,
+          "shared_fingerprints": 93,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P32",
+          "tokens_before": 483,
+          "tokens_after": 483,
+          "fingerprints_before": 184,
+          "similarity": 1.0,
+          "shared_fingerprints": 184,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P33",
+          "tokens_before": 377,
+          "tokens_after": 377,
+          "fingerprints_before": 142,
+          "similarity": 1.0,
+          "shared_fingerprints": 142,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P34",
+          "tokens_before": 232,
+          "tokens_after": 232,
+          "fingerprints_before": 88,
+          "similarity": 1.0,
+          "shared_fingerprints": 88,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P35",
+          "tokens_before": 160,
+          "tokens_after": 160,
+          "fingerprints_before": 56,
+          "similarity": 1.0,
+          "shared_fingerprints": 56,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P36",
+          "tokens_before": 187,
+          "tokens_after": 187,
+          "fingerprints_before": 66,
+          "similarity": 1.0,
+          "shared_fingerprints": 66,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P37",
+          "tokens_before": 406,
+          "tokens_after": 406,
+          "fingerprints_before": 145,
+          "similarity": 1.0,
+          "shared_fingerprints": 145,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P38",
+          "tokens_before": 406,
+          "tokens_after": 406,
+          "fingerprints_before": 153,
+          "similarity": 1.0,
+          "shared_fingerprints": 153,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P39",
+          "tokens_before": 138,
+          "tokens_after": 138,
+          "fingerprints_before": 49,
+          "similarity": 1.0,
+          "shared_fingerprints": 49,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P40",
+          "tokens_before": 300,
+          "tokens_after": 300,
+          "fingerprints_before": 115,
+          "similarity": 1.0,
+          "shared_fingerprints": 115,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P41",
+          "tokens_before": 231,
+          "tokens_after": 231,
+          "fingerprints_before": 83,
+          "similarity": 1.0,
+          "shared_fingerprints": 83,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P42",
+          "tokens_before": 244,
+          "tokens_after": 244,
+          "fingerprints_before": 89,
+          "similarity": 1.0,
+          "shared_fingerprints": 89,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P43",
+          "tokens_before": 237,
+          "tokens_after": 237,
+          "fingerprints_before": 74,
+          "similarity": 1.0,
+          "shared_fingerprints": 74,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P44",
+          "tokens_before": 110,
+          "tokens_after": 110,
+          "fingerprints_before": 38,
+          "similarity": 1.0,
+          "shared_fingerprints": 38,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P45",
+          "tokens_before": 419,
+          "tokens_after": 419,
+          "fingerprints_before": 131,
+          "similarity": 1.0,
+          "shared_fingerprints": 131,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P46",
+          "tokens_before": 123,
+          "tokens_after": 123,
+          "fingerprints_before": 42,
+          "similarity": 1.0,
+          "shared_fingerprints": 42,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P47",
+          "tokens_before": 281,
+          "tokens_after": 281,
+          "fingerprints_before": 99,
+          "similarity": 1.0,
+          "shared_fingerprints": 99,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P48",
+          "tokens_before": 238,
+          "tokens_after": 238,
+          "fingerprints_before": 78,
+          "similarity": 1.0,
+          "shared_fingerprints": 78,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P49",
+          "tokens_before": 160,
+          "tokens_after": 160,
+          "fingerprints_before": 58,
+          "similarity": 1.0,
+          "shared_fingerprints": 58,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P50",
+          "tokens_before": 157,
+          "tokens_after": 157,
+          "fingerprints_before": 58,
+          "similarity": 1.0,
+          "shared_fingerprints": 58,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P51",
+          "tokens_before": 148,
+          "tokens_after": 148,
+          "fingerprints_before": 55,
+          "similarity": 1.0,
+          "shared_fingerprints": 55,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P52",
+          "tokens_before": 154,
+          "tokens_after": 154,
+          "fingerprints_before": 53,
+          "similarity": 1.0,
+          "shared_fingerprints": 53,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P53",
+          "tokens_before": 130,
+          "tokens_after": 130,
+          "fingerprints_before": 49,
+          "similarity": 1.0,
+          "shared_fingerprints": 49,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P54",
+          "tokens_before": 271,
+          "tokens_after": 271,
+          "fingerprints_before": 100,
+          "similarity": 1.0,
+          "shared_fingerprints": 100,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P55",
+          "tokens_before": 190,
+          "tokens_after": 190,
+          "fingerprints_before": 68,
+          "similarity": 1.0,
+          "shared_fingerprints": 68,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P56",
+          "tokens_before": 115,
+          "tokens_after": 115,
+          "fingerprints_before": 39,
+          "similarity": 1.0,
+          "shared_fingerprints": 39,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P57",
+          "tokens_before": 110,
+          "tokens_after": 110,
+          "fingerprints_before": 38,
+          "similarity": 1.0,
+          "shared_fingerprints": 38,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P58",
+          "tokens_before": 116,
+          "tokens_after": 116,
+          "fingerprints_before": 39,
+          "similarity": 1.0,
+          "shared_fingerprints": 39,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P59",
+          "tokens_before": 291,
+          "tokens_after": 291,
+          "fingerprints_before": 110,
+          "similarity": 1.0,
+          "shared_fingerprints": 110,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P60",
+          "tokens_before": 150,
+          "tokens_after": 150,
+          "fingerprints_before": 59,
+          "similarity": 1.0,
+          "shared_fingerprints": 59,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P61",
+          "tokens_before": 102,
+          "tokens_after": 102,
+          "fingerprints_before": 36,
+          "similarity": 1.0,
+          "shared_fingerprints": 36,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P62",
+          "tokens_before": 125,
+          "tokens_after": 125,
+          "fingerprints_before": 47,
+          "similarity": 1.0,
+          "shared_fingerprints": 47,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P63",
+          "tokens_before": 71,
+          "tokens_after": 71,
+          "fingerprints_before": 24,
+          "similarity": 1.0,
+          "shared_fingerprints": 24,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P64",
+          "tokens_before": 88,
+          "tokens_after": 88,
+          "fingerprints_before": 26,
+          "similarity": 1.0,
+          "shared_fingerprints": 26,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P65",
+          "tokens_before": 87,
+          "tokens_after": 87,
+          "fingerprints_before": 28,
+          "similarity": 1.0,
+          "shared_fingerprints": 28,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P66",
+          "tokens_before": 76,
+          "tokens_after": 76,
+          "fingerprints_before": 25,
+          "similarity": 1.0,
+          "shared_fingerprints": 25,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P67",
+          "tokens_before": 261,
+          "tokens_after": 261,
+          "fingerprints_before": 74,
+          "similarity": 1.0,
+          "shared_fingerprints": 74,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P68",
+          "tokens_before": 136,
+          "tokens_after": 136,
+          "fingerprints_before": 49,
+          "similarity": 1.0,
+          "shared_fingerprints": 49,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P69",
+          "tokens_before": 127,
+          "tokens_after": 127,
+          "fingerprints_before": 48,
+          "similarity": 1.0,
+          "shared_fingerprints": 48,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P70",
+          "tokens_before": 168,
+          "tokens_after": 168,
+          "fingerprints_before": 64,
+          "similarity": 1.0,
+          "shared_fingerprints": 64,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        }
+      ],
+      "identical_token_stream_count": 70
+    },
+    "structural_light": {
+      "name": "结构改写（等价写法，不增删语句）",
+      "purpose": "把 += 改成 = 与 +、调换比较顺序；语法树等价、记号数接近，用于验证结构改写后相似度仍高于 0.5",
+      "programs": 70,
+      "parameters": {
+        "k": 12,
+        "window": 4,
+        "minimum_tokens": 40,
+        "threshold": 0.5
+      },
+      "semantics_verified_programs": 70,
+      "semantics_verified_cases": 210,
+      "rewrite_failures": [],
+      "distribution": {
+        "count": 70,
+        "min": 0.32,
+        "median": 0.742009,
+        "mean": 0.721438,
+        "max": 1.0
+      },
+      "at_or_above_threshold": 63,
+      "below_threshold": 7,
+      "below_threshold_codes": [
+        "CODE-P54",
+        "CODE-P12",
+        "CODE-P48",
+        "CODE-P60",
+        "CODE-P66",
+        "CODE-P58",
+        "CODE-P61"
+      ],
+      "rows": [
+        {
+          "code": "CODE-P54",
+          "tokens_before": 271,
+          "tokens_after": 316,
+          "fingerprints_before": 100,
+          "similarity": 0.32,
+          "shared_fingerprints": 32,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P12",
+          "tokens_before": 120,
+          "tokens_after": 126,
+          "fingerprints_before": 45,
+          "similarity": 0.333333,
+          "shared_fingerprints": 15,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P48",
+          "tokens_before": 238,
+          "tokens_after": 260,
+          "fingerprints_before": 78,
+          "similarity": 0.384615,
+          "shared_fingerprints": 30,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P60",
+          "tokens_before": 150,
+          "tokens_after": 166,
+          "fingerprints_before": 59,
+          "similarity": 0.389831,
+          "shared_fingerprints": 23,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P66",
+          "tokens_before": 76,
+          "tokens_after": 84,
+          "fingerprints_before": 25,
+          "similarity": 0.4,
+          "shared_fingerprints": 10,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P58",
+          "tokens_before": 116,
+          "tokens_after": 120,
+          "fingerprints_before": 39,
+          "similarity": 0.410256,
+          "shared_fingerprints": 16,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P61",
+          "tokens_before": 102,
+          "tokens_after": 106,
+          "fingerprints_before": 36,
+          "similarity": 0.472222,
+          "shared_fingerprints": 17,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P15",
+          "tokens_before": 57,
+          "tokens_after": 59,
+          "fingerprints_before": 14,
+          "similarity": 0.5,
+          "shared_fingerprints": 7,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P70",
+          "tokens_before": 168,
+          "tokens_after": 188,
+          "fingerprints_before": 64,
+          "similarity": 0.515625,
+          "shared_fingerprints": 33,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P10",
+          "tokens_before": 234,
+          "tokens_after": 254,
+          "fingerprints_before": 80,
+          "similarity": 0.525,
+          "shared_fingerprints": 42,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P67",
+          "tokens_before": 261,
+          "tokens_after": 273,
+          "fingerprints_before": 74,
+          "similarity": 0.527027,
+          "shared_fingerprints": 39,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P37",
+          "tokens_before": 406,
+          "tokens_after": 447,
+          "fingerprints_before": 145,
+          "similarity": 0.531034,
+          "shared_fingerprints": 77,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P47",
+          "tokens_before": 281,
+          "tokens_after": 297,
+          "fingerprints_before": 99,
+          "similarity": 0.535354,
+          "shared_fingerprints": 53,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P11",
+          "tokens_before": 73,
+          "tokens_after": 77,
+          "fingerprints_before": 28,
+          "similarity": 0.535714,
+          "shared_fingerprints": 15,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P05",
+          "tokens_before": 175,
+          "tokens_after": 183,
+          "fingerprints_before": 62,
+          "similarity": 0.548387,
+          "shared_fingerprints": 34,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P41",
+          "tokens_before": 231,
+          "tokens_after": 239,
+          "fingerprints_before": 83,
+          "similarity": 0.578313,
+          "shared_fingerprints": 48,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P49",
+          "tokens_before": 160,
+          "tokens_after": 166,
+          "fingerprints_before": 58,
+          "similarity": 0.586207,
+          "shared_fingerprints": 34,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P62",
+          "tokens_before": 125,
+          "tokens_after": 131,
+          "fingerprints_before": 47,
+          "similarity": 0.595745,
+          "shared_fingerprints": 28,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P31",
+          "tokens_before": 290,
+          "tokens_after": 306,
+          "fingerprints_before": 93,
+          "similarity": 0.602151,
+          "shared_fingerprints": 56,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P28",
+          "tokens_before": 273,
+          "tokens_after": 292,
+          "fingerprints_before": 107,
+          "similarity": 0.616822,
+          "shared_fingerprints": 66,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P42",
+          "tokens_before": 244,
+          "tokens_after": 248,
+          "fingerprints_before": 89,
+          "similarity": 0.617978,
+          "shared_fingerprints": 55,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P57",
+          "tokens_before": 110,
+          "tokens_after": 110,
+          "fingerprints_before": 38,
+          "similarity": 0.631579,
+          "shared_fingerprints": 24,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P16",
+          "tokens_before": 142,
+          "tokens_after": 148,
+          "fingerprints_before": 56,
+          "similarity": 0.660714,
+          "shared_fingerprints": 37,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P69",
+          "tokens_before": 127,
+          "tokens_after": 133,
+          "fingerprints_before": 48,
+          "similarity": 0.6875,
+          "shared_fingerprints": 33,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P36",
+          "tokens_before": 187,
+          "tokens_after": 195,
+          "fingerprints_before": 66,
+          "similarity": 0.69697,
+          "shared_fingerprints": 46,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P29",
+          "tokens_before": 237,
+          "tokens_after": 253,
+          "fingerprints_before": 91,
+          "similarity": 0.703297,
+          "shared_fingerprints": 64,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P50",
+          "tokens_before": 157,
+          "tokens_after": 159,
+          "fingerprints_before": 58,
+          "similarity": 0.706897,
+          "shared_fingerprints": 41,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P06",
+          "tokens_before": 147,
+          "tokens_after": 153,
+          "fingerprints_before": 55,
+          "similarity": 0.709091,
+          "shared_fingerprints": 39,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P13",
+          "tokens_before": 540,
+          "tokens_after": 556,
+          "fingerprints_before": 194,
+          "similarity": 0.716495,
+          "shared_fingerprints": 139,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P02",
+          "tokens_before": 78,
+          "tokens_after": 82,
+          "fingerprints_before": 25,
+          "similarity": 0.72,
+          "shared_fingerprints": 18,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P25",
+          "tokens_before": 82,
+          "tokens_after": 84,
+          "fingerprints_before": 29,
+          "similarity": 0.724138,
+          "shared_fingerprints": 21,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P43",
+          "tokens_before": 237,
+          "tokens_after": 250,
+          "fingerprints_before": 74,
+          "similarity": 0.72973,
+          "shared_fingerprints": 54,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P07",
+          "tokens_before": 128,
+          "tokens_after": 132,
+          "fingerprints_before": 46,
+          "similarity": 0.733333,
+          "shared_fingerprints": 33,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P03",
+          "tokens_before": 293,
+          "tokens_after": 301,
+          "fingerprints_before": 109,
+          "similarity": 0.733945,
+          "shared_fingerprints": 80,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P38",
+          "tokens_before": 406,
+          "tokens_after": 418,
+          "fingerprints_before": 153,
+          "similarity": 0.738562,
+          "shared_fingerprints": 113,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P08",
+          "tokens_before": 141,
+          "tokens_after": 143,
+          "fingerprints_before": 55,
+          "similarity": 0.745455,
+          "shared_fingerprints": 41,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P40",
+          "tokens_before": 300,
+          "tokens_after": 306,
+          "fingerprints_before": 115,
+          "similarity": 0.747826,
+          "shared_fingerprints": 86,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P45",
+          "tokens_before": 419,
+          "tokens_after": 411,
+          "fingerprints_before": 131,
+          "similarity": 0.748092,
+          "shared_fingerprints": 98,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P27",
+          "tokens_before": 204,
+          "tokens_after": 210,
+          "fingerprints_before": 74,
+          "similarity": 0.756757,
+          "shared_fingerprints": 56,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P01",
+          "tokens_before": 126,
+          "tokens_after": 130,
+          "fingerprints_before": 45,
+          "similarity": 0.772727,
+          "shared_fingerprints": 34,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P59",
+          "tokens_before": 291,
+          "tokens_after": 297,
+          "fingerprints_before": 110,
+          "similarity": 0.772727,
+          "shared_fingerprints": 85,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P32",
+          "tokens_before": 483,
+          "tokens_after": 492,
+          "fingerprints_before": 184,
+          "similarity": 0.782123,
+          "shared_fingerprints": 140,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P46",
+          "tokens_before": 123,
+          "tokens_after": 125,
+          "fingerprints_before": 42,
+          "similarity": 0.785714,
+          "shared_fingerprints": 33,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P26",
+          "tokens_before": 235,
+          "tokens_after": 241,
+          "fingerprints_before": 92,
+          "similarity": 0.793478,
+          "shared_fingerprints": 73,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P19",
+          "tokens_before": 191,
+          "tokens_after": 193,
+          "fingerprints_before": 69,
+          "similarity": 0.797101,
+          "shared_fingerprints": 55,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P34",
+          "tokens_before": 232,
+          "tokens_after": 238,
+          "fingerprints_before": 88,
+          "similarity": 0.806818,
+          "shared_fingerprints": 71,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P09",
+          "tokens_before": 130,
+          "tokens_after": 134,
+          "fingerprints_before": 48,
+          "similarity": 0.8125,
+          "shared_fingerprints": 39,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P33",
+          "tokens_before": 377,
+          "tokens_after": 387,
+          "fingerprints_before": 142,
+          "similarity": 0.816901,
+          "shared_fingerprints": 116,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P65",
+          "tokens_before": 87,
+          "tokens_after": 85,
+          "fingerprints_before": 28,
+          "similarity": 0.821429,
+          "shared_fingerprints": 23,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P63",
+          "tokens_before": 71,
+          "tokens_after": 73,
+          "fingerprints_before": 24,
+          "similarity": 0.826087,
+          "shared_fingerprints": 19,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P20",
+          "tokens_before": 147,
+          "tokens_after": 157,
+          "fingerprints_before": 52,
+          "similarity": 0.826923,
+          "shared_fingerprints": 43,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P30",
+          "tokens_before": 254,
+          "tokens_after": 260,
+          "fingerprints_before": 100,
+          "similarity": 0.83,
+          "shared_fingerprints": 83,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P39",
+          "tokens_before": 138,
+          "tokens_after": 138,
+          "fingerprints_before": 49,
+          "similarity": 0.836735,
+          "shared_fingerprints": 41,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P55",
+          "tokens_before": 190,
+          "tokens_after": 194,
+          "fingerprints_before": 68,
+          "similarity": 0.838235,
+          "shared_fingerprints": 57,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P44",
+          "tokens_before": 110,
+          "tokens_after": 110,
+          "fingerprints_before": 38,
+          "similarity": 0.842105,
+          "shared_fingerprints": 32,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P04",
+          "tokens_before": 114,
+          "tokens_after": 116,
+          "fingerprints_before": 45,
+          "similarity": 0.844444,
+          "shared_fingerprints": 38,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P68",
+          "tokens_before": 136,
+          "tokens_after": 138,
+          "fingerprints_before": 49,
+          "similarity": 0.857143,
+          "shared_fingerprints": 42,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P21",
+          "tokens_before": 145,
+          "tokens_after": 147,
+          "fingerprints_before": 57,
+          "similarity": 0.859649,
+          "shared_fingerprints": 49,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P24",
+          "tokens_before": 340,
+          "tokens_after": 344,
+          "fingerprints_before": 131,
+          "similarity": 0.862595,
+          "shared_fingerprints": 113,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P17",
+          "tokens_before": 165,
+          "tokens_after": 167,
+          "fingerprints_before": 60,
+          "similarity": 0.9,
+          "shared_fingerprints": 54,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P35",
+          "tokens_before": 160,
+          "tokens_after": 160,
+          "fingerprints_before": 56,
+          "similarity": 0.910714,
+          "shared_fingerprints": 51,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P23",
+          "tokens_before": 229,
+          "tokens_after": 229,
+          "fingerprints_before": 86,
+          "similarity": 0.94186,
+          "shared_fingerprints": 81,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P22",
+          "tokens_before": 189,
+          "tokens_after": 189,
+          "fingerprints_before": 76,
+          "similarity": 0.946667,
+          "shared_fingerprints": 71,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P14",
+          "tokens_before": 123,
+          "tokens_after": 123,
+          "fingerprints_before": 47,
+          "similarity": 1.0,
+          "shared_fingerprints": 47,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P18",
+          "tokens_before": 110,
+          "tokens_after": 110,
+          "fingerprints_before": 37,
+          "similarity": 1.0,
+          "shared_fingerprints": 37,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P51",
+          "tokens_before": 148,
+          "tokens_after": 148,
+          "fingerprints_before": 55,
+          "similarity": 1.0,
+          "shared_fingerprints": 55,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P52",
+          "tokens_before": 154,
+          "tokens_after": 154,
+          "fingerprints_before": 53,
+          "similarity": 1.0,
+          "shared_fingerprints": 53,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P53",
+          "tokens_before": 130,
+          "tokens_after": 130,
+          "fingerprints_before": 49,
+          "similarity": 1.0,
+          "shared_fingerprints": 49,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P56",
+          "tokens_before": 115,
+          "tokens_after": 115,
+          "fingerprints_before": 39,
+          "similarity": 1.0,
+          "shared_fingerprints": 39,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P64",
+          "tokens_before": 88,
+          "tokens_after": 88,
+          "fingerprints_before": 26,
+          "similarity": 1.0,
+          "shared_fingerprints": 26,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        }
+      ]
+    },
+    "structural_heavy": {
+      "name": "结构改写（语句拆分 + 插入冗余语句）",
+      "purpose": "在上面的改写之外，把嵌套调用拆成临时变量、在每个循环体开头插入一条冗余赋值；验证插入语句对 12 记号 k-gram 的破坏程度",
+      "programs": 70,
+      "parameters": {
+        "k": 12,
+        "window": 4,
+        "minimum_tokens": 40,
+        "threshold": 0.5
+      },
+      "semantics_verified_programs": 70,
+      "semantics_verified_cases": 210,
+      "rewrite_failures": [],
+      "distribution": {
+        "count": 70,
+        "min": 0.177778,
+        "median": 0.538462,
+        "mean": 0.522214,
+        "max": 0.918367
+      },
+      "at_or_above_threshold": 42,
+      "below_threshold": 28,
+      "below_threshold_codes": [
+        "CODE-P12",
+        "CODE-P54",
+        "CODE-P57",
+        "CODE-P05",
+        "CODE-P48",
+        "CODE-P67",
+        "CODE-P10",
+        "CODE-P70",
+        "CODE-P62",
+        "CODE-P28",
+        "CODE-P47",
+        "CODE-P60",
+        "CODE-P50",
+        "CODE-P31",
+        "CODE-P66",
+        "CODE-P58",
+        "CODE-P25",
+        "CODE-P01",
+        "CODE-P16",
+        "CODE-P49",
+        "CODE-P02",
+        "CODE-P37",
+        "CODE-P07",
+        "CODE-P20",
+        "CODE-P65",
+        "CODE-P61",
+        "CODE-P08",
+        "CODE-P27"
+      ],
+      "rows": [
+        {
+          "code": "CODE-P12",
+          "tokens_before": 120,
+          "tokens_after": 135,
+          "fingerprints_before": 45,
+          "similarity": 0.177778,
+          "shared_fingerprints": 8,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P54",
+          "tokens_before": 271,
+          "tokens_after": 334,
+          "fingerprints_before": 100,
+          "similarity": 0.21,
+          "shared_fingerprints": 21,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P57",
+          "tokens_before": 110,
+          "tokens_after": 116,
+          "fingerprints_before": 38,
+          "similarity": 0.263158,
+          "shared_fingerprints": 10,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P05",
+          "tokens_before": 175,
+          "tokens_after": 195,
+          "fingerprints_before": 62,
+          "similarity": 0.274194,
+          "shared_fingerprints": 17,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P48",
+          "tokens_before": 238,
+          "tokens_after": 269,
+          "fingerprints_before": 78,
+          "similarity": 0.282051,
+          "shared_fingerprints": 22,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P67",
+          "tokens_before": 261,
+          "tokens_after": 291,
+          "fingerprints_before": 74,
+          "similarity": 0.324324,
+          "shared_fingerprints": 24,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P10",
+          "tokens_before": 234,
+          "tokens_after": 269,
+          "fingerprints_before": 80,
+          "similarity": 0.3375,
+          "shared_fingerprints": 27,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P70",
+          "tokens_before": 168,
+          "tokens_after": 197,
+          "fingerprints_before": 64,
+          "similarity": 0.359375,
+          "shared_fingerprints": 23,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P62",
+          "tokens_before": 125,
+          "tokens_after": 140,
+          "fingerprints_before": 47,
+          "similarity": 0.382979,
+          "shared_fingerprints": 18,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P28",
+          "tokens_before": 273,
+          "tokens_after": 307,
+          "fingerprints_before": 107,
+          "similarity": 0.383178,
+          "shared_fingerprints": 41,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P47",
+          "tokens_before": 281,
+          "tokens_after": 309,
+          "fingerprints_before": 99,
+          "similarity": 0.383838,
+          "shared_fingerprints": 38,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P60",
+          "tokens_before": 150,
+          "tokens_after": 169,
+          "fingerprints_before": 59,
+          "similarity": 0.389831,
+          "shared_fingerprints": 23,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P50",
+          "tokens_before": 157,
+          "tokens_after": 168,
+          "fingerprints_before": 58,
+          "similarity": 0.396552,
+          "shared_fingerprints": 23,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P31",
+          "tokens_before": 290,
+          "tokens_after": 342,
+          "fingerprints_before": 93,
+          "similarity": 0.397849,
+          "shared_fingerprints": 37,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P66",
+          "tokens_before": 76,
+          "tokens_after": 87,
+          "fingerprints_before": 25,
+          "similarity": 0.4,
+          "shared_fingerprints": 10,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P58",
+          "tokens_before": 116,
+          "tokens_after": 120,
+          "fingerprints_before": 39,
+          "similarity": 0.410256,
+          "shared_fingerprints": 16,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P25",
+          "tokens_before": 82,
+          "tokens_after": 90,
+          "fingerprints_before": 29,
+          "similarity": 0.413793,
+          "shared_fingerprints": 12,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P01",
+          "tokens_before": 126,
+          "tokens_after": 145,
+          "fingerprints_before": 45,
+          "similarity": 0.422222,
+          "shared_fingerprints": 19,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P16",
+          "tokens_before": 142,
+          "tokens_after": 157,
+          "fingerprints_before": 56,
+          "similarity": 0.428571,
+          "shared_fingerprints": 24,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P49",
+          "tokens_before": 160,
+          "tokens_after": 175,
+          "fingerprints_before": 58,
+          "similarity": 0.431034,
+          "shared_fingerprints": 25,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P02",
+          "tokens_before": 78,
+          "tokens_after": 88,
+          "fingerprints_before": 25,
+          "similarity": 0.44,
+          "shared_fingerprints": 11,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P37",
+          "tokens_before": 406,
+          "tokens_after": 462,
+          "fingerprints_before": 145,
+          "similarity": 0.455172,
+          "shared_fingerprints": 66,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P07",
+          "tokens_before": 128,
+          "tokens_after": 138,
+          "fingerprints_before": 46,
+          "similarity": 0.456522,
+          "shared_fingerprints": 21,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P20",
+          "tokens_before": 147,
+          "tokens_after": 169,
+          "fingerprints_before": 52,
+          "similarity": 0.461538,
+          "shared_fingerprints": 24,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P65",
+          "tokens_before": 87,
+          "tokens_after": 91,
+          "fingerprints_before": 28,
+          "similarity": 0.464286,
+          "shared_fingerprints": 13,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P61",
+          "tokens_before": 102,
+          "tokens_after": 109,
+          "fingerprints_before": 36,
+          "similarity": 0.472222,
+          "shared_fingerprints": 17,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P08",
+          "tokens_before": 141,
+          "tokens_after": 149,
+          "fingerprints_before": 55,
+          "similarity": 0.472727,
+          "shared_fingerprints": 26,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P27",
+          "tokens_before": 204,
+          "tokens_after": 225,
+          "fingerprints_before": 74,
+          "similarity": 0.486486,
+          "shared_fingerprints": 36,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P09",
+          "tokens_before": 130,
+          "tokens_after": 143,
+          "fingerprints_before": 48,
+          "similarity": 0.5,
+          "shared_fingerprints": 24,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P15",
+          "tokens_before": 57,
+          "tokens_after": 59,
+          "fingerprints_before": 14,
+          "similarity": 0.5,
+          "shared_fingerprints": 7,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P41",
+          "tokens_before": 231,
+          "tokens_after": 251,
+          "fingerprints_before": 83,
+          "similarity": 0.506024,
+          "shared_fingerprints": 42,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P36",
+          "tokens_before": 187,
+          "tokens_after": 201,
+          "fingerprints_before": 66,
+          "similarity": 0.515152,
+          "shared_fingerprints": 34,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P69",
+          "tokens_before": 127,
+          "tokens_after": 139,
+          "fingerprints_before": 48,
+          "similarity": 0.520833,
+          "shared_fingerprints": 25,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P34",
+          "tokens_before": 232,
+          "tokens_after": 253,
+          "fingerprints_before": 88,
+          "similarity": 0.534091,
+          "shared_fingerprints": 47,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P29",
+          "tokens_before": 237,
+          "tokens_after": 265,
+          "fingerprints_before": 91,
+          "similarity": 0.538462,
+          "shared_fingerprints": 49,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P56",
+          "tokens_before": 115,
+          "tokens_after": 124,
+          "fingerprints_before": 39,
+          "similarity": 0.538462,
+          "shared_fingerprints": 21,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P63",
+          "tokens_before": 71,
+          "tokens_after": 79,
+          "fingerprints_before": 24,
+          "similarity": 0.541667,
+          "shared_fingerprints": 13,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P21",
+          "tokens_before": 145,
+          "tokens_after": 156,
+          "fingerprints_before": 57,
+          "similarity": 0.54386,
+          "shared_fingerprints": 31,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P06",
+          "tokens_before": 147,
+          "tokens_after": 159,
+          "fingerprints_before": 55,
+          "similarity": 0.545455,
+          "shared_fingerprints": 30,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P46",
+          "tokens_before": 123,
+          "tokens_after": 134,
+          "fingerprints_before": 42,
+          "similarity": 0.547619,
+          "shared_fingerprints": 23,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P42",
+          "tokens_before": 244,
+          "tokens_after": 257,
+          "fingerprints_before": 89,
+          "similarity": 0.550562,
+          "shared_fingerprints": 49,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P32",
+          "tokens_before": 483,
+          "tokens_after": 537,
+          "fingerprints_before": 184,
+          "similarity": 0.554348,
+          "shared_fingerprints": 102,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P04",
+          "tokens_before": 114,
+          "tokens_after": 122,
+          "fingerprints_before": 45,
+          "similarity": 0.555556,
+          "shared_fingerprints": 25,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P03",
+          "tokens_before": 293,
+          "tokens_after": 319,
+          "fingerprints_before": 109,
+          "similarity": 0.559633,
+          "shared_fingerprints": 61,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P13",
+          "tokens_before": 540,
+          "tokens_after": 586,
+          "fingerprints_before": 194,
+          "similarity": 0.561856,
+          "shared_fingerprints": 109,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P59",
+          "tokens_before": 291,
+          "tokens_after": 315,
+          "fingerprints_before": 110,
+          "similarity": 0.563636,
+          "shared_fingerprints": 62,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P38",
+          "tokens_before": 406,
+          "tokens_after": 436,
+          "fingerprints_before": 153,
+          "similarity": 0.568627,
+          "shared_fingerprints": 87,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P11",
+          "tokens_before": 73,
+          "tokens_after": 80,
+          "fingerprints_before": 28,
+          "similarity": 0.576923,
+          "shared_fingerprints": 15,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P64",
+          "tokens_before": 88,
+          "tokens_after": 94,
+          "fingerprints_before": 26,
+          "similarity": 0.576923,
+          "shared_fingerprints": 15,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P43",
+          "tokens_before": 237,
+          "tokens_after": 268,
+          "fingerprints_before": 74,
+          "similarity": 0.581081,
+          "shared_fingerprints": 43,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P23",
+          "tokens_before": 229,
+          "tokens_after": 244,
+          "fingerprints_before": 86,
+          "similarity": 0.581395,
+          "shared_fingerprints": 50,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P26",
+          "tokens_before": 235,
+          "tokens_after": 253,
+          "fingerprints_before": 92,
+          "similarity": 0.597826,
+          "shared_fingerprints": 55,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P22",
+          "tokens_before": 189,
+          "tokens_after": 201,
+          "fingerprints_before": 76,
+          "similarity": 0.605263,
+          "shared_fingerprints": 46,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P19",
+          "tokens_before": 191,
+          "tokens_after": 202,
+          "fingerprints_before": 69,
+          "similarity": 0.608696,
+          "shared_fingerprints": 42,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P39",
+          "tokens_before": 138,
+          "tokens_after": 141,
+          "fingerprints_before": 49,
+          "similarity": 0.612245,
+          "shared_fingerprints": 30,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P45",
+          "tokens_before": 419,
+          "tokens_after": 432,
+          "fingerprints_before": 131,
+          "similarity": 0.618321,
+          "shared_fingerprints": 81,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P68",
+          "tokens_before": 136,
+          "tokens_after": 144,
+          "fingerprints_before": 49,
+          "similarity": 0.632653,
+          "shared_fingerprints": 31,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P55",
+          "tokens_before": 190,
+          "tokens_after": 206,
+          "fingerprints_before": 68,
+          "similarity": 0.647059,
+          "shared_fingerprints": 44,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P40",
+          "tokens_before": 300,
+          "tokens_after": 312,
+          "fingerprints_before": 115,
+          "similarity": 0.669565,
+          "shared_fingerprints": 77,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P18",
+          "tokens_before": 110,
+          "tokens_after": 119,
+          "fingerprints_before": 37,
+          "similarity": 0.675676,
+          "shared_fingerprints": 25,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P33",
+          "tokens_before": 377,
+          "tokens_after": 402,
+          "fingerprints_before": 142,
+          "similarity": 0.676056,
+          "shared_fingerprints": 96,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P51",
+          "tokens_before": 148,
+          "tokens_after": 157,
+          "fingerprints_before": 55,
+          "similarity": 0.690909,
+          "shared_fingerprints": 38,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P24",
+          "tokens_before": 340,
+          "tokens_after": 359,
+          "fingerprints_before": 131,
+          "similarity": 0.70229,
+          "shared_fingerprints": 92,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P44",
+          "tokens_before": 110,
+          "tokens_after": 113,
+          "fingerprints_before": 38,
+          "similarity": 0.710526,
+          "shared_fingerprints": 27,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P35",
+          "tokens_before": 160,
+          "tokens_after": 166,
+          "fingerprints_before": 56,
+          "similarity": 0.714286,
+          "shared_fingerprints": 40,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P52",
+          "tokens_before": 154,
+          "tokens_after": 160,
+          "fingerprints_before": 53,
+          "similarity": 0.735849,
+          "shared_fingerprints": 39,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P30",
+          "tokens_before": 254,
+          "tokens_after": 266,
+          "fingerprints_before": 100,
+          "similarity": 0.77,
+          "shared_fingerprints": 77,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P17",
+          "tokens_before": 165,
+          "tokens_after": 173,
+          "fingerprints_before": 60,
+          "similarity": 0.8,
+          "shared_fingerprints": 48,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P14",
+          "tokens_before": 123,
+          "tokens_after": 126,
+          "fingerprints_before": 47,
+          "similarity": 0.829787,
+          "shared_fingerprints": 39,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        },
+        {
+          "code": "CODE-P53",
+          "tokens_before": 130,
+          "tokens_after": 133,
+          "fingerprints_before": 49,
+          "similarity": 0.918367,
+          "shared_fingerprints": 45,
+          "semantics_verified": true,
+          "cases_checked": 3,
+          "verification_reason": null
+        }
+      ]
+    },
+    "insertion_sensitivity": {
+      "name": "插入敏感性：同一份代码插入 1/2/3/4/8 条冗余赋值",
+      "purpose": "定量说明结构改写里的“插入语句”为什么会让相似度掉得这么多",
+      "source": "CODE-P26",
+      "parameters": {
+        "k": 12,
+        "window": 4,
+        "threshold": 0.5
+      },
+      "rows": [
+        {
+          "insertions": 1,
+          "tokens_before": 235,
+          "tokens_after": 238,
+          "unique_fingerprints_before": 92,
+          "unique_fingerprints_after": 94,
+          "shared_fingerprints": 92,
+          "similarity": 1.0,
+          "longest_run_tokens": 103
+        },
+        {
+          "insertions": 2,
+          "tokens_before": 235,
+          "tokens_after": 241,
+          "unique_fingerprints_before": 92,
+          "unique_fingerprints_after": 95,
+          "shared_fingerprints": 88,
+          "similarity": 0.956522,
+          "longest_run_tokens": 59
+        },
+        {
+          "insertions": 3,
+          "tokens_before": 235,
+          "tokens_after": 244,
+          "unique_fingerprints_before": 92,
+          "unique_fingerprints_after": 94,
+          "shared_fingerprints": 82,
+          "similarity": 0.891304,
+          "longest_run_tokens": 44
+        },
+        {
+          "insertions": 4,
+          "tokens_before": 235,
+          "tokens_after": 247,
+          "unique_fingerprints_before": 92,
+          "unique_fingerprints_after": 96,
+          "shared_fingerprints": 79,
+          "similarity": 0.858696,
+          "longest_run_tokens": 33
+        },
+        {
+          "insertions": 8,
+          "tokens_before": 235,
+          "tokens_after": 259,
+          "unique_fingerprints_before": 92,
+          "unique_fingerprints_after": 97,
+          "shared_fingerprints": 61,
+          "similarity": 0.663043,
+          "longest_run_tokens": 37
+        }
+      ]
+    },
+    "unrelated_same_problem": {
+      "name": "无关实现：同一道题的不同算法",
+      "purpose": "判据要求无关实现落在 0 对或低于阈值；这里用同一道题的两套正确算法检验误报",
+      "programs": 5,
+      "distribution": {
+        "count": 5,
+        "min": 0.0,
+        "median": 0.041667,
+        "mean": 0.274111,
+        "max": 0.688889
+      },
+      "at_or_above_threshold": 2,
+      "rows": [
+        {
+          "code": "CODE-P01",
+          "title": "活动安排问题",
+          "alternative": "区间 DP 求最长不重叠活动链",
+          "tokens_reference": 126,
+          "tokens_alternative": 158,
+          "correct": true,
+          "cases_checked": 5,
+          "similarity": 0.688889,
+          "shared_fingerprints": 31
+        },
+        {
+          "code": "CODE-P10",
+          "title": "逆序对",
+          "alternative": "双重循环直接数逆序对",
+          "tokens_reference": 234,
+          "tokens_alternative": 95,
+          "correct": true,
+          "cases_checked": 5,
+          "similarity": 0.0,
+          "shared_fingerprints": null
+        },
+        {
+          "code": "CODE-P18",
+          "title": "最长上升子序列",
+          "alternative": "O(n^2) 动态规划求最长上升子序列",
+          "tokens_reference": 110,
+          "tokens_alternative": 116,
+          "correct": true,
+          "cases_checked": 5,
+          "similarity": 0.0,
+          "shared_fingerprints": null
+        },
+        {
+          "code": "CODE-P49",
+          "title": "二分查找",
+          "alternative": "每次询问线性扫描",
+          "tokens_reference": 160,
+          "tokens_alternative": 132,
+          "correct": true,
+          "cases_checked": 5,
+          "similarity": 0.64,
+          "shared_fingerprints": 32
+        },
+        {
+          "code": "CODE-P63",
+          "title": "只出现一次的数字",
+          "alternative": "排序后相邻比较找出只出现一次的数",
+          "tokens_reference": 71,
+          "tokens_alternative": 96,
+          "correct": true,
+          "cases_checked": 5,
+          "similarity": 0.041667,
+          "shared_fingerprints": 1
+        }
+      ]
+    },
+    "unrelated_cross_problem": {
+      "name": "无关实现：70 道不同题目的参考解两两比较",
+      "purpose": "考察完全没有抄袭关系的代码之间是否会被阈值判成相似（误报率）",
+      "submissions": 70,
+      "pairs_scanned": 2415,
+      "pairs_at_or_above_threshold": 18,
+      "false_positive_rate": 0.007453,
+      "distribution": {
+        "count": 2415,
+        "min": 0.0,
+        "median": 0.034483,
+        "mean": 0.089702,
+        "max": 0.671053
+      },
+      "percentiles": {
+        "p50": 0.034483,
+        "p90": 0.245283,
+        "p99": 0.448276
+      },
+      "compare_pair_count": 18,
+      "compare_cluster_count": 2,
+      "top_rows": [
+        {
+          "left": "CODE-P22",
+          "right": "CODE-P23",
+          "similarity": 0.671053,
+          "shared_fingerprints": 51
+        },
+        {
+          "left": "CODE-P01",
+          "right": "CODE-P03",
+          "similarity": 0.622222,
+          "shared_fingerprints": 28
+        },
+        {
+          "left": "CODE-P07",
+          "right": "CODE-P25",
+          "similarity": 0.62069,
+          "shared_fingerprints": 18
+        },
+        {
+          "left": "CODE-P04",
+          "right": "CODE-P25",
+          "similarity": 0.586207,
+          "shared_fingerprints": 17
+        },
+        {
+          "left": "CODE-P23",
+          "right": "CODE-P25",
+          "similarity": 0.586207,
+          "shared_fingerprints": 17
+        },
+        {
+          "left": "CODE-P25",
+          "right": "CODE-P51",
+          "similarity": 0.586207,
+          "shared_fingerprints": 17
+        },
+        {
+          "left": "CODE-P25",
+          "right": "CODE-P52",
+          "similarity": 0.586207,
+          "shared_fingerprints": 17
+        },
+        {
+          "left": "CODE-P64",
+          "right": "CODE-P65",
+          "similarity": 0.576923,
+          "shared_fingerprints": 15
+        },
+        {
+          "left": "CODE-P15",
+          "right": "CODE-P40",
+          "similarity": 0.571429,
+          "shared_fingerprints": 8
+        },
+        {
+          "left": "CODE-P08",
+          "right": "CODE-P25",
+          "similarity": 0.551724,
+          "shared_fingerprints": 16
+        }
+      ]
+    },
+    "scale": {
+      "name": "规模实验：K 份 CODE-P26 的副本（各加一处改名与一行注释）",
+      "purpose": "测 compare() 随提交数量增长的实际耗时与指纹规模，检验倒排索引实现的增长趋势",
+      "source": "CODE-P26",
+      "tokens_per_submission": 235,
+      "parameters": {
+        "k": 12,
+        "window": 4,
+        "threshold": 0.5,
+        "max_pairs": 500
+      },
+      "rows": [
+        {
+          "submissions": 20,
+          "seconds_median": 0.0176,
+          "seconds_min": 0.0172,
+          "seconds_max": 0.0177,
+          "repeats": 3,
+          "tokens_per_submission": 235,
+          "unique_fingerprints_per_submission": 92,
+          "selected_fingerprints_per_submission": 92,
+          "unique_fingerprints_total": 1840,
+          "selected_fingerprints_total": 1840,
+          "candidate_pairs": 190,
+          "reported_pairs": 190,
+          "pairs_truncated": false,
+          "clusters": 1,
+          "cluster_sizes": [
+            20
+          ],
+          "similarity_min": 1.0,
+          "similarity_median": 1.0
+        },
+        {
+          "submissions": 50,
+          "seconds_median": 0.0921,
+          "seconds_min": 0.0906,
+          "seconds_max": 0.0923,
+          "repeats": 3,
+          "tokens_per_submission": 235,
+          "unique_fingerprints_per_submission": 92,
+          "selected_fingerprints_per_submission": 92,
+          "unique_fingerprints_total": 4600,
+          "selected_fingerprints_total": 4600,
+          "candidate_pairs": 1225,
+          "reported_pairs": 500,
+          "pairs_truncated": true,
+          "clusters": 1,
+          "cluster_sizes": [
+            50
+          ],
+          "similarity_min": 1.0,
+          "similarity_median": 1.0
+        },
+        {
+          "submissions": 100,
+          "seconds_median": 0.3409,
+          "seconds_min": 0.2914,
+          "seconds_max": 0.3549,
+          "repeats": 3,
+          "tokens_per_submission": 235,
+          "unique_fingerprints_per_submission": 92,
+          "selected_fingerprints_per_submission": 92,
+          "unique_fingerprints_total": 9200,
+          "selected_fingerprints_total": 9200,
+          "candidate_pairs": 4950,
+          "reported_pairs": 500,
+          "pairs_truncated": true,
+          "clusters": 1,
+          "cluster_sizes": [
+            100
+          ],
+          "similarity_min": 1.0,
+          "similarity_median": 1.0
+        },
+        {
+          "submissions": 200,
+          "seconds_median": 1.3205,
+          "seconds_min": 1.2523,
+          "seconds_max": 1.3932,
+          "repeats": 3,
+          "tokens_per_submission": 235,
+          "unique_fingerprints_per_submission": 92,
+          "selected_fingerprints_per_submission": 92,
+          "unique_fingerprints_total": 18400,
+          "selected_fingerprints_total": 18400,
+          "candidate_pairs": 19900,
+          "reported_pairs": 500,
+          "pairs_truncated": true,
+          "clusters": 1,
+          "cluster_sizes": [
+            200
+          ],
+          "similarity_min": 1.0,
+          "similarity_median": 1.0
+        }
+      ],
+      "doubling_ratios": [
+        5.233,
+        3.701,
+        3.874
+      ],
+      "loglog_exponent": 1.8747
+    }
+  },
+  "complexity": {
+    "groups": [
+      {
+        "key": "O1",
+        "title": "常数时间：读入 n 后只做固定几步算术",
+        "expected_class": "O(1)",
+        "source": "hand-written",
+        "profile": {
+          "family": "SINGLE_INT",
+          "spec": {
+            "max_n": 10000000,
+            "max": 10000000
+          }
+        },
+        "parameters": {
+          "seed": 20261028,
+          "wall_limit_ms": 4000,
+          "budget_ms": 60000,
+          "repeats": 5,
+          "max_rungs": 13
+        },
+        "reference_solution_verification": {
+          "ok": null,
+          "cases": 0
+        },
+        "static": {
+          "time_class": "O(1)",
+          "space_class": "O(1)",
+          "confidence": "HIGH",
+          "loop_depth": 0,
+          "recursive": false,
+          "sorts": 0,
+          "evidence": [],
+          "notes": []
+        },
+        "stop_reason": "FLOOR_REACHED",
+        "elapsed_seconds": 3.48,
+        "rungs": [
+          {
+            "n": 256,
+            "wall_ms": 12.844,
+            "reference_ms": 12.886,
+            "io_ratio": 0.997,
+            "peak_rss_kib": 16432,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 512,
+            "wall_ms": 12.124,
+            "reference_ms": 12.876,
+            "io_ratio": 0.942,
+            "peak_rss_kib": 16432,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 1024,
+            "wall_ms": 12.834,
+            "reference_ms": 13.584,
+            "io_ratio": 0.945,
+            "peak_rss_kib": 16416,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 2048,
+            "wall_ms": 12.785,
+            "reference_ms": 12.852,
+            "io_ratio": 0.995,
+            "peak_rss_kib": 16464,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 4096,
+            "wall_ms": 13.922,
+            "reference_ms": 15.405,
+            "io_ratio": 0.904,
+            "peak_rss_kib": 16416,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 8192,
+            "wall_ms": 14.99,
+            "reference_ms": 13.584,
+            "io_ratio": 1.104,
+            "peak_rss_kib": 16448,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 16384,
+            "wall_ms": 14.052,
+            "reference_ms": 12.854,
+            "io_ratio": 1.093,
+            "peak_rss_kib": 16464,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 32768,
+            "wall_ms": 12.794,
+            "reference_ms": 13.384,
+            "io_ratio": 0.956,
+            "peak_rss_kib": 16448,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 65536,
+            "wall_ms": 12.92,
+            "reference_ms": 12.916,
+            "io_ratio": 1.0,
+            "peak_rss_kib": 16448,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 131072,
+            "wall_ms": 12.897,
+            "reference_ms": 12.888,
+            "io_ratio": 1.001,
+            "peak_rss_kib": 16432,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 262144,
+            "wall_ms": 12.759,
+            "reference_ms": 13.638,
+            "io_ratio": 0.936,
+            "peak_rss_kib": 16432,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 524288,
+            "wall_ms": 12.853,
+            "reference_ms": 12.877,
+            "io_ratio": 0.998,
+            "peak_rss_kib": 16400,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 1048576,
+            "wall_ms": 10.337,
+            "reference_ms": 12.044,
+            "io_ratio": 0.858,
+            "peak_rss_kib": 16400,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          }
+        ],
+        "conclusion": {
+          "measured_class": "O(1)",
+          "io_class": "UNKNOWN",
+          "informative": true,
+          "r2": 0.0,
+          "exponent": -0.0104,
+          "confidence": "LOW",
+          "floor_ms": 10.337,
+          "coefficient": 12.93160592,
+          "fitted_class_from_fit": "O(1)",
+          "fit_r2": 0.0,
+          "fit_notes": [
+            "多数档位仍在启动开销附近，增长信号偏弱"
+          ],
+          "reference_fitted_class": "O(1)",
+          "reference_fit_r2": 0.0,
+          "reference_fit_confidence": "LOW"
+        },
+        "candidate_r2": [
+          {
+            "class": "O(1)",
+            "r2": 0.0,
+            "chosen": true
+          },
+          {
+            "class": "O(2^n)",
+            "r2": 0.0,
+            "chosen": false
+          },
+          {
+            "class": "O(log n)",
+            "r2": null
+          },
+          {
+            "class": "O(n)",
+            "r2": null
+          },
+          {
+            "class": "O(n log n)",
+            "r2": null
+          },
+          {
+            "class": "O(n^2)",
+            "r2": null
+          },
+          {
+            "class": "O(n^2 log n)",
+            "r2": null
+          },
+          {
+            "class": "O(n^3)",
+            "r2": null
+          }
+        ],
+        "final": {
+          "time_class": "O(1)",
+          "source": "STATIC",
+          "confidence": "HIGH",
+          "agreement": true,
+          "space_class": "O(1)",
+          "limitations": [
+            "实测增长 O(1) 的置信度偏低（R²=0.000），未超过结构分析 O(1) 的证据强度"
+          ]
+        },
+        "agrees_with_expected": true
+      },
+      {
+        "key": "Olog",
+        "title": "对数时间：循环 6 万次、每次在 [0, n] 上二分",
+        "expected_class": "O(log n)",
+        "source": "hand-written",
+        "profile": {
+          "family": "SINGLE_INT",
+          "spec": {
+            "max_n": 10000000,
+            "max": 10000000
+          }
+        },
+        "parameters": {
+          "seed": 20261029,
+          "wall_limit_ms": 4000,
+          "budget_ms": 60000,
+          "repeats": 5,
+          "max_rungs": 13
+        },
+        "reference_solution_verification": {
+          "ok": null,
+          "cases": 0
+        },
+        "static": {
+          "time_class": "O(log n)",
+          "space_class": "O(1)",
+          "confidence": "HIGH",
+          "loop_depth": 1,
+          "recursive": false,
+          "sorts": 0,
+          "evidence": [
+            {
+              "line": 8,
+              "reason": "最深层循环嵌套 1 层",
+              "kind": "LOOP_DEPTH"
+            }
+          ],
+          "notes": []
+        },
+        "stop_reason": "LADDER_EXHAUSTED",
+        "elapsed_seconds": 5.59,
+        "rungs": [
+          {
+            "n": 256,
+            "wall_ms": 25.582,
+            "reference_ms": 12.861,
+            "io_ratio": 1.989,
+            "peak_rss_kib": 16464,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 512,
+            "wall_ms": 29.596,
+            "reference_ms": 12.873,
+            "io_ratio": 2.299,
+            "peak_rss_kib": 16416,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 1024,
+            "wall_ms": 27.859,
+            "reference_ms": 12.245,
+            "io_ratio": 2.275,
+            "peak_rss_kib": 16448,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 2048,
+            "wall_ms": 34.436,
+            "reference_ms": 14.304,
+            "io_ratio": 2.407,
+            "peak_rss_kib": 16464,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 4096,
+            "wall_ms": 37.622,
+            "reference_ms": 14.748,
+            "io_ratio": 2.551,
+            "peak_rss_kib": 16464,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 8192,
+            "wall_ms": 39.954,
+            "reference_ms": 12.95,
+            "io_ratio": 3.085,
+            "peak_rss_kib": 16432,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 16384,
+            "wall_ms": 40.415,
+            "reference_ms": 13.717,
+            "io_ratio": 2.946,
+            "peak_rss_kib": 16464,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 32768,
+            "wall_ms": 47.027,
+            "reference_ms": 14.582,
+            "io_ratio": 3.225,
+            "peak_rss_kib": 16480,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 65536,
+            "wall_ms": 50.708,
+            "reference_ms": 15.128,
+            "io_ratio": 3.352,
+            "peak_rss_kib": 16448,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 131072,
+            "wall_ms": 54.671,
+            "reference_ms": 14.9,
+            "io_ratio": 3.669,
+            "peak_rss_kib": 16432,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 262144,
+            "wall_ms": 56.131,
+            "reference_ms": 14.43,
+            "io_ratio": 3.89,
+            "peak_rss_kib": 16416,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 524288,
+            "wall_ms": 59.774,
+            "reference_ms": 15.448,
+            "io_ratio": 3.869,
+            "peak_rss_kib": 16432,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 1048576,
+            "wall_ms": 55.525,
+            "reference_ms": 12.694,
+            "io_ratio": 4.374,
+            "peak_rss_kib": 16480,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          }
+        ],
+        "conclusion": {
+          "measured_class": "O(log n)",
+          "io_class": "UNKNOWN",
+          "informative": true,
+          "r2": 0.960606,
+          "exponent": 0.0859,
+          "confidence": "MEDIUM",
+          "floor_ms": 25.582,
+          "coefficient": 2.95559118,
+          "fitted_class_from_fit": "O(log n)",
+          "fit_r2": 0.960606,
+          "fit_notes": [],
+          "reference_fitted_class": "O(log n)",
+          "reference_fit_r2": 0.244777,
+          "reference_fit_confidence": "LOW"
+        },
+        "candidate_r2": [
+          {
+            "class": "O(log n)",
+            "r2": 0.960606,
+            "chosen": true
+          },
+          {
+            "class": "O(n)",
+            "r2": 0.401385,
+            "chosen": false
+          },
+          {
+            "class": "O(n log n)",
+            "r2": 0.374577,
+            "chosen": false
+          },
+          {
+            "class": "O(n^2)",
+            "r2": 0.20436,
+            "chosen": false
+          },
+          {
+            "class": "O(n^2 log n)",
+            "r2": 0.197435,
+            "chosen": false
+          },
+          {
+            "class": "O(n^3)",
+            "r2": 0.145252,
+            "chosen": false
+          },
+          {
+            "class": "O(1)",
+            "r2": 0.0,
+            "chosen": false
+          },
+          {
+            "class": "O(2^n)",
+            "r2": 0.0,
+            "chosen": false
+          }
+        ],
+        "final": {
+          "time_class": "O(log n)",
+          "source": "DYNAMIC",
+          "confidence": "MEDIUM",
+          "agreement": true,
+          "space_class": "O(1)",
+          "limitations": []
+        },
+        "agrees_with_expected": true
+      },
+      {
+        "key": "On",
+        "title": "线性：异或求只出现一次的数（参考解）",
+        "expected_class": "O(n)",
+        "source": "reference:CODE-P63",
+        "profile": {
+          "family": "INT_ARRAY",
+          "spec": {
+            "max_n": 200000
+          }
+        },
+        "parameters": {
+          "seed": 20261030,
+          "wall_limit_ms": 4000,
+          "budget_ms": 60000,
+          "repeats": 5,
+          "max_rungs": 13
+        },
+        "reference_solution_verification": {
+          "ok": true,
+          "cases": 5
+        },
+        "static": {
+          "time_class": "O(n)",
+          "space_class": "O(1)",
+          "confidence": "HIGH",
+          "loop_depth": 1,
+          "recursive": false,
+          "sorts": 0,
+          "evidence": [
+            {
+              "line": 9,
+              "reason": "最深层循环嵌套 1 层",
+              "kind": "LOOP_DEPTH"
+            }
+          ],
+          "notes": []
+        },
+        "stop_reason": "OK",
+        "elapsed_seconds": 3.35,
+        "rungs": [
+          {
+            "n": 256,
+            "wall_ms": 12.89,
+            "reference_ms": 12.825,
+            "io_ratio": 1.005,
+            "peak_rss_kib": 16512,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 512,
+            "wall_ms": 12.707,
+            "reference_ms": 13.016,
+            "io_ratio": 0.976,
+            "peak_rss_kib": 16544,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 1024,
+            "wall_ms": 13.718,
+            "reference_ms": 12.927,
+            "io_ratio": 1.061,
+            "peak_rss_kib": 16592,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 2048,
+            "wall_ms": 12.868,
+            "reference_ms": 12.871,
+            "io_ratio": 1.0,
+            "peak_rss_kib": 16720,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 4096,
+            "wall_ms": 12.433,
+            "reference_ms": 12.872,
+            "io_ratio": 0.966,
+            "peak_rss_kib": 16896,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 8192,
+            "wall_ms": 12.861,
+            "reference_ms": 13.96,
+            "io_ratio": 0.921,
+            "peak_rss_kib": 17152,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 16384,
+            "wall_ms": 12.88,
+            "reference_ms": 12.918,
+            "io_ratio": 0.997,
+            "peak_rss_kib": 17664,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 32768,
+            "wall_ms": 12.845,
+            "reference_ms": 15.222,
+            "io_ratio": 0.844,
+            "peak_rss_kib": 18512,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 65536,
+            "wall_ms": 17.47,
+            "reference_ms": 26.92,
+            "io_ratio": 0.649,
+            "peak_rss_kib": 20592,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 131072,
+            "wall_ms": 68.874,
+            "reference_ms": 40.48,
+            "io_ratio": 1.701,
+            "peak_rss_kib": 24592,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          }
+        ],
+        "conclusion": {
+          "measured_class": "O(log n)",
+          "io_class": "UNKNOWN",
+          "informative": true,
+          "r2": 0.22632,
+          "exponent": 0.1488,
+          "confidence": "LOW",
+          "floor_ms": 12.433,
+          "coefficient": 1.60220268,
+          "fitted_class_from_fit": "O(log n)",
+          "fit_r2": 0.22632,
+          "fit_notes": [
+            "多数档位仍在启动开销附近，增长信号偏弱"
+          ],
+          "reference_fitted_class": "O(log n)",
+          "reference_fit_r2": 0.449737,
+          "reference_fit_confidence": "LOW"
+        },
+        "candidate_r2": [
+          {
+            "class": "O(n^3)",
+            "r2": 0.997661,
+            "chosen": false
+          },
+          {
+            "class": "O(n^2 log n)",
+            "r2": 0.975214,
+            "chosen": false
+          },
+          {
+            "class": "O(n^2)",
+            "r2": 0.970283,
+            "chosen": false
+          },
+          {
+            "class": "O(n log n)",
+            "r2": 0.84174,
+            "chosen": false
+          },
+          {
+            "class": "O(n)",
+            "r2": 0.817123,
+            "chosen": false
+          },
+          {
+            "class": "O(log n)",
+            "r2": 0.22632,
+            "chosen": true
+          },
+          {
+            "class": "O(1)",
+            "r2": 0.0,
+            "chosen": false
+          },
+          {
+            "class": "O(2^n)",
+            "r2": 0.0,
+            "chosen": false
+          }
+        ],
+        "final": {
+          "time_class": "O(n)",
+          "source": "STATIC",
+          "confidence": "HIGH",
+          "agreement": false,
+          "space_class": "O(1)",
+          "limitations": [
+            "实测增长 O(log n) 的置信度偏低（R²=0.226），未超过结构分析 O(n) 的证据强度"
+          ]
+        },
+        "agrees_with_expected": true
+      },
+      {
+        "key": "Onlog",
+        "title": "线性对数：自写归并排序后再取和",
+        "expected_class": "O(n log n)",
+        "source": "hand-written",
+        "profile": {
+          "family": "INT_ARRAY",
+          "spec": {
+            "max_n": 2000000
+          }
+        },
+        "parameters": {
+          "seed": 20261031,
+          "wall_limit_ms": 4000,
+          "budget_ms": 60000,
+          "repeats": 5,
+          "max_rungs": 13
+        },
+        "reference_solution_verification": {
+          "ok": null,
+          "cases": 0
+        },
+        "static": {
+          "time_class": "O(n log n)",
+          "space_class": "O(n)",
+          "confidence": "HIGH",
+          "loop_depth": 1,
+          "recursive": true,
+          "sorts": 0,
+          "evidence": [
+            {
+              "line": 4,
+              "reason": "递归函数 merge_sort 每层含循环，递归与循环相乘",
+              "kind": "RECURSION_WITH_LOOP"
+            },
+            {
+              "line": 25,
+              "reason": "调用 list() 建立随输入增长的容器",
+              "kind": "ALLOCATION"
+            },
+            {
+              "line": 12,
+              "reason": "最深层循环嵌套 1 层",
+              "kind": "LOOP_DEPTH"
+            },
+            {
+              "line": 0,
+              "reason": "双路折半递归，每层线性合并（分治）",
+              "kind": "DIVIDE_CONQUER"
+            },
+            {
+              "line": 0,
+              "reason": "存在随输入规模增长的容器",
+              "kind": "SPACE"
+            },
+            {
+              "line": 0,
+              "reason": "递归深度随规模增长，占用调用栈",
+              "kind": "STACK"
+            }
+          ],
+          "notes": []
+        },
+        "stop_reason": "OK",
+        "elapsed_seconds": 3.38,
+        "rungs": [
+          {
+            "n": 256,
+            "wall_ms": 16.932,
+            "reference_ms": 17.943,
+            "io_ratio": 0.944,
+            "peak_rss_kib": 16592,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 512,
+            "wall_ms": 17.67,
+            "reference_ms": 16.76,
+            "io_ratio": 1.054,
+            "peak_rss_kib": 16656,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 1024,
+            "wall_ms": 17.241,
+            "reference_ms": 15.416,
+            "io_ratio": 1.118,
+            "peak_rss_kib": 16848,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 2048,
+            "wall_ms": 17.648,
+            "reference_ms": 14.927,
+            "io_ratio": 1.182,
+            "peak_rss_kib": 17120,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 4096,
+            "wall_ms": 17.919,
+            "reference_ms": 12.921,
+            "io_ratio": 1.387,
+            "peak_rss_kib": 17632,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 8192,
+            "wall_ms": 19.847,
+            "reference_ms": 15.141,
+            "io_ratio": 1.311,
+            "peak_rss_kib": 18208,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 16384,
+            "wall_ms": 30.471,
+            "reference_ms": 14.939,
+            "io_ratio": 2.04,
+            "peak_rss_kib": 19248,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 32768,
+            "wall_ms": 45.006,
+            "reference_ms": 15.276,
+            "io_ratio": 2.946,
+            "peak_rss_kib": 21088,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 65536,
+            "wall_ms": 81.1,
+            "reference_ms": 20.047,
+            "io_ratio": 4.045,
+            "peak_rss_kib": 24800,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          }
+        ],
+        "conclusion": {
+          "measured_class": "O(n log n)",
+          "io_class": "UNKNOWN",
+          "informative": true,
+          "r2": 0.996389,
+          "exponent": 0.7061,
+          "confidence": "HIGH",
+          "floor_ms": 16.932,
+          "coefficient": 6.152e-05,
+          "fitted_class_from_fit": "O(n log n)",
+          "fit_r2": 0.996389,
+          "fit_notes": [],
+          "reference_fitted_class": "O(log n)",
+          "reference_fit_r2": 0.005184,
+          "reference_fit_confidence": "LOW"
+        },
+        "candidate_r2": [
+          {
+            "class": "O(n log n)",
+            "r2": 0.996389,
+            "chosen": true
+          },
+          {
+            "class": "O(n)",
+            "r2": 0.992198,
+            "chosen": false
+          },
+          {
+            "class": "O(n^2)",
+            "r2": 0.95529,
+            "chosen": false
+          },
+          {
+            "class": "O(n^2 log n)",
+            "r2": 0.948545,
+            "chosen": false
+          },
+          {
+            "class": "O(n^3)",
+            "r2": 0.891771,
+            "chosen": false
+          },
+          {
+            "class": "O(log n)",
+            "r2": 0.395728,
+            "chosen": false
+          },
+          {
+            "class": "O(1)",
+            "r2": 0.0,
+            "chosen": false
+          },
+          {
+            "class": "O(2^n)",
+            "r2": 0.0,
+            "chosen": false
+          }
+        ],
+        "final": {
+          "time_class": "O(n log n)",
+          "source": "DYNAMIC",
+          "confidence": "HIGH",
+          "agreement": true,
+          "space_class": "O(n)",
+          "limitations": []
+        },
+        "agrees_with_expected": true
+      },
+      {
+        "key": "On2",
+        "title": "平方：最长公共子序列滚动数组（参考解）",
+        "expected_class": "O(n^2)",
+        "source": "reference:CODE-P17",
+        "profile": {
+          "family": "TWO_STRINGS",
+          "spec": {
+            "max_n": 4096
+          }
+        },
+        "parameters": {
+          "seed": 20261032,
+          "wall_limit_ms": 4000,
+          "budget_ms": 60000,
+          "repeats": 5,
+          "max_rungs": 13
+        },
+        "reference_solution_verification": {
+          "ok": true,
+          "cases": 5
+        },
+        "static": {
+          "time_class": "O(n^2)",
+          "space_class": "O(n)",
+          "confidence": "HIGH",
+          "loop_depth": 2,
+          "recursive": false,
+          "sorts": 0,
+          "evidence": [
+            {
+              "line": 11,
+              "reason": "最深层循环嵌套 2 层",
+              "kind": "LOOP_DEPTH"
+            },
+            {
+              "line": 0,
+              "reason": "存在随输入规模增长的容器",
+              "kind": "SPACE"
+            }
+          ],
+          "notes": []
+        },
+        "stop_reason": "OK",
+        "elapsed_seconds": 2.26,
+        "rungs": [
+          {
+            "n": 256,
+            "wall_ms": 12.974,
+            "reference_ms": 12.893,
+            "io_ratio": 1.006,
+            "peak_rss_kib": 16592,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 512,
+            "wall_ms": 23.403,
+            "reference_ms": 14.746,
+            "io_ratio": 1.587,
+            "peak_rss_kib": 16544,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 1024,
+            "wall_ms": 55.49,
+            "reference_ms": 12.436,
+            "io_ratio": 4.462,
+            "peak_rss_kib": 16576,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 2048,
+            "wall_ms": 197.496,
+            "reference_ms": 13.524,
+            "io_ratio": 14.604,
+            "peak_rss_kib": 16576,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          }
+        ],
+        "conclusion": {
+          "measured_class": "O(n^2)",
+          "io_class": "UNKNOWN",
+          "informative": true,
+          "r2": 0.999793,
+          "exponent": 1.5385,
+          "confidence": "LOW",
+          "floor_ms": 12.974,
+          "coefficient": 4.457e-05,
+          "fitted_class_from_fit": "O(n^2)",
+          "fit_r2": 0.999793,
+          "fit_notes": [],
+          "reference_fitted_class": "O(1)",
+          "reference_fit_r2": 0.0,
+          "reference_fit_confidence": "LOW"
+        },
+        "candidate_r2": [
+          {
+            "class": "O(n^2)",
+            "r2": 0.999793,
+            "chosen": true
+          },
+          {
+            "class": "O(n^2 log n)",
+            "r2": 0.99975,
+            "chosen": false
+          },
+          {
+            "class": "O(n^3)",
+            "r2": 0.989898,
+            "chosen": false
+          },
+          {
+            "class": "O(n log n)",
+            "r2": 0.945708,
+            "chosen": false
+          },
+          {
+            "class": "O(n)",
+            "r2": 0.907447,
+            "chosen": false
+          },
+          {
+            "class": "O(log n)",
+            "r2": 0.198171,
+            "chosen": false
+          },
+          {
+            "class": "O(1)",
+            "r2": 0.0,
+            "chosen": false
+          },
+          {
+            "class": "O(2^n)",
+            "r2": 0.0,
+            "chosen": false
+          }
+        ],
+        "final": {
+          "time_class": "O(n^2)",
+          "source": "STATIC",
+          "confidence": "HIGH",
+          "agreement": true,
+          "space_class": "O(n)",
+          "limitations": [
+            "实测增长 O(n^2) 的置信度偏低（R²=1.000），未超过结构分析 O(n^2) 的证据强度"
+          ]
+        },
+        "agrees_with_expected": true
+      },
+      {
+        "key": "On3",
+        "title": "立方：石子合并区间 DP（参考解）",
+        "expected_class": "O(n^3)",
+        "source": "reference:CODE-P23",
+        "profile": {
+          "family": "INT_ARRAY",
+          "spec": {
+            "max_n": 2000
+          }
+        },
+        "parameters": {
+          "seed": 20261033,
+          "wall_limit_ms": 4000,
+          "budget_ms": 60000,
+          "repeats": 5,
+          "max_rungs": 13
+        },
+        "reference_solution_verification": {
+          "ok": true,
+          "cases": 5
+        },
+        "static": {
+          "time_class": "O(n^3)",
+          "space_class": "O(n^2)",
+          "confidence": "HIGH",
+          "loop_depth": 3,
+          "recursive": false,
+          "sorts": 0,
+          "evidence": [
+            {
+              "line": 5,
+              "reason": "调用 list() 建立随输入增长的容器",
+              "kind": "ALLOCATION"
+            },
+            {
+              "line": 14,
+              "reason": "推导式构造二维表",
+              "kind": "MATRIX"
+            },
+            {
+              "line": 14,
+              "reason": "推导式：1 层迭代并分配新容器",
+              "kind": "ALLOCATION"
+            },
+            {
+              "line": 11,
+              "reason": "最深层循环嵌套 3 层",
+              "kind": "LOOP_DEPTH"
+            },
+            {
+              "line": 0,
+              "reason": "存在随输入规模增长的容器",
+              "kind": "SPACE"
+            }
+          ],
+          "notes": []
+        },
+        "stop_reason": "TIME_LIMIT_EXCEEDED",
+        "elapsed_seconds": 10.7,
+        "rungs": [
+          {
+            "n": 256,
+            "wall_ms": 124.765,
+            "reference_ms": 10.401,
+            "io_ratio": 11.995,
+            "peak_rss_kib": 18320,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 512,
+            "wall_ms": 1047.66,
+            "reference_ms": 13.915,
+            "io_ratio": 75.288,
+            "peak_rss_kib": 23296,
+            "verdict": "OK",
+            "detail": null,
+            "repeats": 5
+          },
+          {
+            "n": 1024,
+            "wall_ms": 4002.257,
+            "reference_ms": 13.627,
+            "io_ratio": 293.705,
+            "peak_rss_kib": null,
+            "verdict": "TIME_LIMIT_EXCEEDED",
+            "detail": "4000 ms 内未结束",
+            "repeats": 1
+          }
+        ],
+        "conclusion": {
+          "measured_class": "UNKNOWN",
+          "io_class": "UNKNOWN",
+          "informative": true,
+          "r2": 0.0,
+          "exponent": 0.0,
+          "confidence": "LOW",
+          "floor_ms": 124.765,
+          "coefficient": 0.0,
+          "fitted_class_from_fit": "UNKNOWN",
+          "fit_r2": 0.0,
+          "fit_notes": [],
+          "reference_fitted_class": "O(log n)",
+          "reference_fit_r2": 0.670771,
+          "reference_fit_confidence": "LOW"
+        },
+        "candidate_r2": [
+          {
+            "class": "O(n^3)",
+            "r2": 0.999911,
+            "chosen": false
+          },
+          {
+            "class": "O(n^2 log n)",
+            "r2": 0.973791,
+            "chosen": false
+          },
+          {
+            "class": "O(n^2)",
+            "r2": 0.958429,
+            "chosen": false
+          },
+          {
+            "class": "O(n log n)",
+            "r2": 0.771753,
+            "chosen": false
+          },
+          {
+            "class": "O(n)",
+            "r2": 0.700841,
+            "chosen": false
+          },
+          {
+            "class": "O(log n)",
+            "r2": 0.145877,
+            "chosen": false
+          },
+          {
+            "class": "O(1)",
+            "r2": 0.0,
+            "chosen": false
+          },
+          {
+            "class": "O(2^n)",
+            "r2": 0.0,
+            "chosen": false
+          }
+        ],
+        "final": {
+          "time_class": "O(n^3)",
+          "source": "STATIC",
+          "confidence": "HIGH",
+          "agreement": null,
+          "space_class": "O(n^2)",
+          "limitations": [
+            "有效测量档位少于 4 个，增长拟合容易受常数开销影响"
+          ]
+        },
+        "agrees_with_expected": true
+      }
+    ],
+    "fit_calibration": {
+      "name": "拟合器标定：把无噪声的理想增长曲线喂给同一个 fit_growth",
+      "purpose": "分离“测量噪声”与“拟合规则”两类误差：这里没有任何噪声，报错的部分只能来自规则本身（R² 只差 0.005 以内就取更低阶，而 O(n log n) 相对 O(n) 的 R² 优势始终小于这个门槛）",
+      "parameters": {
+        "floor_ms": 12.0,
+        "amplitude_at_first_rung_ms": 24.0,
+        "rungs": 7,
+        "tie_margin": 0.005
+      },
+      "rows": [
+        {
+          "ideal_class": "O(1)",
+          "ladder_span": 4,
+          "rungs": 7,
+          "sizes": [
+            256,
+            323,
+            406,
+            512,
+            645,
+            813,
+            1024
+          ],
+          "reported_class": "O(1)",
+          "reported_r2": 1.0,
+          "confidence": "MEDIUM",
+          "correct": true,
+          "r2_by_class": {
+            "O(1)": 1.0,
+            "O(2^n)": 1.0
+          },
+          "top_two_gap": 0.0
+        },
+        {
+          "ideal_class": "O(log n)",
+          "ladder_span": 4,
+          "rungs": 7,
+          "sizes": [
+            256,
+            323,
+            406,
+            512,
+            645,
+            813,
+            1024
+          ],
+          "reported_class": "O(log n)",
+          "reported_r2": 1.0,
+          "confidence": "MEDIUM",
+          "correct": true,
+          "r2_by_class": {
+            "O(log n)": 1.0,
+            "O(n)": 0.962704,
+            "O(n log n)": 0.952602,
+            "O(n^2)": 0.873076,
+            "O(n^2 log n)": 0.8583,
+            "O(n^3)": 0.771553,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.037296
+        },
+        {
+          "ideal_class": "O(n)",
+          "ladder_span": 4,
+          "rungs": 7,
+          "sizes": [
+            256,
+            323,
+            406,
+            512,
+            645,
+            813,
+            1024
+          ],
+          "reported_class": "O(n)",
+          "reported_r2": 1.0,
+          "confidence": "HIGH",
+          "correct": true,
+          "r2_by_class": {
+            "O(n)": 1.0,
+            "O(n log n)": 0.99936,
+            "O(n^2)": 0.970525,
+            "O(n^2 log n)": 0.962565,
+            "O(n^3)": 0.906396,
+            "O(log n)": 0.355895,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.00064
+        },
+        {
+          "ideal_class": "O(n log n)",
+          "ladder_span": 4,
+          "rungs": 7,
+          "sizes": [
+            256,
+            323,
+            406,
+            512,
+            645,
+            813,
+            1024
+          ],
+          "reported_class": "O(n log n)",
+          "reported_r2": 1.0,
+          "confidence": "HIGH",
+          "correct": true,
+          "r2_by_class": {
+            "O(n log n)": 1.0,
+            "O(n)": 0.99936,
+            "O(n^2)": 0.978418,
+            "O(n^2 log n)": 0.971491,
+            "O(n^3)": 0.920256,
+            "O(log n)": 0.306235,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.00064
+        },
+        {
+          "ideal_class": "O(n^2)",
+          "ladder_span": 4,
+          "rungs": 7,
+          "sizes": [
+            256,
+            323,
+            406,
+            512,
+            645,
+            813,
+            1024
+          ],
+          "reported_class": "O(n^2)",
+          "reported_r2": 1.0,
+          "confidence": "HIGH",
+          "correct": true,
+          "r2_by_class": {
+            "O(n^2)": 1.0,
+            "O(n^2 log n)": 0.999502,
+            "O(n^3)": 0.980427,
+            "O(n log n)": 0.894138,
+            "O(n)": 0.832043,
+            "O(log n)": 0.170994,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.000498
+        },
+        {
+          "ideal_class": "O(n^3)",
+          "ladder_span": 4,
+          "rungs": 7,
+          "sizes": [
+            256,
+            323,
+            406,
+            512,
+            645,
+            813,
+            1024
+          ],
+          "reported_class": "O(n^3)",
+          "reported_r2": 1.0,
+          "confidence": "HIGH",
+          "correct": true,
+          "r2_by_class": {
+            "O(n^3)": 1.0,
+            "O(n^2 log n)": 0.96394,
+            "O(n^2)": 0.945367,
+            "O(n log n)": 0.719571,
+            "O(n)": 0.649693,
+            "O(log n)": 0.113054,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.03606
+        },
+        {
+          "ideal_class": "O(1)",
+          "ladder_span": 8,
+          "rungs": 7,
+          "sizes": [
+            256,
+            362,
+            512,
+            724,
+            1024,
+            1448,
+            2048
+          ],
+          "reported_class": "O(1)",
+          "reported_r2": 1.0,
+          "confidence": "MEDIUM",
+          "correct": true,
+          "r2_by_class": {
+            "O(1)": 1.0,
+            "O(2^n)": 1.0
+          },
+          "top_two_gap": 0.0
+        },
+        {
+          "ideal_class": "O(log n)",
+          "ladder_span": 8,
+          "rungs": 7,
+          "sizes": [
+            256,
+            362,
+            512,
+            724,
+            1024,
+            1448,
+            2048
+          ],
+          "reported_class": "O(log n)",
+          "reported_r2": 1.0,
+          "confidence": "MEDIUM",
+          "correct": true,
+          "r2_by_class": {
+            "O(log n)": 1.0,
+            "O(n)": 0.921713,
+            "O(n log n)": 0.903491,
+            "O(n^2)": 0.771329,
+            "O(n^2 log n)": 0.75189,
+            "O(n^3)": 0.644002,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.078287
+        },
+        {
+          "ideal_class": "O(n)",
+          "ladder_span": 8,
+          "rungs": 7,
+          "sizes": [
+            256,
+            362,
+            512,
+            724,
+            1024,
+            1448,
+            2048
+          ],
+          "reported_class": "O(n)",
+          "reported_r2": 1.0,
+          "confidence": "HIGH",
+          "correct": true,
+          "r2_by_class": {
+            "O(n)": 1.0,
+            "O(n log n)": 0.998924,
+            "O(n^2)": 0.951315,
+            "O(n^2 log n)": 0.940451,
+            "O(n^3)": 0.866868,
+            "O(log n)": 0.322293,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.001076
+        },
+        {
+          "ideal_class": "O(n log n)",
+          "ladder_span": 8,
+          "rungs": 7,
+          "sizes": [
+            256,
+            362,
+            512,
+            724,
+            1024,
+            1448,
+            2048
+          ],
+          "reported_class": "O(n log n)",
+          "reported_r2": 1.0,
+          "confidence": "HIGH",
+          "correct": true,
+          "r2_by_class": {
+            "O(n log n)": 1.0,
+            "O(n)": 0.998757,
+            "O(n^2)": 0.964271,
+            "O(n^2 log n)": 0.954774,
+            "O(n^3)": 0.88745,
+            "O(log n)": 0.280133,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.001243
+        },
+        {
+          "ideal_class": "O(n^2)",
+          "ladder_span": 8,
+          "rungs": 7,
+          "sizes": [
+            256,
+            362,
+            512,
+            724,
+            1024,
+            1448,
+            2048
+          ],
+          "reported_class": "O(n^2)",
+          "reported_r2": 1.0,
+          "confidence": "HIGH",
+          "correct": true,
+          "r2_by_class": {
+            "O(n^2)": 1.0,
+            "O(n^2 log n)": 0.999407,
+            "O(n^3)": 0.976128,
+            "O(n log n)": 0.894582,
+            "O(n)": 0.841348,
+            "O(log n)": 0.159961,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.000593
+        },
+        {
+          "ideal_class": "O(n^3)",
+          "ladder_span": 8,
+          "rungs": 7,
+          "sizes": [
+            256,
+            362,
+            512,
+            724,
+            1024,
+            1448,
+            2048
+          ],
+          "reported_class": "O(n^3)",
+          "reported_r2": 1.0,
+          "confidence": "HIGH",
+          "correct": true,
+          "r2_by_class": {
+            "O(n^3)": 1.0,
+            "O(n^2 log n)": 0.969248,
+            "O(n^2)": 0.955575,
+            "O(n log n)": 0.754474,
+            "O(n)": 0.693029,
+            "O(log n)": 0.111466,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.030752
+        },
+        {
+          "ideal_class": "O(1)",
+          "ladder_span": 16,
+          "rungs": 7,
+          "sizes": [
+            256,
+            406,
+            645,
+            1024,
+            1625,
+            2580,
+            4096
+          ],
+          "reported_class": "O(1)",
+          "reported_r2": 1.0,
+          "confidence": "MEDIUM",
+          "correct": true,
+          "r2_by_class": {
+            "O(1)": 1.0,
+            "O(2^n)": 1.0
+          },
+          "top_two_gap": 0.0
+        },
+        {
+          "ideal_class": "O(log n)",
+          "ladder_span": 16,
+          "rungs": 7,
+          "sizes": [
+            256,
+            406,
+            645,
+            1024,
+            1625,
+            2580,
+            4096
+          ],
+          "reported_class": "O(log n)",
+          "reported_r2": 1.0,
+          "confidence": "MEDIUM",
+          "correct": true,
+          "r2_by_class": {
+            "O(log n)": 1.0,
+            "O(n)": 0.87297,
+            "O(n log n)": 0.8481,
+            "O(n^2)": 0.681804,
+            "O(n^2 log n)": 0.662311,
+            "O(n^3)": 0.556293,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.12703
+        },
+        {
+          "ideal_class": "O(n)",
+          "ladder_span": 16,
+          "rungs": 7,
+          "sizes": [
+            256,
+            406,
+            645,
+            1024,
+            1625,
+            2580,
+            4096
+          ],
+          "reported_class": "O(n)",
+          "reported_r2": 1.0,
+          "confidence": "HIGH",
+          "correct": true,
+          "r2_by_class": {
+            "O(n)": 1.0,
+            "O(n log n)": 0.998635,
+            "O(n^2)": 0.939156,
+            "O(n^2 log n)": 0.927833,
+            "O(n^3)": 0.851843,
+            "O(log n)": 0.298852,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.001365
+        },
+        {
+          "ideal_class": "O(n log n)",
+          "ladder_span": 16,
+          "rungs": 7,
+          "sizes": [
+            256,
+            406,
+            645,
+            1024,
+            1625,
+            2580,
+            4096
+          ],
+          "reported_class": "O(n log n)",
+          "reported_r2": 1.0,
+          "confidence": "HIGH",
+          "correct": true,
+          "r2_by_class": {
+            "O(n log n)": 1.0,
+            "O(n)": 0.997482,
+            "O(n^2)": 0.955275,
+            "O(n^2 log n)": 0.945342,
+            "O(n^3)": 0.875744,
+            "O(log n)": 0.263582,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.002518
+        },
+        {
+          "ideal_class": "O(n^2)",
+          "ladder_span": 16,
+          "rungs": 7,
+          "sizes": [
+            256,
+            406,
+            645,
+            1024,
+            1625,
+            2580,
+            4096
+          ],
+          "reported_class": "O(n^2)",
+          "reported_r2": 1.0,
+          "confidence": "HIGH",
+          "correct": true,
+          "r2_by_class": {
+            "O(n^2)": 1.0,
+            "O(n^2 log n)": 0.999462,
+            "O(n^3)": 0.977256,
+            "O(n log n)": 0.904178,
+            "O(n)": 0.859909,
+            "O(log n)": 0.155755,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.000538
+        },
+        {
+          "ideal_class": "O(n^3)",
+          "ladder_span": 16,
+          "rungs": 7,
+          "sizes": [
+            256,
+            406,
+            645,
+            1024,
+            1625,
+            2580,
+            4096
+          ],
+          "reported_class": "O(n^3)",
+          "reported_r2": 1.0,
+          "confidence": "HIGH",
+          "correct": true,
+          "r2_by_class": {
+            "O(n^3)": 1.0,
+            "O(n^2 log n)": 0.975311,
+            "O(n^2)": 0.965194,
+            "O(n log n)": 0.787357,
+            "O(n)": 0.734853,
+            "O(log n)": 0.113231,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.024689
+        },
+        {
+          "ideal_class": "O(1)",
+          "ladder_span": 64,
+          "rungs": 7,
+          "sizes": [
+            256,
+            512,
+            1024,
+            2048,
+            4096,
+            8192,
+            16384
+          ],
+          "reported_class": "O(1)",
+          "reported_r2": 1.0,
+          "confidence": "MEDIUM",
+          "correct": true,
+          "r2_by_class": {
+            "O(1)": 1.0,
+            "O(2^n)": 1.0
+          },
+          "top_two_gap": 0.0
+        },
+        {
+          "ideal_class": "O(log n)",
+          "ladder_span": 64,
+          "rungs": 7,
+          "sizes": [
+            256,
+            512,
+            1024,
+            2048,
+            4096,
+            8192,
+            16384
+          ],
+          "reported_class": "O(log n)",
+          "reported_r2": 1.0,
+          "confidence": "MEDIUM",
+          "correct": true,
+          "r2_by_class": {
+            "O(log n)": 1.0,
+            "O(n)": 0.771267,
+            "O(n log n)": 0.740495,
+            "O(n^2)": 0.556245,
+            "O(n^2 log n)": 0.541579,
+            "O(n^3)": 0.459729,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.228733
+        },
+        {
+          "ideal_class": "O(n)",
+          "ladder_span": 64,
+          "rungs": 7,
+          "sizes": [
+            256,
+            512,
+            1024,
+            2048,
+            4096,
+            8192,
+            16384
+          ],
+          "reported_class": "O(n)",
+          "reported_r2": 1.0,
+          "confidence": "HIGH",
+          "correct": true,
+          "r2_by_class": {
+            "O(n)": 1.0,
+            "O(n log n)": 0.998542,
+            "O(n^2)": 0.934055,
+            "O(n^2 log n)": 0.925049,
+            "O(n^3)": 0.863005,
+            "O(log n)": 0.270911,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.001458
+        },
+        {
+          "ideal_class": "O(n log n)",
+          "ladder_span": 64,
+          "rungs": 7,
+          "sizes": [
+            256,
+            512,
+            1024,
+            2048,
+            4096,
+            8192,
+            16384
+          ],
+          "reported_class": "O(n log n)",
+          "reported_r2": 1.0,
+          "confidence": "HIGH",
+          "correct": true,
+          "r2_by_class": {
+            "O(n log n)": 1.0,
+            "O(n)": 0.99706,
+            "O(n^2)": 0.951245,
+            "O(n^2 log n)": 0.943319,
+            "O(n^3)": 0.886674,
+            "O(log n)": 0.24586,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.00294
+        },
+        {
+          "ideal_class": "O(n^2)",
+          "ladder_span": 64,
+          "rungs": 7,
+          "sizes": [
+            256,
+            512,
+            1024,
+            2048,
+            4096,
+            8192,
+            16384
+          ],
+          "reported_class": "O(n^2)",
+          "reported_r2": 1.0,
+          "confidence": "HIGH",
+          "correct": true,
+          "r2_by_class": {
+            "O(n^2)": 1.0,
+            "O(n^2 log n)": 0.999673,
+            "O(n^3)": 0.984516,
+            "O(n log n)": 0.923853,
+            "O(n)": 0.893044,
+            "O(log n)": 0.154335,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.000327
+        },
+        {
+          "ideal_class": "O(n^3)",
+          "ladder_span": 64,
+          "rungs": 7,
+          "sizes": [
+            256,
+            512,
+            1024,
+            2048,
+            4096,
+            8192,
+            16384
+          ],
+          "reported_class": "O(n^3)",
+          "reported_r2": 1.0,
+          "confidence": "HIGH",
+          "correct": true,
+          "r2_by_class": {
+            "O(n^3)": 1.0,
+            "O(n^2 log n)": 0.985118,
+            "O(n^2)": 0.979605,
+            "O(n log n)": 0.842016,
+            "O(n)": 0.804065,
+            "O(log n)": 0.12049,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.014882
+        },
+        {
+          "ideal_class": "O(1)",
+          "ladder_span": 256,
+          "rungs": 7,
+          "sizes": [
+            256,
+            645,
+            1625,
+            4096,
+            10321,
+            26008,
+            65536
+          ],
+          "reported_class": "O(1)",
+          "reported_r2": 1.0,
+          "confidence": "MEDIUM",
+          "correct": true,
+          "r2_by_class": {
+            "O(1)": 1.0,
+            "O(2^n)": 1.0
+          },
+          "top_two_gap": 0.0
+        },
+        {
+          "ideal_class": "O(log n)",
+          "ladder_span": 256,
+          "rungs": 7,
+          "sizes": [
+            256,
+            645,
+            1625,
+            4096,
+            10321,
+            26008,
+            65536
+          ],
+          "reported_class": "O(log n)",
+          "reported_r2": 1.0,
+          "confidence": "HIGH",
+          "correct": true,
+          "r2_by_class": {
+            "O(log n)": 1.0,
+            "O(n)": 0.681674,
+            "O(n log n)": 0.652292,
+            "O(n^2)": 0.483566,
+            "O(n^2 log n)": 0.473712,
+            "O(n^3)": 0.415978,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.318326
+        },
+        {
+          "ideal_class": "O(n)",
+          "ladder_span": 256,
+          "rungs": 7,
+          "sizes": [
+            256,
+            645,
+            1625,
+            4096,
+            10321,
+            26008,
+            65536
+          ],
+          "reported_class": "O(n)",
+          "reported_r2": 1.0,
+          "confidence": "HIGH",
+          "correct": true,
+          "r2_by_class": {
+            "O(n)": 1.0,
+            "O(n log n)": 0.998792,
+            "O(n^2)": 0.94229,
+            "O(n^2 log n)": 0.936223,
+            "O(n^3)": 0.893219,
+            "O(log n)": 0.255542,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.001208
+        },
+        {
+          "ideal_class": "O(n log n)",
+          "ladder_span": 256,
+          "rungs": 7,
+          "sizes": [
+            256,
+            645,
+            1625,
+            4096,
+            10321,
+            26008,
+            65536
+          ],
+          "reported_class": "O(n log n)",
+          "reported_r2": 1.0,
+          "confidence": "HIGH",
+          "correct": true,
+          "r2_by_class": {
+            "O(n log n)": 1.0,
+            "O(n)": 0.99787,
+            "O(n^2)": 0.957017,
+            "O(n^2 log n)": 0.951675,
+            "O(n^3)": 0.912682,
+            "O(log n)": 0.236773,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.00213
+        },
+        {
+          "ideal_class": "O(n^2)",
+          "ladder_span": 256,
+          "rungs": 7,
+          "sizes": [
+            256,
+            645,
+            1625,
+            4096,
+            10321,
+            26008,
+            65536
+          ],
+          "reported_class": "O(n^2)",
+          "reported_r2": 1.0,
+          "confidence": "HIGH",
+          "correct": true,
+          "r2_by_class": {
+            "O(n^2)": 1.0,
+            "O(n^2 log n)": 0.99983,
+            "O(n^3)": 0.991231,
+            "O(n log n)": 0.940817,
+            "O(n)": 0.918904,
+            "O(log n)": 0.156599,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.00017
+        },
+        {
+          "ideal_class": "O(n^3)",
+          "ladder_span": 256,
+          "rungs": 7,
+          "sizes": [
+            256,
+            645,
+            1625,
+            4096,
+            10321,
+            26008,
+            65536
+          ],
+          "reported_class": "O(n^3)",
+          "reported_r2": 1.0,
+          "confidence": "HIGH",
+          "correct": true,
+          "r2_by_class": {
+            "O(n^3)": 1.0,
+            "O(n^2 log n)": 0.991864,
+            "O(n^2)": 0.989019,
+            "O(n log n)": 0.887011,
+            "O(n)": 0.859747,
+            "O(log n)": 0.13037,
+            "O(1)": 0.0,
+            "O(2^n)": 0.0
+          },
+          "top_two_gap": 0.008136
+        }
+      ],
+      "misclassified": 0,
+      "misclassified_detail": []
+    },
+    "repeatability": {
+      "name": "重复性：同一组被测程序连续测 3 次",
+      "purpose": "量化墙钟测量的波动对最终类别的影响；报告正文里只写一次的数字必须带着这个前提读",
+      "runs_per_group": 3,
+      "rows": [
+        {
+          "key": "Olog",
+          "expected": "O(log n)",
+          "title": "对数时间：循环 6 万次、每次在 [0, n] 上二分",
+          "runs": [
+            {
+              "attempt": 1,
+              "stop_reason": "LADDER_EXHAUSTED",
+              "measured_class": "O(log n)",
+              "fit_r2": 0.939293,
+              "confidence": "MEDIUM",
+              "final_class": "O(log n)",
+              "final_source": "DYNAMIC",
+              "seconds": 5.2,
+              "rungs": [
+                [
+                  256,
+                  27.705
+                ],
+                [
+                  512,
+                  27.926
+                ],
+                [
+                  1024,
+                  32.528
+                ],
+                [
+                  2048,
+                  39.834
+                ],
+                [
+                  4096,
+                  37.914
+                ],
+                [
+                  8192,
+                  39.912
+                ],
+                [
+                  16384,
+                  40.545
+                ],
+                [
+                  32768,
+                  42.975
+                ],
+                [
+                  65536,
+                  41.963
+                ],
+                [
+                  131072,
+                  47.079
+                ],
+                [
+                  262144,
+                  47.849
+                ],
+                [
+                  524288,
+                  52.58
+                ],
+                [
+                  1048576,
+                  54.281
+                ]
+              ]
+            },
+            {
+              "attempt": 2,
+              "stop_reason": "LADDER_EXHAUSTED",
+              "measured_class": "O(log n)",
+              "fit_r2": 0.976879,
+              "confidence": "MEDIUM",
+              "final_class": "O(log n)",
+              "final_source": "DYNAMIC",
+              "seconds": 5.0,
+              "rungs": [
+                [
+                  256,
+                  25.381
+                ],
+                [
+                  512,
+                  25.357
+                ],
+                [
+                  1024,
+                  30.38
+                ],
+                [
+                  2048,
+                  27.893
+                ],
+                [
+                  4096,
+                  34.967
+                ],
+                [
+                  8192,
+                  35.446
+                ],
+                [
+                  16384,
+                  40.206
+                ],
+                [
+                  32768,
+                  42.416
+                ],
+                [
+                  65536,
+                  43.7
+                ],
+                [
+                  131072,
+                  45.411
+                ],
+                [
+                  262144,
+                  50.299
+                ],
+                [
+                  524288,
+                  50.407
+                ],
+                [
+                  1048576,
+                  55.022
+                ]
+              ]
+            },
+            {
+              "attempt": 3,
+              "stop_reason": "LADDER_EXHAUSTED",
+              "measured_class": "O(log n)",
+              "fit_r2": 0.955743,
+              "confidence": "MEDIUM",
+              "final_class": "O(log n)",
+              "final_source": "DYNAMIC",
+              "seconds": 5.06,
+              "rungs": [
+                [
+                  256,
+                  24.425
+                ],
+                [
+                  512,
+                  27.856
+                ],
+                [
+                  1024,
+                  32.053
+                ],
+                [
+                  2048,
+                  30.619
+                ],
+                [
+                  4096,
+                  35.342
+                ],
+                [
+                  8192,
+                  34.307
+                ],
+                [
+                  16384,
+                  39.908
+                ],
+                [
+                  32768,
+                  38.248
+                ],
+                [
+                  65536,
+                  46.292
+                ],
+                [
+                  131072,
+                  44.867
+                ],
+                [
+                  262144,
+                  52.672
+                ],
+                [
+                  524288,
+                  50.652
+                ],
+                [
+                  1048576,
+                  55.5
+                ]
+              ]
+            }
+          ],
+          "measured_classes": [
+            "O(log n)",
+            "O(log n)",
+            "O(log n)"
+          ],
+          "final_classes": [
+            "O(log n)",
+            "O(log n)",
+            "O(log n)"
+          ],
+          "measured_stable": true,
+          "final_classification_correct_runs": 3
+        },
+        {
+          "key": "Onlog",
+          "expected": "O(n log n)",
+          "title": "线性对数：自写归并排序后再取和",
+          "runs": [
+            {
+              "attempt": 1,
+              "stop_reason": "OK",
+              "measured_class": "O(n log n)",
+              "fit_r2": 0.999063,
+              "confidence": "HIGH",
+              "final_class": "O(n log n)",
+              "final_source": "DYNAMIC",
+              "seconds": 2.91,
+              "rungs": [
+                [
+                  256,
+                  11.912
+                ],
+                [
+                  512,
+                  12.786
+                ],
+                [
+                  1024,
+                  12.788
+                ],
+                [
+                  2048,
+                  13.582
+                ],
+                [
+                  4096,
+                  15.288
+                ],
+                [
+                  8192,
+                  18.7
+                ],
+                [
+                  16384,
+                  25.164
+                ],
+                [
+                  32768,
+                  43.443
+                ],
+                [
+                  65536,
+                  75.393
+                ]
+              ]
+            },
+            {
+              "attempt": 2,
+              "stop_reason": "OK",
+              "measured_class": "O(n log n)",
+              "fit_r2": 0.996207,
+              "confidence": "HIGH",
+              "final_class": "O(n log n)",
+              "final_source": "DYNAMIC",
+              "seconds": 2.87,
+              "rungs": [
+                [
+                  256,
+                  12.958
+                ],
+                [
+                  512,
+                  12.851
+                ],
+                [
+                  1024,
+                  12.444
+                ],
+                [
+                  2048,
+                  14.811
+                ],
+                [
+                  4096,
+                  15.361
+                ],
+                [
+                  8192,
+                  17.795
+                ],
+                [
+                  16384,
+                  27.205
+                ],
+                [
+                  32768,
+                  40.127
+                ],
+                [
+                  65536,
+                  79.665
+                ]
+              ]
+            },
+            {
+              "attempt": 3,
+              "stop_reason": "OK",
+              "measured_class": "O(n)",
+              "fit_r2": 0.995902,
+              "confidence": "HIGH",
+              "final_class": "O(n log n)",
+              "final_source": "STATIC",
+              "seconds": 2.87,
+              "rungs": [
+                [
+                  256,
+                  11.702
+                ],
+                [
+                  512,
+                  12.729
+                ],
+                [
+                  1024,
+                  12.803
+                ],
+                [
+                  2048,
+                  12.547
+                ],
+                [
+                  4096,
+                  15.314
+                ],
+                [
+                  8192,
+                  17.881
+                ],
+                [
+                  16384,
+                  25.287
+                ],
+                [
+                  32768,
+                  46.546
+                ],
+                [
+                  65536,
+                  76.567
+                ]
+              ]
+            }
+          ],
+          "measured_classes": [
+            "O(n log n)",
+            "O(n log n)",
+            "O(n)"
+          ],
+          "final_classes": [
+            "O(n log n)",
+            "O(n log n)",
+            "O(n log n)"
+          ],
+          "measured_stable": false,
+          "final_classification_correct_runs": 3
+        }
+      ]
+    }
+  }
+}

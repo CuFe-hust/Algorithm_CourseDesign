@@ -1,0 +1,468 @@
+<script setup lang="ts">
+/**
+ * Teacher overview of complexity reports for one programming item.
+ *
+ * One row per student: the merged verdict the platform published, never the raw
+ * measurements. The page is deliberately not a grade book. A row without a
+ * class shows an em dash, not O(1); a failed row shows the stored reason; a
+ * report from a static-only run is labelled as such. Reports exist only after a
+ * student (or the teacher, through the API) requests one, so the empty state
+ * says who can request and never invents a batch button.
+ */
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { Activity, AlertTriangle, RefreshCw, Table2 } from "@lucide/vue";
+import { errorText, query, request } from "../../shared/api";
+import { session } from "../../shared/session";
+import type { ComplexityResponse } from "../student/types";
+import { dateText } from "./types";
+
+interface ComplexityItem {
+  item_id: string;
+  assignment_id: string;
+  assignment_title: string;
+  problem_code: string;
+  title: string;
+  profile_family: string | null;
+}
+
+interface OverviewRow {
+  student_id: string;
+  student_no: string | null;
+  name: string | null;
+  assignment_item_id: string;
+  title: string | null;
+  submission_id: string;
+  status: string;
+  time_class: string | null;
+  space_class: string | null;
+  time_confidence: string | null;
+  time_source: string | null;
+  requested_at: string | null;
+}
+
+const OVERVIEW_LIMIT = 100;
+const POLL_MS = 5000;
+// A measurement budget is 150 s. Poll slightly longer so a report that finishes
+// inside the budget still lands without the teacher pressing anything.
+const POLL_LIMIT = 45;
+const REASON_UNAVAILABLE = "原因读取失败，请刷新重试。";
+
+const confidenceText: Record<string, string> = {
+  HIGH: "高",
+  MEDIUM: "中",
+  LOW: "低",
+};
+const confidenceTone: Record<string, string> = {
+  HIGH: "green",
+  MEDIUM: "amber",
+  LOW: "gray",
+};
+const sourceText: Record<string, string> = {
+  DYNAMIC: "实测",
+  STATIC: "代码结构",
+};
+const statusText: Record<string, string> = {
+  SUCCEEDED: "已完成",
+  STATIC_ONLY: "仅结构结论",
+  PENDING: "分析中",
+  RUNNING: "分析中",
+  FAILED: "分析失败",
+  INELIGIBLE: "无法分析",
+};
+const statusTone: Record<string, string> = {
+  SUCCEEDED: "type",
+  STATIC_ONLY: "type",
+  PENDING: "amber",
+  RUNNING: "amber",
+  FAILED: "red",
+  INELIGIBLE: "amber",
+};
+
+const items = ref<ComplexityItem[]>([]);
+const assignmentId = ref("");
+const itemId = ref("");
+const rows = ref<OverviewRow[]>([]);
+const total = ref(0);
+const reasons = ref<Record<string, string>>({});
+const loading = ref(true);
+const loadingRows = ref(false);
+const error = ref("");
+
+let pollTimer: ReturnType<typeof setTimeout> | undefined;
+const pollAttempts = ref(0);
+let tableToken = 0;
+
+const currentItem = computed(
+  () => items.value.find((item) => item.item_id === itemId.value) ?? null,
+);
+const hasProfile = computed(() => Boolean(currentItem.value?.profile_family));
+const visibleItems = computed(() =>
+  items.value.filter(
+    (item) => !assignmentId.value || item.assignment_id === assignmentId.value,
+  ),
+);
+const assignmentOptions = computed(() => {
+  const options: { id: string; title: string }[] = [];
+  for (const item of items.value)
+    if (!options.some((option) => option.id === item.assignment_id))
+      options.push({ id: item.assignment_id, title: item.assignment_title });
+  return options;
+});
+const pendingCount = computed(
+  () =>
+    rows.value.filter(
+      (row) => row.status === "PENDING" || row.status === "RUNNING",
+    ).length,
+);
+/** True once the bounded polling window closed while rows still run. */
+const pollStopped = computed(
+  () => pendingCount.value > 0 && pollAttempts.value >= POLL_LIMIT,
+);
+
+function shown(value: string | null | undefined): string {
+  return value === null || value === undefined || value === "" ? "—" : value;
+}
+
+function reasonFor(row: OverviewRow): string {
+  if (row.status !== "FAILED" && row.status !== "INELIGIBLE") return "";
+  return reasons.value[row.submission_id] ?? "正在读取原因…";
+}
+
+function clearPoll() {
+  if (pollTimer) {
+    clearTimeout(pollTimer);
+    pollTimer = undefined;
+  }
+}
+
+/**
+ * PENDING and RUNNING rows settle on the server without a user action. Poll at
+ * a bounded rate and stop as soon as every row is terminal: an unbounded loop
+ * would keep hammering the server while the page stays open.
+ */
+function schedulePoll() {
+  clearPoll();
+  if (!pendingCount.value || pollAttempts.value >= POLL_LIMIT) return;
+  pollTimer = setTimeout(() => {
+    pollAttempts.value += 1;
+    void loadRows(true);
+  }, POLL_MS);
+}
+
+function resetRows() {
+  clearPoll();
+  pollAttempts.value = 0;
+  rows.value = [];
+  total.value = 0;
+  reasons.value = {};
+}
+
+async function loadReasons(list: OverviewRow[], token: number) {
+  const next: Record<string, string> = {};
+  const targets = list.filter(
+    (row) => row.status === "FAILED" || row.status === "INELIGIBLE",
+  );
+  if (!targets.length) {
+    reasons.value = next;
+    return;
+  }
+  await Promise.all(
+    targets.map(async (row) => {
+      try {
+        const detail = await request<ComplexityResponse>(
+          `/analysis/submissions/${row.submission_id}/complexity`,
+        );
+        next[row.submission_id] = detail.reason ?? "平台没有记录原因。";
+      } catch {
+        next[row.submission_id] = REASON_UNAVAILABLE;
+      }
+    }),
+  );
+  // A newer table must not receive reasons for the rows it no longer holds.
+  if (token === tableToken) reasons.value = next;
+}
+
+async function loadRows(silent = false) {
+  const target = itemId.value;
+  if (!target) return;
+  const token = ++tableToken;
+  if (!silent) {
+    loadingRows.value = true;
+    error.value = "";
+  }
+  try {
+    const result = await request<{ items: OverviewRow[]; total: number }>(
+      `/analysis/courses/${session.courseId}/complexity?${query({
+        assignment_item_id: target,
+        limit: OVERVIEW_LIMIT,
+      })}`,
+    );
+    // A fast filter switch must not let an older response overwrite the table.
+    if (token !== tableToken) return;
+    rows.value = result.items;
+    total.value = result.total;
+    void loadReasons(result.items, token);
+    schedulePoll();
+  } catch (e) {
+    if (token !== tableToken) return;
+    clearPoll();
+    error.value = errorText(e);
+  } finally {
+    if (token === tableToken) loadingRows.value = false;
+  }
+}
+
+function pickItem(pool: ComplexityItem[]) {
+  if (pool.some((item) => item.item_id === itemId.value)) return;
+  itemId.value =
+    (pool.find((item) => item.profile_family) ?? pool[0])?.item_id ?? "";
+}
+
+async function loadItems() {
+  loading.value = true;
+  error.value = "";
+  try {
+    const result = await request<{ items: ComplexityItem[] }>(
+      `/analysis/courses/${session.courseId}/complexity/items`,
+    );
+    items.value = result.items;
+    pickItem(items.value);
+    await loadRows();
+  } catch (e) {
+    error.value = errorText(e);
+  } finally {
+    loading.value = false;
+  }
+}
+
+function changeAssignment(value: string) {
+  assignmentId.value = value;
+  pickItem(visibleItems.value);
+  resetRows();
+  void loadRows();
+}
+
+function changeItem(value: string) {
+  itemId.value = value;
+  resetRows();
+  void loadRows();
+}
+
+onMounted(() => {
+  void loadItems();
+});
+
+onBeforeUnmount(clearPoll);
+</script>
+
+<template>
+  <div class="page-heading">
+    <div>
+      <span class="eyebrow">COMPLEXITY</span>
+      <h1>复杂度分析</h1>
+      <p class="muted">
+        每道编程题、每位学生最新一份复杂度报告。结论是估计值，不参与评分，也不改变评测结果。
+      </p>
+    </div>
+  </div>
+
+  <div v-if="error" class="alert error" role="alert">{{ error }}</div>
+
+  <div
+    v-if="currentItem && !hasProfile"
+    class="alert warning complexity-warning"
+  >
+    <AlertTriangle :size="15" />
+    <span>
+      该题没有配置规模伸缩档，只能给出结构结论：平台无法测量增长，报告状态是“仅结构结论”，时间与空间类别都来自代码结构。
+    </span>
+  </div>
+
+  <p v-if="loading" class="loading">正在读取可分析的编程题…</p>
+
+  <section v-else-if="!items.length && !error" class="card">
+    <div class="empty">
+      <Table2 :size="28" />
+      <h3>当前课程还没有编程题</h3>
+      <p>复杂度分析只支持编程题；发布编程题并让学生提交后才会出现报告。</p>
+    </div>
+  </section>
+
+  <template v-else-if="items.length">
+    <section class="card teacher-form">
+      <div class="complexity-controls">
+        <label>
+          作业
+          <select
+            :value="assignmentId"
+            aria-label="选择作业"
+            @change="
+              changeAssignment(($event.target as HTMLSelectElement).value)
+            "
+          >
+            <option value="">全部作业</option>
+            <option
+              v-for="option in assignmentOptions"
+              :key="option.id"
+              :value="option.id"
+            >
+              {{ option.title }}
+            </option>
+          </select>
+        </label>
+        <label>
+          题目
+          <select
+            :value="itemId"
+            aria-label="选择题目"
+            @change="changeItem(($event.target as HTMLSelectElement).value)"
+          >
+            <option
+              v-for="item in visibleItems"
+              :key="item.item_id"
+              :value="item.item_id"
+            >
+              {{ item.problem_code }} · {{ item.title
+              }}{{ item.profile_family ? "" : "（无伸缩档）" }}
+            </option>
+          </select>
+        </label>
+      </div>
+      <div class="action-row">
+        <button
+          class="small"
+          :disabled="loadingRows || !itemId"
+          @click="loadRows()"
+        >
+          <RefreshCw :size="14" />刷新
+        </button>
+        <span v-if="loadingRows" class="muted">正在读取报告…</span>
+        <span v-else-if="pollStopped" class="muted">
+          有
+          {{ pendingCount }}
+          份仍在分析中，已停止自动刷新，请点“刷新”查看最新状态。
+        </span>
+        <span v-else-if="pendingCount" class="muted">
+          有 {{ pendingCount }} 份仍在分析中，页面会自动刷新。
+        </span>
+        <span v-else-if="currentItem" class="muted">
+          {{ currentItem.assignment_title }}
+        </span>
+      </div>
+    </section>
+
+    <section v-if="currentItem" class="card">
+      <div class="card-heading">
+        <h2>
+          <Activity :size="17" /> {{ currentItem.problem_code }} ·
+          {{ currentItem.title }}
+        </h2>
+        <span class="muted">
+          {{ currentItem.assignment_title }} · 共 {{ total }} 份报告
+        </span>
+      </div>
+
+      <p v-if="loadingRows && !rows.length" class="loading">
+        正在读取复杂度报告…
+      </p>
+      <div v-else-if="!rows.length" class="empty complexity-empty">
+        <Table2 :size="28" />
+        <h3>还没有这道题的复杂度报告</h3>
+        <p>
+          学生通过真实评测后，可以在学生端的提交详情里请求分析，报告会出现在这里。
+        </p>
+        <p>
+          教师也可以按单份提交调用分析接口触发，但平台没有批量触发接口，所以本页不提供批量分析按钮。
+        </p>
+        <RouterLink to="/teacher/students" class="button subtle"
+          >查看学生名单</RouterLink
+        >
+      </div>
+      <template v-else>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>学生</th>
+                <th>学号</th>
+                <th>时间复杂度</th>
+                <th>空间复杂度</th>
+                <th>置信度</th>
+                <th>依据来源</th>
+                <th>状态</th>
+                <th>请求时间</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in rows" :key="row.student_id">
+                <td>
+                  <RouterLink
+                    class="table-title"
+                    :to="`/teacher/students/${row.student_id}/progress`"
+                    >{{ shown(row.name) }}</RouterLink
+                  >
+                </td>
+                <td class="mono">{{ shown(row.student_no) }}</td>
+                <td class="mono">{{ shown(row.time_class) }}</td>
+                <td class="mono">{{ shown(row.space_class) }}</td>
+                <td>
+                  <span
+                    v-if="row.time_confidence"
+                    class="badge"
+                    :class="confidenceTone[row.time_confidence] || 'gray'"
+                    >{{
+                      confidenceText[row.time_confidence] || row.time_confidence
+                    }}</span
+                  >
+                  <span v-else class="muted">—</span>
+                </td>
+                <td>
+                  {{
+                    row.time_source
+                      ? sourceText[row.time_source] || row.time_source
+                      : "—"
+                  }}
+                </td>
+                <td>
+                  <span
+                    class="badge"
+                    :class="statusTone[row.status] || 'gray'"
+                    >{{ statusText[row.status] || row.status }}</span
+                  >
+                  <small
+                    v-if="reasonFor(row)"
+                    class="secondary-line complexity-reason"
+                    >{{ reasonFor(row) }}</small
+                  >
+                </td>
+                <td class="nowrap">
+                  {{ row.requested_at ? dateText(row.requested_at) : "—" }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p v-if="total > rows.length" class="hint complexity-hint-line">
+          本页显示前 {{ rows.length }} 份，共 {{ total }} 份。
+        </p>
+        <p class="hint complexity-hint-line">
+          “实测”表示平台按题目的伸缩档生成输入后真实运行测量；“代码结构”表示只读代码结构给出结论。置信度只描述结论的可信程度，不表示代码好坏。
+        </p>
+      </template>
+    </section>
+
+    <section class="card">
+      <div class="card-heading"><h2>适用范围</h2></div>
+      <ul class="complexity-limitations">
+        <li>复杂度结论是估计值，不是形式化证明。</li>
+        <li>
+          实测结论来自平台按题目伸缩档合成的输入，覆盖常见规模，不代表最坏情况或全部合法输入。
+        </li>
+        <li>
+          静态结论依据代码结构，等价改写可能改变结论；结构化语言只做词法估计。
+        </li>
+        <li>复杂度分析不参与评分，也不改变评测结果。</li>
+      </ul>
+    </section>
+  </template>
+</template>
