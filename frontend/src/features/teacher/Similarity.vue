@@ -60,6 +60,11 @@ const assignmentTitle = computed(
 );
 
 /** Highlight the matched lines of both submissions for a chosen pair. */
+/** A run can succeed technically while the business outcome has no usable data. */
+function businessWarning(item: SimilarityItem): boolean {
+  return Boolean(item.business_status && item.business_status !== "OK");
+}
+
 function markedLines(span: { start: number; end: number } | null): string {
   if (!span) return "";
   return span.start === span.end
@@ -334,11 +339,18 @@ onMounted(async () => {
       </div>
 
       <template v-if="currentItem">
-        <p v-if="currentItem.status !== 'SUCCEEDED'" class="alert warning">
-          该题比对尚未完成（状态
-          {{ currentItem.status }}）。稍后重新打开本页或再次查询。
+        <p
+          v-if="
+            currentItem.status !== 'SUCCEEDED' || businessWarning(currentItem)
+          "
+          class="alert warning"
+        >
+          该题比对没有可用结果（运行状态 {{ currentItem.status }}，业务状态
+          {{
+            currentItem.business_status || "未知"
+          }}）。稍后重新打开本页或再次查询。
         </p>
-        <template v-else>
+        <template v-else-if="!businessWarning(currentItem)">
           <section v-if="currentItem.clusters.length" class="card">
             <div class="card-heading">
               <h2><Copy :size="17" /> 相似簇</h2>
@@ -377,62 +389,64 @@ onMounted(async () => {
             <p v-if="!currentItem.pairs.length" class="muted">
               没有达到阈值的相似对。
             </p>
-            <p v-else-if="currentItem.pairs_truncated" class="alert warning">
-              证据列表已截断：达到证据上限，这里只显示相似度最高的
-              {{ currentItem.pairs.length }}
-              对。下方的相似簇按全部配对计算，仍然完整。
-            </p>
-            <div v-else class="table-scroll">
-              <table>
-                <thead>
-                  <tr>
-                    <th>提交 A</th>
-                    <th>提交 B</th>
-                    <th>相似度</th>
-                    <th>包含度</th>
-                    <th>连续匹配</th>
-                    <th><span class="visually-hidden">操作</span></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="(pair, index) in currentItem.pairs"
-                    :key="index"
-                    :class="{ selected: selected === pair }"
-                  >
-                    <td>
-                      <strong>{{ personLabel(pair.left) }}</strong>
-                      <small class="secondary-line">{{
-                        pair.left.student_no
-                      }}</small>
-                    </td>
-                    <td>
-                      <strong>{{ personLabel(pair.right) }}</strong>
-                      <small class="secondary-line">{{
-                        pair.right.student_no
-                      }}</small>
-                    </td>
-                    <td>
-                      <span class="badge amber">{{
-                        percent(pair.similarity)
-                      }}</span>
-                    </td>
-                    <td class="mono">
-                      {{ percent(pair.containment_left) }} /
-                      {{ percent(pair.containment_right) }}
-                    </td>
-                    <td class="mono">
-                      {{ pair.longest_run_tokens ?? "—" }} 记号
-                    </td>
-                    <td>
-                      <button class="small" @click="selectPair(pair)">
-                        查看代码
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <template v-else>
+              <p v-if="currentItem.pairs_truncated" class="alert warning">
+                证据列表已截断：达到证据上限，这里只显示相似度最高的
+                {{ currentItem.pairs.length }}
+                对。下方的相似簇按全部配对计算，仍然完整。
+              </p>
+              <div class="table-scroll">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>提交 A</th>
+                      <th>提交 B</th>
+                      <th>相似度</th>
+                      <th>包含度</th>
+                      <th>连续匹配</th>
+                      <th aria-label="操作"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="(pair, index) in currentItem.pairs"
+                      :key="index"
+                      :class="{ selected: selected === pair }"
+                    >
+                      <td>
+                        <strong>{{ personLabel(pair.left) }}</strong>
+                        <small class="secondary-line">{{
+                          pair.left.student_no
+                        }}</small>
+                      </td>
+                      <td>
+                        <strong>{{ personLabel(pair.right) }}</strong>
+                        <small class="secondary-line">{{
+                          pair.right.student_no
+                        }}</small>
+                      </td>
+                      <td>
+                        <span class="badge amber">{{
+                          percent(pair.similarity)
+                        }}</span>
+                      </td>
+                      <td class="mono">
+                        {{ percent(pair.containment_left) }} /
+                        {{ percent(pair.containment_right) }}
+                      </td>
+                      <td class="mono">
+                        {{ pair.longest_run_tokens ?? "—" }} 记号
+                      </td>
+                      <td>
+                        <button class="small" @click="selectPair(pair)">
+                          查看代码
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </template>
             <p class="hint">
               “包含度 A / B”表示 A 的指纹有多少出现在 B 里、B 的有多少出现在 A
               里。两边差距大，通常意味着一份代码被整段复制进了另一份。

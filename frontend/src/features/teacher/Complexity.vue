@@ -91,6 +91,13 @@ const error = ref("");
 let pollTimer: ReturnType<typeof setTimeout> | undefined;
 const pollAttempts = ref(0);
 let tableToken = 0;
+/**
+ * Set on teardown. ``schedulePoll`` runs after an await, so clearing the pending
+ * timer is not enough: a response that lands after the page is gone would queue
+ * the next poll. Review measured 24 further overview requests in 120 s after
+ * navigating away mid-request.
+ */
+let unmounted = false;
 
 const currentItem = computed(
   () => items.value.find((item) => item.item_id === itemId.value) ?? null,
@@ -149,6 +156,7 @@ function clearPoll() {
  */
 function schedulePoll() {
   clearPoll();
+  if (unmounted) return;
   if (!pendingCount.value || pollAttempts.value >= POLL_LIMIT) return;
   pollTimer = setTimeout(() => {
     pollAttempts.value += 1;
@@ -196,7 +204,7 @@ async function loadReasons(list: OverviewRow[], token: number) {
 
 async function loadRows(silent = false) {
   const target = itemId.value;
-  if (!target) return;
+  if (!target || unmounted) return;
   const token = ++tableToken;
   if (!silent) {
     loadingRows.value = true;
@@ -209,20 +217,21 @@ async function loadRows(silent = false) {
         limit: OVERVIEW_LIMIT,
       })}`,
     );
-    // A fast filter switch must not let an older response overwrite the table.
-    if (token !== tableToken) return;
+    // A fast filter switch, or a page that has been left, must not let an older
+    // response overwrite state or queue another poll.
+    if (unmounted || token !== tableToken) return;
     rows.value = result.items;
     total.value = result.total;
     pollError.value = false;
     void loadReasons(result.items, token);
     schedulePoll();
   } catch (e) {
-    if (token !== tableToken) return;
+    if (unmounted || token !== tableToken) return;
     clearPoll();
     pollError.value = true;
     error.value = errorText(e);
   } finally {
-    if (token === tableToken) loadingRows.value = false;
+    if (!unmounted && token === tableToken) loadingRows.value = false;
   }
 }
 
@@ -266,7 +275,11 @@ onMounted(() => {
   void loadItems();
 });
 
-onBeforeUnmount(clearPoll);
+onBeforeUnmount(() => {
+  unmounted = true;
+  tableToken += 1;
+  clearPoll();
+});
 </script>
 
 <template>

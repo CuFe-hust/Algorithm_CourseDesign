@@ -39,7 +39,7 @@ interface FixtureReport {
   space_class: string | null;
   time_confidence: string | null;
   time_source: string | null;
-  requested_at: string;
+  requested_at: string | null;
 }
 
 const item: FixtureItem = {
@@ -262,4 +262,96 @@ it("selects the first item with a scale profile by default", async () => {
   expect(mocks.request).toHaveBeenCalledWith(
     expect.stringContaining("assignment_item_id=8"),
   );
+});
+
+it("caps automatic refresh instead of polling forever", async () => {
+  vi.useFakeTimers();
+  try {
+    const host = mount((path) => {
+      if (path.startsWith("/analysis/courses/1/complexity/items"))
+        return itemsResponse([item]);
+      return overviewResponse([{ ...report, status: "PENDING" }]);
+    });
+    await vi.advanceTimersByTimeAsync(0);
+    await vi.advanceTimersByTimeAsync(10 * 60 * 1000);
+    const calls = mocks.request.mock.calls.filter((call) =>
+      String(call[0]).startsWith("/analysis/courses/1/complexity?"),
+    ).length;
+    // One initial request plus POLL_LIMIT polls, and then nothing more.
+    expect(calls).toBeLessThanOrEqual(46);
+    expect(calls).toBeGreaterThan(1);
+    expect(body(host)).toContain("已停止自动刷新");
+    await vi.advanceTimersByTimeAsync(10 * 60 * 1000);
+    expect(
+      mocks.request.mock.calls.filter((call) =>
+        String(call[0]).startsWith("/analysis/courses/1/complexity?"),
+      ).length,
+    ).toBe(calls);
+  } finally {
+    vi.useRealTimers();
+  }
+});
+
+it("stops polling when the page is left with a request in flight", async () => {
+  vi.useFakeTimers();
+  try {
+    let release: ((value: unknown) => void) | undefined;
+    mocks.request.mockImplementation((path: string) => {
+      if (path.startsWith("/analysis/courses/1/complexity/items"))
+        return Promise.resolve(itemsResponse([item]));
+      if (path.startsWith("/analysis/courses/1/complexity?"))
+        return new Promise((resolve) => {
+          release = resolve;
+        });
+      return Promise.resolve({});
+    });
+    const host = document.createElement("div");
+    document.body.append(host);
+    const app = createApp(Complexity);
+    app.component(
+      "RouterLink",
+      defineComponent({
+        props: { to: { type: String, default: "" } },
+        setup:
+          (props, { slots }) =>
+          () =>
+            h("a", { href: props.to }, slots.default?.()),
+      }),
+    );
+    app.mount(host);
+    await vi.advanceTimersByTimeAsync(0);
+    const before = mocks.request.mock.calls.length;
+    app.unmount();
+    host.remove();
+    release?.(overviewResponse([{ ...report, status: "PENDING" }]));
+    await vi.advanceTimersByTimeAsync(120_000);
+    expect(mocks.request.mock.calls.length).toBe(before);
+  } finally {
+    vi.useRealTimers();
+  }
+});
+
+it("links a student to the progress page of that student", async () => {
+  const host = mount((path) => {
+    if (path.startsWith("/analysis/courses/1/complexity/items"))
+      return itemsResponse([item]);
+    return overviewResponse([report]);
+  });
+  await settle();
+  const link = [...host.querySelectorAll("a")].find((anchor) =>
+    anchor.textContent?.includes("演示同学"),
+  );
+  expect(link?.getAttribute("href")).toBe("/teacher/students/2/progress");
+});
+
+it("renders a report with no request time without crashing", async () => {
+  const host = mount((path) => {
+    if (path.startsWith("/analysis/courses/1/complexity/items"))
+      return itemsResponse([item]);
+    return overviewResponse([{ ...report, requested_at: null }]);
+  });
+  await settle();
+  expect(body(host)).toContain("DEMO2026001");
+  expect(body(host)).not.toContain("undefined");
+  expect(body(host)).not.toContain("Invalid Date");
 });
