@@ -344,6 +344,41 @@ it("links a student to the progress page of that student", async () => {
   expect(link?.getAttribute("href")).toBe("/teacher/students/2/progress");
 });
 
+it("queues analysis for the whole item from the teacher page", async () => {
+  const host = mount((path) => {
+    if (path.startsWith("/analysis/courses/1/complexity/items"))
+      return itemsResponse([item]);
+    if (path.startsWith("/analysis/courses/1/complexity/batch"))
+      return { queued: 3, skipped: 1, ineligible: 2 };
+    return overviewResponse([report]);
+  });
+  await settle();
+  const button = [...host.querySelectorAll("button")].find((b) =>
+    b.textContent?.includes("排队分析"),
+  );
+  expect(button).toBeDefined();
+  await button!.click();
+  await settle();
+  const posted = mocks.request.mock.calls.find((call) =>
+    String(call[0]).includes("/complexity/batch"),
+  );
+  expect(posted).toBeDefined();
+  expect(host.textContent).toContain("已为 3 份提交排队分析");
+});
+
+it("hides the batch button when the item has no scale profile", async () => {
+  const host = mount((path) => {
+    if (path.startsWith("/analysis/courses/1/complexity/items"))
+      return itemsResponse([{ ...item, profile_family: null }]);
+    return overviewResponse([]);
+  });
+  await settle();
+  const button = [...host.querySelectorAll("button")].find((b) =>
+    b.textContent?.includes("排队分析"),
+  );
+  expect(button?.disabled).toBe(true);
+});
+
 it("renders a report with no request time without crashing", async () => {
   const host = mount((path) => {
     if (path.startsWith("/analysis/courses/1/complexity/items"))

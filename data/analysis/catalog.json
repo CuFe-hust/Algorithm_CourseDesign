@@ -1648,6 +1648,44 @@
               "max_similarity": {
                 "title": "Max Similarity",
                 "type": "string"
+              },
+              "min_similarity": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Min Similarity"
+              },
+              "qualifying_pairs": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Qualifying Pairs"
+              },
+              "total_pairs": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Total Pairs"
               }
             },
             "required": [
@@ -1757,6 +1795,32 @@
                 ],
                 "default": null,
                 "title": "Right Fingerprints"
+              },
+              "left_tokens": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Left Tokens"
+              },
+              "right_tokens": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Right Tokens"
               },
               "matched_tokens": {
                 "anyOf": [
@@ -2021,6 +2085,44 @@
               "max_similarity": {
                 "title": "Max Similarity",
                 "type": "string"
+              },
+              "min_similarity": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Min Similarity"
+              },
+              "qualifying_pairs": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Qualifying Pairs"
+              },
+              "total_pairs": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Total Pairs"
               }
             },
             "required": [
@@ -2130,6 +2232,32 @@
                 ],
                 "default": null,
                 "title": "Right Fingerprints"
+              },
+              "left_tokens": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Left Tokens"
+              },
+              "right_tokens": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Right Tokens"
               },
               "matched_tokens": {
                 "anyOf": [

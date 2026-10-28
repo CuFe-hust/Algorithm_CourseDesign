@@ -16,6 +16,7 @@ import ComplexityPanel from "./components/ComplexityPanel.vue";
 import { useDraft } from "./composables/useDraft";
 import { useSubmission } from "./composables/useSubmission";
 import { useJudgePolling } from "./composables/useJudgePolling";
+import { formatDateTime } from "./format";
 import {
   SUBJECTIVE_LANGUAGE,
   draftStore,
@@ -391,9 +392,7 @@ onMounted(load);
           class="pending-row"
         >
           <span class="mono">{{ request.clientRequestId.slice(0, 8) }}…</span>
-          <span class="muted">{{
-            new Date(request.createdAt).toLocaleString()
-          }}</span>
+          <span class="muted">{{ formatDateTime(request.createdAt) }}</span>
           <button class="small" @click="retryPending(request.clientRequestId)">
             重试同一请求
           </button>
@@ -413,7 +412,7 @@ onMounted(load);
           />
         </div>
         <p class="muted">
-          提交于 {{ new Date(detail.submitted_at).toLocaleString() }}
+          提交于 {{ formatDateTime(detail.submitted_at) }}
           <template v-if="detail.job">
             · 第 {{ detail.job.attempt_no }} 次尝试</template
           >
@@ -469,9 +468,7 @@ onMounted(load);
               :to="`/student/courses/${courseId}/submissions/${version.submission_id}`"
             >
               <span>v{{ version.version_no }}</span>
-              <small>{{
-                new Date(version.submitted_at).toLocaleString()
-              }}</small>
+              <small>{{ formatDateTime(version.submitted_at) }}</small>
               <span
                 class="badge"
                 :class="version.status === 'WITHDRAWN' ? 'gray' : 'type'"

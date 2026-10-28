@@ -177,6 +177,13 @@ def batch_view(db, batch_id: int, actor: User) -> dict:
             'created_at': batch.created_at.isoformat(), 'steps': steps}
 
 
+def step_snapshot_payload(db, batch_id: int, step_key: str) -> dict:
+    snapshot = db.scalar(select(AnalysisInputSnapshot).where(
+        AnalysisInputSnapshot.batch_id == batch_id,
+        AnalysisInputSnapshot.scope == step_key))
+    return (snapshot.payload if snapshot is not None else {}) or {}
+
+
 def evidence_view(db, batch_id: int, actor: User) -> dict:
     """Teacher-facing projection: stable keys joined to names and line ranges."""
     view = batch_view(db, batch_id, actor)
@@ -199,6 +206,11 @@ def evidence_view(db, batch_id: int, actor: User) -> dict:
 
         result = step.get('result')
         payload = (result or {}).get('payload') or {}
+        language_counts: dict[str, int] = {}
+        snapshot_payload = step_snapshot_payload(db, batch_id, f'{STEP_KEY_PREFIX}{step["item_id"]}')
+        for answer in (snapshot_payload or {}).get('answers', []):
+            language = answer.get('language') or '未知'
+            language_counts[language] = language_counts.get(language, 0) + 1
         pairs = []
         for pair in payload.get('pairs', []):
             pairs.append({
@@ -207,12 +219,17 @@ def evidence_view(db, batch_id: int, actor: User) -> dict:
                 'containment_left': pair.get('containment_left'),
                 'containment_right': pair.get('containment_right'),
                 'shared_fingerprints': pair.get('shared_fingerprints'),
+                'left_tokens': pair.get('left_tokens'),
+                'right_tokens': pair.get('right_tokens'),
                 'matched_tokens': pair.get('matched_tokens'),
                 'longest_run_tokens': pair.get('longest_run_tokens'),
                 'spans': pair.get('matching_spans', []),
             })
         clusters = [{'members': [describe(key) for key in cluster['member_keys']],
-                     'size': cluster['size'], 'max_similarity': cluster['max_similarity']}
+                     'size': cluster['size'], 'max_similarity': cluster['max_similarity'],
+                     'min_similarity': cluster.get('min_similarity'),
+                     'qualifying_pairs': cluster.get('qualifying_pairs'),
+                     'total_pairs': cluster.get('total_pairs')}
                     for cluster in payload.get('clusters', [])]
         insufficient = [{'submission': describe(row['answer_key']), 'reason': row['reason'],
                          'tokens': row.get('tokens')}
@@ -227,6 +244,7 @@ def evidence_view(db, batch_id: int, actor: User) -> dict:
             'implementation_version': step['implementation_version'],
             'method': payload.get('method'), 'parameters': payload.get('parameters'),
             'pairs_truncated': payload.get('pairs_truncated', False),
+            'language_counts': language_counts,
             'pairs': pairs, 'clusters': clusters, 'insufficient': insufficient,
         })
     items.sort(key=lambda row: row['item_id'])

@@ -168,6 +168,69 @@ def test_threshold_is_respected():
     assert similarity.compare(unrelated, threshold=0.0).pairs == []
 
 
+def test_cluster_reports_how_many_pairs_actually_qualify():
+    """A cluster is a connected component, not a clique, and must say so.
+
+    Review measured a real 8-member cluster where only 8 of the 28 member pairs
+    reached the threshold; showing only "8 份 · 最高 0.67" invites reading a chain
+    as a group of mutual copies.
+    """
+    head = "import sys\ndata = sys.stdin.read().split()\nn = int(data[0])\nvals = [int(x) for x in data[1:1+n]]\n"
+    block_one = """total = 0
+for i in range(n):
+    for j in range(i + 1, n):
+        if vals[i] > vals[j]:
+            total += vals[i] - vals[j]
+        else:
+            total += vals[j] - vals[i]
+print(total % 9973)
+"""
+    block_two = """best = 0
+current = 0
+for x in vals:
+    if x % 3 == 0:
+        current = 0
+    else:
+        current = current + x
+        if current > best:
+            best = current
+print(best % 997)
+"""
+    first = head + block_one
+    middle = head + block_one + block_two
+    last = head + block_two
+    result = similarity.compare([
+        dict(answer_key='a', content=first, language='python3'),
+        dict(answer_key='b', content=middle, language='python3'),
+        dict(answer_key='c', content=last, language='python3')])
+    assert len(result.clusters) == 1
+    cluster = result.clusters[0]
+    assert cluster['size'] == 3
+    # a~b and b~c qualify; a~c shares only the boilerplate and does not.
+    assert cluster['qualifying_pairs'] == 2
+    assert cluster['total_pairs'] == 3
+    assert float(cluster['min_similarity']) >= 0.5
+
+
+def test_pairs_carry_the_token_count_of_each_side():
+    """Evidence strength depends on program length; the reader needs the counts.
+
+    Independent implementations of one standard algorithm converge to 0.54-1.00
+    below ~120 tokens when the class shares an I/O idiom, so a high score between
+    two short submissions must be readable as weak evidence.
+    """
+    head = "import sys\ndata = sys.stdin.read().split()\nn = int(data[0])\nvals = [int(x) for x in data[1:1+n]]\n"
+    tail = "print(sum(vals) % 7)\n"
+    short = head + tail
+    longer = head + "acc = 0\nfor x in vals:\n    acc += x * 2\n" + tail
+    result = similarity.compare([
+        dict(answer_key='a', content=short, language='python3'),
+        dict(answer_key='b', content=longer, language='python3')], threshold=0.0)
+    pair = result.pairs[0]
+    assert pair['left_tokens'] == similarity.tokenize_source(short, 'python3').__len__()
+    assert pair['right_tokens'] == len(similarity.tokenize_source(longer, 'python3'))
+
+
 def test_merge_spans_rejects_a_backwards_jump_on_either_side():
     """Anchors are ordered by the left position only, so the right side needs a
     lower bound: otherwise a block moved from the bottom to the top merges into one
@@ -510,6 +573,42 @@ def _dynamic_conclusion(measured: str, confidence: str = 'HIGH'):
                                         reference_fit=None, accounting=[])
 
 
+def _measured(points: list[tuple[int, float]], verdict: str = 'OK') -> list:
+    return [complexity.Measurement(n=n, wall_ms=ms, adjusted_ms=ms,
+                                   peak_rss_kib=None, verdict=verdict)
+            for n, ms in points]
+
+
+def test_informative_requires_clearly_outrunning_the_reader():
+    """The old class-vs-class check never fired; the ratio check must.
+
+    A reader is a constant-cost program, so its own growth fit comes back LOW and
+    io_class stayed UNKNOWN on every recorded run. Judging per rung instead: no
+    reference at all means unverified, ratios below the threshold on every rung
+    means input parsing dominates, and three clear rungs means real evidence.
+    """
+    ladder = [(256, 12.0), (512, 14.0), (1024, 20.0), (2048, 32.0), (4096, 60.0)]
+
+    # No baseline (C/C++/Java): unverified, not refuted.
+    unverified = complexity.classify_growth(_measured(ladder))
+    assert unverified.informative is True
+
+    # Reader keeps pace everywhere: measurement is an upper bound only.
+    reader_paced = complexity.classify_growth(
+        _measured(ladder), {n: ms * 0.9 for n, ms in ladder})
+    assert reader_paced.informative is False
+
+    # The submission clearly outruns the reader on most rungs.
+    real_work = complexity.classify_growth(
+        _measured(ladder), {n: ms / 2 for n, ms in ladder})
+    assert real_work.informative is True
+
+    # Only two rungs stand out: not enough evidence of algorithm work.
+    sparse = {256: 13.0, 512: 15.5, 1024: 22.0, 2048: 16.0, 4096: 61.0}
+    barely = complexity.classify_growth(_measured(ladder), sparse)
+    assert barely.informative is False
+
+
 @pytest.mark.parametrize('static_class,measured', [
     ('O(n log n)', 'O(n)'),
     ('O(n)', 'O(n log n)'),
@@ -526,6 +625,18 @@ def test_combine_lets_structure_decide_a_log_factor(static_class, measured):
     assert summary['time']['confidence'] == 'MEDIUM'
     assert summary['time']['agreement'] is False
     assert any('log 因子' in text for text in summary['limitations'])
+
+
+def test_combine_does_not_let_a_lexical_analysis_rule_a_log_factor():
+    """C/C++/Java static analysis is lexical and LOW-confidence; it must not
+    override a confident measurement on the log-factor pair it is most likely
+    to get wrong."""
+    static = complexity.StaticAnalysis(language_family='c-like', time_class='O(n)',
+                                       space_class='O(1)', confidence='LOW')
+    summary = complexity.combine(static, _dynamic_conclusion('O(n log n)'))
+    assert summary['time']['class'] == 'O(n log n)'
+    assert summary['time']['source'] == 'DYNAMIC'
+    assert any('词法分析' in text for text in summary['limitations'])
 
 
 def test_combine_still_prefers_a_clearly_higher_measurement():

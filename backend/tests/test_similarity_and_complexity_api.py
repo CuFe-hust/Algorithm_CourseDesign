@@ -333,6 +333,44 @@ def test_complexity_teacher_overview_lists_students(client, auth, db, demo, loca
     assert all(row['time_class'] for row in items)
 
 
+def test_teacher_batch_queues_every_accepted_submission(client, auth, db, demo, local_mode):
+    """The 60-student class is the main use case; one request queues the item."""
+    item = _programming_item(db, demo)
+    students = _students(db)
+    for student in students[:3]:
+        _judge(db, _add_submission(db, item, student, ACCEPTED_A))
+    _judge(db, _add_submission(db, item, students[3], UNRELATED), verdict='WRONG_ANSWER')
+    headers = auth('demo.teacher')
+    response = client.post(f'/api/v1/analysis/courses/{demo[0]["course_id"]}/complexity/batch',
+                           headers=headers,
+                           json={'request_id': f'batch-{item.id}',
+                                 'assignment_item_id': str(item.id)})
+    assert response.status_code == 202, response.text
+    body = response.json()
+    assert body['queued'] == 3
+    assert body['ineligible'] >= 1
+    assert body['ineligible_reasons'].get('SUBMISSION_NOT_ACCEPTED') == 1
+    # 幂等：再发一次不会重复建报告。
+    again = client.post(f'/api/v1/analysis/courses/{demo[0]["course_id"]}/complexity/batch',
+                        headers=headers,
+                        json={'request_id': f'batch-again-{item.id}',
+                              'assignment_item_id': str(item.id)})
+    assert again.json()['queued'] == 0
+    assert again.json()['skipped'] == 3
+    overview = client.get(f'/api/v1/analysis/courses/{demo[0]["course_id"]}/complexity',
+                          headers=headers)
+    assert len(overview.json()['items']) >= 3
+
+
+def test_teacher_batch_is_teacher_only(client, auth, db, demo, local_mode):
+    item = _programming_item(db, demo)
+    response = client.post(f'/api/v1/analysis/courses/{demo[0]["course_id"]}/complexity/batch',
+                           headers=auth('demo.student01'),
+                           json={'request_id': f'batch-{item.id}',
+                                 'assignment_item_id': str(item.id)})
+    assert response.status_code == 403
+
+
 def test_complexity_overview_is_teacher_only(client, auth, db, demo):
     assert client.get(f'/api/v1/analysis/courses/{demo[0]["course_id"]}/complexity',
                       headers=auth('demo.student01')).status_code == 403

@@ -53,6 +53,8 @@ function item(overrides: Record<string, unknown> = {}) {
         containment_left: "0.8",
         containment_right: "0.9",
         shared_fingerprints: 20,
+        left_tokens: 150,
+        right_tokens: 160,
         matched_tokens: 60,
         longest_run_tokens: 30,
         spans: [
@@ -69,6 +71,7 @@ function item(overrides: Record<string, unknown> = {}) {
     ],
     clusters: [],
     insufficient: [],
+    language_counts: { python3: 3 },
     ...overrides,
   };
 }
@@ -143,6 +146,75 @@ it("warns when a run succeeded but the business outcome is unusable", async () =
   expect(host.textContent).toContain("没有可用结果");
   expect(host.textContent).toContain("NOT_IMPLEMENTED");
   expect(host.querySelectorAll("tbody tr")).toHaveLength(0);
+});
+
+it("marks a pair of short programs as weak evidence", async () => {
+  const host = await mount(
+    "7",
+    evidence({
+      pairs: [
+        {
+          ...item().pairs[0],
+          left_tokens: 63,
+          right_tokens: 52,
+        },
+      ],
+    }),
+  );
+  expect(host.textContent).toContain("程序较短，独立完成也可能达到此相似度");
+  const roomy = await mount("7", evidence());
+  expect(roomy.textContent).not.toContain("程序较短");
+});
+
+it("annotates the band where different correct algorithms also land", async () => {
+  const inBand = await mount(
+    "7",
+    evidence({
+      pairs: [{ ...item().pairs[0], similarity: "0.620000" }],
+    }),
+  );
+  expect(inBand.textContent).toContain("该区间内同题的不同正确算法也可能出现");
+  const strong = await mount("7", evidence());
+  expect(strong.textContent).not.toContain("不同正确算法");
+});
+
+it("shows token counts for both sides of a pair", async () => {
+  const host = await mount("7", evidence());
+  expect(host.textContent).toContain("150 / 160");
+});
+
+it("labels a chain-shaped cluster and states qualifying pairs", async () => {
+  const host = await mount(
+    "7",
+    evidence({
+      clusters: [
+        {
+          members: [
+            person("2", "甲同学"),
+            person("3", "乙同学"),
+            person("4", "丙同学"),
+          ],
+          size: 3,
+          max_similarity: "1.000000",
+          min_similarity: "0.552000",
+          qualifying_pairs: 2,
+          total_pairs: 3,
+        },
+      ],
+    }),
+  );
+  expect(host.textContent).toContain("链式");
+  expect(host.textContent).toContain("达标 2/3");
+  expect(host.textContent).toContain("最低 55.2%");
+});
+
+it("reports the language mix when submissions span languages", async () => {
+  const host = await mount(
+    "7",
+    evidence({ language_counts: { python3: 3, cpp: 2 } }),
+  );
+  expect(host.textContent).toContain("跨语言的提交之间无法比较");
+  expect(host.textContent).toContain("python3 3 份");
 });
 
 it("gives the action header an accessible name without an extra element", async () => {

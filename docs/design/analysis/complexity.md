@@ -52,6 +52,14 @@ Python 收集的事实：
 - 另算双对数斜率作为物理校验，与类别预期指数相差超过 0.7 的候选被排除。
 - 至少 5 个有效档位才给 MEDIUM 及以上置信度。4 档时实验观察到 `O(n²)` 会被判成 `O(n log n)`，档位不足以钉住曲线。
 
+### 2.4 "实测只能给上界"的判据
+
+实测只有在**明显跑赢读输入**时才算证据：完成档里至少 3 档的 `wall_ms / reference_ms ≥ 1.5` 才判 `informative = True`（`INFORMATIVE_IO_RATIO`、`MINIMUM_INFORMATIVE_RUNGS`），否则结论回落到结构分析并写明理由。
+
+这条规则此前写成了"先给基线自己拟一条曲线再比类别"，而基线是常数开销程序、它的拟合几乎必然 LOW，于是判据从未生效（方案审核发现）。改成逐档比值后它第一次真正工作：实验里线性组与常数组都被正确判为可测信息不足。
+
+没有基线时（参考程序只有 Python）不判否：报告写明"实测未经输入开销校验"，因为 C/C++/Java 没有别的可发表结论来源。
+
 ### 2.4 合并规则
 
 1. **只差一个 log 因子的两类由结构裁定。** `n` 与 `n log n`（以及 `1`/`log n`、`n²`/`n² log n`）在整个可测区间内相差不到一个常数倍，计时无法分辨：实验里 40 次带噪声的对照有 13 次分错。结构分析能看到产生 log 因子的构造（排序调用、循环内的折半），所以这一类按结构报，同时把实测落在另一边的分歧写进限制说明。两条都是 log 关系时（`O(log n)` 与 `O(n log n)`）不属于同一对，不适用这条。
@@ -62,16 +70,18 @@ Python 收集的事实：
 
 ## 3. 复杂度
 
-生成 O(n) 输入、执行 O(T(n))、拟合 O(档位数 × 候选数) = O(13×8)，可忽略。测量本身受单档 10 秒、总 150 秒硬上限约束。
+生成 O(n) 输入、执行 O(T(n))、拟合 O(档位数 × 候选数) = O(13×8)，可忽略。测量本身受单档 10 秒、总 60 秒硬上限约束（方案审核实测：所有成功组的测量都在 12 秒内完成，150 秒只在超时场景被吃满）。单 worker 串行处理，60 人 × 5 题的批量场景约 15 分钟。
 
 ## 4. 数据
 
 迁移 pg0007 新增两张表：
 
-- `problem_complexity_profiles`：`problem_version_id` 唯一、`family`、`spec`（JSONB）、`source`、`version_no`。用 `python -m scripts.seed_complexity_profiles` 按题目编号写入，幂等，不覆盖已有行。
+- `problem_complexity_profiles`：`problem_version_id` 唯一、`family`、`spec`（JSONB）、`source`、`version_no`。用 `python -m scripts.seed_complexity_profiles` 按题目编号写入，幂等，不覆盖已有行。**种子带自动验收**：生成 `n=256` 的输入喂题库自带的 Python 参考解，崩溃就把该题降级为 `EXISTING_CASES` 并记录原因；已入库的可用 `--revalidate` 重验。
 - `complexity_reports`：一次提交一份，`status`、`time_class`/`space_class`、置信度、来源、`static_analysis`、`growth`、`summary`、`limitations`，加 `requested_by`、`attempt_no`、`lease_expires_at`、`finished_at`、`error_message`。
 
 worker 用 `FOR UPDATE SKIP LOCKED` 领取，置 RUNNING 并给 180 秒租约，测量在事务外进行，写回前重验租约。租约过期由 `recover_expired` 置 FAILED 并说明，不自动重跑。
+
+pg0008 补齐约束与历史：`time_class`/`space_class` 有取值枚举 CHECK，`status` 与类别是否为空的一致性有 CHECK（已发布必须有类别，排队中必须为空）；实现版本升级重置时把旧结论归档到 `history` JSONB 数组，教师能看出结论被改过。
 
 ## 5. 接口
 
@@ -81,6 +91,7 @@ worker 用 `FOR UPDATE SKIP LOCKED` 领取，置 RUNNING 并给 180 秒租约，
 | `GET /analysis/submissions/{id}/complexity` | 学生本人或本课程教师；返回报告或 `status=NONE` |
 | `GET /analysis/courses/{course_id}/complexity` | 仅教师；班级概览，每生每题最新一份 |
 | `GET /analysis/courses/{course_id}/complexity/items` | 仅教师；哪些题配置了伸缩档 |
+| `POST /analysis/courses/{course_id}/complexity/batch` | 仅教师；为该题全部真实通过的提交排队分析，已有报告的跳过；返回排队数、跳过数、不合格数与原因分布 |
 
 ## 6. 已声明的限制
 
@@ -93,6 +104,8 @@ worker 用 `FOR UPDATE SKIP LOCKED` 领取，置 RUNNING 并给 180 秒租约，
 - 超时或失败的档位被剔除，并写剔除了几档。
 - 有效档位少于 5 时，拟合容易受常数开销影响，置信度不会是 MEDIUM 以上。
 - 只差一个 log 因子的两类由结构裁定，结构若看不出该因子，报告会写清分歧。
+- 结构裁定要求结构分析本身不是 LOW：C/C++/Java 只有词法分析，此时按实测报并写明分歧（否则会把高置信实测压成低置信结构结论）。
+- 无纯读取基线时（C/C++/Java）实测未经输入开销校验。
 - 字面量边界只有 `for` 与推导式被识别为常数层；带条件变量的 `while` 一律按输入相关处理，可能把常数 `while` 判高一阶。
 - 输入规模固定的题（伸缩档族 `FIXED`）只给结构结论，并明确写出“复杂度描述的是这个固定输入下的代价，不随 n 变化”。
 - 复杂度分析不参与评分，不改变评测结果。

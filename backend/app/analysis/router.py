@@ -146,6 +146,22 @@ def get_complexity(submission_id:Id,user:User=Depends(current_user),db:Session=D
     return complexity_service.report_view(db,submission_id,user)
 
 
+class ComplexityBatchRequest(Request):
+    assignment_item_id: StrictStr = Field(pattern=r'^[1-9][0-9]{0,18}$')
+    # Idempotency here is structural (a submission with a report is skipped), so
+    # this field is accepted for house-style consistency rather than used as a key.
+
+    _valid_item = field_validator('assignment_item_id')(BatchCreate.valid_id.__func__)
+
+
+@router.post('/courses/{course_id}/complexity/batch', status_code=202)
+def batch_complexity(course_id: Id, body: ComplexityBatchRequest,
+                     user: User = Depends(current_user), db: Session = Depends(get_db)):
+    """Queue analysis for every really accepted submission of one item."""
+    return write(db, complexity_service.batch_request, course_id, user,
+                 body.model_dump(mode='json'))
+
+
 @router.get('/courses/{course_id}/complexity')
 def course_complexity(course_id:Id,user:User=Depends(current_user),db:Session=Depends(get_db),
                       assignment_item_id:StrictStr|None=Query(default=None,pattern=r'^[1-9][0-9]{0,18}$'),

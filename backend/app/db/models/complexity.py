@@ -63,6 +63,9 @@ class ComplexityReport(Mutable, Base):
     started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     error_message: Mapped[str | None] = mapped_column(Text)
+    # Every superseded conclusion, appended when an implementation change resets
+    # the row. A teacher who read the previous verdict can see it changed.
+    history: Mapped[list] = mapped_column(JSONB, default=list)
     __table_args__ = (
         CheckConstraint("status IN ('PENDING','RUNNING','SUCCEEDED','STATIC_ONLY','INELIGIBLE','FAILED')",
                         name='ck_cr_status'),
@@ -72,4 +75,16 @@ class ComplexityReport(Mutable, Base):
         CheckConstraint("space_confidence IS NULL OR space_confidence IN ('LOW','MEDIUM','HIGH')",
                         name='ck_cr_space_conf'),
         CheckConstraint("time_source IS NULL OR time_source IN ('DYNAMIC','STATIC')",
-                        name='ck_cr_time_source'))
+                        name='ck_cr_time_source'),
+        CheckConstraint("time_class IS NULL OR time_class IN "
+                        "('O(1)','O(log n)','O(n)','O(n log n)','O(n^2)','O(n^2 log n)',"
+                        "'O(n^3)','O(2^n)','UNKNOWN')", name='ck_cr_time_class'),
+        CheckConstraint("space_class IS NULL OR space_class IN "
+                        "('O(1)','O(log n)','O(n)','O(n log n)','O(n^2)','O(n^2 log n)',"
+                        "'O(n^3)','O(2^n)','UNKNOWN')", name='ck_cr_space_class'),
+        # A published report must carry its verdict; a queued one must not.
+        CheckConstraint("(status IN ('SUCCEEDED','STATIC_ONLY') "
+                        "AND time_class IS NOT NULL AND space_class IS NOT NULL) "
+                        "OR (status IN ('PENDING','RUNNING') "
+                        "AND time_class IS NULL AND space_class IS NULL) "
+                        "OR status IN ('FAILED','INELIGIBLE')", name='ck_cr_status_class'))

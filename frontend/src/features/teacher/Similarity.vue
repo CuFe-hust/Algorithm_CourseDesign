@@ -15,9 +15,12 @@ import { session } from "../../shared/session";
 import CodePreview from "../../shared/CodePreview.vue";
 import type { SubmissionDetail } from "../student/types";
 import {
+  ambiguousBand,
+  clusterIsChain,
   insufficientLabels,
   percent,
   personLabel,
+  weakEvidence,
   type SimilarityCluster,
   type SimilarityEvidence,
   type SimilarityItem,
@@ -53,6 +56,10 @@ const scopeItems = computed<SimilarityScopeAssignment["items"]>(
 );
 const currentItem = computed<SimilarityItem | null>(
   () => evidence.value?.items[activeItem.value] ?? null,
+);
+/** More than one language means some pairs can never be compared. */
+const mixedLanguages = computed(
+  () => Object.keys(currentItem.value?.language_counts ?? {}).length > 1,
 );
 const assignmentTitle = computed(
   () =>
@@ -367,6 +374,10 @@ onMounted(async () => {
               <span class="muted">3 份及以上互相相似的提交</span>
             </div>
             <div class="cluster-list">
+              <p class="hint cluster-hint">
+                相似簇按连通性归组，不保证两两都相似：达标 X/Y 表示簇内有 X
+                对达到阈值，链式归组也会出现，请点开逐对核对。
+              </p>
               <button
                 v-for="(cluster, index) in currentItem.clusters"
                 :key="index"
@@ -374,12 +385,24 @@ onMounted(async () => {
                 @click="selectCluster(cluster)"
               >
                 <span class="badge amber">{{ cluster.size }} 份</span>
+                <span
+                  v-if="clusterIsChain(cluster)"
+                  class="badge gray"
+                  title="并非所有成员两两达标，可能是链式归组"
+                  >链式</span
+                >
                 <span class="cluster-members">
                   {{ cluster.members.map(personLabel).join("、") }}
                 </span>
-                <span class="mono muted"
-                  >最高 {{ percent(cluster.max_similarity) }}</span
-                >
+                <span class="mono muted">
+                  达标 {{ cluster.qualifying_pairs ?? "—" }}/{{
+                    cluster.total_pairs ?? "—"
+                  }}
+                  · 最高 {{ percent(cluster.max_similarity) }}
+                  <template v-if="cluster.min_similarity">
+                    · 最低 {{ percent(cluster.min_similarity) }}</template
+                  >
+                </span>
               </button>
             </div>
           </section>
@@ -388,6 +411,14 @@ onMounted(async () => {
             <div class="card-heading">
               <h2><ShieldAlert :size="17" /> 相似对</h2>
               <span class="muted">
+                <template v-if="mixedLanguages">
+                  {{
+                    Object.entries(currentItem.language_counts ?? {})
+                      .map(([lang, count]) => `${lang} ${count} 份`)
+                      .join("、")
+                  }}
+                  · 跨语言的提交之间无法比较，下表只含同语言配对 ·
+                </template>
                 方法 {{ currentItem.method || "—" }}
                 <template v-if="currentItem.parameters">
                   · k={{ currentItem.parameters.k }} · 窗口
@@ -414,6 +445,7 @@ onMounted(async () => {
                       <th>相似度</th>
                       <th>包含度</th>
                       <th>连续匹配</th>
+                      <th>记号数</th>
                       <th aria-label="操作"></th>
                     </tr>
                   </thead>
@@ -439,6 +471,15 @@ onMounted(async () => {
                         <span class="badge amber">{{
                           percent(pair.similarity)
                         }}</span>
+                        <small
+                          v-if="ambiguousBand(pair.similarity)"
+                          class="secondary-line"
+                        >
+                          该区间内同题的不同正确算法也可能出现
+                        </small>
+                        <small v-if="weakEvidence(pair)" class="secondary-line">
+                          程序较短，独立完成也可能达到此相似度
+                        </small>
                       </td>
                       <td class="mono">
                         {{ percent(pair.containment_left) }} /
@@ -446,6 +487,10 @@ onMounted(async () => {
                       </td>
                       <td class="mono">
                         {{ pair.longest_run_tokens ?? "—" }} 记号
+                      </td>
+                      <td class="mono">
+                        {{ pair.left_tokens ?? "—" }} /
+                        {{ pair.right_tokens ?? "—" }}
                       </td>
                       <td>
                         <button class="small" @click="selectPair(pair)">

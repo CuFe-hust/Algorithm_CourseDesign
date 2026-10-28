@@ -803,6 +803,13 @@ EXPONENT_TOLERANCE = 0.7
 # silently disabled measurement for every quadratic program.
 MINIMUM_PUBLISHABLE_RUNGS = 5
 
+# How far above the pure input reader a rung must be before it counts as evidence
+# of algorithm work, and how many such rungs the conclusion needs. Reading input
+# is itself linear, so a program that never clearly outruns the reader shows a
+# growth curve dominated by parsing: its measurement is an upper bound only.
+INFORMATIVE_IO_RATIO = 1.5
+MINIMUM_INFORMATIVE_RUNGS = 3
+
 # Two classes whose R^2 differ by less than this are treated as explaining the
 # data equally well. On a short ladder ``n`` and ``n log n`` are almost
 # collinear, so their R^2 usually differ by ~0.001 and the absolute value says
@@ -909,9 +916,22 @@ def classify_growth(measurements: list[Measurement],
     io_class = 'UNKNOWN'
     if reference_fit is not None and reference_fit.confidence != 'LOW':
         io_class = reference_fit.fitted_class
-    informative = True
-    if io_class != 'UNKNOWN' and fit.fitted_class != 'UNKNOWN':
-        informative = CLASS_RANK[fit.fitted_class] > CLASS_RANK[io_class]
+
+    # The reader is a constant-cost program: its own growth fit almost always
+    # lands on the start-up floor and comes back LOW, which for a long time made
+    # ``io_class`` UNKNOWN and this check vacuous -- review verified it never
+    # fired on any recorded data. Judging per rung instead: the measurement says
+    # something beyond input parsing only when the submission clearly outruns the
+    # reader on enough rungs, no matter what class the reader's own curve fits.
+    above_reader = [item for item in ok
+                    if (reference_ms.get(item.n) or 0) > 0
+                    and item.wall_ms / reference_ms[item.n] >= INFORMATIVE_IO_RATIO]
+    if reference_ms:
+        informative = len(above_reader) >= MINIMUM_INFORMATIVE_RUNGS
+    else:
+        # No reader baseline exists (reference programs are Python-only), so the
+        # measurement is unverified rather than refuted; the report says so.
+        informative = True
     return DynamicConclusion(
         measured_class=fit.fitted_class, io_class=io_class, informative=informative,
         r2=fit.r2, exponent=fit.exponent, confidence=fit.confidence,
@@ -1122,7 +1142,11 @@ def combine(static: StaticAnalysis, dynamic: DynamicConclusion,
     measured_class = fit.fitted_class if dynamic_usable else dynamic.measured_class
     log_pair = _log_factor_pair(static.time_class, measured_class)
     decided = False
-    if log_pair is not None and dynamic_usable:
+    # A lexical-only structural analysis (C/C++/Java) counts loops from tokens and
+    # is routinely wrong about nesting; letting it override a confident
+    # measurement here would replace a good verdict with a LOW-confidence one.
+    structure_can_rule = static.confidence != 'LOW'
+    if log_pair is not None and dynamic_usable and structure_can_rule:
         # Both estimators saw one member of the pair. Structure is the one that
         # can explain *why* a log factor exists, so its class is reported; the
         # measurement's disagreement is recorded rather than silently dropped.
@@ -1138,6 +1162,10 @@ def combine(static: StaticAnalysis, dynamic: DynamicConclusion,
         time_class = fit.fitted_class
         time_source = 'DYNAMIC'
         time_confidence = fit.confidence
+        if log_pair is not None:
+            limitations.append(
+                f'结构分析与实测只差一个 log 因子（{static.time_class} 与 {fit.fitted_class}），'
+                '但该语言只有词法分析、结构置信度低，不足以裁定，因此按实测报告')
         decided = True
     if not decided:
         time_class = static.time_class

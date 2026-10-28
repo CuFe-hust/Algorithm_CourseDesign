@@ -605,6 +605,217 @@ def experiment_unrelated_same_problem(bank: dict[str, dict],
     }
 
 
+# Three genuinely independent implementations of one standard algorithm (activity
+# selection). No copying: the problem dictates the whole script, so the only
+# freedom is naming and statement order. Written in two idiom regimes because the
+# classroom idiom is what a course actually standardises.
+HONEST_SHORT_VARIED_IDIOM = (
+    """import sys
+
+def main():
+    data = sys.stdin.read().split()
+    n = int(data[0])
+    acts = []
+    idx = 1
+    for _ in range(n):
+        s, t = int(data[idx]), int(data[idx+1])
+        idx += 2
+        acts.append((s, t))
+    acts.sort(key=lambda x: x[1])
+    count = 0
+    last = -10**18
+    for s, t in acts:
+        if s >= last:
+            count += 1
+            last = t
+    print(count)
+
+main()
+""",
+    """n = int(input())
+intervals = []
+for _ in range(n):
+    start, end = map(int, input().split())
+    intervals.append((end, start))
+intervals.sort()
+chosen = 0
+free_at = float('-inf')
+for end, start in intervals:
+    if start >= free_at:
+        chosen += 1
+        free_at = end
+print(chosen)
+""",
+    """import sys
+input = sys.stdin.readline
+
+n = int(input())
+A = []
+for i in range(n):
+    l, r = map(int, input().split())
+    A.append([r, l])
+A.sort()
+ans = 0
+cur = -1
+for r, l in A:
+    if l > cur or l == cur:
+        ans += 1
+        cur = r
+print(ans)
+""",
+)
+
+HONEST_SHORT_SHARED_IDIOM = (
+    """import sys
+data = sys.stdin.read().split()
+n = int(data[0])
+acts = []
+idx = 1
+for _ in range(n):
+    acts.append((int(data[idx]), int(data[idx+1])))
+    idx += 2
+acts.sort(key=lambda x: x[1])
+count = 0
+last = -1
+for s, t in acts:
+    if s >= last:
+        count += 1
+        last = t
+print(count)
+""",
+    """import sys
+data = sys.stdin.read().split()
+n = int(data[0])
+intervals = []
+for i in range(n):
+    intervals.append((int(data[2*i+1]), int(data[2*i+2])))
+intervals.sort(key=lambda pair: pair[1])
+chosen = 0
+free_at = -1
+for begin, end in intervals:
+    if begin >= free_at:
+        chosen += 1
+        free_at = end
+print(chosen)
+""",
+    """import sys
+tokens = sys.stdin.read().split()
+n = int(tokens[0])
+pairs = []
+pos = 1
+for _ in range(n):
+    pairs.append((int(tokens[pos]), int(tokens[pos + 1])))
+    pos += 2
+pairs.sort(key=lambda item: item[1])
+answer = 0
+finish = -1
+for left, right in pairs:
+    if left >= finish:
+        answer += 1
+        finish = right
+print(answer)
+""",
+)
+
+HONEST_LONG_INDEPENDENT = (
+    """import sys
+def main():
+    data = sys.stdin.buffer.read().split()
+    n = int(data[0])
+    stones = [int(x) for x in data[1:1+n]]
+    prefix = [0] * (n + 1)
+    for i in range(n):
+        prefix[i+1] = prefix[i] + stones[i]
+    INF = float('inf')
+    dp = [[0] * n for _ in range(n)]
+    for length in range(2, n + 1):
+        for i in range(0, n - length + 1):
+            j = i + length - 1
+            best = INF
+            total = prefix[j+1] - prefix[i]
+            for k in range(i, j):
+                cost = dp[i][k] + dp[k+1][j] + total
+                if cost < best:
+                    best = cost
+            dp[i][j] = best
+    print(dp[0][n-1])
+main()
+""",
+    """import sys
+
+def solve():
+    tokens = sys.stdin.buffer.read().split()
+    n = int(tokens[0])
+    w = list(map(int, tokens[1:n+1]))
+    pre = [0]*(n+1)
+    for idx in range(1, n+1):
+        pre[idx] = pre[idx-1] + w[idx-1]
+    f = [[0]*n for _ in range(n)]
+    for span in range(2, n+1):
+        left = 0
+        while left + span <= n:
+            right = left + span - 1
+            f[left][right] = min(
+                f[left][m] + f[m+1][right] + pre[right+1] - pre[left]
+                for m in range(left, right)
+            )
+            left += 1
+    print(f[0][n-1])
+
+solve()
+""",
+)
+
+
+def _pairwise(group: tuple[str, ...], *, label: str) -> dict:
+    items = [dict(answer_key=f"honest-{index}", content=content, language='python3')
+             for index, content in enumerate(group)]
+    result = similarity.compare(items, threshold=0.0)
+    rows = [{'left': row['left_key'], 'right': row['right_key'],
+             'similarity': float(row['similarity']),
+             'longest_run_tokens': row['longest_run_tokens'],
+             'left_tokens': row['left_tokens'], 'right_tokens': row['right_tokens']}
+            for row in result.pairs]
+    return {'label': label, 'pairs': rows,
+            'max_similarity': max((row['similarity'] for row in rows), default=0.0),
+            'at_or_above_threshold': sum(1 for row in rows if row['similarity'] >= THRESHOLD),
+            'pair_count': len(rows)}
+
+
+def experiment_honest_baseline() -> dict:
+    """How similar are two students who did the work independently?
+
+    Every other similarity experiment compares a reference solution with a
+    deliberately rewritten copy or with a different algorithm. None of them
+    answered the question a teacher actually faces: on a short formulaic problem,
+    where the statement dictates almost the whole script, what does honest
+    independent work score? That baseline decides whether a threshold has any
+    calibration meaning.
+    """
+    varied = _pairwise(HONEST_SHORT_VARIED_IDIOM, label='短题目 · 独立完成 · I/O 习惯各异')
+    shared = _pairwise(HONEST_SHORT_SHARED_IDIOM, label='短题目 · 独立完成 · 统一 I/O 惯用法')
+    long_pair = _pairwise(HONEST_LONG_INDEPENDENT, label='长题目 · 独立完成 · 同一算法')
+    return {
+        'name': '独立完成基线：同一算法由不同人独立实现时的相似度',
+        'purpose': ('给出阈值的校准基线。若独立完成也常常超过阈值，则"超过阈值"本身不能作为抄袭证据，'
+                    '证据强度必须与程序长度一起呈现。'),
+        'parameters': {'k': similarity.KGRAM, 'window': similarity.WINDOW,
+                       'threshold': THRESHOLD, 'max_pairs': similarity.MAX_PAIRS},
+        'groups': {'varied_idiom_short': varied, 'shared_idiom_short': shared,
+                   'independent_long': long_pair},
+        'summary': {
+            'short_independent_max': max(varied['max_similarity'], shared['max_similarity']),
+            'short_independent_at_or_above': shared['at_or_above_threshold'],
+            'long_independent_max': long_pair['max_similarity'],
+        },
+        'notes': [
+            '三份短程序都实现活动安排贪心，彼此独立写作，没有复制关系',
+            '统一 I/O 惯用法模拟被同一门课教出来的班级',
+            '长程序是石子合并区间 DP 的两份独立实现',
+        ],
+    }
+
+
 def experiment_unrelated_cross_problem(bank: dict[str, dict]) -> dict:
     codes = sorted(bank)
     sketches = {code: similarity.sketch(code, reference_python(bank, code), 'python3')
@@ -1299,6 +1510,7 @@ def main(argv: list[str] | None = None) -> int:
     similarity_blocks['unrelated_same_problem'] = experiment_unrelated_same_problem(bank, workdir)
     similarity_blocks['unrelated_cross_problem'] = experiment_unrelated_cross_problem(bank)
     similarity_blocks['scale'] = experiment_scale(bank)
+    similarity_blocks['honest_baseline'] = experiment_honest_baseline()
 
     complexity_blocks = []
     for index, group in enumerate(build_complexity_groups(bank)):

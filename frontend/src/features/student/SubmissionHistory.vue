@@ -4,6 +4,7 @@ import { useRoute } from "vue-router";
 import { History } from "@lucide/vue";
 import { errorText } from "../../shared/api";
 import * as api from "./api";
+import { formatDateTime } from "./format";
 import type {
   AssignmentSummary,
   ComplexityResponse,
@@ -229,7 +230,7 @@ onMounted(async () => {
             <td>v{{ entry.version_no }}</td>
             <td>{{ entry.language || "主观题" }}</td>
             <td class="nowrap">
-              {{ new Date(entry.submitted_at).toLocaleString() }}
+              {{ formatDateTime(entry.submitted_at) }}
             </td>
             <td>
               <span class="badge" :class="verdict(entry).tone">{{

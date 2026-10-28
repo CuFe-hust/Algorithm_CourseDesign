@@ -202,6 +202,38 @@ async function loadReasons(list: OverviewRow[], token: number) {
   if (token === tableToken) reasons.value = next;
 }
 
+/** Queue analysis for every really accepted submission of this item. */
+const queueing = ref(false);
+const queueNotice = ref("");
+
+async function queueBatch() {
+  if (!itemId.value) return;
+  queueing.value = true;
+  queueNotice.value = "";
+  try {
+    const result = await request<{
+      queued: number;
+      skipped: number;
+      ineligible: number;
+    }>(`/analysis/courses/${session.courseId}/complexity/batch`, {
+      method: "POST",
+      body: JSON.stringify({
+        request_id: `batch-${Date.now()}`,
+        assignment_item_id: itemId.value,
+      }),
+    });
+    queueNotice.value =
+      result.queued > 0
+        ? `已为 ${result.queued} 份提交排队分析，${result.skipped} 份已有报告，${result.ineligible} 份未通过不参与。`
+        : `没有新排队的提交：${result.skipped} 份已有报告，${result.ineligible} 份未通过不参与。`;
+    await loadRows();
+  } catch (e) {
+    error.value = errorText(e);
+  } finally {
+    queueing.value = false;
+  }
+}
+
 async function loadRows(silent = false) {
   const target = itemId.value;
   if (!target || unmounted) return;
@@ -363,6 +395,17 @@ onBeforeUnmount(() => {
         >
           <RefreshCw :size="14" />刷新
         </button>
+        <button
+          class="small"
+          :disabled="queueing || !itemId || !hasProfile"
+          title="为该题全部真实通过的提交排队复杂度分析；已有报告的提交自动跳过"
+          @click="queueBatch"
+        >
+          <Table2 :size="14" />{{
+            queueing ? "正在排队…" : "为本题已通过提交排队分析"
+          }}
+        </button>
+        <span v-if="queueNotice" class="muted">{{ queueNotice }}</span>
         <span v-if="loadingRows" class="muted">正在读取报告…</span>
         <span v-else-if="pollStopped" class="muted">
           有

@@ -517,6 +517,11 @@ def compare(item: list[dict], *, minimum_tokens: int = DEFAULT_MINIMUM_TOKENS,
             'jaccard': _ratio(shared / union_sizes[(first, second)]) if union_sizes[(first, second)] else '0',
             'shared_fingerprints': shared,
             'left_fingerprints': left_size, 'right_fingerprints': right_size,
+            # Token counts let a reader judge evidence strength: on short,
+            # formulaic programs independent work also converges (measured 0.54
+            # to 1.00 below ~120 tokens with a shared classroom idiom), so a high
+            # score between two 60-token submissions says little.
+            'left_tokens': left.token_count, 'right_tokens': right.token_count,
             'matched_tokens': round(similarity * max(left.token_count, right.token_count)),
             'longest_run_tokens': longest,
             'matching_spans': span_rows,
@@ -539,15 +544,14 @@ def compare(item: list[dict], *, minimum_tokens: int = DEFAULT_MINIMUM_TOKENS,
         if root_left != root_right:
             parent[max(root_left, root_right)] = min(root_left, root_right)
 
-    best_edge: dict[int, float] = {}
+    edge_weight: dict[tuple[int, int], float] = {}
     for (first, second), shared in shared_counts.items():
         left, right = sketches[first], sketches[second]
         similarity = max(shared / len(left.positions), shared / len(right.positions))
         if similarity + 1e-12 < threshold:
             continue
         union(first, second)
-        for node in (first, second):
-            best_edge[node] = max(best_edge.get(node, 0.0), similarity)
+        edge_weight[(min(first, second), max(first, second))] = similarity
     groups: dict[int, list[int]] = {}
     for index in range(len(sketches)):
         groups.setdefault(find(index), []).append(index)
@@ -555,10 +559,24 @@ def compare(item: list[dict], *, minimum_tokens: int = DEFAULT_MINIMUM_TOKENS,
     for members in groups.values():
         if len(members) < 3:
             continue
+        # The union-find is single-link, so a cluster is a connected component and
+        # not necessarily a clique: A~B and B~C place C in the group even when A
+        # and C share almost nothing. Review measured a real 8-member cluster where
+        # only 8 of the 28 member pairs reached the threshold, so the report states
+        # how many pairs actually qualify instead of letting "size" imply a clique.
+        ordered = sorted(members)
+        member_edges = [edge_weight[(first, second)]
+                        for i, first in enumerate(ordered)
+                        for second in ordered[i + 1:]
+                        if (first, second) in edge_weight]
+        total_pairs = len(members) * (len(members) - 1) // 2
         clusters.append({
-            'member_keys': [sketches[index].answer_key for index in sorted(members)],
+            'member_keys': [sketches[index].answer_key for index in ordered],
             'size': len(members),
-            'max_similarity': _ratio(max(best_edge.get(index, 0.0) for index in members)),
+            'max_similarity': _ratio(max(member_edges, default=0.0)),
+            'min_similarity': _ratio(min(member_edges, default=0.0)),
+            'qualifying_pairs': len(member_edges),
+            'total_pairs': total_pairs,
         })
     clusters.sort(key=lambda row: (-row['size'], -float(row['max_similarity'])))
 

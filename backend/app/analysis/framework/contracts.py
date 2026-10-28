@@ -101,6 +101,9 @@ class SimilarPair(Contract):
     shared_fingerprints: int | None = Field(default=None, ge=0)
     left_fingerprints: int | None = Field(default=None, ge=0)
     right_fingerprints: int | None = Field(default=None, ge=0)
+    # Token counts per side: evidence strength depends on program length.
+    left_tokens: int | None = Field(default=None, ge=0)
+    right_tokens: int | None = Field(default=None, ge=0)
     matched_tokens: int | None = Field(default=None, ge=0)
     longest_run_tokens: int | None = Field(default=None, ge=0)
 
@@ -109,6 +112,12 @@ class SimilarCluster(Contract):
     member_keys: list[Key]
     size: int = Field(ge=3)
     max_similarity: Ratio
+    # A cluster is a connected component, not a clique. These three fields let a
+    # reader see the difference: "2 of 3 pairs qualify" is a chain, not a group
+    # of mutual copies.
+    min_similarity: Ratio | None = None
+    qualifying_pairs: int | None = Field(default=None, ge=0)
+    total_pairs: int | None = Field(default=None, ge=0)
 
 
 class SkippedSubmission(Contract):

@@ -117,14 +117,21 @@ def generate(family: str, n: int, seed: int, spec: dict | None = None) -> str:
         for _ in range(n):
             start = rng.randint(0, max(1, n))
             rows.append(f'{start} {start + rng.randint(1, max(1, n // 2))}')
-        return f'{n}\n' + '\n'.join(rows) + '\n'
+        # Knapsack-style problems read "n W" on the first line; the capacity
+        # rides along in the spec because it is not a size parameter.
+        header_suffix = f' {int(spec["header_extra"])}' if 'header_extra' in spec else ''
+        return f'{n}{header_suffix}\n' + '\n'.join(rows) + '\n'
     if family == 'GRAPH_EDGES':
+        # Unweighted graphs read "u v" pairs, weighted ones "u v w"; the bank has
+        # both, so the arity comes from the per-problem spec.
+        arity = int(spec.get('edge_arity', 3))
         rows = []
         for _ in range(n):
             u = rng.randint(1, n)
             v = rng.randint(1, n)
-            rows.append(f'{u} {v} {rng.randint(1, 1000)}')
-        return f'{n} {n}\n' + '\n'.join(rows) + '\n'
+            rows.append(f'{u} {v} {rng.randint(1, 1000)}' if arity == 3 else f'{u} {v}')
+        header_suffix = f' {spec["edge_count"]}' if 'edge_count' in spec else ''
+        return f'{n}{header_suffix}\n' + '\n'.join(rows) + '\n'
     if family == 'TWO_STRINGS':
         alphabet = 'abcdefghijklmnopqrstuvwxyz'
         first = ''.join(rng.choice(alphabet) for _ in range(n))

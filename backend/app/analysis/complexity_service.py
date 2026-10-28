@@ -26,7 +26,7 @@ from app.judge import config as judge_config
 IMPLEMENTATION_NAME = 'complexity_probe'
 IMPLEMENTATION_VERSION = '1'
 LEASE_SECONDS = 180
-MEASURE_BUDGET_MS = 150_000
+MEASURE_BUDGET_MS = 60_000
 MEASURE_WALL_LIMIT_MS = 10_000
 MEASURE_REPEATS = 3
 
@@ -112,7 +112,19 @@ def request_report(db: Session, submission_id: int, actor: User,
         if existing.implementation_name != IMPLEMENTATION_NAME \
                 or existing.implementation_version != IMPLEMENTATION_VERSION:
             # A new implementation must produce a new report rather than silently
-            # mixing two methods under one row.
+            # mixing two methods under one row. The superseded conclusion is kept
+            # in history: a teacher who read the old verdict can see it changed.
+            if existing.status in ('SUCCEEDED', 'STATIC_ONLY'):
+                existing.history = [* (existing.history or []), {
+                    'implementation_name': existing.implementation_name,
+                    'implementation_version': existing.implementation_version,
+                    'status': existing.status,
+                    'time_class': existing.time_class,
+                    'space_class': existing.space_class,
+                    'summary': existing.summary,
+                    'finished_at': existing.finished_at.isoformat()
+                    if existing.finished_at else None,
+                }]
             existing.implementation_name = IMPLEMENTATION_NAME
             existing.implementation_version = IMPLEMENTATION_VERSION
             existing.status = 'PENDING'
@@ -198,6 +210,85 @@ def report_payload(report: ComplexityReport) -> dict | None:
         'requested_at': report.requested_at.isoformat() if report.requested_at else None,
         'finished_at': report.finished_at.isoformat() if report.finished_at else None,
     }
+
+
+def batch_request(db: Session, course_id: int, actor: User, body: dict) -> dict:
+    """Queue analysis for every really accepted submission of one item.
+
+    A 60-student class is the main use case of this feature, and clicking each
+    submission once is not usable. Idempotent by construction: a submission that
+    already has a report is skipped, so re-posting returns the current state.
+    """
+    require_teacher(db, course_id, actor.id)
+    item_id = int(body['assignment_item_id'])
+    item = db.get(AssignmentItem, item_id)
+    assignment = db.get(Assignment, item.assignment_id) if item else None
+    if item is None or assignment is None or assignment.course_id != course_id:
+        raise AppError(404, 'NOT_FOUND', '资源不存在或不可访问')
+    version = db.get(ProblemVersion, item.problem_version_id)
+    problem = db.get(Problem, version.problem_id) if version else None
+    rows = db.execute(
+        select(Submission, JudgeResult)
+        .join(JudgeResult, JudgeResult.submission_id == Submission.id)
+        .where(Submission.assignment_item_id == item_id,
+               Submission.status == 'SUBMITTED')
+        .order_by(Submission.student_id, Submission.submitted_at, Submission.id)).all()
+    latest: dict[int, tuple] = {}
+    for submission, result in rows:
+        latest[submission.student_id] = (submission, result)
+    queued = 0
+    skipped = 0
+    ineligible = 0
+    reasons: dict[str, int] = {}
+    for student_id in sorted(latest):
+        submission, result = latest[student_id]
+        allowed, reason, _details = _eligibility_from_result(
+            submission, item, problem, result)
+        if not allowed:
+            ineligible += 1
+            reasons[reason] = reasons.get(reason, 0) + 1
+            continue
+        existing = db.scalar(select(ComplexityReport).where(
+            ComplexityReport.submission_id == submission.id))
+        if existing is not None:
+            skipped += 1
+            continue
+        db.add(ComplexityReport(
+            submission_id=submission.id, assignment_item_id=item_id,
+            student_id=student_id, status='PENDING', language=submission.language,
+            summary={}, limitations=[], implementation_name=IMPLEMENTATION_NAME,
+            implementation_version=IMPLEMENTATION_VERSION, requested_by=actor.id,
+            requested_at=utcnow(), attempt_no=0))
+        queued += 1
+    db.commit()
+    return {'assignment_item_id': str(item_id), 'queued': queued, 'skipped': skipped,
+            'ineligible': ineligible, 'ineligible_reasons': reasons}
+
+
+def _eligibility_from_result(submission: Submission, item, problem,
+                             result: JudgeResult) -> tuple[bool, str | None, dict]:
+    """Eligibility for a row already joined with its judge result (batch path)."""
+    if item is None or problem is None:
+        return False, 'NOT_FOUND', {}
+    if submission.status == 'WITHDRAWN':
+        return False, 'SUBMISSION_WITHDRAWN', {}
+    if problem.question_type != 'PROGRAMMING':
+        return False, 'NOT_A_PROGRAMMING_ITEM', {}
+    if result is None:
+        return False, 'NOT_JUDGED_YET', {}
+    if result.is_mock:
+        return False, 'MOCK_RESULT_NOT_ANALYSABLE', {}
+    if result.verdict != 'ACCEPTED' or not (
+            result.total_cases and result.passed_cases == result.total_cases):
+        return False, 'SUBMISSION_NOT_ACCEPTED', {}
+    mode = judge_config.execution_mode()
+    if (result.execution_mode or '').upper() != mode:
+        return False, 'JUDGE_CONTEXT_CHANGED', {}
+    if not judge_config.driver_available(mode):
+        return False, 'JUDGE_CONFIGURATION_UNSUPPORTED', {}
+    if judge_config.toolchain(submission.language) is None:
+        return False, 'UNSUPPORTED_LANGUAGE', {}
+    return True, None, {}
 
 
 # ------------------------------------------------------------------- worker
@@ -302,6 +393,11 @@ def _analyse(db: Session, report_id: int, *, measure: bool) -> None:
         reference = {outcome.n: outcome.reference_ms for outcome in outcomes
                      if outcome.reference_ms is not None}
         conclusion = engine.classify_growth(raw, reference)
+        if not any(value and value > 0 for value in reference.values()):
+            # The reader baselines are Python-only, so a C/C++/Java submission is
+            # measured without any check that it outruns input parsing.
+            limitations.append('该提交语言没有纯读取基线程序，实测未经输入开销校验，'
+                               '“实测高于读取开销”的判据不适用于这份报告')
         memory_stats = _memory_stats(outcomes)
         summary = engine.combine(static, conclusion, memory_stats)
         dynamic_payload = dict(conclusion.to_payload(), stop_reason=stop_reason,

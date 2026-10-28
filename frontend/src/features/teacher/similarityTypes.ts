@@ -25,15 +25,55 @@ export interface SimilarityPair {
   containment_left: string | null;
   containment_right: string | null;
   shared_fingerprints: number | null;
+  left_tokens: number | null;
+  right_tokens: number | null;
   matched_tokens: number | null;
   longest_run_tokens: number | null;
   spans: SimilaritySpan[];
+}
+
+/**
+ * Evidence strength depends on program length. On short, formulaic programs the
+ * problem statement dictates most of the token stream: measured on this codebase,
+ * independent implementations of one standard algorithm with a shared classroom
+ * I/O idiom score 0.54 to 1.00 below ~120 tokens, and two different algorithms
+ * sharing only the input idiom score 0.86. Below this size a high score says
+ * little about copying.
+ */
+const WEAK_EVIDENCE_TOKENS = 120;
+
+export function weakEvidence(pair: SimilarityPair): boolean {
+  const smallest = Math.min(
+    pair.left_tokens ?? Infinity,
+    pair.right_tokens ?? Infinity,
+  );
+  return smallest < WEAK_EVIDENCE_TOKENS;
+}
+
+/** Same-problem pairs of genuinely different algorithms reach this band. */
+export function ambiguousBand(
+  similarity: string | number | null | undefined,
+): boolean {
+  const value = Number(similarity);
+  return Number.isFinite(value) && value >= 0.5 && value < 0.7;
 }
 
 export interface SimilarityCluster {
   members: SimilarityPerson[];
   size: number;
   max_similarity: string;
+  min_similarity: string | null;
+  qualifying_pairs: number | null;
+  total_pairs: number | null;
+}
+
+/** A cluster is a connected component, not a clique; chains look like this. */
+export function clusterIsChain(cluster: SimilarityCluster): boolean {
+  return (
+    cluster.qualifying_pairs !== null &&
+    cluster.total_pairs !== null &&
+    cluster.qualifying_pairs < cluster.total_pairs
+  );
 }
 
 export interface SimilarityInsufficient {
@@ -55,6 +95,8 @@ export interface SimilarityItem {
   parameters: Record<string, string | number> | null;
   /** True when the pair list hit the 500-pair cap; clusters remain complete. */
   pairs_truncated: boolean;
+  /** Submission counts per language; cross-language pairs are never compared. */
+  language_counts: Record<string, number> | null;
   pairs: SimilarityPair[];
   clusters: SimilarityCluster[];
   insufficient: SimilarityInsufficient[];
