@@ -241,6 +241,28 @@ def test_complexity_static_only_when_no_scale_profile(client, auth, db, demo, lo
     assert any('伸缩档案' in text for text in body['report']['limitations'])
 
 
+def test_fixed_input_problems_say_the_class_is_not_about_growth(client, auth, db, demo,
+                                                                local_mode):
+    """A problem whose input has no size parameter must not imply growth with n."""
+    from app.db.models import ProblemComplexityProfile
+    seed_profiles(db)
+    item = _programming_item(db, demo)
+    version = db.get(ProblemVersion, item.problem_version_id)
+    profile = db.scalar(select(ProblemComplexityProfile).where(
+        ProblemComplexityProfile.problem_version_id == version.id))
+    profile.family = 'FIXED'
+    profile.spec = {'text': '9 lines of 9 digits'}
+    db.commit()
+    submission = _judge(db, _add_submission(db, item, _students(db)[0], ACCEPTED_A))
+    client.post(f'/api/v1/analysis/submissions/{submission.id}/complexity',
+                headers=auth('demo.student01'), json={'request_id': 'cx-fixed'})
+    assert complexity_service.process_one(db, measure=True) is True
+    body = client.get(f'/api/v1/analysis/submissions/{submission.id}/complexity',
+                      headers=auth('demo.student01')).json()
+    assert body['status'] == 'STATIC_ONLY'
+    assert any('输入规模固定' in text for text in body['report']['limitations'])
+
+
 def test_complexity_report_has_measurements_curve_and_honest_limits(client, auth, db, demo,
                                                                    local_mode, monkeypatch):
     seed_profiles(db)
@@ -314,6 +336,49 @@ def test_complexity_teacher_overview_lists_students(client, auth, db, demo, loca
 def test_complexity_overview_is_teacher_only(client, auth, db, demo):
     assert client.get(f'/api/v1/analysis/courses/{demo[0]["course_id"]}/complexity',
                       headers=auth('demo.student01')).status_code == 403
+
+
+class _Rung:
+    """Minimal stand-in for probe.RungOutcome, so memory logic is testable alone."""
+
+    def __init__(self, n, peak_rss_kib, verdict='OK'):
+        self.n = n
+        self.peak_rss_kib = peak_rss_kib
+        self.verdict = verdict
+
+
+def test_discarded_rungs_are_named_in_the_report():
+    """The report promises to say how many rungs were dropped; pin that sentence."""
+    points = [complexity.Measurement(n=n, wall_ms=12.0 + n / 1000,
+                                     adjusted_ms=12.0 + n / 1000,
+                                     peak_rss_kib=None, verdict='OK')
+              for n in (256, 512, 1024, 2048, 4096)]
+    points.append(complexity.Measurement(n=8192, wall_ms=0.0, adjusted_ms=0.0,
+                                         peak_rss_kib=None,
+                                         verdict='TIME_LIMIT_EXCEEDED'))
+    conclusion = complexity.classify_growth(points)
+    static = complexity.StaticAnalysis('python', 'O(n)', 'O(1)', 'HIGH')
+    summary = complexity.combine(static, conclusion)
+    assert len(conclusion.fit.discarded) == 1
+    assert any('剔除' in text for text in summary['limitations']), summary['limitations']
+
+
+def test_memory_classification_is_robust_to_one_outlier_rung():
+    """One spiky rung must not turn flat memory into O(n) or O(n^2).
+
+    Total RSS on this machine jitters by tens to hundreds of KiB, and CPython can
+    retain arenas at large n. A least-squares slope over every increment lets a
+    single peak decide the class, which then overrides a correct static O(1).
+    """
+    baseline_kib = 30 * 1024
+    flat = [_Rung(n, baseline_kib + 64, 'OK') for n in (1024, 4096, 16384, 65536)]
+    assert complexity_service._memory_stats(flat)['class'] == 'O(1)'
+    spiked = [*flat[:-1], _Rung(65536, baseline_kib + 64 + 3 * 1024, 'OK')]
+    assert complexity_service._memory_stats(spiked)['class'] == 'O(1)'
+
+    linear = [_Rung(n, baseline_kib + n // 100, 'OK') for n in (1024, 4096, 16384, 65536)]
+    assert complexity_service._memory_stats(linear)['class'] == 'O(n)'
+
 
 
 def test_profile_seed_is_idempotent_and_covers_programming_versions(db, demo):

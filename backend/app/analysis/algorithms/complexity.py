@@ -298,9 +298,13 @@ class _PythonVisitor(ast.NodeVisitor):
             self.visit(child)
 
     def _visit_comprehension(self, node) -> None:
+        # Same rule as a ``for`` statement: a literal bound contributes no factor
+        # of n. ``[list([]) for _ in range(9)]`` builds a fixed-size board.
         generators = len(node.generators)
-        for _ in range(generators):
-            self.stack.push('n')
+        weights = ['const' if _constant_iteration(generator.iter) else 'n'
+                   for generator in node.generators]
+        for weight in weights:
+            self.stack.push(weight)
         if self.current_function is not None:
             self.function_loops.add(self.current_function)
         self.max_loop_depth = max(self.max_loop_depth, self.stack.poly + self.stack.log)
@@ -322,8 +326,8 @@ class _PythonVisitor(ast.NodeVisitor):
             child = getattr(node, attribute, None)
             if child is not None:
                 self.visit(child)
-        for _ in range(generators):
-            self.stack.pop('n')
+        for weight in reversed(weights):
+            self.stack.pop(weight)
 
     visit_ListComp = _visit_comprehension
     visit_SetComp = _visit_comprehension

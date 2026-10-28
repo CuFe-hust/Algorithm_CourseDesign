@@ -281,7 +281,14 @@ def _analyse(db: Session, report_id: int, *, measure: bool) -> None:
         limitations.append('本次请求未执行测量，只给出结构分析结论')
     elif profile is None or profile.family in ('EXISTING_CASES', 'FIXED'):
         status = 'STATIC_ONLY'
-        limitations.append('该题尚未配置规模伸缩档案，无法测量增长；只给出结构分析结论')
+        if profile is not None and profile.family == 'FIXED':
+            # A fixed input has no size parameter, so the class describes the cost
+            # of that one input. Saying so avoids reading "O(n)" as "grows with n".
+            limitations.append(
+                '该题输入规模固定（没有可伸缩的规模参数），复杂度描述的是这个固定输入下的代价，'
+                '不随题目输入的 n 变化；无法测量增长')
+        else:
+            limitations.append('该题尚未配置规模伸缩档案，无法测量增长；只给出结构分析结论')
     else:
         outcomes, stop_reason = probe.escalating_measure(
             submission.content, language, profile.family, profile.spec or {},
@@ -330,9 +337,11 @@ def _analyse(db: Session, report_id: int, *, measure: bool) -> None:
     del details
 
 
-# A single measured process carries the interpreter itself; below this much growth
-# above the baseline the ladder says nothing about the program's own memory.
-MEMORY_NOISE_KIB = 2048
+# RSS jitter on a shared machine is tens to hundreds of KiB, and CPython may retain
+# an arena at one size. Growth below this is indistinguishable from that noise.
+MEMORY_NOISE_KIB = 256
+# Growth must be sustained: a single rung that jumped is a spike, not a trend.
+MEMORY_MINIMUM_RISING_RUNGS = 3
 
 
 def _memory_stats(outcomes) -> dict | None:
@@ -340,31 +349,52 @@ def _memory_stats(outcomes) -> dict | None:
 
     Total RSS is ``baseline + program data``, and the baseline (interpreter, loaded
     modules) is tens of MiB that does not move with ``n``. Dividing total RSS by
-    ``n`` -- an earlier version did that -- therefore reports an exponent near zero
-    for a genuinely linear program and can never detect ``O(n)`` space. So measure
-    the *increment* over the smallest rung and take its log-log slope instead.
+    ``n`` -- an earlier version did that -- reports an exponent near zero for a
+    genuinely linear program and can never detect ``O(n)`` space.
+
+    Two robustness rules come from review: the growth must be sustained across at
+    least :data:`MEMORY_MINIMUM_RISING_RUNGS` rungs, which rejects a single arena
+    retention spike; and the slope is the median of pairwise log-log slopes
+    (Theil-Sen) instead of least squares, so one outlier cannot move the class.
     """
     points = [(outcome.n, outcome.peak_rss_kib) for outcome in outcomes
               if outcome.verdict == 'OK' and outcome.peak_rss_kib]
-    if len(points) < 3:
+    if len(points) < MEMORY_MINIMUM_RISING_RUNGS:
         return None
     baseline_kib = min(kib for _, kib in points)
     increments = [(n, kib - baseline_kib) for n, kib in points]
-    largest = max(value for _, value in increments)
-    if largest < MEMORY_NOISE_KIB:
+    if max(value for _, value in increments) < MEMORY_NOISE_KIB:
         return {'class': 'O(1)', 'exponent': 0.0,
                 'points': [{'n': n, 'peak_rss_kib': kib} for n, kib in points]}
-    usable = [(n, value) for n, value in increments if value > 0 and n > 1]
-    if len(usable) < 2:
+
+    # Longest run of strictly increasing increments, in ladder order.
+    best_start = run_start = 0
+    best_length = run_length = 1
+    for index in range(1, len(increments)):
+        if increments[index][1] > increments[index - 1][1]:
+            run_length += 1
+        else:
+            run_start, run_length = index, 1
+        if run_length > best_length:
+            best_start, best_length = run_start, run_length
+    if best_length < MEMORY_MINIMUM_RISING_RUNGS:
+        return {'class': 'O(1)', 'exponent': 0.0,
+                'points': [{'n': n, 'peak_rss_kib': kib} for n, kib in points]}
+
+    usable = [(n, value) for n, value in increments[best_start:best_start + best_length]
+              if value > 0 and n > 1]
+    if len(usable) < MEMORY_MINIMUM_RISING_RUNGS:
         return None
     xs = [math.log(n) for n, _ in usable]
     ys = [math.log(value) for _, value in usable]
-    mean_x = sum(xs) / len(xs)
-    mean_y = sum(ys) / len(ys)
-    denominator = sum((x - mean_x) ** 2 for x in xs)
-    if denominator <= 0:
+    slopes = sorted((ys[j] - ys[i]) / (xs[j] - xs[i])
+                    for i in range(len(xs)) for j in range(i + 1, len(xs))
+                    if xs[j] > xs[i])
+    if not slopes:
         return None
-    exponent = sum((x - mean_x) * (y - mean_y) for x, y in zip(xs, ys)) / denominator
+    middle = len(slopes) // 2
+    exponent = (slopes[middle] if len(slopes) % 2
+                else (slopes[middle - 1] + slopes[middle]) / 2)
     space = 'O(n^2)' if exponent >= 1.5 else 'O(n)' if exponent >= 0.5 else 'O(1)'
     return {'class': space, 'exponent': round(exponent, 3),
             'points': [{'n': n, 'peak_rss_kib': kib} for n, kib in points]}

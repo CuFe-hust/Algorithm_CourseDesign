@@ -168,6 +168,46 @@ def test_threshold_is_respected():
     assert similarity.compare(unrelated, threshold=0.0).pairs == []
 
 
+def test_merge_spans_rejects_a_backwards_jump_on_either_side():
+    """Anchors are ordered by the left position only, so the right side needs a
+    lower bound: otherwise a block moved from the bottom to the top merges into one
+    span whose reported range does not cover the tokens it claims."""
+    k = 12
+    forward = [
+        similarity._Anchor(0, 0, 1, 1, 1, 1),
+        similarity._Anchor(k, k, 2, 2, 2, 2),
+    ]
+    assert len(similarity._merge_spans(forward, k)) == 1
+
+    backwards = [
+        similarity._Anchor(0, 200, 1, 1, 20, 20),
+        similarity._Anchor(k, 0, 2, 2, 1, 1),
+    ]
+    spans = similarity._merge_spans(backwards, k)
+    assert len(spans) == 2, 'a backwards right-side jump must break the span'
+
+
+def test_spans_do_not_merge_a_backwards_jump():
+    """Moved code must break a span, not produce one range that covers nothing.
+
+    Without a lower bound on the right side, a block cut from the bottom and
+    pasted at the top merged matches whose right positions jump backwards, and the
+    reported line range did not cover the tokens claimed.
+    """
+    body = [f"a[{index}] = a[{index}] + {index}" for index in range(10)]
+    original = ("n = int(input())\na = list(map(int, input().split()))\n"
+                + "\n".join(body) + "\nprint(a)\n")
+    moved = ("n = int(input())\na = list(map(int, input().split()))\n"
+             + "\n".join(body[6:] + body[:6]) + "\nprint(a)\n")
+    result = similarity.compare([
+        dict(answer_key='a', content=original, language='python3'),
+        dict(answer_key='b', content=moved, language='python3')])
+    assert result.pairs, 'a moved block still shares most of its tokens'
+    for span in result.pairs[0]['matching_spans']:
+        assert span['left_end_line'] >= span['left_start_line']
+        assert span['right_end_line'] >= span['right_start_line']
+
+
 def test_compare_states_when_the_evidence_list_was_truncated():
     """A cut evidence list must be labelled, and the cluster list stays complete.
 
@@ -527,6 +567,79 @@ print(total)
 """
     analysis = complexity.analyze_static(code, 'python3')
     assert analysis.time_class == 'O(n)'
+    assert analysis.loop_depth == 1
+
+
+def test_a_literal_bound_loop_never_becomes_a_factor_of_n():
+    """Push and pop must agree on the constant weight.
+
+    A literal-bound loop contributes nothing, so leaving it must remove nothing.
+    The first version only changed ``push``: a constant loop placed before a real
+    inner loop silently deleted the enclosing factor of n.
+    """
+    inner_first = """n = int(input())
+a = list(map(int, input().split()))
+total = 0
+for i in range(n):
+    for bit in range(8):
+        total += (a[i] >> bit) & 1
+    for j in range(n):
+        if a[j] > a[i]:
+            total += 1
+print(total)
+"""
+    inner_second = """n = int(input())
+a = list(map(int, input().split()))
+total = 0
+for i in range(n):
+    for j in range(n):
+        if a[j] > a[i]:
+            total += 1
+    for bit in range(8):
+        total += (a[i] >> bit) & 1
+print(total)
+"""
+    only_constant = """n = int(input())
+a = list(map(int, input().split()))
+total = 0
+for i in range(n):
+    for bit in range(8):
+        total += (a[i] >> bit) & 1
+print(total)
+"""
+    for source, expected in ((inner_first, 'O(n^2)'), (inner_second, 'O(n^2)'),
+                             (only_constant, 'O(n)')):
+        assert complexity.analyze_static(source, 'python3').time_class == expected
+
+
+def test_a_literal_bound_comprehension_is_not_a_factor_of_n():
+    """The same rule has to hold for comprehensions, not just ``for`` statements."""
+    fixed_board = """board = [list("0" * 9) for _ in range(9)]
+print(board)
+"""
+    assert complexity.analyze_static(fixed_board, 'python3').time_class == 'O(1)'
+
+    input_sized = """n = int(input())
+values = [int(token) for token in range(n)]
+print(len(values))
+"""
+    assert complexity.analyze_static(input_sized, 'python3').time_class == 'O(n)'
+
+
+def test_static_counts_a_while_loop_as_input_dependent():
+    """A ``while`` bound is a variable, so it stays conservative.
+
+    ``while t < 9`` may well be constant, but nothing in the syntax proves it: the
+    same shape is ``while lo < n`` in every binary search. Counting it as a factor
+    of n keeps the estimator from under-reporting a real loop.
+    """
+    source = """n = int(input())
+total = 0
+while total < 9:
+    total += n
+print(total)
+"""
+    analysis = complexity.analyze_static(source, 'python3')
     assert analysis.loop_depth == 1
 
 
