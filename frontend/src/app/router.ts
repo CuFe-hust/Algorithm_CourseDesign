@@ -70,6 +70,11 @@ export const teacherRoutes = [
 
 export const studentRoutes = [
   {
+    path: "ability",
+    name: "student-ability",
+    component: () => import("../features/student/Ability.vue"),
+  },
+  {
     path: "",
     name: "student-home",
     component: () => import("../features/student/CourseHome.vue"),

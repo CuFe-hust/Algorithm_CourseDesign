@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import {
   BookOpen,
   ClipboardList,
+  ChartNoAxesCombined,
   History,
   LogOut,
   Menu,
@@ -45,6 +46,11 @@ async function switchCourse() {
             selected: $route.path === `/student/courses/${session.courseId}`,
           }"
           ><ClipboardList :size="19" />作业与作答</RouterLink
+        >
+        <RouterLink
+          :to="`/student/courses/${session.courseId}/ability`"
+          :class="{ selected: $route.path.endsWith('/ability') }"
+          ><ChartNoAxesCombined :size="19" />个人章节表现</RouterLink
         >
         <RouterLink
           :to="`/student/courses/${session.courseId}/submissions`"

@@ -1,0 +1,80 @@
+{
+  "version": "difficulty-v1",
+  "created_utc": "2026-10-29T03:06:02.683589+00:00",
+  "students_per_dataset": 80,
+  "items": 66,
+  "chapters": 11,
+  "grade_distribution": "Beta(14*mu,14*(1-mu)); mu is scenario-specific logistic mean",
+  "known_item_split": "student-item grouped, per-student shuffled 60/20/20",
+  "final_training": "train+validation partitions (80%) after configuration freezes; final test 20%",
+  "unseen_item_split": "one whole item per primary chapter; separate task, 11 held-out items",
+  "selection_objective": "unweighted mean validation score RMSE across six scenarios \u00d7 two dataset seeds",
+  "validation_seeds": [
+    1103,
+    2207
+  ],
+  "final_seeds": [
+    31001,
+    32003,
+    33013,
+    34019,
+    35023,
+    36037
+  ],
+  "scenario_seed_offset": "scenario_index * 100000; split seed = effective seed + 719",
+  "unseen_split_seed": "effective seed + 991",
+  "hypergrid": [
+    {
+      "learner_l2": 0.05,
+      "item_l2": 0.3,
+      "difficulty_scale": 0.75
+    },
+    {
+      "learner_l2": 0.15,
+      "item_l2": 1.0,
+      "difficulty_scale": 0.75
+    },
+    {
+      "learner_l2": 0.5,
+      "item_l2": 4.0,
+      "difficulty_scale": 0.75
+    },
+    {
+      "learner_l2": 0.15,
+      "item_l2": 4.0,
+      "difficulty_scale": 0.75
+    },
+    {
+      "learner_l2": 0.15,
+      "item_l2": 1.0,
+      "difficulty_scale": 0.4
+    },
+    {
+      "learner_l2": 0.5,
+      "item_l2": 1.0,
+      "difficulty_scale": 0.4
+    }
+  ],
+  "selected_grid_index": 0,
+  "selected_parameters": {
+    "learner_l2": 0.05,
+    "item_l2": 0.3,
+    "difficulty_scale": 0.75
+  },
+  "d0_learner_l2_candidates": [
+    0.05,
+    0.15,
+    0.5
+  ],
+  "d0_selected_learner_l2": 0.5,
+  "fixed_baseline_parameters": "same as D1, calibrate_items=False; ablation rather than independently tuned",
+  "optimizer": {
+    "max_iterations": 180,
+    "tolerance": 1e-06
+  },
+  "uncertainty_unit": "independent generated dataset, six final replicates per scenario",
+  "baseline_unobserved_chapter_prediction": ".5 predictive prior, never a product radar value",
+  "test_seeds_used_for_selection": false,
+  "source_sha256": "93db252b9122f4b9c2654d2a631b126b6754c044afbdcbe3ea7174b2403a3469",
+  "core_sha256": "c6408d03d4e7b8118deef74a8170bd8f1cc373cd7ee7579c45ac1bcc8508450b"
+}

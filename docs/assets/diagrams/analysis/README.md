@@ -1,5 +1,7 @@
 # 当前分析流程（2026-10-27）
 
+2026-10-29新增：[B0与个人面板4K图](06-student-ability-b0-delivery-4k.png)、[可编辑SVG](06-student-ability-b0-delivery-4k.svg)。新图反映真实B0和面板，旧05图为历史黑盒阶段；演示与契约见 `docs/design/analysis/student-ability-b0.md`。
+
 已按会议决定取消作业总分与总分发布依赖；作业仍负责出题、名单和截止管理。单题满分、主观题互评分聚合、知识点权重均保留。
 
 当前流程：题目结果 → result_snapshot → 掌握 / 能力 / 基础统计 / 经验难度；行为指标独立。analysis-v2，pg0006，23步骤，15插件。

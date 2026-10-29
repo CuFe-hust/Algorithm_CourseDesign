@@ -17,6 +17,30 @@ Limit=Annotated[int|None,Query(ge=1,le=100)]
 Offset=Annotated[int|None,Query(ge=0)]
 
 
+@router.get('/courses/{course_id}/my-ability')
+def my_ability(course_id:Id,user:User=Depends(current_user),db:Session=Depends(get_db)):
+    from app.analysis.framework.ability_b0_line import project
+    return project(db,course_id,user)
+
+
+@router.get('/courses/{course_id}/my-ability/demo')
+def my_ability_demo(course_id:Id,user:User=Depends(current_user),db:Session=Depends(get_db)):
+    from app.analysis.framework.ability_b0_line import project
+    return project(db,course_id,user,demo=True)
+
+
+@router.get('/courses/{course_id}/my-ability/difficulty')
+def my_ability_difficulty(course_id:Id,user:User=Depends(current_user),db:Session=Depends(get_db)):
+    from app.analysis.framework.ability_b0_line import project
+    return project(db,course_id,user,model='d1')
+
+
+@router.get('/courses/{course_id}/my-ability/difficulty/demo')
+def my_ability_difficulty_demo(course_id:Id,user:User=Depends(current_user),db:Session=Depends(get_db)):
+    from app.analysis.framework.ability_b0_line import project
+    return project(db,course_id,user,demo=True,model='d1')
+
+
 @router.get('/courses')
 def courses(user:User=Depends(current_user),db:Session=Depends(get_db)):
     rows=db.execute(select(Course,CourseMember.role).join(CourseMember,CourseMember.course_id==Course.id)

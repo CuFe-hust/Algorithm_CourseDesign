@@ -38,6 +38,10 @@ BY_KEY={step.key:step for step in STEPS}
 
 
 def steps_for(batch):
+    if batch.configuration.get('pipeline')=='STUDENT_ABILITY_D1':
+        return (Step('ability',algorithm='ability_d1'),)
+    if batch.configuration.get('pipeline')=='STUDENT_ABILITY_B0':
+        return (Step('ability',algorithm='ability_b0'),)
     if batch.configuration.get('pipeline')=='STUDENT_ABILITY':
         return (Step('ability',algorithm='ability'),)
     return STEPS

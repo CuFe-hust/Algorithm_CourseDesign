@@ -1,5 +1,11 @@
 # 算法课程评审平台
 
+第六条线交付入口：[完整算法设计说明](docs/design/analysis/student-ability-algorithm-design.md)，包含公式、伪代码、复杂度、实验和队友接入契约。交付分支：`feat/student-ability-d1`。
+
+最新算法：[D1难度感知章节模型与演示](docs/design/analysis/student-ability-difficulty-model.md)，[独立留出实验](docs/design/analysis/difficulty-experiments.md)。模型、B0对照、提交过程观察已接通；实验保留无难度退化与新题错标失败场景。
+
+2026-10-29会议入口：[第六条线B0与个人雷达面板](docs/design/analysis/student-ability-b0.md)。已接通真实B0、结果持久化、本人读取与合成演示；未布置章节隐藏，编程/主观成绩共同参与。正式计分/互评仍由上游接入，不以合成结果代替。
+
 已实现统一教师/学生前端与共享FastAPI、PostgreSQL后端，28张业务表、迁移head为pg0006。教师可管理四类题目、导入及开通学生账号、发放/重置初始密码、创建发布作业、调整截止和查看采用结果；学生可改密、作答、提交、查看历史与LOCAL真实评测。匿名互评、评分聚合、正式成绩与Linux沙箱仍待后续模块。
 
 ## 三人从这里开始
