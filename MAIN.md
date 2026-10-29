@@ -1,5 +1,7 @@
 # 三人协作开发主文档
 
+晚间讲图：[四张4K图与建议顺序](docs/assets/diagrams/analysis/README.md)、[逐图讲解提纲](docs/design/analysis/meeting-d1-talk-track.md)。
+
 算法负责人交付：[学生章节表现评价算法设计说明](docs/design/analysis/student-ability-algorithm-design.md)。本轮算法、实验、持久化与演示已完成；正式编程计分和互评来源由对应模块接入。
 
 第六条线算法升级：[D1设计及运行入口](docs/design/analysis/student-ability-difficulty-model.md)、[完整实验结果](docs/design/analysis/difficulty-experiments.md)。D1与B0并列，历史数据不改写；真人能力效度未由合成实验验证。

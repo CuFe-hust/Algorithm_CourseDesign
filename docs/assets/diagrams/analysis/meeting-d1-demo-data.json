@@ -1,0 +1,124 @@
+{
+  "source_kind": "SYNTHETIC_FIXTURE",
+  "is_mock": true,
+  "input_hash": "725f9eb0cf3ba9cd2d68a77727d696d8c07f8b9db6888a3e0e821c0126ddfb24",
+  "implementation_version": "2",
+  "model_parameters": {
+    "item_l2": 0.3,
+    "tolerance": 1e-06,
+    "learner_l2": 0.05,
+    "max_iterations": 180,
+    "calibrate_items": true,
+    "difficulty_scale": 0.75
+  },
+  "examples": [
+    {
+      "code": "CODE-P01",
+      "type": "PROGRAMMING",
+      "difficulty": 2,
+      "score": "0.35"
+    },
+    {
+      "code": "CODE-P02",
+      "type": "PROGRAMMING",
+      "difficulty": 2,
+      "score": "0.46"
+    },
+    {
+      "code": "SUB-A07",
+      "type": "ALGORITHM_ANALYSIS",
+      "difficulty": 1,
+      "score": "0.57"
+    }
+  ],
+  "estimates": [
+    {
+      "dimension": "CH01",
+      "dimension_label": "贪心算法",
+      "value": "0.2733132489357214",
+      "baseline_value": "0.46",
+      "status": "OK",
+      "n_items": 3
+    },
+    {
+      "dimension": "CH02",
+      "dimension_label": "分治算法",
+      "value": "0.044397121632976315",
+      "baseline_value": "0",
+      "status": "OK",
+      "n_items": 3
+    },
+    {
+      "dimension": "CH03",
+      "dimension_label": "动态规划",
+      "value": "0.9427253924937589",
+      "baseline_value": "1",
+      "status": "OK",
+      "n_items": 3
+    },
+    {
+      "dimension": "CH04",
+      "dimension_label": "图论",
+      "value": "0.8189923819756431",
+      "baseline_value": "0.84",
+      "status": "OK",
+      "n_items": 3
+    },
+    {
+      "dimension": "CH05",
+      "dimension_label": "搜索与回溯",
+      "value": "0.48665310028941644",
+      "baseline_value": "0.56",
+      "status": "OK",
+      "n_items": 3
+    },
+    {
+      "dimension": "CH06",
+      "dimension_label": "字符串",
+      "value": "0.6886641227646877",
+      "baseline_value": "0.6866666666666666666666666667",
+      "status": "OK",
+      "n_items": 3
+    },
+    {
+      "dimension": "CH07",
+      "dimension_label": "排序与查找",
+      "value": null,
+      "baseline_value": null,
+      "status": "NO_EVIDENCE",
+      "n_items": 0
+    },
+    {
+      "dimension": "CH08",
+      "dimension_label": "数据结构",
+      "value": null,
+      "baseline_value": null,
+      "status": "NO_EVIDENCE",
+      "n_items": 0
+    },
+    {
+      "dimension": "CH09",
+      "dimension_label": "数学与数论",
+      "value": null,
+      "baseline_value": null,
+      "status": "NOT_COVERED",
+      "n_items": 0
+    },
+    {
+      "dimension": "CH10",
+      "dimension_label": "位运算与杂项",
+      "value": null,
+      "baseline_value": null,
+      "status": "NOT_COVERED",
+      "n_items": 0
+    },
+    {
+      "dimension": "CH11",
+      "dimension_label": "数组与模拟",
+      "value": null,
+      "baseline_value": null,
+      "status": "NOT_COVERED",
+      "n_items": 0
+    }
+  ]
+}

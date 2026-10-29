@@ -1,0 +1,37 @@
+{
+  "canvas": [
+    3840,
+    2160
+  ],
+  "source": "committed algorithm + synthetic artifact + frozen experiment results",
+  "figures": [
+    {
+      "file": "07-meeting-six-routes-4k.png",
+      "width": 3840,
+      "height": 2160,
+      "text_elements": 43,
+      "sha256": "09c093cfc1f5a104d9aa9841ff0889774a150058447c18e2418232e6e48c91da"
+    },
+    {
+      "file": "08-meeting-d1-algorithm-architecture-4k.png",
+      "width": 3840,
+      "height": 2160,
+      "text_elements": 54,
+      "sha256": "8e1c364f62d8bdb4ced49efd770ac16d4abd81b4c98ec3bd2dbb522f9f6a768b"
+    },
+    {
+      "file": "09-meeting-radar-dimensions-4k.png",
+      "width": 3840,
+      "height": 2160,
+      "text_elements": 64,
+      "sha256": "44506dae2e4eb1ceb88d22945300d537eb1a9c0efbb8a173260dc9bac1b852dc"
+    },
+    {
+      "file": "10-meeting-model-improvements-4k.png",
+      "width": 3840,
+      "height": 2160,
+      "text_elements": 29,
+      "sha256": "36b38ac8198991f44f2884b4e12d8d64f625b41d967c36220aedc1602e82b099"
+    }
+  ]
+}
