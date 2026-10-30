@@ -223,3 +223,16 @@ def test_review_candidates_flow_into_shared_question_results_snapshot(db,scope):
     db.commit();rows=[x for x in report['rows'] if x['normalized_score'] is not None]
     assert len(rows)==6 and all(x['source']['kind']=='REVIEW_ANALYSIS' and x['source']['version']==2 for x in rows)
     assert all(Decimal(x['normalized_score'])==Decimal('.8') for x in rows)
+    from app.analysis.course_results import create_snapshot as create_course
+    from app.analysis.integration_router import CourseSnapshotCreate
+    from app.analysis.framework.ability_b0_line import create_batch,project
+    cid=db.get(Assignment,scope[2].assignment_id).course_id
+    source=create_course(db,cid,scope[0],CourseSnapshotCreate(request_id='peer-course',reason='复核主观证据接入章节模型'))
+    db.commit()
+    create_batch(db,cid,scope[0],dict(mode='REAL_INPUT',seed=1,request_id='peer-b0',source_batch_id=source['id']))
+    drain(db)
+    from app.db.models import User
+    student=db.scalar(select(User).where(User.id==int(rows[0]['student_id'])))
+    view=project(db,cid,student)
+    assert view['status']=='OK' and not view['is_mock']
+    assert any('SUBJECTIVE' in e['by_type'] for e in view['estimates'])

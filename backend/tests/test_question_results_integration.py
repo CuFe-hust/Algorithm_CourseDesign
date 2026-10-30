@@ -88,3 +88,115 @@ def test_open_scope_is_rejected_and_http_permissions_are_scoped(client,auth,db,s
 def test_system_errors_and_inconsistent_verdicts_are_not_scores(db,scope):
     scope[4].verdict='SYSTEM_ERROR';db.commit();assert create(db,scope)['known_count']==0;db.rollback()
     scope[4].verdict='ACCEPTED';scope[4].passed_cases=4;db.commit();assert create(db,scope)['known_count']==0
+
+
+def course_snapshot(db,scope,**overrides):
+    from app.analysis.course_results import create_snapshot
+    from app.analysis.integration_router import CourseSnapshotCreate
+    body=CourseSnapshotCreate(request_id=overrides.pop('request_id',uuid4().hex),reason='合成测试：课程章节证据',**overrides)
+    result=create_snapshot(db,scope[2].course_id,scope[0],body)
+    db.commit()
+    return result
+
+
+def test_course_bridge_runs_both_real_models_and_projects_only_self(db,scope,client,auth):
+    from app.analysis.framework.ability_b0_line import create_batch,project
+    from app.analysis.framework.service import ability_input_view,batch_view
+    fixed=create(db,scope);db.commit()
+    source=course_snapshot(db,scope)
+    assert source['source_count']==1 and source['known_count']==1 and source['total']==24
+    for model in ('b0','d1'):
+        batch=create_batch(db,scope[2].course_id,scope[0],dict(mode='REAL_INPUT',seed=1,
+            request_id=uuid4().hex,source_batch_id=source['id']),model=model)
+        frozen=ability_input_view(db,int(batch['id']),scope[0])
+        payload=frozen['payload'] if model=='b0' else frozen['payload']['learning_input']
+        assert payload['source_kind']=='DATABASE'
+        assert len(payload['scope']['expected_pairs'])==24
+        assert len(payload['grades'])==1
+        for _ in range(20):
+            if not process_one(db):break
+        result=batch_view(db,int(batch['id']),scope[0])['steps'][0]
+        assert result['status']=='SUCCEEDED' and not result['result']['is_mock']
+        own=project(db,scope[2].course_id,scope[1][0],model=model)
+        assert own['status']=='OK' and len(own['estimates'])==11
+        assert {e['object_key'] for e in own['estimates']}=={f'student-{scope[1][0].id}'}
+        assert all('evidence_item_keys' not in e for e in own['estimates'])
+        no_grade=project(db,scope[2].course_id,scope[1][1],model=model)
+        assert no_grade['status']=='INSUFFICIENT_DATA'
+        assert all(e['value'] is None for e in no_grade['estimates'])
+        assert project(db,scope[2].course_id,scope[1][0],demo=True,model=model)['status']=='NO_DEMO_ANALYSIS'
+    student=auth()
+    assert client.get(f"/api/v1/analysis/batches/{source['id']}/input",headers=student).status_code==403
+    assert client.get(f'/api/v1/analysis/courses/{scope[2].course_id}/student-ability/status',headers=student).status_code==403
+
+
+def test_course_bridge_latest_per_assignment_and_idempotent_historical_selection(db,scope):
+    first=create(db,scope);db.commit()
+    scope[4].passed_cases=0;db.commit()
+    second=create(db,scope);db.commit()
+    source=course_snapshot(db,scope,request_id='stable-course')
+    from app.db.models.analytics import AnalysisBatch
+    artifact,data=qr._payload(db,db.get(AnalysisBatch,int(source['id'])))
+    assert [s['batch_id'] for s in data['sources']]==[second['id']]
+    assert data['ability_input_v2']['grades'][0]['normalized_score']=='0'
+    scope[4].passed_cases=3;db.commit();create(db,scope);db.commit()
+    assert course_snapshot(db,scope,request_id='stable-course')==source
+    historical=course_snapshot(db,scope,source_batch_ids=[first['id']])
+    _,old=qr._payload(db,db.get(AnalysisBatch,int(historical['id'])))
+    assert old['ability_input_v2']['grades'][0]['normalized_score']=='0.8'
+    with pytest.raises(AppError) as err:course_snapshot(db,scope,source_batch_ids=[first['id'],second['id']])
+    assert err.value.code=='DUPLICATE_ASSIGNMENT_SOURCE'
+
+
+def test_course_bridge_rejects_legacy_missing_metadata_and_corrupt_evidence(db,scope):
+    from app.db.models.analytics import AnalysisBatch,AnalysisInputSnapshot
+    fixed=create(db,scope);db.commit()
+    batch=db.get(AnalysisBatch,int(fixed['id']));artifact,data=qr._payload(db,batch)
+    legacy=dict(data);legacy.pop('ability_input_v2')
+    root=db.scalar(select(AnalysisInputSnapshot).where(AnalysisInputSnapshot.batch_id==batch.id,AnalysisInputSnapshot.scope=='ROOT'))
+    from app.analysis.framework.contracts import digest
+    root.payload=legacy;root.input_hash=digest(legacy)
+    artifact.payload=dict(artifact.payload,input_hash=root.input_hash,payload=legacy);artifact.output_hash=digest(artifact.payload);db.commit()
+    with pytest.raises(AppError) as err:course_snapshot(db,scope)
+    assert err.value.code=='CHAPTER_METADATA_REQUIRED';db.rollback()
+    artifact.output_hash='0'*64;db.commit()
+    with pytest.raises(AppError) as err:course_snapshot(db,scope)
+    assert err.value.code=='QUESTION_RESULTS_INVALID'
+
+
+def test_course_bridge_http_scope_validation_and_missing_sources(client,auth,db,scope):
+    teacher=auth('demo.teacher');student=auth();cid=scope[2].course_id
+    path=f'/api/v1/analysis/courses/{cid}/course-results'
+    body=dict(request_id='course-http',reason='合成测试课程范围')
+    assert client.post(path,headers=student,json=body).status_code==403
+    assert client.post(path,headers=teacher,json=body).status_code==409
+    create(db,scope);db.commit()
+    assert client.post(path,headers=teacher,json=dict(body,source_batch_ids=['999999999'])).status_code==404
+    for ids in (['1','1'],['9223372036854775808'],['0']):
+        assert client.post(path,headers=teacher,json=dict(body,source_batch_ids=ids)).status_code==422
+    response=client.post(path,headers=teacher,json=body)
+    assert response.status_code==201,response.text
+    assert response.json()['is_mock'] is False
+
+
+def test_course_bridge_combines_assignments_and_rejects_mapping_version_conflicts(db,scope):
+    from app.db.models.analytics import AnalysisBatch,AnalysisInputSnapshot
+    from app.analysis.framework.contracts import digest
+    first=create(db,scope);db.commit()
+    other=db.scalar(select(Assignment).where(Assignment.course_id==scope[2].course_id,Assignment.id!=scope[2].id))
+    other.submission_status='CLOSED';other.published_at=utcnow()-timedelta(days=3);other.submission_deadline=utcnow()-timedelta(days=1);db.commit()
+    second=qr.create_snapshot(db,other.course_id,scope[0],SnapshotCreate(request_id=uuid4().hex,
+        assignment_id=str(other.id),reason='第二次合成作业范围'));db.commit()
+    course=course_snapshot(db,scope)
+    _,payload=qr._payload(db,db.get(AnalysisBatch,int(course['id'])))
+    assert course['source_count']==2 and course['student_count']==6
+    assert len(payload['ability_input_v2']['scope']['assignment_ids'])==2
+    assert course['total']==first['total']+second['total']
+    artifact,data=qr._payload(db,db.get(AnalysisBatch,int(second['id'])))
+    from copy import deepcopy
+    changed=deepcopy(data);changed['ability_input_v2']['chapter_mapping_version']='different-version'
+    root=db.scalar(select(AnalysisInputSnapshot).where(AnalysisInputSnapshot.batch_id==int(second['id']),AnalysisInputSnapshot.scope=='ROOT'))
+    root.payload=changed;root.input_hash=digest(changed)
+    artifact.payload=dict(artifact.payload,payload=changed,input_hash=root.input_hash);artifact.output_hash=digest(artifact.payload);db.commit()
+    with pytest.raises(AppError) as err:course_snapshot(db,scope)
+    assert err.value.code=='CHAPTER_VERSION_CONFLICT'

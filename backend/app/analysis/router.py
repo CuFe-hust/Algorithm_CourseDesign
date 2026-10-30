@@ -91,6 +91,34 @@ def create_ability(course_id:Id,body:AbilityBatchCreate,user:User=Depends(curren
     return write(db,service.create_ability_batch,course_id,user,body.model_dump())
 
 
+@router.post('/courses/{course_id}/student-ability/b0-batches',status_code=201)
+def create_b0(course_id:Id,body:AbilityBatchCreate,user:User=Depends(current_user),db:Session=Depends(get_db)):
+    from .framework.ability_b0_line import create_batch
+    return write(db,create_batch,course_id,user,body.model_dump())
+
+
+@router.get('/b0-contract')
+def b0_contract(user:User=Depends(current_user)):
+    from .framework.catalog import get_plugin
+    p=get_plugin('ability_b0')
+    return dict(algorithm_key=p.key,implementation_name=p.implementation,implementation_version=p.version,
+                input_schema=p.input.model_json_schema(),output_schema=p.output.model_json_schema(mode='serialization'))
+
+
+@router.post('/courses/{course_id}/student-ability/difficulty-batches',status_code=201)
+def create_difficulty(course_id:Id,body:AbilityBatchCreate,user:User=Depends(current_user),db:Session=Depends(get_db)):
+    from .framework.ability_b0_line import create_batch
+    return write(db,lambda db,*args:create_batch(db,*args,model='d1'),course_id,user,body.model_dump())
+
+
+@router.get('/difficulty-contract')
+def difficulty_contract(user:User=Depends(current_user)):
+    from .framework.catalog import get_plugin
+    p=get_plugin('ability_d1')
+    return dict(algorithm_key=p.key,implementation_name=p.implementation,implementation_version=p.version,
+                input_schema=p.input.model_json_schema(),output_schema=p.output.model_json_schema(mode='serialization'))
+
+
 @router.get('/batches/{batch_id}/input')
 def ability_input(batch_id:Id,user:User=Depends(current_user),db:Session=Depends(get_db)):
     return service.ability_input_view(db,batch_id,user)

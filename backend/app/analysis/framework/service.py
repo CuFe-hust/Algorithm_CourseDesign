@@ -224,12 +224,13 @@ def create_ability_batch(db,course_id,actor,body):
 
 def ability_input_view(db,batch_id,actor):
     batch=context(db,batch_id,actor)
-    if batch.configuration.get('pipeline')!='STUDENT_ABILITY':
+    if batch.configuration.get('pipeline') not in ('STUDENT_ABILITY','STUDENT_ABILITY_B0','STUDENT_ABILITY_D1'):
         raise AppError(404,'NOT_FOUND','此入口仅用于第六条独立线路')
     snap=root_snapshot(db,batch)
     run=db.scalar(select(AnalysisRun).where(AnalysisRun.batch_id==batch.id,AnalysisRun.step_key=='ability'))
     algorithm_input=db.get(AnalysisInputSnapshot,run.snapshot_id) if run.snapshot_id else None
-    return dict(batch_id=str(batch.id),schema_version='analysis-v2',algorithm_key='ability',seed=batch.seed,parameters={},
+    return dict(batch_id=str(batch.id),schema_version='analysis-v2',algorithm_key=run.algorithm_key,seed=batch.seed,
+        parameters=(algorithm_input.payload.get('model_parameters',algorithm_input.payload.get('parameters',{})) if algorithm_input else {}),
         snapshot_id=str(algorithm_input.id) if algorithm_input else None,
         input_hash=algorithm_input.input_hash if algorithm_input else None,is_mock=snap.is_mock,
         source_snapshot_id=str(snap.id),source_hash=snap.input_hash,

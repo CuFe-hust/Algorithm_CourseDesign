@@ -48,6 +48,11 @@ async function switchCourse() {
           ><ClipboardList :size="19" />作业与作答</RouterLink
         >
         <RouterLink
+          :to="`/student/courses/${session.courseId}/ability`"
+          :class="{ selected: $route.path.endsWith('/ability') }"
+          ><ChartNoAxesCombined :size="19" />个人章节表现</RouterLink
+        >
+        <RouterLink
           :to="`/student/courses/${session.courseId}/submissions`"
           :class="{ selected: $route.path.includes('/submissions') }"
           ><History :size="19" />本人提交</RouterLink

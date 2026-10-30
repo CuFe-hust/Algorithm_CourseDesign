@@ -29,6 +29,16 @@ PLUGINS={p.key:p for p in [
     Plugin('statistics','基础统计',c.StatisticsInput,c.StatisticsOutput,'descriptive_statistics'),
 ]}
 
+# Separate versioned extension: legacy catalog/examples and historical runs stay intact.
+def get_plugin(key):
+    if key == 'ability_d1':
+        from .difficulty_contracts import DifficultyInputV1, DifficultyOutputV1
+        return Plugin('ability_d1','难度感知章节模型',DifficultyInputV1,DifficultyOutputV1,'difficulty_fractional','2')
+    if key == 'ability_b0':
+        from .ability_contracts import AbilityInputV2, AbilityOutputV2
+        return Plugin('ability_b0','章节作答表现 B0',AbilityInputV2,AbilityOutputV2,'ability_b0','2')
+    return PLUGINS[key]
+
 
 def catalogue():
     return [dict(key=p.key,label=p.label,implementation=p.implementation,implementation_version=p.version,
@@ -39,7 +49,7 @@ def catalogue():
 def invoke(key,payload,*,mode,seed,input_hash):
     if mode not in ('DEMO','REAL_INPUT'):raise ValueError('Invalid analysis mode')
     if c.digest(payload)!=input_hash:raise ValueError('Input hash mismatch')
-    plugin=PLUGINS[key];data=plugin.input.model_validate(payload)
+    plugin=get_plugin(key);data=plugin.input.model_validate(payload)
     is_mock=mode=='DEMO';status='OK';limitations=[]
     implementation=plugin.implementation
     if implementation=='not_implemented' and mode=='REAL_INPUT':
@@ -48,6 +58,20 @@ def invoke(key,payload,*,mode,seed,input_hash):
         if implementation=='not_implemented':
             output=mock.simulate(key,data,seed);implementation='synthetic_demo'
             limitations=['Synthetic demonstration only; not research evidence or a formal grade.']
+        elif key in ('ability_b0','ability_d1'):
+            if key=='ability_b0':
+                from app.analysis.algorithms.ability_b0 import analyze
+                source_kind=data.source_kind
+            else:
+                from app.analysis.algorithms.ability_difficulty import analyze
+                source_kind=data.learning_input.source_kind
+            if mode=='REAL_INPUT' and source_kind!='DATABASE':
+                raise ValueError('Synthetic input cannot be used as formal evidence')
+            output=analyze(data)
+            is_mock=is_mock or source_kind!='DATABASE'
+            if is_mock:limitations=['Synthetic input; deterministic algorithm calculation, not real student evidence.']
+            if key=='ability_d1':
+                limitations+=['Reference expected score under a fitted model, not a mastery probability or a confidence interval.']
         elif key=='judge_adapter':
             output=dict(results=data.results,score_available=False,reason='WEIGHTED_CASE_EVIDENCE_UNAVAILABLE')
             is_mock=is_mock or any(r.is_mock for r in data.results)
@@ -58,6 +82,7 @@ def invoke(key,payload,*,mode,seed,input_hash):
         from .validation import validate_output
         validate_output(key,data,typed_output)
         output=typed_output.model_dump(mode='json')
+        if key in ('ability_b0','ability_d1') and not any(e['value'] is not None for e in output['estimates']):status='INSUFFICIENT_DATA'
         if key=='allocation' and not output['feasible']:status='INFEASIBLE'
         if key=='aggregation' and any(s['normalized_score'] is None for s in output['scores']):status='INSUFFICIENT_DATA'
         if key in ('deviation','reviewer_bias','relationship') and (not output['sample_count'] or output['missing_count']):

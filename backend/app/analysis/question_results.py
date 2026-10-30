@@ -4,6 +4,7 @@ This is an immutable integration boundary, never an assignment total or a grade
 publication. Missing evidence remains null and every value retains its source.
 """
 from collections import Counter,defaultdict
+import json
 from decimal import Decimal,ROUND_HALF_UP
 from uuid import uuid4
 from sqlalchemy import select,func
@@ -92,7 +93,9 @@ def _capture(db,assignment_id):
                 reason=reason,source=source,knowledge_weights=weights,difficulty=v.difficulty_level)
             rows.append(row);grades.append(dict(student_key=f'student-{uid}',item_key=f'item-{item.id}',
                 normalized_score=row['normalized_score'],knowledge_weights=weights,difficulty=v.difficulty_level))
+    from .course_results import chapter_metadata
     return dict(assignment_id=str(a.id),assignment_title=a.title,submission_deadline=iso(a.submission_deadline),rows=rows,grades=grades,
+        chapter_metadata=chapter_metadata(items),
         knowledge_labels=knowledge,roster=[f'student-{uid}' for uid in roster],events=events,execution_context=dict(mode=mode,profile=profile),is_mock=False)
 
 
@@ -112,7 +115,10 @@ def create_snapshot(db,course_id,actor,body):
         request_hash=hashed,seed=20261030,status='COMPLETE',configuration=dict(schema_version='analysis-v2',pipeline=PIPELINE,reason=body.reason),events={})
     db.add(batch);db.flush();version=f'question-results-{batch.id}-{digest(data)[:12]}'
     LearningInput.model_validate(dict(grades=data['grades'],results_snapshot_version=version))
-    data=dict(data,results_snapshot_version=version)
+    from .course_results import assignment_input
+    data=dict(data,results_snapshot_version=version,ability_input_v2=assignment_input(data,version))
+    if len(json.dumps(data).encode())>8*1024*1024:
+        raise AppError(422,'RESULT_SCOPE_TOO_LARGE','逐题结果及章节元数据超过8MiB，请拆分范围')
     db.add(AnalysisInputSnapshot(batch_id=batch.id,scope='ROOT',input_hash=digest(data),payload=data,is_mock=False))
     run=AnalysisRun(batch_id=batch.id,step_key='result_snapshot',dependencies=[],implementation_name='verified_question_results',implementation_version='1',attempt_no=1,started_at=utcnow())
     db.add(run);db.flush()
@@ -126,6 +132,11 @@ def _payload(db,batch):
     artifact=db.scalar(select(AnalysisArtifact).where(AnalysisArtifact.run_id==run.id).order_by(AnalysisArtifact.id.desc()).limit(1)) if run else None
     if artifact is None or artifact.is_mock or batch.mode!='REAL_INPUT' or artifact.payload.get('is_mock') or artifact.payload.get('payload',{}).get('is_mock') or digest(artifact.payload)!=artifact.output_hash:
         raise AppError(409,'QUESTION_RESULTS_INVALID','逐题结果快照缺失或摘要不一致')
+    root=db.scalar(select(AnalysisInputSnapshot).where(AnalysisInputSnapshot.batch_id==batch.id,AnalysisInputSnapshot.scope=='ROOT'))
+    if (root is None or root.is_mock or digest(root.payload)!=root.input_hash
+            or artifact.payload.get('input_hash')!=root.input_hash
+            or artifact.payload['payload']!=root.payload):
+        raise AppError(409,'QUESTION_RESULTS_INVALID','逐题结果与冻结输入不一致')
     return artifact,artifact.payload['payload']
 
 
@@ -153,7 +164,8 @@ def snapshot_view(db,batch_id,actor,limit=50,offset=0):
         results_snapshot_version=payload['results_snapshot_version'],role=role,is_mock=False,artifact_id=str(artifact.id),output_hash=artifact.output_hash,
         known_count=sum(r['normalized_score'] is not None for r in rows),missing_count=sum(r['normalized_score'] is None for r in rows),
         total=len(rows),rows=visible[offset:offset+limit],limit=limit,offset=offset,per_item=per_item,event_counts=dict(Counter(e['kind'] for e in events)),
-        model_status={key:'NOT_IMPLEMENTED' for key in ('mastery','ability','empirical_difficulty')})
+        model_status=dict(mastery='NOT_IMPLEMENTED',ability='LEGACY_NOT_IMPLEMENTED',
+            empirical_difficulty='NOT_IMPLEMENTED',ability_b0='AVAILABLE',ability_d1='AVAILABLE'))
 
 
 def latest_view(db,course_id,actor,assignment_id=None,limit=50,offset=0):

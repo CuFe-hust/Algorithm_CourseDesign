@@ -2,6 +2,14 @@
 
 版本：教师、学生与分析整合版；更新日期：2026-10-30。
 
+晚间讲图：[四张4K图与建议顺序](docs/assets/diagrams/analysis/README.md)、[逐图讲解提纲](docs/design/analysis/meeting-d1-talk-track.md)。
+
+算法负责人交付：[学生章节表现评价算法设计说明](docs/design/analysis/student-ability-algorithm-design.md)。算法、实验、持久化与演示已完成；现已补齐[真实逐题证据与教师生成入口](docs/design/analysis/student-ability-integration.md)。
+
+第六条线算法升级：[D1设计及运行入口](docs/design/analysis/student-ability-difficulty-model.md)、[完整实验结果](docs/design/analysis/difficulty-experiments.md)。D1与B0并列，历史数据不改写；真人能力效度未由合成实验验证。
+
+2026-10-29新增交付：[章节表现B0、个人面板与会议演示](docs/design/analysis/student-ability-b0.md)，[4K当前数据流](docs/assets/diagrams/analysis/06-student-ability-b0-delivery-4k.png)。旧章节中的“学习分析仍是占位”不适用于此独立B0扩展；正式来源已通过课程冻结快照接入。
+
 教师端本轮实现及边界见 [教师端架构索引](docs/design/teacher/architecture.md)。
 
 本文件是队友进入项目后的阅读入口。先按README运行，再阅读本文件和自己负责的Issue，即可开始分模块开发。文中的“已实现”以本仓库代码为准；“规划”用于协作约定，不表示对应表和接口已经存在。
@@ -40,7 +48,7 @@
 |---|---|---|---|
 | T | 队友：教师负责人 | 名单、题库、作业、教师查询和复核操作入口 | backend/app/teacher；frontend/src/features/teacher |
 | S | 队友：学生负责人 | 作答、历史、匿名互评、反馈 | backend/app/student；frontend/src/features/student |
-| A | 你：数据库与分析负责人 | 共享模型/迁移、分析框架、匹配/聚合/检测、统计和成绩版本 | backend/app/db、analysis；frontend/src/features/analytics（待建） |
+| A | 你：数据库与第六条线负责人 | 共享模型/迁移、分析框架、章节评价算法、对照实验和个人面板 | backend/app/db、analysis；frontend/src/features/student/Ability.vue |
 
 真实姓名/GitHub用户名在创建Issue时填写；上述标识只表示职责。每个人负责自己板块的页面、后端业务、验证、运行说明和报告章节。复杂算法研究后续由三人另行认领，不默认全部压给A。
 
@@ -94,7 +102,7 @@ flowchart TB
 4. A交付一组匿名任务、量表与评分请求样例；S实现互评，T实现开放/预览/复核入口。
 5. 再打通聚合、异常、教师处置和发布；最后并行研究复杂算法并跑实验。
 
-前端当前没有Vue工程，避免T/S分别生成两个不同工程。TH00合并前，S可按[前端目录约定](frontend/README.md)准备组件与样例，A不依赖前端开展后台流程。互评接口未落地时用明确标识的本地fixture，不调用不存在的接口后把404当空结果。
+统一Vue工程已存在，教师、学生与个人章节面板复用登录、课程选择和路由。T/S/A继续在同一工程内开发，不另建网站。互评接口未落地时用明确标识的fixture，不调用不存在的接口后把404当空结果。
 
 ## 8. 谁负责写哪些数据
 
@@ -120,9 +128,9 @@ flowchart TB
 
 仅推送本工程目录，禁止将上级课程资料、真实学生名册、.env、本地数据库、虚拟环境和日志一起上传。题库来源见[data/source说明](data/source/README.md)，仓库包含开发用题目材料；真实名单不打包。
 
-仓库本地main已整理；远程仓库地址与可见性由你决定，当前未自动发布。具体流程见[Git协作与推送](docs/implementation/runbooks/collaboration.md)。三个Issue文件的正文可复制到GitHub，只需指定负责人和替换实际Issue编号。
+第六条线交付整理在本地 `feat/student-ability-d1` 分支；本轮没有自动推送或合并main。具体流程见[Git协作与推送](docs/implementation/runbooks/collaboration.md)。三个Issue文件继续用于各模块协同；当前代码状态以实现、测试和对应验收记录为准。
 
-## PostgreSQL与全量快照更新
+## PostgreSQL与全量快照更新（早期迁移记录）
 
 默认数据库已切换PostgreSQL，独立迁移pg0001，21张业务表不变。data/formatted提交120题、350组测试和217名脱敏学生/8班；默认导入ALGO_FULL_2026，演示课程独立保留。真实名册只在本机私有目录，公开仓库不含原姓名、学号或班名。三位成员拉取后按README重新配置本地PostgreSQL、升级迁移、演示种子和全量导入；原MySQL数据不直接混入新库。分析业务流程本轮未扩展，后续另行对齐。
 
@@ -137,6 +145,5 @@ flowchart TB
 ## 分析运行框架交付
 
 已完成15黑盒槽位、23步骤、四类持久化记录与独立worker，普通/补评合成链路均可运行。研究者从data/analysis取成对样例，按docs/design/analysis/black-boxes.md替换实现；会议按docs/design/analysis/meeting-walkthrough.md讲解。正式互评/发布仍需领域服务接入，不把DEMO当作正式成绩。
-
 
 2026-10-30整合：见[六条链路实际状态与模块边界](docs/design/analysis/platform-integration.md)、[运行手册](docs/implementation/runbooks/platform-integration.md)。

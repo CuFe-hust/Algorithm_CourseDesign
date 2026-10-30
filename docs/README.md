@@ -87,7 +87,7 @@ docs/
 
 - [分析API](design/analysis/api.md) · [黑盒研究交接](design/analysis/black-boxes.md) · [运行与演示](implementation/runbooks/analysis-setup.md)
 
-第六条线可独立运行：只调用现有ability占位黑盒，不等待其他线路。见[独立线路说明](design/analysis/student-ability-line.md)。
+第六条线已接入 B0 章节表现、D1 难度感知模型及学生个人面板，见[接入设计与教师使用入口](design/analysis/student-ability-integration.md)。旧[独立占位线路说明](design/analysis/student-ability-line.md)保留历史契约。
 
 ## 主观互评与聚合异常（第③、④条）
 
@@ -115,8 +115,9 @@ docs/
 
 ## 整合版本（2026-10-30）
 
-当前数据库head pg0010、36张业务表。教师、学生和分析已有统一入口与逐题结果边界；仍有5个研究插件占位，不能宣称六条完整结束。
+当前数据库head pg0010、36张业务表。教师、学生和分析已有统一入口与逐题结果边界，B0/D1已从课程冻结快照贯通；仍有5个历史插件占位（旧ability已有B0/D1独立扩展），不能宣称全部研究插件完成。
 
 - [实际完成度、接口与统一布局设计](design/analysis/platform-integration.md)
 - [运行与跨模块联调](implementation/runbooks/platform-integration.md)
 - [测试、真实HTTP与浏览器验收](implementation/evidence/integration/2026-10-30-platform-integration.md)
+- [Student ability接入与验收](implementation/evidence/integration/2026-10-30-student-ability.md)

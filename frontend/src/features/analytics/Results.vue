@@ -5,6 +5,7 @@ import { BarChart3, Layers, Info, FileSearch } from "@lucide/vue";
 import { request, post, errorText, ApiError } from "../../shared/api";
 import { session } from "../../shared/session";
 import { confirmAction } from "../../shared/confirm";
+import AbilityGeneration from "./AbilityGeneration.vue";
 interface Row {
   student_id?: string;
   student_name?: string;
@@ -56,8 +57,7 @@ const assignments = ref<
   busy = ref(false),
   reason = ref(""),
   notice = ref(""),
-  offset = ref(0),
-  modelMessage = ref("");
+  offset = ref(0);
 let pending: { signature: string; id: string } | null = null;
 const reasonText: Record<string, string> = {
   NO_SUBMISSION: "未交作品",
@@ -114,27 +114,6 @@ async function create() {
     reason.value = "";
     offset.value = 0;
     await load();
-  } catch (e) {
-    error.value = errorText(e);
-  } finally {
-    busy.value = false;
-  }
-}
-async function inspectModel() {
-  if (!report.value) return;
-  busy.value = true;
-  modelMessage.value = "";
-  try {
-    const batch = await post<{
-      id: string;
-      steps: { business_status: string | null }[];
-    }>(`/analysis/courses/${courseId.value}/student-ability/batches`, {
-      mode: "REAL_INPUT",
-      seed: 20261030,
-      request_id: crypto.randomUUID(),
-      source_batch_id: report.value.id,
-    });
-    modelMessage.value = `已保存能力接口输入（批次 #${batch.id}）。当前能力算法尚未接入，不会生成能力分数。`;
   } catch (e) {
     error.value = errorText(e);
   } finally {
@@ -368,25 +347,24 @@ watch(assignment, () => {
       <div class="model-pending">
         <Info :size="20" />
         <div>
-          <h3>知识掌握、能力与经验难度模型暂不生成结论</h3>
+          <h3>章节表现已接入，知识掌握与经验难度仍待完善</h3>
           <p>
-            当前提供逐题表现、覆盖情况和已记录的提交/撤回次数。不会从完成快慢推断学习态度或AI使用，也不以模拟结果补齐缺失。
+            章节表现支持原始均值 B0 和难度感知
+            D1，可从同一份课程快照生成。当前报告另提供逐题表现、覆盖情况和已记录的提交/撤回次数。不会从完成快慢推断学习态度或AI使用，也不以模拟结果补齐缺失。
           </p>
           <p>
             本范围提交 {{ report.event_counts.SUBMITTED || 0 }} 次，撤回
             {{ report.event_counts.WITHDRAWN || 0 }} 次。
           </p>
-          <button
-            v-if="teacher"
-            class="small"
-            :disabled="busy"
-            @click="inspectModel"
+          <RouterLink
+            v-if="!teacher"
+            class="text-link"
+            :to="`/student/courses/${courseId}/ability`"
+            >查看个人章节表现 →</RouterLink
           >
-            保存到能力分析接口
-          </button>
-          <p v-if="modelMessage" role="status">{{ modelMessage }}</p>
         </div>
       </div>
     </section></template
   >
+  <AbilityGeneration v-if="teacher" />
 </template>

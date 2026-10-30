@@ -24,7 +24,10 @@ JUDGE_EXECUTION_MODE=LOCAL ../.venv/bin/python -m scripts.run_complexity --watch
 
 - 教师：分析中心→各链路入口；逐题结果→选择已关闭作业→填写理由→固定快照。
 - 学生：作答→提交/评测→已通过代码可申请复杂度；我的互评→提交本人评价；学习报告→查看教师已固定的本人题目结果。
-- 当前②、⑥仍有占位研究模型，见分析中心；不以演示值补齐。
+- 教师：逐题结果页底部填写生成理由，生成课程章节分析，同时创建B0/D1；刷新状态查看完成。采用每次作业最新已固定结果，未固定作业不纳入。
+- 学生：个人章节表现切换B0/D1。正式与合成演示分开，正式过程轨迹缺少证据时不生成。
+- 当前②、⑥仍有旧占位插件，B0/D1为独立已实现扩展。
+- CHAPTER_METADATA_REQUIRED表示旧逐题快照缺少章节元数据，先重新固定对应作业，再生成课程分析，不修改历史快照。
 
 ## 复现验证
 
@@ -40,3 +43,5 @@ cd backend
 脚本会追加混合作业并提交6份真实编程答案、6份主观作品，完成18份互评、1份补评、教师复核/改分、新版本及12份逐题结果；检查学生投影仅有本人2份。编程评测worker与API必须使用相同LOCAL上下文。运行会保留合成历史，不删除旧任务。
 
 详见[整合设计与六链路状态](../../design/analysis/platform-integration.md)、[验收记录](../evidence/integration/2026-10-30-platform-integration.md)。截图是本机合成账户，不是真实学生成绩。
+
+章节接入HTTP脚本为 scripts/smoke_ability_integration_http.py，参数为 --credentials 本机凭据路径 --course-id 合成课程ID --assignment-id 已关闭作业ID --output 本地输出路径。它不会关闭作业或修改学生作品；需先启动通用分析worker。

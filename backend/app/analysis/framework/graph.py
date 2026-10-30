@@ -40,7 +40,7 @@ BY_KEY={step.key:step for step in STEPS}
 def steps_for(batch):
     configuration=batch.configuration or {}
     pipeline=configuration.get('pipeline')
-    if pipeline=='QUESTION_RESULTS':
+    if pipeline in ('QUESTION_RESULTS','COURSE_QUESTION_RESULTS'):
         return (Step('result_snapshot'),)
     if pipeline=='REVIEW_ALLOCATION':
         return (Step('allocation',algorithm='allocation'),
@@ -54,6 +54,10 @@ def steps_for(batch):
             Step('resolve',('deviation','reviewer_bias','review_timing','relationship'),event='RESOLVE'))
     if pipeline=='REVIEW_RECOMPUTE':
         return (Step('reaggregation',algorithm='aggregation'),Step('effective_subjective_results',('reaggregation',)))
+    if batch.configuration.get('pipeline')=='STUDENT_ABILITY_D1':
+        return (Step('ability',algorithm='ability_d1'),)
+    if batch.configuration.get('pipeline')=='STUDENT_ABILITY_B0':
+        return (Step('ability',algorithm='ability_b0'),)
     if batch.configuration.get('pipeline')=='STUDENT_ABILITY':
         return (Step('ability',algorithm='ability'),)
     if configuration.get('pipeline')=='CODE_SIMILARITY':
