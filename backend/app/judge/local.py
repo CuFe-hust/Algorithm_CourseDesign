@@ -118,13 +118,19 @@ def _wait_until_stopped(process: subprocess.Popen, timeout: float = 5.0) -> bool
     return False
 
 
-def spawn(command: Iterable[str], cwd: Path) -> Spawned:
-    """Start a gated child: the launcher stops before the student program is exec'ed."""
+def spawn(command: Iterable[str], cwd: Path, env: dict | None = None) -> Spawned:
+    """Start a gated child: the launcher stops before the student program is exec'ed.
+
+    ``env`` lets a measurement adapter add its own variables (for example the
+    allocation-counter output path). Judging never passes it, so the environment
+    a submission sees during a real verdict is unchanged.
+    """
     if os.name != 'posix':
         raise ConfigurationError('LOCAL启动门需要POSIX系统；原生Windows仅支持MOCK与分析任务')
     process = subprocess.Popen([config.python_executable(), '-I', LAUNCHER, '--', *command],
                                cwd=str(cwd), stdin=subprocess.PIPE,
-                               stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
+                               stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True,
+                               env=env)
     if not _wait_until_stopped(process):
         _kill_group(process)
         process.wait()

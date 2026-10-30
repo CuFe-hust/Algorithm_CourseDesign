@@ -79,26 +79,223 @@
   "code_similarity": {
     "schema_version": "analysis-v2",
     "algorithm_key": "code_similarity",
-    "implementation_name": "synthetic_demo",
-    "implementation_version": "1",
-    "input_hash": "a5ef15efefa9a598b9b01487b634632a66b30cbbcccd1cef258fce39eb7f6c34",
+    "implementation_name": "winnowing_token",
+    "implementation_version": "2",
+    "input_hash": "1413f9f6ba68b7ac01f831a3c597f964f409886768c2946b554b84ddfe778bb9",
     "is_mock": true,
     "status": "OK",
     "payload": {
       "pairs": [
         {
+          "left_key": "c2",
+          "right_key": "c3",
+          "similarity": "1.000000",
+          "matching_spans": [
+            {
+              "left_start_line": 1,
+              "left_end_line": 8,
+              "right_start_line": 1,
+              "right_end_line": 8,
+              "matched_tokens": 85,
+              "run_tokens": 41
+            }
+          ],
+          "containment_left": "1.000000",
+          "containment_right": "1.000000",
+          "jaccard": "1.000000",
+          "shared_fingerprints": 30,
+          "left_fingerprints": 30,
+          "right_fingerprints": 30,
+          "left_tokens": 86,
+          "right_tokens": 86,
+          "matched_tokens": 86,
+          "longest_run_tokens": 41
+        },
+        {
+          "left_key": "c2",
+          "right_key": "c4",
+          "similarity": "1.000000",
+          "matching_spans": [
+            {
+              "left_start_line": 1,
+              "left_end_line": 8,
+              "right_start_line": 2,
+              "right_end_line": 9,
+              "matched_tokens": 85,
+              "run_tokens": 41
+            }
+          ],
+          "containment_left": "1.000000",
+          "containment_right": "1.000000",
+          "jaccard": "1.000000",
+          "shared_fingerprints": 30,
+          "left_fingerprints": 30,
+          "right_fingerprints": 30,
+          "left_tokens": 86,
+          "right_tokens": 86,
+          "matched_tokens": 86,
+          "longest_run_tokens": 41
+        },
+        {
+          "left_key": "c3",
+          "right_key": "c4",
+          "similarity": "1.000000",
+          "matching_spans": [
+            {
+              "left_start_line": 1,
+              "left_end_line": 8,
+              "right_start_line": 2,
+              "right_end_line": 9,
+              "matched_tokens": 85,
+              "run_tokens": 41
+            }
+          ],
+          "containment_left": "1.000000",
+          "containment_right": "1.000000",
+          "jaccard": "1.000000",
+          "shared_fingerprints": 30,
+          "left_fingerprints": 30,
+          "right_fingerprints": 30,
+          "left_tokens": 86,
+          "right_tokens": 86,
+          "matched_tokens": 86,
+          "longest_run_tokens": 41
+        },
+        {
           "left_key": "c1",
           "right_key": "c2",
-          "similarity": "0.46",
-          "matching_spans": []
+          "similarity": "0.793103",
+          "matching_spans": [
+            {
+              "left_start_line": 3,
+              "left_end_line": 7,
+              "right_start_line": 4,
+              "right_end_line": 8,
+              "matched_tokens": 45,
+              "run_tokens": 24
+            },
+            {
+              "left_start_line": 1,
+              "left_end_line": 2,
+              "right_start_line": 1,
+              "right_end_line": 2,
+              "matched_tokens": 32,
+              "run_tokens": 21
+            }
+          ],
+          "containment_left": "0.793103",
+          "containment_right": "0.766667",
+          "jaccard": "0.638889",
+          "shared_fingerprints": 23,
+          "left_fingerprints": 29,
+          "right_fingerprints": 30,
+          "left_tokens": 87,
+          "right_tokens": 86,
+          "matched_tokens": 69,
+          "longest_run_tokens": 24
+        },
+        {
+          "left_key": "c1",
+          "right_key": "c3",
+          "similarity": "0.793103",
+          "matching_spans": [
+            {
+              "left_start_line": 3,
+              "left_end_line": 7,
+              "right_start_line": 4,
+              "right_end_line": 8,
+              "matched_tokens": 45,
+              "run_tokens": 24
+            },
+            {
+              "left_start_line": 1,
+              "left_end_line": 2,
+              "right_start_line": 1,
+              "right_end_line": 2,
+              "matched_tokens": 32,
+              "run_tokens": 21
+            }
+          ],
+          "containment_left": "0.793103",
+          "containment_right": "0.766667",
+          "jaccard": "0.638889",
+          "shared_fingerprints": 23,
+          "left_fingerprints": 29,
+          "right_fingerprints": 30,
+          "left_tokens": 87,
+          "right_tokens": 86,
+          "matched_tokens": 69,
+          "longest_run_tokens": 24
+        },
+        {
+          "left_key": "c1",
+          "right_key": "c4",
+          "similarity": "0.793103",
+          "matching_spans": [
+            {
+              "left_start_line": 3,
+              "left_end_line": 7,
+              "right_start_line": 5,
+              "right_end_line": 9,
+              "matched_tokens": 45,
+              "run_tokens": 24
+            },
+            {
+              "left_start_line": 1,
+              "left_end_line": 2,
+              "right_start_line": 2,
+              "right_end_line": 3,
+              "matched_tokens": 32,
+              "run_tokens": 21
+            }
+          ],
+          "containment_left": "0.793103",
+          "containment_right": "0.766667",
+          "jaccard": "0.638889",
+          "shared_fingerprints": 23,
+          "left_fingerprints": 29,
+          "right_fingerprints": 30,
+          "left_tokens": 87,
+          "right_tokens": 86,
+          "matched_tokens": 69,
+          "longest_run_tokens": 24
         }
       ],
-      "method": "synthetic-demo-only"
+      "method": "winnowing_token_k12_w4",
+      "clusters": [
+        {
+          "member_keys": [
+            "c1",
+            "c2",
+            "c3",
+            "c4"
+          ],
+          "size": 4,
+          "max_similarity": "1.000000",
+          "min_similarity": "0.793103",
+          "qualifying_pairs": 6,
+          "total_pairs": 6
+        }
+      ],
+      "insufficient": [
+        {
+          "answer_key": "c5",
+          "reason": "INSUFFICIENT_TOKENS",
+          "tokens": 26,
+          "detail": null
+        }
+      ],
+      "submission_count": 5,
+      "parameters": {
+        "k": 12,
+        "window": 4,
+        "minimum_tokens": 40,
+        "threshold": "0.5"
+      },
+      "pairs_truncated": false
     },
     "evidence": [],
-    "limitations": [
-      "Synthetic demonstration only; not research evidence or a formal grade."
-    ]
+    "limitations": []
   },
   "text_similarity": {
     "schema_version": "analysis-v2",
@@ -113,11 +310,26 @@
         {
           "left_key": "a1",
           "right_key": "a2",
-          "similarity": "0.73",
-          "matching_spans": []
+          "similarity": "0.24",
+          "matching_spans": [],
+          "containment_left": null,
+          "containment_right": null,
+          "jaccard": null,
+          "shared_fingerprints": null,
+          "left_fingerprints": null,
+          "right_fingerprints": null,
+          "left_tokens": null,
+          "right_tokens": null,
+          "matched_tokens": null,
+          "longest_run_tokens": null
         }
       ],
-      "method": "synthetic-demo-only"
+      "method": "synthetic-demo-only",
+      "clusters": [],
+      "insufficient": [],
+      "submission_count": 0,
+      "parameters": {},
+      "pairs_truncated": false
     },
     "evidence": [],
     "limitations": [

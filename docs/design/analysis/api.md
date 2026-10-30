@@ -43,3 +43,33 @@ DEMO总是六名合成学生/编程与主观两类题，真实作业身份不进
 
 
 第③、④条真实领域业务另见[互评与复核API](peer-review-api.md)：`/api/v1/peer-review`处理分配、本人评分、教师处置及逐题候选。旧FULL真实批次不会通过本模块自动补写原始评价；调用方应使用领域入口创建对应三个子管线，不能用DEMO事件替代真实教师/学生操作。
+
+## 相似代码检测与复杂度分析接口（2026-10-28 已实现）
+
+两族接口都挂在 `/api/v1/analysis` 下，沿用 Bearer 认证、字符串 ID、统一错误格式。相似检测仅教师可用；复杂度报告学生只能读自己的、教师可读本课程。
+
+| 方法 / 相对路径 | 权限 | 行为 |
+|---|---|---|
+| GET /courses/{course_id}/code-similarity/scope | 教师 | 可选作业范围：每题有多少人已提交，用于决定比对哪道题 |
+| POST /courses/{course_id}/code-similarity/batches | 教师 | 201；创建 `pipeline=CODE_SIMILARITY` 批次，每题一个 `code_similarity@<item_id>` 任务；不等待计算完成 |
+| GET /batches/{batch_id}/similarity | 教师 | 相似证据：配对、行号区间、相似簇、未参与比较的提交及原因；补学号与姓名 |
+| POST /submissions/{submission_id}/complexity | 本人 / 本课程教师 | 202；已存在报告时直接返回，不重跑；不合格返回 409 并说明原因 |
+| GET /submissions/{submission_id}/complexity | 本人 / 本课程教师 | 报告，或 `status=NONE` 表示尚未请求 |
+| GET /courses/{course_id}/complexity | 教师 | 班级概览：每生每题最新一份报告的类别、置信度与来源（执行轨迹） |
+| POST /courses/{course_id}/complexity/batch | 教师 | 202；为该题全部真实通过的提交排队分析，已有报告的跳过；返回 `queued`/`skipped`/`ineligible` 与不合格原因分布 |
+| GET /courses/{course_id}/complexity/items | 教师 | 哪些编程题配置了规模伸缩档 |
+
+创建相似批次示例：
+
+```json
+{"request_id":"sim-001","assignment_id":"1","assignment_item_id":"1","threshold":"0.5"}
+```
+
+`assignment_item_id` 省略时比较该作业全部编程题，但每道题仍然独立成组，绝不跨题配对。
+
+相似证据返回里每条配对带双方记号数（`left_tokens`/`right_tokens`），教师端据此标注弱证据；每个簇带 `qualifying_pairs`/`total_pairs`/`min_similarity`，教师端据此区分“团”与“链”；每题带 `language_counts`，混语言时提示跨语言不可比。
+
+
+复杂度资格（任一不满足即 409）：`SUBMISSION_WITHDRAWN`、`NOT_A_PROGRAMMING_ITEM`、`NOT_JUDGED_YET`、`MOCK_RESULT_NOT_ANALYSABLE`、`SUBMISSION_NOT_ACCEPTED`、`JUDGE_CONTEXT_CHANGED`、`JUDGE_CONFIGURATION_UNSUPPORTED`、`UNSUPPORTED_LANGUAGE`。
+
+批次计算由 `python -m scripts.run_analysis --watch` 消费；复杂度轨迹采集由 `python -m scripts.run_complexity --watch` 消费，两者分开，采集不会拖慢评测。批次与报告都持久化，刷新页面看到的是同一份结果。复杂度报告的字段见 [complexity-trace.md](complexity-trace.md) 第 7 节：`time`/`space`/`trace`/`trace_meta`，状态包含 `NOT_MEASURABLE`（没有可伸缩输入或该语言没有轨迹采集器时明确说明原因）。

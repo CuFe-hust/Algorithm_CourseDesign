@@ -44,6 +44,11 @@ export const teacherRoutes = [
     component: () => import("../features/teacher/AssignmentEditor.vue"),
   },
   {
+    path: "complexity",
+    name: "teacher-complexity",
+    component: () => import("../features/teacher/Complexity.vue"),
+  },
+  {
     path: "students/:studentId/progress",
     name: "teacher-student-progress",
     component: () => import("../features/teacher/StudentProgress.vue"),
@@ -67,6 +72,11 @@ export const teacherRoutes = [
     path: "problems/:id",
     name: "teacher-problem-edit",
     component: () => import("../features/teacher/ProblemEditor.vue"),
+  },
+  {
+    path: "similarity",
+    name: "teacher-similarity",
+    component: () => import("../features/teacher/Similarity.vue"),
   },
   {
     path: "students",

@@ -38,6 +38,21 @@ def validate_output(key,data,result):
             if pair.left_key not in known or pair.right_key not in known or pair.left_key==pair.right_key or relation in seen:
                 raise ValueError('Similarity pair is not a unique pair of source answers')
             seen.add(relation)
+            if pair.similarity<0 or pair.similarity>1:
+                raise ValueError('Similarity must stay inside [0,1]')
+        if key=='code_similarity':
+            # A cluster is only meaningful when every member really exists and
+            # no member was skipped for being too short.
+            skipped={row.answer_key for row in result.insufficient}
+            for cluster in result.clusters:
+                members=set(cluster.member_keys)
+                if len(members)!=len(cluster.member_keys) or cluster.size!=len(members):
+                    raise ValueError('Cluster members are not unique')
+                if not members<=known or members&skipped:
+                    raise ValueError('Cluster references an unknown or skipped answer')
+            for row in result.insufficient:
+                if row.answer_key not in known:
+                    raise ValueError('Skipped submission is not part of the input')
     elif key in ('mastery','ability','empirical_difficulty'):
         known={g.item_key if key=='empirical_difficulty' else g.student_key for g in data.grades}
         if any(e.object_key not in known for e in result.estimates):raise ValueError('Unknown learning subject')

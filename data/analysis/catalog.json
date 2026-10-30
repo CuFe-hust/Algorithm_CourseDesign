@@ -1684,8 +1684,8 @@
     {
       "key": "code_similarity",
       "label": "代码相似",
-      "implementation": "not_implemented",
-      "implementation_version": "1",
+      "implementation": "winnowing_token",
+      "implementation_version": "2",
       "schema_version": "analysis-v2",
       "input_schema": {
         "$defs": {
@@ -1711,6 +1711,18 @@
                 ],
                 "default": null,
                 "title": "Language"
+              },
+              "item_key": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Item Key"
               }
             },
             "required": [
@@ -1741,6 +1753,26 @@
             "default": "SAME_ITEM",
             "title": "Comparison Scope",
             "type": "string"
+          },
+          "threshold": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "default": "0.5",
+            "title": "Threshold"
+          },
+          "minimum_tokens": {
+            "default": 40,
+            "minimum": 1,
+            "title": "Minimum Tokens",
+            "type": "integer"
           }
         },
         "required": [
@@ -1751,6 +1783,72 @@
       },
       "output_schema": {
         "$defs": {
+          "SimilarCluster": {
+            "additionalProperties": false,
+            "properties": {
+              "member_keys": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Member Keys",
+                "type": "array"
+              },
+              "size": {
+                "minimum": 3,
+                "title": "Size",
+                "type": "integer"
+              },
+              "max_similarity": {
+                "title": "Max Similarity",
+                "type": "string"
+              },
+              "min_similarity": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Min Similarity"
+              },
+              "qualifying_pairs": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Qualifying Pairs"
+              },
+              "total_pairs": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Total Pairs"
+              }
+            },
+            "required": [
+              "member_keys",
+              "size",
+              "max_similarity"
+            ],
+            "title": "SimilarCluster",
+            "type": "object"
+          },
           "SimilarPair": {
             "additionalProperties": false,
             "properties": {
@@ -1775,6 +1873,133 @@
                 },
                 "title": "Matching Spans",
                 "type": "array"
+              },
+              "containment_left": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Containment Left"
+              },
+              "containment_right": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Containment Right"
+              },
+              "jaccard": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Jaccard"
+              },
+              "shared_fingerprints": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Shared Fingerprints"
+              },
+              "left_fingerprints": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Left Fingerprints"
+              },
+              "right_fingerprints": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Right Fingerprints"
+              },
+              "left_tokens": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Left Tokens"
+              },
+              "right_tokens": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Right Tokens"
+              },
+              "matched_tokens": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Matched Tokens"
+              },
+              "longest_run_tokens": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Longest Run Tokens"
               }
             },
             "required": [
@@ -1783,6 +2008,48 @@
               "similarity"
             ],
             "title": "SimilarPair",
+            "type": "object"
+          },
+          "SkippedSubmission": {
+            "additionalProperties": false,
+            "properties": {
+              "answer_key": {
+                "title": "Answer Key",
+                "type": "string"
+              },
+              "reason": {
+                "enum": [
+                  "INSUFFICIENT_TOKENS",
+                  "NOT_A_PROGRAMMING_LANGUAGE",
+                  "TOKENIZATION_FAILED"
+                ],
+                "title": "Reason",
+                "type": "string"
+              },
+              "tokens": {
+                "minimum": 0,
+                "title": "Tokens",
+                "type": "integer"
+              },
+              "detail": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Detail"
+              }
+            },
+            "required": [
+              "answer_key",
+              "reason",
+              "tokens"
+            ],
+            "title": "SkippedSubmission",
             "type": "object"
           }
         },
@@ -1798,6 +2065,48 @@
           "method": {
             "title": "Method",
             "type": "string"
+          },
+          "clusters": {
+            "items": {
+              "$ref": "#/$defs/SimilarCluster"
+            },
+            "title": "Clusters",
+            "type": "array"
+          },
+          "insufficient": {
+            "items": {
+              "$ref": "#/$defs/SkippedSubmission"
+            },
+            "title": "Insufficient",
+            "type": "array"
+          },
+          "submission_count": {
+            "default": 0,
+            "minimum": 0,
+            "title": "Submission Count",
+            "type": "integer"
+          },
+          "parameters": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "title": "Parameters",
+            "type": "object"
+          },
+          "pairs_truncated": {
+            "default": false,
+            "title": "Pairs Truncated",
+            "type": "boolean"
           }
         },
         "required": [
@@ -1807,7 +2116,7 @@
         "title": "SimilarityOutput",
         "type": "object"
       },
-      "mock_available": true
+      "mock_available": false
     },
     {
       "key": "text_similarity",
@@ -1839,6 +2148,18 @@
                 ],
                 "default": null,
                 "title": "Language"
+              },
+              "item_key": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Item Key"
               }
             },
             "required": [
@@ -1869,6 +2190,26 @@
             "default": "SAME_ITEM",
             "title": "Comparison Scope",
             "type": "string"
+          },
+          "threshold": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "default": "0.5",
+            "title": "Threshold"
+          },
+          "minimum_tokens": {
+            "default": 40,
+            "minimum": 1,
+            "title": "Minimum Tokens",
+            "type": "integer"
           }
         },
         "required": [
@@ -1879,6 +2220,72 @@
       },
       "output_schema": {
         "$defs": {
+          "SimilarCluster": {
+            "additionalProperties": false,
+            "properties": {
+              "member_keys": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Member Keys",
+                "type": "array"
+              },
+              "size": {
+                "minimum": 3,
+                "title": "Size",
+                "type": "integer"
+              },
+              "max_similarity": {
+                "title": "Max Similarity",
+                "type": "string"
+              },
+              "min_similarity": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Min Similarity"
+              },
+              "qualifying_pairs": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Qualifying Pairs"
+              },
+              "total_pairs": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Total Pairs"
+              }
+            },
+            "required": [
+              "member_keys",
+              "size",
+              "max_similarity"
+            ],
+            "title": "SimilarCluster",
+            "type": "object"
+          },
           "SimilarPair": {
             "additionalProperties": false,
             "properties": {
@@ -1903,6 +2310,133 @@
                 },
                 "title": "Matching Spans",
                 "type": "array"
+              },
+              "containment_left": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Containment Left"
+              },
+              "containment_right": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Containment Right"
+              },
+              "jaccard": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Jaccard"
+              },
+              "shared_fingerprints": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Shared Fingerprints"
+              },
+              "left_fingerprints": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Left Fingerprints"
+              },
+              "right_fingerprints": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Right Fingerprints"
+              },
+              "left_tokens": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Left Tokens"
+              },
+              "right_tokens": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Right Tokens"
+              },
+              "matched_tokens": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Matched Tokens"
+              },
+              "longest_run_tokens": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Longest Run Tokens"
               }
             },
             "required": [
@@ -1911,6 +2445,48 @@
               "similarity"
             ],
             "title": "SimilarPair",
+            "type": "object"
+          },
+          "SkippedSubmission": {
+            "additionalProperties": false,
+            "properties": {
+              "answer_key": {
+                "title": "Answer Key",
+                "type": "string"
+              },
+              "reason": {
+                "enum": [
+                  "INSUFFICIENT_TOKENS",
+                  "NOT_A_PROGRAMMING_LANGUAGE",
+                  "TOKENIZATION_FAILED"
+                ],
+                "title": "Reason",
+                "type": "string"
+              },
+              "tokens": {
+                "minimum": 0,
+                "title": "Tokens",
+                "type": "integer"
+              },
+              "detail": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Detail"
+              }
+            },
+            "required": [
+              "answer_key",
+              "reason",
+              "tokens"
+            ],
+            "title": "SkippedSubmission",
             "type": "object"
           }
         },
@@ -1926,6 +2502,48 @@
           "method": {
             "title": "Method",
             "type": "string"
+          },
+          "clusters": {
+            "items": {
+              "$ref": "#/$defs/SimilarCluster"
+            },
+            "title": "Clusters",
+            "type": "array"
+          },
+          "insufficient": {
+            "items": {
+              "$ref": "#/$defs/SkippedSubmission"
+            },
+            "title": "Insufficient",
+            "type": "array"
+          },
+          "submission_count": {
+            "default": 0,
+            "minimum": 0,
+            "title": "Submission Count",
+            "type": "integer"
+          },
+          "parameters": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "title": "Parameters",
+            "type": "object"
+          },
+          "pairs_truncated": {
+            "default": false,
+            "title": "Pairs Truncated",
+            "type": "boolean"
           }
         },
         "required": [
@@ -1967,6 +2585,18 @@
                 ],
                 "default": null,
                 "title": "Language"
+              },
+              "item_key": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Item Key"
               }
             },
             "required": [
@@ -1997,6 +2627,26 @@
             "default": "SAME_ITEM",
             "title": "Comparison Scope",
             "type": "string"
+          },
+          "threshold": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "default": "0.5",
+            "title": "Threshold"
+          },
+          "minimum_tokens": {
+            "default": 40,
+            "minimum": 1,
+            "title": "Minimum Tokens",
+            "type": "integer"
           }
         },
         "required": [

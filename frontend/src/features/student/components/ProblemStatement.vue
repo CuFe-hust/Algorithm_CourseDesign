@@ -7,7 +7,7 @@ const meta = computed(() => [
   { label: "题型", value: typeName(props.item.question_type) },
   { label: "满分", value: props.item.max_score },
   { label: "难度", value: `${props.item.difficulty_level} / 5` },
-  { label: "版本", value: `v${props.item.version_no}` },
+  { label: "题面版本", value: `v${props.item.version_no}` },
 ]);
 function typeName(type: string) {
   return (

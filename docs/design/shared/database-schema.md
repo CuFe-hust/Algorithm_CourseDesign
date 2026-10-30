@@ -1,6 +1,6 @@
 # 当前数据库字段
 
-实现版本：PostgreSQL迁移pg0007；34张业务表，另有alembic_version。由SQLAlchemy模型自动生成类型与外键。
+实现版本：PostgreSQL迁移pg0010；36张业务表，另有alembic_version。由SQLAlchemy模型自动生成类型与外键。
 
 时间戳均带时区，服务端按UTC输出；ID为有符号64位整数，API以字符串传输。JSON列使用JSONB。
 
@@ -165,6 +165,38 @@
 | id | BIGINT | 否 | — |
 | created_at | TIMESTAMP WITH TIME ZONE | 否 | — |
 
+## complexity_reports
+
+| 字段 | PostgreSQL类型 | 可空 | 外键 |
+|---|---|---|---|
+| submission_id | BIGINT | 否 | submissions.id |
+| assignment_item_id | BIGINT | 否 | assignment_items.id |
+| student_id | BIGINT | 否 | users.id |
+| status | VARCHAR(16) | 否 | — |
+| time_class | VARCHAR(16) | 是 | — |
+| space_class | VARCHAR(16) | 是 | — |
+| time_confidence | VARCHAR(8) | 是 | — |
+| space_confidence | VARCHAR(8) | 是 | — |
+| time_source | VARCHAR(8) | 是 | — |
+| language | VARCHAR(32) | 是 | — |
+| trace_meta | JSONB | 否 | — |
+| trace_series | JSONB | 否 | — |
+| summary | JSONB | 否 | — |
+| limitations | JSONB | 否 | — |
+| implementation_name | VARCHAR(64) | 否 | — |
+| implementation_version | VARCHAR(32) | 否 | — |
+| requested_by | BIGINT | 否 | users.id |
+| requested_at | TIMESTAMP WITH TIME ZONE | 否 | — |
+| attempt_no | INTEGER | 否 | — |
+| lease_expires_at | TIMESTAMP WITH TIME ZONE | 是 | — |
+| started_at | TIMESTAMP WITH TIME ZONE | 是 | — |
+| finished_at | TIMESTAMP WITH TIME ZONE | 是 | — |
+| error_message | TEXT | 是 | — |
+| history | JSONB | 否 | — |
+| updated_at | TIMESTAMP WITH TIME ZONE | 否 | — |
+| id | BIGINT | 否 | — |
+| created_at | TIMESTAMP WITH TIME ZONE | 否 | — |
+
 ## course_members
 
 | 字段 | PostgreSQL类型 | 可空 | 外键 |
@@ -252,6 +284,20 @@
 | code | VARCHAR(64) | 否 | — |
 | name | VARCHAR(100) | 否 | — |
 | status | VARCHAR(16) | 否 | — |
+| updated_at | TIMESTAMP WITH TIME ZONE | 否 | — |
+| id | BIGINT | 否 | — |
+| created_at | TIMESTAMP WITH TIME ZONE | 否 | — |
+
+## problem_complexity_profiles
+
+| 字段 | PostgreSQL类型 | 可空 | 外键 |
+|---|---|---|---|
+| problem_version_id | BIGINT | 否 | problem_versions.id |
+| family | VARCHAR(32) | 否 | — |
+| spec | JSONB | 否 | — |
+| source | VARCHAR(16) | 否 | — |
+| created_by | BIGINT | 是 | users.id |
+| version_no | INTEGER | 否 | — |
 | updated_at | TIMESTAMP WITH TIME ZONE | 否 | — |
 | id | BIGINT | 否 | — |
 | created_at | TIMESTAMP WITH TIME ZONE | 否 | — |

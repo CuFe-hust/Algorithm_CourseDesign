@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import type { DraftRecord } from "../draft-store";
+import { formatTime } from "../format";
 const props = defineProps<{
   status: "idle" | "dirty" | "saving" | "saved" | "error" | "conflict";
   message?: string;
@@ -12,11 +13,11 @@ const emit = defineEmits<{ accept: []; dismiss: [] }>();
 const label = computed(
   () =>
     ({
-      idle: "尚未开始作答",
+      idle: "没有未保存的修改",
       dirty: "有未保存的修改",
       saving: "正在保存草稿…",
       saved: props.lastSavedAt
-        ? `草稿已保存于本机 ${new Date(props.lastSavedAt).toLocaleTimeString()}`
+        ? `草稿已保存于本机 ${formatTime(props.lastSavedAt)}`
         : "草稿已保存于本机",
       error: "草稿保存失败",
       conflict: "检测到多标签页编辑冲突",

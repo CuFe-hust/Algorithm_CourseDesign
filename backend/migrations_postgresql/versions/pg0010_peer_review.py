@@ -1,8 +1,8 @@
 """Real subjective peer review and append-only analysis decisions."""
 from alembic import op
 
-revision = "pg0007"
-down_revision = "pg0006"
+revision = "pg0010"
+down_revision = "pg0009"
 branch_labels = None
 depends_on = None
 

@@ -1,6 +1,6 @@
 # 算法课程评审平台
 
-已实现统一教师/学生前端与共享FastAPI、PostgreSQL后端，34张业务表、迁移head为pg0007。教师可管理四类题目、导入及开通学生账号、发放/重置初始密码、创建发布作业、调整截止和查看采用结果；学生可改密、作答、提交、查看历史与LOCAL真实评测。已补充第③、④条匿名互评、评分聚合、四类异常证据、教师复核及补评/新版本重算；正式成绩发布与Linux沙箱由后续模块接入。
+已实现统一教师/学生前端与共享FastAPI、PostgreSQL后端，36张业务表、迁移head为pg0010。教师可管理四类题目、导入及开通学生账号、发放/重置初始密码、创建发布作业、调整截止和查看采用结果；学生可改密、作答、提交、查看历史与LOCAL真实评测。已补充第③、④条匿名互评、评分聚合、四类异常证据、教师复核及补评/新版本重算；正式成绩发布与Linux沙箱由后续模块接入。
 
 ## 三人从这里开始
 
@@ -106,13 +106,28 @@ Remove-Item Env:DB_NAME
 
 队友运行`python -m scripts.import_full_data`默认使用公开脱敏快照，导入ALGO_FULL_2026课程：70编程题、50主观题、350组测试、275份参考答案/代码、217名学生、8班。DEMO_ALGO仍用于四类题的登录与提交流程演示。全量课程不会自动发布作业，名册账号PENDING且无密码，教师端已提供显式开通和作业发布入口，导入不会自动替教师执行这两步。
 
-真实名册只供本机显式导入；不要把数据库备份、身份映射或原始xlsx上传GitHub。不同身份模式不能覆盖同一数据库的已有身份，请选定一种，详见[数据导入](docs/implementation/runbooks/data-import.md)。当前API业务格式保持兼容，迁移head为pg0007；第三、四条链路交接见下方说明。
+真实名册只供本机显式导入；不要把数据库备份、身份映射或原始xlsx上传GitHub。不同身份模式不能覆盖同一数据库的已有身份，请选定一种，详见[数据导入](docs/implementation/runbooks/data-import.md)。当前API业务格式保持兼容，迁移head为pg0010；第三、四条链路交接见下方说明。
 
 教师与学生的完整联调见[2026-10-25验证记录](docs/implementation/evidence/teacher/2026-10-25-student-integration.md)，先备份本机库再执行增量迁移。
 
 ## 分析框架与算法研究
 
-新增分析批次、快照、任务与结果记录（现34业务表，pg0007），与既有JUDGE队列分开。15插件契约与23步骤，六条合成链路可运行，真实缺输入明确等待；真实互评与聚合复核已接入，正式成绩发布仍由第五线负责人完成。见[运行/逐段演示](docs/implementation/runbooks/analysis-setup.md)、[黑盒输入输出](docs/design/analysis/black-boxes.md)和[4K会议图](docs/assets/diagrams/analysis/README.md)。原生Windows支持API/MOCK/分析，当前POSIX LOCAL启动门不支持原生Windows。
+新增分析批次、快照、任务与结果记录（现34业务表，pg0010），与既有JUDGE队列分开。15插件契约与23步骤，六条合成链路可运行，真实缺输入明确等待；真实互评与聚合复核已接入，正式成绩发布仍由第五线负责人完成。见[运行/逐段演示](docs/implementation/runbooks/analysis-setup.md)、[黑盒输入输出](docs/design/analysis/black-boxes.md)和[4K会议图](docs/assets/diagrams/analysis/README.md)。原生Windows支持API/MOCK/分析，当前POSIX LOCAL启动门不支持原生Windows。
+
+分析批次、快照、任务与结果记录（pg0006 起），与既有JUDGE队列分开。15插件契约与23步骤，六条合成链路可运行，真实缺输入明确等待；真实互评与正式成绩发布仍待接入。
+
+同题相似检测与已通过代码的复杂度分析已接入（复杂度分析迁移 head 到 pg0009，30业务表）：
+
+```powershell
+..\.venv\Scripts\python.exe -m alembic upgrade head
+..\.venv\Scripts\python.exe -m scripts.seed_complexity_profiles
+..\.venv\Scripts\python.exe -m scripts.run_analysis --watch      # 相似批次
+..\.venv\Scripts\python.exe -m scripts.run_complexity --watch    # 复杂度轨迹采集
+```
+
+复杂度分析会真实执行学生代码、采集执行轨迹计数并推断增长类别（不再测墙钟时间）；与评测一样只适合受控开发环境，没有 Linux 沙箱。见[相似检测](docs/design/analysis/code-similarity.md)、[执行轨迹计数与递推推断](docs/design/analysis/complexity-trace.md)、[2026-10-29 轨迹实验记录](docs/implementation/evidence/similarity-complexity/2026-10-29-trace-experiments.md)。真实 HTTP 冒烟：`scripts/smoke_similarity_complexity_http.py`。
+
+逐段演示见[运行手册](docs/implementation/runbooks/analysis-setup.md)、[黑盒输入输出](docs/design/analysis/black-boxes.md)和[4K会议图](docs/assets/diagrams/analysis/README.md)。原生Windows支持API/MOCK/分析，当前POSIX LOCAL启动门不支持原生Windows。原生Windows支持API/MOCK/分析，当前POSIX LOCAL启动门不支持原生Windows。
 
 第六条线可独立运行：只调用现有ability占位黑盒，不等待其他线路。见[独立线路说明](docs/design/analysis/student-ability-line.md)。
 

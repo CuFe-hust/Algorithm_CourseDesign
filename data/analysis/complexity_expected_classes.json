@@ -1,0 +1,352 @@
+{
+  "CODE-P01": {
+    "expected": "O(n log n)",
+    "confidence": "HIGH",
+    "rationale": "n 个活动读入后整体排序，比较次数由排序主导，按结束时刻的单趟扫描只占 O(n)"
+  },
+  "CODE-P02": {
+    "expected": "O(1)",
+    "confidence": "HIGH",
+    "rationale": "7 种固定面额各做一次除法，循环次数与输入数值无关，算法是常数级"
+  },
+  "CODE-P03": {
+    "expected": "O(n log n)",
+    "confidence": "HIGH",
+    "rationale": "n 件物品按单位价值排序，排序 O(n log n) 主导；容量被填满后装包循环提前停止"
+  },
+  "CODE-P04": {
+    "expected": "O(n log n)",
+    "confidence": "HIGH",
+    "rationale": "n-1 轮合并，每轮两次 heap 弹出加一次压入各 O(log n)，建堆的 O(n) 被它覆盖"
+  },
+  "CODE-P05": {
+    "expected": "O(n log n)",
+    "confidence": "HIGH",
+    "rationale": "n 个区间按左端点排序 O(n log n) 主导，之后单趟覆盖扫描是 O(n)"
+  },
+  "CODE-P06": {
+    "expected": "O(n log n)",
+    "confidence": "HIGH",
+    "rationale": "按接水时间排序 O(n log n) 主导，前缀和累加是 O(n)"
+  },
+  "CODE-P07": {
+    "expected": "O(n)",
+    "confidence": "HIGH",
+    "rationale": "gas 与 cost 两个数组各扫一遍，一次遍历累加油耗差"
+  },
+  "CODE-P08": {
+    "expected": "O(n)",
+    "confidence": "HIGH",
+    "rationale": "按层贪心只把数组扫一遍，最远可达位置单调前推"
+  },
+  "CODE-P09": {
+    "expected": "O(n log n)",
+    "confidence": "HIGH",
+    "rationale": "n 个气球按右端点排序 O(n log n) 主导，射箭扫描 O(n)"
+  },
+  "CODE-P10": {
+    "expected": "O(n log n)",
+    "confidence": "HIGH",
+    "rationale": "归并排序递归树每层合并 O(n)、共 log n 层，合并时顺带累加逆序对"
+  },
+  "CODE-P11": {
+    "expected": "O(log n)",
+    "confidence": "HIGH",
+    "rationale": "指数 b 是输入的第二个数、随 n 增长，逐位平方与相乘共 log2 b 次"
+  },
+  "CODE-P12": {
+    "expected": "O(n log n)",
+    "confidence": "HIGH",
+    "rationale": "在 [0,max(L)] 上二分 log(max L)=log n 轮，每轮扫描 n 根绳子计数"
+  },
+  "CODE-P13": {
+    "expected": "O(n log n)",
+    "confidence": "MEDIUM",
+    "rationale": "分治最近点对每层归并 O(n)、共 log n 层，主项是 n log n；生成点只有 O(n) 种坐标，重合会让部分层提前返回"
+  },
+  "CODE-P14": {
+    "expected": "O(2^n)",
+    "confidence": "HIGH",
+    "rationale": "汉诺塔递归恰好展开 2^n-1 次移动，每次附加一条输出"
+  },
+  "CODE-P15": {
+    "expected": "UNKNOWN",
+    "confidence": "MEDIUM",
+    "rationale": "乘法由 Python 内建 int 完成（大数走 Karatsuba，约 n^1.585），真实增长在解释器内部，目录里最近上界是 O(n^2)"
+  },
+  "CODE-P16": {
+    "expected": "O(n)",
+    "confidence": "MEDIUM",
+    "rationale": "dp 是 n×W，但 spec 把容量钉在 1000，这套输入族上只有 n 在增长，工作量对 n 线性"
+  },
+  "CODE-P17": {
+    "expected": "O(n^2)",
+    "confidence": "HIGH",
+    "rationale": "两个长度 n 的串做滚动数组 LCS，双重循环 n×n 主导"
+  },
+  "CODE-P18": {
+    "expected": "O(n log n)",
+    "confidence": "HIGH",
+    "rationale": "每个元素一次 bisect_left，n 次 O(log n) 的二分查找主导"
+  },
+  "CODE-P19": {
+    "expected": "O(n^2)",
+    "confidence": "HIGH",
+    "rationale": "编辑距离的双重循环 n×n 次状态转移主导"
+  },
+  "CODE-P20": {
+    "expected": "O(n^2)",
+    "confidence": "HIGH",
+    "rationale": "数字三角形共 1+2+…+n 个格子，自底向上逐格合并，工作量 n^2/2"
+  },
+  "CODE-P21": {
+    "expected": "O(n^2)",
+    "confidence": "MEDIUM",
+    "rationale": "完全背包的 dp 规模是硬币数×金额，头部第二个数 k=amount 随 n 增长，故为 n^2"
+  },
+  "CODE-P22": {
+    "expected": "O(n^3)",
+    "confidence": "HIGH",
+    "rationale": "矩阵连乘区间 DP：长度、起点、分割点三重循环，共 n^3/6 次转移"
+  },
+  "CODE-P23": {
+    "expected": "O(n^3)",
+    "confidence": "HIGH",
+    "rationale": "石子合并区间 DP 同样是长度、起点、分割点三重循环"
+  },
+  "CODE-P24": {
+    "expected": "O(n)",
+    "confidence": "HIGH",
+    "rationale": "后缀自动机构建与匹配都是均摊线性，沿后缀链接回退的总次数不超过 2n"
+  },
+  "CODE-P25": {
+    "expected": "O(n)",
+    "confidence": "HIGH",
+    "rationale": "只保留前两户最优值的单趟 DP，每户常数次转移"
+  },
+  "CODE-P26": {
+    "expected": "O(n log n)",
+    "confidence": "MEDIUM",
+    "rationale": "堆优化 Dijkstra：n 个点、2n 条边，每次堆操作 log n 主导；随机图多数点不可达，实际堆操作数会低于上界"
+  },
+  "CODE-P27": {
+    "expected": "O(n^2)",
+    "confidence": "MEDIUM",
+    "rationale": "Bellman-Ford 最坏 n-1 轮、每轮扫 Θ(n) 条边即 n^2；但生成边权全为正，首轮无松弛就 break"
+  },
+  "CODE-P28": {
+    "expected": "O(n log n)",
+    "confidence": "HIGH",
+    "rationale": "Kruskal 先对 2n 条边排序 O(n log n)，并查集部分近似线性"
+  },
+  "CODE-P29": {
+    "expected": "O(n log n)",
+    "confidence": "MEDIUM",
+    "rationale": "Kahn 每步一次堆弹出/压入，n 个点共 O(n log n)；生成图随机、几乎必含环，实际只弹出少数点"
+  },
+  "CODE-P30": {
+    "expected": "O(n^2)",
+    "confidence": "HIGH",
+    "rationale": "ladder 的 n 是网格边长，BFS 最多访问 n×n 个格子，每格常数次扩展"
+  },
+  "CODE-P31": {
+    "expected": "O(n)",
+    "confidence": "MEDIUM",
+    "rationale": "并查集按大小合并加路径压缩近似线性（α(n)），m 条边与 q 次询问都随 n 增长"
+  },
+  "CODE-P32": {
+    "expected": "O(n log n)",
+    "confidence": "HIGH",
+    "rationale": "倍增表 LOG=log n 层、每层填 n 个点，构造 O(n log n)；n 次询问各 O(log n)"
+  },
+  "CODE-P33": {
+    "expected": "O(n)",
+    "confidence": "HIGH",
+    "rationale": "迭代 Tarjan 对每个点、每条边各处理常数次，m=2n 与 n 同阶"
+  },
+  "CODE-P34": {
+    "expected": "O(n)",
+    "confidence": "HIGH",
+    "rationale": "BFS 染色对每个点、每条边各访问常数次，m=2n 与 n 同阶"
+  },
+  "CODE-P35": {
+    "expected": "O(n!)",
+    "confidence": "HIGH",
+    "rationale": "回溯生成 n! 个排列，每个叶子输出 n 个数字，主项是 n!"
+  },
+  "CODE-P36": {
+    "expected": "O(n!)",
+    "confidence": "HIGH",
+    "rationale": "按行放皇后的回溯树节点数按 n! 量级展开，剪枝只改变常数"
+  },
+  "CODE-P37": {
+    "expected": "NOT_MEASURABLE",
+    "confidence": "HIGH",
+    "rationale": "数独是固定 9×9 盘面（FIXED 输入族），任何档位都是同一份输入，无法测增长"
+  },
+  "CODE-P38": {
+    "expected": "O(n^3)",
+    "confidence": "HIGH",
+    "rationale": "每染一个点要扫 n 个候选点、每个再比较 n 个邻接关系，n 个点染色即 n^3"
+  },
+  "CODE-P39": {
+    "expected": "UNKNOWN",
+    "confidence": "MEDIUM",
+    "rationale": "回溯生成括号串的节点数是 Catalan 数，真实增长 4^n/n^1.5，目录里 O(2^n) 太小、O(n!) 太大"
+  },
+  "CODE-P40": {
+    "expected": "O(n^2)",
+    "confidence": "MEDIUM",
+    "rationale": "n×n 网格逐格尝试 dfs，单词沿第一行铺成直路，多数格子首字符就不匹配，总工作量 n^2"
+  },
+  "CODE-P41": {
+    "expected": "O(n)",
+    "confidence": "HIGH",
+    "rationale": "KMP 建 next 表 O(m) 加主串单趟扫描 O(n)，两串长度都为 n"
+  },
+  "CODE-P42": {
+    "expected": "O(n)",
+    "confidence": "HIGH",
+    "rationale": "Manacher 对插入分隔符后的 2n+1 个中心各做均摊常数次扩展"
+  },
+  "CODE-P43": {
+    "expected": "O(n)",
+    "confidence": "HIGH",
+    "rationale": "字典树按单词总长度插入，q=n 次前缀查询沿树下行，总字符数随 n 线性"
+  },
+  "CODE-P44": {
+    "expected": "O(n)",
+    "confidence": "HIGH",
+    "rationale": "滑动窗口左右指针各只前进 n 步"
+  },
+  "CODE-P45": {
+    "expected": "O(n)",
+    "confidence": "HIGH",
+    "rationale": "前缀哈希预处理 O(n)，q=n 次区间比较每次常数次取模运算"
+  },
+  "CODE-P46": {
+    "expected": "O(n)",
+    "confidence": "HIGH",
+    "rationale": "n 个定长（≤100 字符）串逐个缩短公共前缀，工作量是总字符数"
+  },
+  "CODE-P47": {
+    "expected": "O(n log n)",
+    "confidence": "HIGH",
+    "rationale": "随机化三路快排的期望比较次数是 n log n，随机基准只影响常数"
+  },
+  "CODE-P48": {
+    "expected": "O(n)",
+    "confidence": "HIGH",
+    "rationale": "三路划分快速选择每轮期望折半，总比较次数期望 O(n)"
+  },
+  "CODE-P49": {
+    "expected": "O(n log n)",
+    "confidence": "HIGH",
+    "rationale": "q=n 次询问各做一次 log n 的二分查找"
+  },
+  "CODE-P50": {
+    "expected": "O(n)",
+    "confidence": "HIGH",
+    "rationale": "单调队列每个下标最多入队出队一次"
+  },
+  "CODE-P51": {
+    "expected": "O(n)",
+    "confidence": "HIGH",
+    "rationale": "单调栈每个元素最多入栈出栈一次"
+  },
+  "CODE-P52": {
+    "expected": "O(n log n)",
+    "confidence": "HIGH",
+    "rationale": "每个数做常数次堆压入/弹出，n 个元素共 O(n log n)"
+  },
+  "CODE-P53": {
+    "expected": "O(n)",
+    "confidence": "HIGH",
+    "rationale": "后缀表达式按 token 逐个入栈或弹栈，token 数随 n 线性"
+  },
+  "CODE-P54": {
+    "expected": "O(n log n)",
+    "confidence": "HIGH",
+    "rationale": "线性建树 O(n) 后，q=n 次操作各做 log n 次树状数组跳转"
+  },
+  "CODE-P55": {
+    "expected": "O(n)",
+    "confidence": "HIGH",
+    "rationale": "q 条操作均摊 O(1) 每条，push/pop 在两个栈之间转移的总次数不超过 q"
+  },
+  "CODE-P56": {
+    "expected": "O(n log n)",
+    "confidence": "HIGH",
+    "rationale": "Counter 计数 O(n) 后对不同元素排序 O(n log n)，排序主导"
+  },
+  "CODE-P57": {
+    "expected": "UNKNOWN",
+    "confidence": "HIGH",
+    "rationale": "切片筛法统计素数，真实增长 n log log n，目录里最近上界是 O(n log n)"
+  },
+  "CODE-P58": {
+    "expected": "O(log n)",
+    "confidence": "HIGH",
+    "rationale": "欧几里得递归层数是 O(log min(a,b))，两个数都随 n 同阶增长"
+  },
+  "CODE-P59": {
+    "expected": "O(n)",
+    "confidence": "HIGH",
+    "rationale": "T=n 组询问，阶乘表建到最大的 n_i（随 n 增长），建表 O(n) 主导"
+  },
+  "CODE-P60": {
+    "expected": "O(n)",
+    "confidence": "HIGH",
+    "rationale": "从低位到高位逐位相加，循环次数是两数位数"
+  },
+  "CODE-P61": {
+    "expected": "O(log n)",
+    "confidence": "HIGH",
+    "rationale": "短除法每轮除以 2，循环次数就是 log2 n 位"
+  },
+  "CODE-P62": {
+    "expected": "UNKNOWN",
+    "confidence": "HIGH",
+    "rationale": "试除到 √n，真实增长 √n，目录里最近上界是 O(n)"
+  },
+  "CODE-P63": {
+    "expected": "O(n)",
+    "confidence": "HIGH",
+    "rationale": "单趟异或消去成对出现的数"
+  },
+  "CODE-P64": {
+    "expected": "O(n)",
+    "confidence": "MEDIUM",
+    "rationale": "逐个数统计二进制 1 的个数，值域上界 2^60 固定，故为线性；bit 操作在 bin/count 里看不到"
+  },
+  "CODE-P65": {
+    "expected": "O(2^n)",
+    "confidence": "MEDIUM",
+    "rationale": "枚举 2^n 个格雷码，每个补零到 n 位，主项是 2^n"
+  },
+  "CODE-P66": {
+    "expected": "O(log n)",
+    "confidence": "HIGH",
+    "rationale": "不断右移直到 l 与 r 相等，循环次数是 r 的位数"
+  },
+  "CODE-P67": {
+    "expected": "O(n^2)",
+    "confidence": "HIGH",
+    "rationale": "n×n 矩阵逐层顺时针取数，每个元素恰好访问一次"
+  },
+  "CODE-P68": {
+    "expected": "O(n^2)",
+    "confidence": "HIGH",
+    "rationale": "n×n 方阵旋转输出，n^2 个元素各写一次"
+  },
+  "CODE-P69": {
+    "expected": "O(n)",
+    "confidence": "HIGH",
+    "rationale": "前缀和加哈希表计数，单趟 n 个元素"
+  },
+  "CODE-P70": {
+    "expected": "O(n)",
+    "confidence": "HIGH",
+    "rationale": "m=n 次差分更新加一趟前缀和，行数与 n 同阶"
+  }
+}

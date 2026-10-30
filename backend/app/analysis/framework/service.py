@@ -53,7 +53,9 @@ def save_output(db,run,output,is_mock):
 
 def refresh(db,batch):
     """Called with the batch lock held. Never runs algorithms or invents human input."""
-    runs,artifacts=records(db,batch);root=root_snapshot(db,batch).payload
+    root_row=root_snapshot(db,batch)
+    runs,artifacts=records(db,batch)
+    root=root_row.payload if root_row is not None else {}
     for step in steps_for(batch):
         run=runs[step.key]
         if run.status not in ('WAITING_INPUT','WAITING_HUMAN'):continue
@@ -124,10 +126,15 @@ def create_batch(db,course_id,actor,body):
 
 def batch_view(db,batch_id,actor):
     batch=context(db,batch_id,actor);runs,artifacts=records(db,batch);root=root_snapshot(db,batch)
+    # Similarity batches keep one snapshot per item and no ROOT row: comparing
+    # submissions of different questions has no meaning, so there is no single
+    # course-wide input to hash.
     return dict(id=str(batch.id),course_id=str(batch.course_id),mode=batch.mode,status=batch.status,
-        revision_no=batch.revision_no,seed=batch.seed,schema_version='analysis-v2',input_hash=root.input_hash,
+        revision_no=batch.revision_no,seed=batch.seed,schema_version='analysis-v2',
+        input_hash=root.input_hash if root is not None else None,
         pipeline=batch.configuration.get('pipeline','FULL'),
-        is_mock=root.is_mock,created_at=batch.created_at.astimezone(timezone.utc).isoformat(),
+        is_mock=root.is_mock if root is not None else any(a.is_mock for a in artifacts.values()),
+        created_at=batch.created_at.astimezone(timezone.utc).isoformat(),
         steps=[dict(id=str(r.id),key=r.step_key,algorithm=r.algorithm_key,status=r.status,
             business_status=r.business_status,dependencies=r.dependencies,dependency_refs=r.dependency_refs,
             reason=r.reason,attempt_no=r.attempt_no,result=artifacts[r.id].payload if r.id in artifacts and r.status in TERMINAL else None)

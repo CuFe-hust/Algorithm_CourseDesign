@@ -38,7 +38,10 @@ BY_KEY={step.key:step for step in STEPS}
 
 
 def steps_for(batch):
-    pipeline=batch.configuration.get('pipeline')
+    configuration=batch.configuration or {}
+    pipeline=configuration.get('pipeline')
+    if pipeline=='QUESTION_RESULTS':
+        return (Step('result_snapshot'),)
     if pipeline=='REVIEW_ALLOCATION':
         return (Step('allocation',algorithm='allocation'),
             Step('open_review',('allocation',),event='OPEN_REVIEW'),
@@ -53,4 +56,10 @@ def steps_for(batch):
         return (Step('reaggregation',algorithm='aggregation'),Step('effective_subjective_results',('reaggregation',)))
     if batch.configuration.get('pipeline')=='STUDENT_ABILITY':
         return (Step('ability',algorithm='ability'),)
+    if configuration.get('pipeline')=='CODE_SIMILARITY':
+        # One independent comparison per programming item. Keeping the item id in
+        # the step key is what prevents a course-wide batch from ever comparing
+        # code across different questions.
+        return tuple(Step(f'code_similarity@{item_id}',algorithm='code_similarity')
+                     for item_id in sorted(configuration.get('subjects',{}),key=int))
     return STEPS
