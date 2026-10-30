@@ -2,7 +2,9 @@
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import {
+  Activity,
   BookOpen,
+  ChartNoAxesCombined,
   LayoutDashboard,
   LibraryBig,
   Users,
@@ -11,6 +13,7 @@ import {
   Menu,
   GraduationCap,
   ClipboardList,
+  Layers,
 } from "@lucide/vue";
 import { session, selectCourse, logout } from "../../shared/session";
 import { errorText } from "../../shared/api";
@@ -75,9 +78,32 @@ async function leave() {
           :class="{ selected: $route.path.startsWith('/teacher/problems') }"
           ><LibraryBig :size="19" />题库管理</RouterLink
         ><RouterLink
+          to="/teacher/similarity"
+          :class="{ selected: $route.path.startsWith('/teacher/similarity') }"
+          ><Layers :size="19" />相似检测</RouterLink
+        ><RouterLink
+          to="/teacher/complexity"
+          :class="{ selected: $route.path.startsWith('/teacher/complexity') }"
+          ><Activity :size="19" />复杂度分析</RouterLink
+        ><RouterLink
           to="/teacher/students"
           :class="{ selected: $route.path.startsWith('/teacher/students') }"
           ><Users :size="19" />学生名单</RouterLink
+        >
+        <RouterLink
+          to="/teacher/reviews"
+          :class="{ selected: $route.path.startsWith('/teacher/reviews') }"
+          ><ClipboardList :size="19" />互评与复核</RouterLink
+        >
+        <RouterLink
+          to="/teacher/analysis"
+          :class="{ selected: $route.path === '/teacher/analysis' }"
+          ><ChartNoAxesCombined :size="19" />分析中心</RouterLink
+        >
+        <RouterLink
+          to="/teacher/results"
+          :class="{ selected: $route.path === '/teacher/results' }"
+          ><ClipboardList :size="19" />逐题结果</RouterLink
         >
       </nav>
       <div class="sidebar-foot">
@@ -134,7 +160,7 @@ async function leave() {
           </button>
         </div>
       </header>
-      <main class="page">
+      <main class="page teacher-page">
         <div v-if="error" class="alert error">{{ error }}</div>
         <RouterView :key="`${session.courseId}:${$route.path}`" />
       </main>

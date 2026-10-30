@@ -1,0 +1,6449 @@
+{
+  "meta": {
+    "generated_at": "2026-10-28T21:55:37",
+    "python": "3.14.5",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "language": "cpp",
+    "reference_language": "C++",
+    "collect_language": "cpp",
+    "language_label": "C++17",
+    "seed": 20261028,
+    "repeat": 2,
+    "collect_budget_ms": 30000,
+    "wall_seconds": 314.177,
+    "question_bank": "data/formatted/questions.programming.json",
+    "label_file": "data/analysis/complexity_expected_classes.json",
+    "codes": "ALL",
+    "problems": 70,
+    "notes": [
+      "只读题库与 PROFILES，不连数据库、不联网；采集与推断走生产代码路径",
+      "expected 取 TIME_CLASSES 的题计入准确率；UNKNOWN 与 NOT_MEASURABLE 不计入分母",
+      "跨语言一致性需要先用另一种语言跑一遍，再用 --compare 读取那份 JSON",
+      "按档位比较的 work 是精确计数，可重复性要求两份结果逐档完全相等"
+    ]
+  },
+  "labels": {
+    "CODE-P01": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "n 个活动读入后整体排序，比较次数由排序主导，按结束时刻的单趟扫描只占 O(n)"
+    },
+    "CODE-P02": {
+      "expected": "O(1)",
+      "confidence": "HIGH",
+      "rationale": "7 种固定面额各做一次除法，循环次数与输入数值无关，算法是常数级"
+    },
+    "CODE-P03": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "n 件物品按单位价值排序，排序 O(n log n) 主导；容量被填满后装包循环提前停止"
+    },
+    "CODE-P04": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "n-1 轮合并，每轮两次 heap 弹出加一次压入各 O(log n)，建堆的 O(n) 被它覆盖"
+    },
+    "CODE-P05": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "n 个区间按左端点排序 O(n log n) 主导，之后单趟覆盖扫描是 O(n)"
+    },
+    "CODE-P06": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "按接水时间排序 O(n log n) 主导，前缀和累加是 O(n)"
+    },
+    "CODE-P07": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "gas 与 cost 两个数组各扫一遍，一次遍历累加油耗差"
+    },
+    "CODE-P08": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "按层贪心只把数组扫一遍，最远可达位置单调前推"
+    },
+    "CODE-P09": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "n 个气球按右端点排序 O(n log n) 主导，射箭扫描 O(n)"
+    },
+    "CODE-P10": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "归并排序递归树每层合并 O(n)、共 log n 层，合并时顺带累加逆序对"
+    },
+    "CODE-P11": {
+      "expected": "O(log n)",
+      "confidence": "HIGH",
+      "rationale": "指数 b 是输入的第二个数、随 n 增长，逐位平方与相乘共 log2 b 次"
+    },
+    "CODE-P12": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "在 [0,max(L)] 上二分 log(max L)=log n 轮，每轮扫描 n 根绳子计数"
+    },
+    "CODE-P13": {
+      "expected": "O(n log n)",
+      "confidence": "MEDIUM",
+      "rationale": "分治最近点对每层归并 O(n)、共 log n 层，主项是 n log n；生成点只有 O(n) 种坐标，重合会让部分层提前返回"
+    },
+    "CODE-P14": {
+      "expected": "O(2^n)",
+      "confidence": "HIGH",
+      "rationale": "汉诺塔递归恰好展开 2^n-1 次移动，每次附加一条输出"
+    },
+    "CODE-P15": {
+      "expected": "UNKNOWN",
+      "confidence": "MEDIUM",
+      "rationale": "乘法由 Python 内建 int 完成（大数走 Karatsuba，约 n^1.585），真实增长在解释器内部，目录里最近上界是 O(n^2)"
+    },
+    "CODE-P16": {
+      "expected": "O(n)",
+      "confidence": "MEDIUM",
+      "rationale": "dp 是 n×W，但 spec 把容量钉在 1000，这套输入族上只有 n 在增长，工作量对 n 线性"
+    },
+    "CODE-P17": {
+      "expected": "O(n^2)",
+      "confidence": "HIGH",
+      "rationale": "两个长度 n 的串做滚动数组 LCS，双重循环 n×n 主导"
+    },
+    "CODE-P18": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "每个元素一次 bisect_left，n 次 O(log n) 的二分查找主导"
+    },
+    "CODE-P19": {
+      "expected": "O(n^2)",
+      "confidence": "HIGH",
+      "rationale": "编辑距离的双重循环 n×n 次状态转移主导"
+    },
+    "CODE-P20": {
+      "expected": "O(n^2)",
+      "confidence": "HIGH",
+      "rationale": "数字三角形共 1+2+…+n 个格子，自底向上逐格合并，工作量 n^2/2"
+    },
+    "CODE-P21": {
+      "expected": "O(n^2)",
+      "confidence": "MEDIUM",
+      "rationale": "完全背包的 dp 规模是硬币数×金额，头部第二个数 k=amount 随 n 增长，故为 n^2"
+    },
+    "CODE-P22": {
+      "expected": "O(n^3)",
+      "confidence": "HIGH",
+      "rationale": "矩阵连乘区间 DP：长度、起点、分割点三重循环，共 n^3/6 次转移"
+    },
+    "CODE-P23": {
+      "expected": "O(n^3)",
+      "confidence": "HIGH",
+      "rationale": "石子合并区间 DP 同样是长度、起点、分割点三重循环"
+    },
+    "CODE-P24": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "后缀自动机构建与匹配都是均摊线性，沿后缀链接回退的总次数不超过 2n"
+    },
+    "CODE-P25": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "只保留前两户最优值的单趟 DP，每户常数次转移"
+    },
+    "CODE-P26": {
+      "expected": "O(n log n)",
+      "confidence": "MEDIUM",
+      "rationale": "堆优化 Dijkstra：n 个点、2n 条边，每次堆操作 log n 主导；随机图多数点不可达，实际堆操作数会低于上界"
+    },
+    "CODE-P27": {
+      "expected": "O(n^2)",
+      "confidence": "MEDIUM",
+      "rationale": "Bellman-Ford 最坏 n-1 轮、每轮扫 Θ(n) 条边即 n^2；但生成边权全为正，首轮无松弛就 break"
+    },
+    "CODE-P28": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "Kruskal 先对 2n 条边排序 O(n log n)，并查集部分近似线性"
+    },
+    "CODE-P29": {
+      "expected": "O(n log n)",
+      "confidence": "MEDIUM",
+      "rationale": "Kahn 每步一次堆弹出/压入，n 个点共 O(n log n)；生成图随机、几乎必含环，实际只弹出少数点"
+    },
+    "CODE-P30": {
+      "expected": "O(n^2)",
+      "confidence": "HIGH",
+      "rationale": "ladder 的 n 是网格边长，BFS 最多访问 n×n 个格子，每格常数次扩展"
+    },
+    "CODE-P31": {
+      "expected": "O(n)",
+      "confidence": "MEDIUM",
+      "rationale": "并查集按大小合并加路径压缩近似线性（α(n)），m 条边与 q 次询问都随 n 增长"
+    },
+    "CODE-P32": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "倍增表 LOG=log n 层、每层填 n 个点，构造 O(n log n)；n 次询问各 O(log n)"
+    },
+    "CODE-P33": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "迭代 Tarjan 对每个点、每条边各处理常数次，m=2n 与 n 同阶"
+    },
+    "CODE-P34": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "BFS 染色对每个点、每条边各访问常数次，m=2n 与 n 同阶"
+    },
+    "CODE-P35": {
+      "expected": "O(n!)",
+      "confidence": "HIGH",
+      "rationale": "回溯生成 n! 个排列，每个叶子输出 n 个数字，主项是 n!"
+    },
+    "CODE-P36": {
+      "expected": "O(n!)",
+      "confidence": "HIGH",
+      "rationale": "按行放皇后的回溯树节点数按 n! 量级展开，剪枝只改变常数"
+    },
+    "CODE-P37": {
+      "expected": "NOT_MEASURABLE",
+      "confidence": "HIGH",
+      "rationale": "数独是固定 9×9 盘面（FIXED 输入族），任何档位都是同一份输入，无法测增长"
+    },
+    "CODE-P38": {
+      "expected": "O(n^3)",
+      "confidence": "HIGH",
+      "rationale": "每染一个点要扫 n 个候选点、每个再比较 n 个邻接关系，n 个点染色即 n^3"
+    },
+    "CODE-P39": {
+      "expected": "UNKNOWN",
+      "confidence": "MEDIUM",
+      "rationale": "回溯生成括号串的节点数是 Catalan 数，真实增长 4^n/n^1.5，目录里 O(2^n) 太小、O(n!) 太大"
+    },
+    "CODE-P40": {
+      "expected": "O(n^2)",
+      "confidence": "MEDIUM",
+      "rationale": "n×n 网格逐格尝试 dfs，单词沿第一行铺成直路，多数格子首字符就不匹配，总工作量 n^2"
+    },
+    "CODE-P41": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "KMP 建 next 表 O(m) 加主串单趟扫描 O(n)，两串长度都为 n"
+    },
+    "CODE-P42": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "Manacher 对插入分隔符后的 2n+1 个中心各做均摊常数次扩展"
+    },
+    "CODE-P43": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "字典树按单词总长度插入，q=n 次前缀查询沿树下行，总字符数随 n 线性"
+    },
+    "CODE-P44": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "滑动窗口左右指针各只前进 n 步"
+    },
+    "CODE-P45": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "前缀哈希预处理 O(n)，q=n 次区间比较每次常数次取模运算"
+    },
+    "CODE-P46": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "n 个定长（≤100 字符）串逐个缩短公共前缀，工作量是总字符数"
+    },
+    "CODE-P47": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "随机化三路快排的期望比较次数是 n log n，随机基准只影响常数"
+    },
+    "CODE-P48": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "三路划分快速选择每轮期望折半，总比较次数期望 O(n)"
+    },
+    "CODE-P49": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "q=n 次询问各做一次 log n 的二分查找"
+    },
+    "CODE-P50": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "单调队列每个下标最多入队出队一次"
+    },
+    "CODE-P51": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "单调栈每个元素最多入栈出栈一次"
+    },
+    "CODE-P52": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "每个数做常数次堆压入/弹出，n 个元素共 O(n log n)"
+    },
+    "CODE-P53": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "后缀表达式按 token 逐个入栈或弹栈，token 数随 n 线性"
+    },
+    "CODE-P54": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "线性建树 O(n) 后，q=n 次操作各做 log n 次树状数组跳转"
+    },
+    "CODE-P55": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "q 条操作均摊 O(1) 每条，push/pop 在两个栈之间转移的总次数不超过 q"
+    },
+    "CODE-P56": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "Counter 计数 O(n) 后对不同元素排序 O(n log n)，排序主导"
+    },
+    "CODE-P57": {
+      "expected": "UNKNOWN",
+      "confidence": "HIGH",
+      "rationale": "切片筛法统计素数，真实增长 n log log n，目录里最近上界是 O(n log n)"
+    },
+    "CODE-P58": {
+      "expected": "O(log n)",
+      "confidence": "HIGH",
+      "rationale": "欧几里得递归层数是 O(log min(a,b))，两个数都随 n 同阶增长"
+    },
+    "CODE-P59": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "T=n 组询问，阶乘表建到最大的 n_i（随 n 增长），建表 O(n) 主导"
+    },
+    "CODE-P60": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "从低位到高位逐位相加，循环次数是两数位数"
+    },
+    "CODE-P61": {
+      "expected": "O(log n)",
+      "confidence": "HIGH",
+      "rationale": "短除法每轮除以 2，循环次数就是 log2 n 位"
+    },
+    "CODE-P62": {
+      "expected": "UNKNOWN",
+      "confidence": "HIGH",
+      "rationale": "试除到 √n，真实增长 √n，目录里最近上界是 O(n)"
+    },
+    "CODE-P63": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "单趟异或消去成对出现的数"
+    },
+    "CODE-P64": {
+      "expected": "O(n)",
+      "confidence": "MEDIUM",
+      "rationale": "逐个数统计二进制 1 的个数，值域上界 2^60 固定，故为线性；bit 操作在 bin/count 里看不到"
+    },
+    "CODE-P65": {
+      "expected": "O(2^n)",
+      "confidence": "MEDIUM",
+      "rationale": "枚举 2^n 个格雷码，每个补零到 n 位，主项是 2^n"
+    },
+    "CODE-P66": {
+      "expected": "O(log n)",
+      "confidence": "HIGH",
+      "rationale": "不断右移直到 l 与 r 相等，循环次数是 r 的位数"
+    },
+    "CODE-P67": {
+      "expected": "O(n^2)",
+      "confidence": "HIGH",
+      "rationale": "n×n 矩阵逐层顺时针取数，每个元素恰好访问一次"
+    },
+    "CODE-P68": {
+      "expected": "O(n^2)",
+      "confidence": "HIGH",
+      "rationale": "n×n 方阵旋转输出，n^2 个元素各写一次"
+    },
+    "CODE-P69": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "前缀和加哈希表计数，单趟 n 个元素"
+    },
+    "CODE-P70": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "m=n 次差分更新加一趟前缀和，行数与 n 同阶"
+    }
+  },
+  "results": [
+    {
+      "code": "CODE-P01",
+      "title": "活动安排问题",
+      "family": "INT_ARRAY_ROWS",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "n 个活动读入后整体排序，比较次数由排序主导，按结束时刻的单趟扫描只占 O(n)",
+      "predicted": "O(n log n)",
+      "confidence": "MEDIUM",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "标准库调用部分是按理论代价折算的估计，因此置信度不超过中",
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销",
+        "同一档位重复执行的计数不一致（程序含随机或依赖数据的分支），类别按多次运行的中位形态报告"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 5372.0,
+          "baseline_work": 268.0,
+          "peak_bytes": 512
+        },
+        {
+          "n": 57,
+          "work": 10681.475,
+          "baseline_work": 468.0,
+          "peak_bytes": 912
+        },
+        {
+          "n": 101,
+          "work": 18258.479,
+          "baseline_work": 820.0,
+          "peak_bytes": 1616
+        },
+        {
+          "n": 179,
+          "work": 36026.603,
+          "baseline_work": 1444.0,
+          "peak_bytes": 2864
+        },
+        {
+          "n": 317,
+          "work": 67360.743,
+          "baseline_work": 2548.0,
+          "peak_bytes": 5072
+        },
+        {
+          "n": 563,
+          "work": 121381.126,
+          "baseline_work": 4516.0,
+          "peak_bytes": 9008
+        },
+        {
+          "n": 1000,
+          "work": 227750.784,
+          "baseline_work": 8012.0,
+          "peak_bytes": 16000
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": false,
+      "elapsed_seconds": 4.418,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P02",
+      "title": "找零钱",
+      "family": "SINGLE_INT",
+      "expected": "O(1)",
+      "expected_confidence": "HIGH",
+      "rationale": "7 种固定面额各做一次除法，循环次数与输入数值无关，算法是常数级",
+      "predicted": "O(1)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(1)",
+      "notes": [
+        "工作量在全部档位上相同",
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 64,
+          "work": 92.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 256,
+          "work": 92.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 1024,
+          "work": 92.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 4096,
+          "work": 92.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 16384,
+          "work": 92.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 65536,
+          "work": 92.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 262144,
+          "work": 92.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 1048576,
+          "work": 92.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        }
+      ],
+      "rungs_planned": 8,
+      "rungs_ok": 8,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.406,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P03",
+      "title": "分数背包",
+      "family": "INT_ARRAY_ROWS",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "n 件物品按单位价值排序，排序 O(n log n) 主导；容量被填满后装包循环提前停止",
+      "predicted": "O(n log n)",
+      "confidence": "MEDIUM",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "标准库调用部分是按理论代价折算的估计，因此置信度不超过中",
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销",
+        "同一档位重复执行的计数不一致（程序含随机或依赖数据的分支），类别按多次运行的中位形态报告"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 4945.0,
+          "baseline_work": 272.0,
+          "peak_bytes": 512
+        },
+        {
+          "n": 57,
+          "work": 7820.0,
+          "baseline_work": 472.0,
+          "peak_bytes": 912
+        },
+        {
+          "n": 101,
+          "work": 14615.0,
+          "baseline_work": 824.0,
+          "peak_bytes": 1616
+        },
+        {
+          "n": 179,
+          "work": 26392.0,
+          "baseline_work": 1448.0,
+          "peak_bytes": 2864
+        },
+        {
+          "n": 317,
+          "work": 50379.0,
+          "baseline_work": 2552.0,
+          "peak_bytes": 5072
+        },
+        {
+          "n": 563,
+          "work": 96384.0,
+          "baseline_work": 4520.0,
+          "peak_bytes": 9008
+        },
+        {
+          "n": 1000,
+          "work": 176953.0,
+          "baseline_work": 8016.0,
+          "peak_bytes": 16000
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": false,
+      "elapsed_seconds": 4.141,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P04",
+      "title": "合并果子",
+      "family": "INT_ARRAY",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "n-1 轮合并，每轮两次 heap 弹出加一次压入各 O(log n)，建堆的 O(n) 被它覆盖",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 24846.0,
+          "baseline_work": 140.0,
+          "peak_bytes": 384
+        },
+        {
+          "n": 64,
+          "work": 53264.0,
+          "baseline_work": 268.0,
+          "peak_bytes": 768
+        },
+        {
+          "n": 128,
+          "work": 115235.0,
+          "baseline_work": 524.0,
+          "peak_bytes": 1536
+        },
+        {
+          "n": 256,
+          "work": 247190.0,
+          "baseline_work": 1036.0,
+          "peak_bytes": 3072
+        },
+        {
+          "n": 512,
+          "work": 525382.0,
+          "baseline_work": 2060.0,
+          "peak_bytes": 6144
+        },
+        {
+          "n": 1024,
+          "work": 1113739.0,
+          "baseline_work": 4108.0,
+          "peak_bytes": 12288
+        },
+        {
+          "n": 2048,
+          "work": 2351342.0,
+          "baseline_work": 8204.0,
+          "peak_bytes": 24576
+        },
+        {
+          "n": 4096,
+          "work": 4963173.0,
+          "baseline_work": 16396.0,
+          "peak_bytes": 49152
+        }
+      ],
+      "rungs_planned": 9,
+      "rungs_ok": 8,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.078,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P05",
+      "title": "区间覆盖",
+      "family": "INT_ARRAY_ROWS_TWO_HEADER",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "n 个区间按左端点排序 O(n log n) 主导，之后单趟覆盖扫描是 O(n)",
+      "predicted": "O(n log n)",
+      "confidence": "MEDIUM",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "标准库调用部分是按理论代价折算的估计，因此置信度不超过中",
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销",
+        "同一档位重复执行的计数不一致（程序含随机或依赖数据的分支），类别按多次运行的中位形态报告"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 3596.0,
+          "baseline_work": 272.0,
+          "peak_bytes": 512
+        },
+        {
+          "n": 64,
+          "work": 8014.0,
+          "baseline_work": 528.0,
+          "peak_bytes": 1024
+        },
+        {
+          "n": 128,
+          "work": 17718.0,
+          "baseline_work": 1040.0,
+          "peak_bytes": 2048
+        },
+        {
+          "n": 256,
+          "work": 37500.0,
+          "baseline_work": 2064.0,
+          "peak_bytes": 4096
+        },
+        {
+          "n": 512,
+          "work": 78385.0,
+          "baseline_work": 4112.0,
+          "peak_bytes": 8192
+        },
+        {
+          "n": 1024,
+          "work": 172048.0,
+          "baseline_work": 8208.0,
+          "peak_bytes": 16384
+        },
+        {
+          "n": 2048,
+          "work": 357625.0,
+          "baseline_work": 16400.0,
+          "peak_bytes": 32768
+        },
+        {
+          "n": 4096,
+          "work": 727350.0,
+          "baseline_work": 32784.0,
+          "peak_bytes": 65536
+        },
+        {
+          "n": 8192,
+          "work": 1583403.0,
+          "baseline_work": 65552.0,
+          "peak_bytes": 131072
+        },
+        {
+          "n": 16384,
+          "work": 3341083.0,
+          "baseline_work": 131088.0,
+          "peak_bytes": 262144
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": false,
+      "elapsed_seconds": 5.442,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P06",
+      "title": "排队接水",
+      "family": "INT_ARRAY",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "按接水时间排序 O(n log n) 主导，前缀和累加是 O(n)",
+      "predicted": "O(n^2)",
+      "confidence": "MEDIUM",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^2)",
+      "notes": [
+        "标准库算法的内部工作不在轨迹里，按输入规模折算出的增长为 O(n^2)，高于其余可观测工作给出的 O(n log n)；时间类别取两者较高的一档",
+        "标准库调用部分是按理论代价折算的估计，因此置信度不超过中",
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销",
+        "同一档位重复执行的计数不一致（程序含随机或依赖数据的分支），类别按多次运行的中位形态报告"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 5486.0,
+          "baseline_work": 140.0,
+          "peak_bytes": 256
+        },
+        {
+          "n": 57,
+          "work": 10740.0,
+          "baseline_work": 240.0,
+          "peak_bytes": 456
+        },
+        {
+          "n": 101,
+          "work": 18841.0,
+          "baseline_work": 416.0,
+          "peak_bytes": 808
+        },
+        {
+          "n": 179,
+          "work": 33831.0,
+          "baseline_work": 728.0,
+          "peak_bytes": 1432
+        },
+        {
+          "n": 317,
+          "work": 62512.0,
+          "baseline_work": 1280.0,
+          "peak_bytes": 2536
+        },
+        {
+          "n": 563,
+          "work": 117574.0,
+          "baseline_work": 2264.0,
+          "peak_bytes": 4504
+        },
+        {
+          "n": 1000,
+          "work": 218896.0,
+          "baseline_work": 4012.0,
+          "peak_bytes": 8000
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": false,
+      "elapsed_seconds": 4.141,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P07",
+      "title": "加油站",
+      "family": "TWO_INT_ARRAYS",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "gas 与 cost 两个数组各扫一遍，一次遍历累加油耗差",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 2286.0,
+          "baseline_work": 268.0,
+          "peak_bytes": 256
+        },
+        {
+          "n": 64,
+          "work": 4014.0,
+          "baseline_work": 524.0,
+          "peak_bytes": 512
+        },
+        {
+          "n": 128,
+          "work": 7471.0,
+          "baseline_work": 1036.0,
+          "peak_bytes": 1024
+        },
+        {
+          "n": 256,
+          "work": 14383.0,
+          "baseline_work": 2060.0,
+          "peak_bytes": 2048
+        },
+        {
+          "n": 512,
+          "work": 28206.0,
+          "baseline_work": 4108.0,
+          "peak_bytes": 4096
+        },
+        {
+          "n": 1024,
+          "work": 55854.0,
+          "baseline_work": 8204.0,
+          "peak_bytes": 8192
+        },
+        {
+          "n": 2048,
+          "work": 111151.0,
+          "baseline_work": 16396.0,
+          "peak_bytes": 16384
+        },
+        {
+          "n": 4096,
+          "work": 221742.0,
+          "baseline_work": 32780.0,
+          "peak_bytes": 32768
+        },
+        {
+          "n": 8192,
+          "work": 442927.0,
+          "baseline_work": 65548.0,
+          "peak_bytes": 65536
+        },
+        {
+          "n": 16384,
+          "work": 885294.0,
+          "baseline_work": 131084.0,
+          "peak_bytes": 131072
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.999,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P08",
+      "title": "跳跃游戏",
+      "family": "INT_ARRAY",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "按层贪心只把数组扫一遍，最远可达位置单调前推",
+      "predicted": "O(n^2)",
+      "confidence": "MEDIUM",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^2)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 1162.0,
+          "baseline_work": 140.0,
+          "peak_bytes": 128
+        },
+        {
+          "n": 64,
+          "work": 1908.0,
+          "baseline_work": 268.0,
+          "peak_bytes": 256
+        },
+        {
+          "n": 128,
+          "work": 3838.0,
+          "baseline_work": 524.0,
+          "peak_bytes": 512
+        },
+        {
+          "n": 256,
+          "work": 6334.0,
+          "baseline_work": 1036.0,
+          "peak_bytes": 1024
+        },
+        {
+          "n": 512,
+          "work": 12066.0,
+          "baseline_work": 2060.0,
+          "peak_bytes": 2048
+        },
+        {
+          "n": 1024,
+          "work": 28002.0,
+          "baseline_work": 4108.0,
+          "peak_bytes": 4096
+        },
+        {
+          "n": 2048,
+          "work": 55924.0,
+          "baseline_work": 8204.0,
+          "peak_bytes": 8192
+        },
+        {
+          "n": 4096,
+          "work": 103116.0,
+          "baseline_work": 16396.0,
+          "peak_bytes": 16384
+        },
+        {
+          "n": 8192,
+          "work": 186898.0,
+          "baseline_work": 32780.0,
+          "peak_bytes": 32768
+        },
+        {
+          "n": 16384,
+          "work": 434328.0,
+          "baseline_work": 65548.0,
+          "peak_bytes": 65536
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.625,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P09",
+      "title": "引爆气球",
+      "family": "INT_ARRAY_ROWS",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "n 个气球按右端点排序 O(n log n) 主导，射箭扫描 O(n)",
+      "predicted": "O(n log n)",
+      "confidence": "MEDIUM",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "标准库调用部分是按理论代价折算的估计，因此置信度不超过中",
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销",
+        "同一档位重复执行的计数不一致（程序含随机或依赖数据的分支），类别按多次运行的中位形态报告"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 4369.0,
+          "baseline_work": 268.0,
+          "peak_bytes": 256
+        },
+        {
+          "n": 64,
+          "work": 9051.0,
+          "baseline_work": 524.0,
+          "peak_bytes": 512
+        },
+        {
+          "n": 128,
+          "work": 20237.0,
+          "baseline_work": 1036.0,
+          "peak_bytes": 1024
+        },
+        {
+          "n": 256,
+          "work": 42673.0,
+          "baseline_work": 2060.0,
+          "peak_bytes": 2048
+        },
+        {
+          "n": 512,
+          "work": 94694.0,
+          "baseline_work": 4108.0,
+          "peak_bytes": 4096
+        },
+        {
+          "n": 1024,
+          "work": 202580.0,
+          "baseline_work": 8204.0,
+          "peak_bytes": 8192
+        },
+        {
+          "n": 2048,
+          "work": 432833.0,
+          "baseline_work": 16396.0,
+          "peak_bytes": 16384
+        },
+        {
+          "n": 4096,
+          "work": 898382.0,
+          "baseline_work": 32780.0,
+          "peak_bytes": 32768
+        },
+        {
+          "n": 8192,
+          "work": 1922516.0,
+          "baseline_work": 65548.0,
+          "peak_bytes": 65536
+        },
+        {
+          "n": 16384,
+          "work": 4066397.0,
+          "baseline_work": 131084.0,
+          "peak_bytes": 131072
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": false,
+      "elapsed_seconds": 5.45,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P10",
+      "title": "逆序对",
+      "family": "INT_ARRAY",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "归并排序递归树每层合并 O(n)、共 log n 层，合并时顺带累加逆序对",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 4742.0,
+          "baseline_work": 140.0,
+          "peak_bytes": 512
+        },
+        {
+          "n": 64,
+          "work": 10065.0,
+          "baseline_work": 268.0,
+          "peak_bytes": 1024
+        },
+        {
+          "n": 128,
+          "work": 21631.0,
+          "baseline_work": 524.0,
+          "peak_bytes": 2048
+        },
+        {
+          "n": 256,
+          "work": 47254.0,
+          "baseline_work": 1036.0,
+          "peak_bytes": 4096
+        },
+        {
+          "n": 512,
+          "work": 102453.0,
+          "baseline_work": 2060.0,
+          "peak_bytes": 8192
+        },
+        {
+          "n": 1024,
+          "work": 221821.0,
+          "baseline_work": 4108.0,
+          "peak_bytes": 16384
+        },
+        {
+          "n": 2048,
+          "work": 477881.0,
+          "baseline_work": 8204.0,
+          "peak_bytes": 32768
+        },
+        {
+          "n": 4096,
+          "work": 1025027.0,
+          "baseline_work": 16396.0,
+          "peak_bytes": 65536
+        },
+        {
+          "n": 8192,
+          "work": 2188356.0,
+          "baseline_work": 32780.0,
+          "peak_bytes": 131072
+        },
+        {
+          "n": 16384,
+          "work": 4655153.0,
+          "baseline_work": 65548.0,
+          "peak_bytes": 262144
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.737,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P11",
+      "title": "快速幂",
+      "family": "THREE_INTS",
+      "expected": "O(log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "指数 b 是输入的第二个数、随 n 增长，逐位平方与相乘共 log2 b 次",
+      "predicted": "O(log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(log n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 64,
+          "work": 95.0,
+          "baseline_work": 20.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 256,
+          "work": 103.0,
+          "baseline_work": 20.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 1024,
+          "work": 111.0,
+          "baseline_work": 20.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 4096,
+          "work": 119.0,
+          "baseline_work": 20.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 16384,
+          "work": 127.0,
+          "baseline_work": 20.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 65536,
+          "work": 135.0,
+          "baseline_work": 20.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 262144,
+          "work": 143.0,
+          "baseline_work": 20.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 1048576,
+          "work": 151.0,
+          "baseline_work": 20.0,
+          "peak_bytes": 0
+        }
+      ],
+      "rungs_planned": 8,
+      "rungs_ok": 8,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.198,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P12",
+      "title": "切绳子",
+      "family": "INT_ARRAY_WITH_K",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "在 [0,max(L)] 上二分 log(max L)=log n 轮，每轮扫描 n 根绳子计数",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 2119.0,
+          "baseline_work": 144.0,
+          "peak_bytes": 128
+        },
+        {
+          "n": 64,
+          "work": 4391.0,
+          "baseline_work": 272.0,
+          "peak_bytes": 256
+        },
+        {
+          "n": 128,
+          "work": 9175.0,
+          "baseline_work": 528.0,
+          "peak_bytes": 512
+        },
+        {
+          "n": 256,
+          "work": 19450.0,
+          "baseline_work": 1040.0,
+          "peak_bytes": 1024
+        },
+        {
+          "n": 512,
+          "work": 36666.0,
+          "baseline_work": 2064.0,
+          "peak_bytes": 2048
+        },
+        {
+          "n": 1024,
+          "work": 89402.0,
+          "baseline_work": 4112.0,
+          "peak_bytes": 4096
+        },
+        {
+          "n": 2048,
+          "work": 190672.0,
+          "baseline_work": 8208.0,
+          "peak_bytes": 8192
+        },
+        {
+          "n": 4096,
+          "work": 366219.0,
+          "baseline_work": 16400.0,
+          "peak_bytes": 16384
+        },
+        {
+          "n": 8192,
+          "work": 860500.0,
+          "baseline_work": 32784.0,
+          "peak_bytes": 32768
+        },
+        {
+          "n": 16384,
+          "work": 1818794.0,
+          "baseline_work": 65552.0,
+          "peak_bytes": 65536
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.453,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P13",
+      "title": "最近点对",
+      "family": "INT_ARRAY_ROWS",
+      "expected": "O(n log n)",
+      "expected_confidence": "MEDIUM",
+      "rationale": "分治最近点对每层归并 O(n)、共 log n 层，主项是 n log n；生成点只有 O(n) 种坐标，重合会让部分层提前返回",
+      "predicted": "O(n log n)",
+      "confidence": "MEDIUM",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "标准库调用部分是按理论代价折算的估计，因此置信度不超过中",
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销",
+        "同一档位重复执行的计数不一致（程序含随机或依赖数据的分支），类别按多次运行的中位形态报告"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 11903.0,
+          "baseline_work": 268.0,
+          "peak_bytes": 768
+        },
+        {
+          "n": 64,
+          "work": 23030.0,
+          "baseline_work": 524.0,
+          "peak_bytes": 1536
+        },
+        {
+          "n": 128,
+          "work": 51641.0,
+          "baseline_work": 1036.0,
+          "peak_bytes": 3072
+        },
+        {
+          "n": 256,
+          "work": 111216.0,
+          "baseline_work": 2060.0,
+          "peak_bytes": 6144
+        },
+        {
+          "n": 512,
+          "work": 247552.0,
+          "baseline_work": 4108.0,
+          "peak_bytes": 12288
+        },
+        {
+          "n": 1024,
+          "work": 535982.0,
+          "baseline_work": 8204.0,
+          "peak_bytes": 24576
+        },
+        {
+          "n": 2048,
+          "work": 1218750.0,
+          "baseline_work": 16396.0,
+          "peak_bytes": 49152
+        },
+        {
+          "n": 4096,
+          "work": 2507327.0,
+          "baseline_work": 32780.0,
+          "peak_bytes": 98304
+        },
+        {
+          "n": 8192,
+          "work": 5388940.0,
+          "baseline_work": 65548.0,
+          "peak_bytes": 196608
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 9,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": false,
+      "elapsed_seconds": 5.659,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P14",
+      "title": "汉诺塔",
+      "family": "SINGLE_INT",
+      "expected": "O(2^n)",
+      "expected_confidence": "HIGH",
+      "rationale": "汉诺塔递归恰好展开 2^n-1 次移动，每次附加一条输出",
+      "predicted": "O(2^n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(2^n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 3503.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 5,
+          "work": 7167.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 6,
+          "work": 14495.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 7,
+          "work": 29151.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 8,
+          "work": 58463.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 9,
+          "work": 117087.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 10,
+          "work": 234335.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.24,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P15",
+      "title": "大整数乘法",
+      "family": "BIG_TWO_STRINGS",
+      "expected": "UNKNOWN",
+      "expected_confidence": "MEDIUM",
+      "rationale": "乘法由 Python 内建 int 完成（大数走 Karatsuba，约 n^1.585），真实增长在解释器内部，目录里最近上界是 O(n^2)",
+      "predicted": "O(n log n)",
+      "confidence": "LOW",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "O(n log n) 与 O(n^2) 的拟合优度相差很小（AIC 差 1.1），档位数不足以区分两者",
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 3626.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 40
+        },
+        {
+          "n": 37,
+          "work": 14222.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 496
+        },
+        {
+          "n": 69,
+          "work": 24592.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 912
+        },
+        {
+          "n": 102,
+          "work": 36080.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 1424
+        },
+        {
+          "n": 135,
+          "work": 66752.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 2220
+        },
+        {
+          "n": 167,
+          "work": 81924.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 2652
+        },
+        {
+          "n": 200,
+          "work": 98562.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 3468
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 5.23,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P16",
+      "title": "01背包",
+      "family": "KNAPSACK",
+      "expected": "O(n)",
+      "expected_confidence": "MEDIUM",
+      "rationale": "dp 是 n×W，但 spec 把容量钉在 1000，这套输入族上只有 n 在增长，工作量对 n 线性",
+      "predicted": "O(n)",
+      "confidence": "MEDIUM",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 275331.0,
+          "baseline_work": 272.0,
+          "peak_bytes": 4004
+        },
+        {
+          "n": 57,
+          "work": 388246.0,
+          "baseline_work": 472.0,
+          "peak_bytes": 4004
+        },
+        {
+          "n": 101,
+          "work": 803382.0,
+          "baseline_work": 824.0,
+          "peak_bytes": 4004
+        },
+        {
+          "n": 179,
+          "work": 1379904.0,
+          "baseline_work": 1448.0,
+          "peak_bytes": 4004
+        },
+        {
+          "n": 317,
+          "work": 2296476.0,
+          "baseline_work": 2552.0,
+          "peak_bytes": 4004
+        },
+        {
+          "n": 563,
+          "work": 4202730.0,
+          "baseline_work": 4520.0,
+          "peak_bytes": 4004
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 6,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.411,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P17",
+      "title": "最长公共子序列",
+      "family": "TWO_STRINGS",
+      "expected": "O(n^2)",
+      "expected_confidence": "HIGH",
+      "rationale": "两个长度 n 的串做滚动数组 LCS，双重循环 n×n 主导",
+      "predicted": "O(n^2)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^2)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 45880.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 228
+        },
+        {
+          "n": 57,
+          "work": 137385.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 424
+        },
+        {
+          "n": 101,
+          "work": 419535.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 792
+        },
+        {
+          "n": 179,
+          "work": 1296355.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 1104
+        },
+        {
+          "n": 317,
+          "work": 4027175.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 2040
+        },
+        {
+          "n": 563,
+          "work": 12641385.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 3792
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 6,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.229,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P18",
+      "title": "最长上升子序列",
+      "family": "INT_ARRAY",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "每个元素一次 bisect_left，n 次 O(log n) 的二分查找主导",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 5513.0,
+          "baseline_work": 140.0,
+          "peak_bytes": 256
+        },
+        {
+          "n": 64,
+          "work": 11743.0,
+          "baseline_work": 268.0,
+          "peak_bytes": 512
+        },
+        {
+          "n": 128,
+          "work": 23261.0,
+          "baseline_work": 524.0,
+          "peak_bytes": 1024
+        },
+        {
+          "n": 256,
+          "work": 53439.0,
+          "baseline_work": 1036.0,
+          "peak_bytes": 2048
+        },
+        {
+          "n": 512,
+          "work": 110902.0,
+          "baseline_work": 2060.0,
+          "peak_bytes": 4096
+        },
+        {
+          "n": 1024,
+          "work": 237557.0,
+          "baseline_work": 4108.0,
+          "peak_bytes": 8192
+        },
+        {
+          "n": 2048,
+          "work": 514282.0,
+          "baseline_work": 8204.0,
+          "peak_bytes": 16384
+        },
+        {
+          "n": 4096,
+          "work": 1106222.0,
+          "baseline_work": 16396.0,
+          "peak_bytes": 32768
+        },
+        {
+          "n": 8192,
+          "work": 2321999.0,
+          "baseline_work": 32780.0,
+          "peak_bytes": 65536
+        },
+        {
+          "n": 16384,
+          "work": 4948157.0,
+          "baseline_work": 65548.0,
+          "peak_bytes": 131072
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.807,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P19",
+      "title": "编辑距离",
+      "family": "TWO_STRINGS",
+      "expected": "O(n^2)",
+      "expected_confidence": "HIGH",
+      "rationale": "编辑距离的双重循环 n×n 次状态转移主导",
+      "predicted": "O(n^2)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^2)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 85030.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 228
+        },
+        {
+          "n": 57,
+          "work": 261291.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 424
+        },
+        {
+          "n": 101,
+          "work": 807169.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 792
+        },
+        {
+          "n": 179,
+          "work": 2512285.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 1104
+        },
+        {
+          "n": 317,
+          "work": 7839385.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 2040
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 5,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.275,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P20",
+      "title": "数字三角形",
+      "family": "TRIANGLE_ROWS",
+      "expected": "O(n^2)",
+      "expected_confidence": "HIGH",
+      "rationale": "数字三角形共 1+2+…+n 个格子，自底向上逐格合并，工作量 n^2/2",
+      "predicted": "O(n^2)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^2)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 36295.0,
+          "baseline_work": 2124.0,
+          "peak_bytes": 5416
+        },
+        {
+          "n": 57,
+          "work": 93795.0,
+          "baseline_work": 6624.0,
+          "peak_bytes": 15316
+        },
+        {
+          "n": 101,
+          "work": 258751.0,
+          "baseline_work": 20616.0,
+          "peak_bytes": 44884
+        },
+        {
+          "n": 179,
+          "work": 751009.0,
+          "baseline_work": 64452.0,
+          "peak_bytes": 135364
+        },
+        {
+          "n": 317,
+          "work": 2247895.0,
+          "baseline_work": 201624.0,
+          "peak_bytes": 414676
+        },
+        {
+          "n": 563,
+          "work": 6900001.0,
+          "baseline_work": 635076.0,
+          "peak_bytes": 1290436
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 6,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 5.267,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P21",
+      "title": "零钱兑换",
+      "family": "INT_ARRAY_WITH_K",
+      "expected": "O(n^2)",
+      "expected_confidence": "MEDIUM",
+      "rationale": "完全背包的 dp 规模是硬币数×金额，头部第二个数 k=amount 随 n 增长，故为 n^2",
+      "predicted": "O(n^2)",
+      "confidence": "MEDIUM",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^2)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 449.0,
+          "baseline_work": 32.0,
+          "peak_bytes": 12
+        },
+        {
+          "n": 20,
+          "work": 1085.0,
+          "baseline_work": 96.0,
+          "peak_bytes": 44
+        },
+        {
+          "n": 36,
+          "work": 2953.0,
+          "baseline_work": 160.0,
+          "peak_bytes": 76
+        },
+        {
+          "n": 52,
+          "work": 5787.0,
+          "baseline_work": 224.0,
+          "peak_bytes": 108
+        },
+        {
+          "n": 68,
+          "work": 8915.0,
+          "baseline_work": 288.0,
+          "peak_bytes": 140
+        },
+        {
+          "n": 84,
+          "work": 13149.0,
+          "baseline_work": 352.0,
+          "peak_bytes": 172
+        },
+        {
+          "n": 100,
+          "work": 19021.0,
+          "baseline_work": 416.0,
+          "peak_bytes": 204
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 3.898,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P22",
+      "title": "矩阵连乘",
+      "family": "INT_ARRAY",
+      "expected": "O(n^3)",
+      "expected_confidence": "HIGH",
+      "rationale": "矩阵连乘区间 DP：长度、起点、分割点三重循环，共 n^3/6 次转移",
+      "predicted": "O(n^3)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^3)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 3483.0,
+          "baseline_work": 32.0,
+          "peak_bytes": 400
+        },
+        {
+          "n": 20,
+          "work": 50531.0,
+          "baseline_work": 96.0,
+          "peak_bytes": 4368
+        },
+        {
+          "n": 36,
+          "work": 238719.0,
+          "baseline_work": 160.0,
+          "peak_bytes": 12432
+        },
+        {
+          "n": 52,
+          "work": 674491.0,
+          "baseline_work": 224.0,
+          "peak_bytes": 24592
+        },
+        {
+          "n": 68,
+          "work": 1470147.0,
+          "baseline_work": 288.0,
+          "peak_bytes": 40848
+        },
+        {
+          "n": 84,
+          "work": 2717667.0,
+          "baseline_work": 352.0,
+          "peak_bytes": 61200
+        },
+        {
+          "n": 100,
+          "work": 4537019.0,
+          "baseline_work": 416.0,
+          "peak_bytes": 85648
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.351,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P23",
+      "title": "石子合并",
+      "family": "INT_ARRAY",
+      "expected": "O(n^3)",
+      "expected_confidence": "HIGH",
+      "rationale": "石子合并区间 DP 同样是长度、起点、分割点三重循环",
+      "predicted": "O(n^3)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^3)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 3503.0,
+          "baseline_work": 28.0,
+          "peak_bytes": 400
+        },
+        {
+          "n": 20,
+          "work": 48095.0,
+          "baseline_work": 92.0,
+          "peak_bytes": 4368
+        },
+        {
+          "n": 36,
+          "work": 223247.0,
+          "baseline_work": 156.0,
+          "peak_bytes": 12432
+        },
+        {
+          "n": 52,
+          "work": 627263.0,
+          "baseline_work": 220.0,
+          "peak_bytes": 24592
+        },
+        {
+          "n": 68,
+          "work": 1358447.0,
+          "baseline_work": 284.0,
+          "peak_bytes": 40848
+        },
+        {
+          "n": 84,
+          "work": 2515103.0,
+          "baseline_work": 348.0,
+          "peak_bytes": 61200
+        },
+        {
+          "n": 100,
+          "work": 4195535.0,
+          "baseline_work": 412.0,
+          "peak_bytes": 85648
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.243,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P24",
+      "title": "最长公共子串",
+      "family": "TWO_STRINGS",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "后缀自动机构建与匹配都是均摊线性，沿后缀链接回退的总次数不超过 2n",
+      "predicted": "O(n^2)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^2)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 45254.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 360
+        },
+        {
+          "n": 64,
+          "work": 143040.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 712
+        },
+        {
+          "n": 128,
+          "work": 501698.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 1416
+        },
+        {
+          "n": 256,
+          "work": 1868760.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 2824
+        },
+        {
+          "n": 512,
+          "work": 7204634.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 5640
+        }
+      ],
+      "rungs_planned": 6,
+      "rungs_ok": 5,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.594,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P25",
+      "title": "打家劫舍",
+      "family": "INT_ARRAY",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "只保留前两户最优值的单趟 DP，每户常数次转移",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 1434.0,
+          "baseline_work": 140.0,
+          "peak_bytes": 256
+        },
+        {
+          "n": 64,
+          "work": 2554.0,
+          "baseline_work": 268.0,
+          "peak_bytes": 512
+        },
+        {
+          "n": 128,
+          "work": 4794.0,
+          "baseline_work": 524.0,
+          "peak_bytes": 1024
+        },
+        {
+          "n": 256,
+          "work": 9274.0,
+          "baseline_work": 1036.0,
+          "peak_bytes": 2048
+        },
+        {
+          "n": 512,
+          "work": 18234.0,
+          "baseline_work": 2060.0,
+          "peak_bytes": 4096
+        },
+        {
+          "n": 1024,
+          "work": 36154.0,
+          "baseline_work": 4108.0,
+          "peak_bytes": 8192
+        },
+        {
+          "n": 2048,
+          "work": 71994.0,
+          "baseline_work": 8204.0,
+          "peak_bytes": 16384
+        },
+        {
+          "n": 4096,
+          "work": 143674.0,
+          "baseline_work": 16396.0,
+          "peak_bytes": 32768
+        },
+        {
+          "n": 8192,
+          "work": 287034.0,
+          "baseline_work": 32780.0,
+          "peak_bytes": 65536
+        },
+        {
+          "n": 16384,
+          "work": 573754.0,
+          "baseline_work": 65548.0,
+          "peak_bytes": 131072
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.75,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P26",
+      "title": "单源最短路",
+      "family": "GRAPH_EDGES",
+      "expected": "O(n log n)",
+      "expected_confidence": "MEDIUM",
+      "rationale": "堆优化 Dijkstra：n 个点、2n 条边，每次堆操作 log n 主导；随机图多数点不可达，实际堆操作数会低于上界",
+      "predicted": "O(n^2 log n)",
+      "confidence": "LOW",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^2 log n)",
+      "notes": [
+        "O(n^2 log n) 与 O(n^2) 的拟合优度相差很小（AIC 差 0.3），档位数不足以区分两者",
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 28682.0,
+          "baseline_work": 784.0,
+          "peak_bytes": 2368
+        },
+        {
+          "n": 64,
+          "work": 55346.0,
+          "baseline_work": 1552.0,
+          "peak_bytes": 4864
+        },
+        {
+          "n": 128,
+          "work": 137370.0,
+          "baseline_work": 3088.0,
+          "peak_bytes": 10416
+        },
+        {
+          "n": 256,
+          "work": 274923.0,
+          "baseline_work": 6160.0,
+          "peak_bytes": 19280
+        },
+        {
+          "n": 512,
+          "work": 546015.0,
+          "baseline_work": 12304.0,
+          "peak_bytes": 38800
+        },
+        {
+          "n": 1024,
+          "work": 1119551.0,
+          "baseline_work": 24592.0,
+          "peak_bytes": 76816
+        },
+        {
+          "n": 2048,
+          "work": 1221750.0,
+          "baseline_work": 49168.0,
+          "peak_bytes": 141456
+        },
+        {
+          "n": 4096,
+          "work": 4855122.0,
+          "baseline_work": 98320.0,
+          "peak_bytes": 306736
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 8,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.916,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P27",
+      "title": "负权环判定",
+      "family": "GRAPH_EDGES",
+      "expected": "O(n^2)",
+      "expected_confidence": "MEDIUM",
+      "rationale": "Bellman-Ford 最坏 n-1 轮、每轮扫 Θ(n) 条边即 n^2；但生成边权全为正，首轮无松弛就 break",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 5084.0,
+          "baseline_work": 784.0,
+          "peak_bytes": 1288
+        },
+        {
+          "n": 64,
+          "work": 9532.0,
+          "baseline_work": 1552.0,
+          "peak_bytes": 2568
+        },
+        {
+          "n": 128,
+          "work": 18428.0,
+          "baseline_work": 3088.0,
+          "peak_bytes": 5128
+        },
+        {
+          "n": 256,
+          "work": 36220.0,
+          "baseline_work": 6160.0,
+          "peak_bytes": 10248
+        },
+        {
+          "n": 512,
+          "work": 71804.0,
+          "baseline_work": 12304.0,
+          "peak_bytes": 20488
+        },
+        {
+          "n": 1024,
+          "work": 142972.0,
+          "baseline_work": 24592.0,
+          "peak_bytes": 40968
+        }
+      ],
+      "rungs_planned": 6,
+      "rungs_ok": 6,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 5.869,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P28",
+      "title": "最小生成树",
+      "family": "GRAPH_EDGES",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "Kruskal 先对 2n 条边排序 O(n log n)，并查集部分近似线性",
+      "predicted": "O(n log n)",
+      "confidence": "MEDIUM",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "标准库算法的内部工作不在轨迹里，按输入规模折算出的增长为 O(n log n)，高于其余可观测工作给出的 O(n)；时间类别取两者较高的一档",
+        "标准库调用部分是按理论代价折算的估计，因此置信度不超过中",
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销",
+        "同一档位重复执行的计数不一致（程序含随机或依赖数据的分支），类别按多次运行的中位形态报告"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 12897.0,
+          "baseline_work": 784.0,
+          "peak_bytes": 1288
+        },
+        {
+          "n": 64,
+          "work": 26889.0,
+          "baseline_work": 1552.0,
+          "peak_bytes": 2568
+        },
+        {
+          "n": 128,
+          "work": 54018.0,
+          "baseline_work": 3088.0,
+          "peak_bytes": 5128
+        },
+        {
+          "n": 256,
+          "work": 113276.0,
+          "baseline_work": 6160.0,
+          "peak_bytes": 10248
+        },
+        {
+          "n": 512,
+          "work": 230228.0,
+          "baseline_work": 12304.0,
+          "peak_bytes": 20488
+        },
+        {
+          "n": 1024,
+          "work": 481248.0,
+          "baseline_work": 24592.0,
+          "peak_bytes": 40968
+        },
+        {
+          "n": 2048,
+          "work": 974385.0,
+          "baseline_work": 49168.0,
+          "peak_bytes": 81928
+        },
+        {
+          "n": 4096,
+          "work": 1925765.0,
+          "baseline_work": 98320.0,
+          "peak_bytes": 163848
+        },
+        {
+          "n": 8192,
+          "work": 3605684.0,
+          "baseline_work": 196624.0,
+          "peak_bytes": 327688
+        },
+        {
+          "n": 16384,
+          "work": 7123875.0,
+          "baseline_work": 393232.0,
+          "peak_bytes": 655368
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": false,
+      "elapsed_seconds": 5.994,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P29",
+      "title": "拓扑排序",
+      "family": "GRAPH_EDGES",
+      "expected": "O(n log n)",
+      "expected_confidence": "MEDIUM",
+      "rationale": "Kahn 每步一次堆弹出/压入，n 个点共 O(n log n)；生成图随机、几乎必含环，实际只弹出少数点",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 37677.0,
+          "baseline_work": 528.0,
+          "peak_bytes": 1476
+        },
+        {
+          "n": 64,
+          "work": 75156.0,
+          "baseline_work": 1040.0,
+          "peak_bytes": 2880
+        },
+        {
+          "n": 128,
+          "work": 153306.0,
+          "baseline_work": 2064.0,
+          "peak_bytes": 5800
+        },
+        {
+          "n": 256,
+          "work": 312276.0,
+          "baseline_work": 4112.0,
+          "peak_bytes": 11460
+        },
+        {
+          "n": 512,
+          "work": 637197.0,
+          "baseline_work": 8208.0,
+          "peak_bytes": 23440
+        },
+        {
+          "n": 1024,
+          "work": 1303534.0,
+          "baseline_work": 16400.0,
+          "peak_bytes": 46612
+        },
+        {
+          "n": 2048,
+          "work": 2668694.0,
+          "baseline_work": 32784.0,
+          "peak_bytes": 93428
+        },
+        {
+          "n": 4096,
+          "work": 5450368.0,
+          "baseline_work": 65552.0,
+          "peak_bytes": 182556
+        }
+      ],
+      "rungs_planned": 9,
+      "rungs_ok": 8,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.588,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P30",
+      "title": "迷宫最短路",
+      "family": "GRID",
+      "expected": "O(n^2)",
+      "expected_confidence": "HIGH",
+      "rationale": "ladder 的 n 是网格边长，BFS 最多访问 n×n 个格子，每格常数次扩展",
+      "predicted": "O(n^2)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^2)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 246684.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 15384
+        },
+        {
+          "n": 46,
+          "work": 487622.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 21096
+        },
+        {
+          "n": 67,
+          "work": 1020211.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 35820
+        },
+        {
+          "n": 98,
+          "work": 2151418.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 70152
+        },
+        {
+          "n": 142,
+          "work": 4486221.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 122952
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 5,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.08,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P31",
+      "title": "朋友圈",
+      "family": "GRAPH_EDGE_QUERIES",
+      "expected": "O(n)",
+      "expected_confidence": "MEDIUM",
+      "rationale": "并查集按大小合并加路径压缩近似线性（α(n)），m 条边与 q 次询问都随 n 增长",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 8032.0,
+          "baseline_work": 532.0,
+          "peak_bytes": 264
+        },
+        {
+          "n": 64,
+          "work": 15612.0,
+          "baseline_work": 1044.0,
+          "peak_bytes": 520
+        },
+        {
+          "n": 128,
+          "work": 30685.0,
+          "baseline_work": 2068.0,
+          "peak_bytes": 1032
+        },
+        {
+          "n": 256,
+          "work": 61329.0,
+          "baseline_work": 4116.0,
+          "peak_bytes": 2056
+        },
+        {
+          "n": 512,
+          "work": 121472.0,
+          "baseline_work": 8212.0,
+          "peak_bytes": 4104
+        },
+        {
+          "n": 1024,
+          "work": 241868.0,
+          "baseline_work": 16404.0,
+          "peak_bytes": 8200
+        },
+        {
+          "n": 2048,
+          "work": 485732.0,
+          "baseline_work": 32788.0,
+          "peak_bytes": 16392
+        },
+        {
+          "n": 4096,
+          "work": 969134.0,
+          "baseline_work": 65556.0,
+          "peak_bytes": 32776
+        },
+        {
+          "n": 8192,
+          "work": 1941909.0,
+          "baseline_work": 131092.0,
+          "peak_bytes": 65544
+        },
+        {
+          "n": 16384,
+          "work": 3879562.0,
+          "baseline_work": 262164.0,
+          "peak_bytes": 131080
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 5.287,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P32",
+      "title": "最近公共祖先",
+      "family": "GRAPH_TREE_QUERIES",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "倍增表 LOG=log n 层、每层填 n 个点，构造 O(n log n)；n 次询问各 O(log n)",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 37909.0,
+          "baseline_work": 524.0,
+          "peak_bytes": 2204
+        },
+        {
+          "n": 64,
+          "work": 74925.0,
+          "baseline_work": 1036.0,
+          "peak_bytes": 4428
+        },
+        {
+          "n": 128,
+          "work": 151960.0,
+          "baseline_work": 2060.0,
+          "peak_bytes": 9152
+        },
+        {
+          "n": 256,
+          "work": 311003.0,
+          "baseline_work": 4108.0,
+          "peak_bytes": 19112
+        },
+        {
+          "n": 512,
+          "work": 633836.0,
+          "baseline_work": 8204.0,
+          "peak_bytes": 39876
+        },
+        {
+          "n": 1024,
+          "work": 1304016.0,
+          "baseline_work": 16396.0,
+          "peak_bytes": 83552
+        },
+        {
+          "n": 2048,
+          "work": 2672871.0,
+          "baseline_work": 32780.0,
+          "peak_bytes": 174644
+        },
+        {
+          "n": 4096,
+          "work": 5485118.0,
+          "baseline_work": 65548.0,
+          "peak_bytes": 365492
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 8,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.843,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P33",
+      "title": "强连通分量",
+      "family": "GRAPH_EDGES",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "迭代 Tarjan 对每个点、每条边各处理常数次，m=2n 与 n 同阶",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 25336.0,
+          "baseline_work": 528.0,
+          "peak_bytes": 1577
+        },
+        {
+          "n": 64,
+          "work": 49134.0,
+          "baseline_work": 1040.0,
+          "peak_bytes": 3117
+        },
+        {
+          "n": 128,
+          "work": 97656.0,
+          "baseline_work": 2064.0,
+          "peak_bytes": 6205
+        },
+        {
+          "n": 256,
+          "work": 192311.0,
+          "baseline_work": 4112.0,
+          "peak_bytes": 12345
+        },
+        {
+          "n": 512,
+          "work": 385034.0,
+          "baseline_work": 8208.0,
+          "peak_bytes": 24741
+        },
+        {
+          "n": 1024,
+          "work": 768359.0,
+          "baseline_work": 16400.0,
+          "peak_bytes": 49469
+        },
+        {
+          "n": 2048,
+          "work": 1531374.0,
+          "baseline_work": 32784.0,
+          "peak_bytes": 98857
+        },
+        {
+          "n": 4096,
+          "work": 3063851.0,
+          "baseline_work": 65552.0,
+          "peak_bytes": 197805
+        },
+        {
+          "n": 8192,
+          "work": 6124184.0,
+          "baseline_work": 131088.0,
+          "peak_bytes": 395465
+        }
+      ],
+      "rungs_planned": 9,
+      "rungs_ok": 9,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.942,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P34",
+      "title": "二分图判定",
+      "family": "GRAPH_EDGES",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "BFS 染色对每个点、每条边各访问常数次，m=2n 与 n 同阶",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 32656.0,
+          "baseline_work": 528.0,
+          "peak_bytes": 5664
+        },
+        {
+          "n": 64,
+          "work": 61909.0,
+          "baseline_work": 1040.0,
+          "peak_bytes": 7216
+        },
+        {
+          "n": 128,
+          "work": 123631.0,
+          "baseline_work": 2064.0,
+          "peak_bytes": 10268
+        },
+        {
+          "n": 256,
+          "work": 246292.0,
+          "baseline_work": 4112.0,
+          "peak_bytes": 16480
+        },
+        {
+          "n": 512,
+          "work": 495849.0,
+          "baseline_work": 8208.0,
+          "peak_bytes": 29048
+        },
+        {
+          "n": 1024,
+          "work": 976334.0,
+          "baseline_work": 16400.0,
+          "peak_bytes": 53428
+        },
+        {
+          "n": 2048,
+          "work": 1948799.0,
+          "baseline_work": 32784.0,
+          "peak_bytes": 103224
+        },
+        {
+          "n": 4096,
+          "work": 3892328.0,
+          "baseline_work": 65552.0,
+          "peak_bytes": 201560
+        },
+        {
+          "n": 8192,
+          "work": 7800498.0,
+          "baseline_work": 131088.0,
+          "peak_bytes": 399172
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 9,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 5.381,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P35",
+      "title": "全排列",
+      "family": "SINGLE_INT",
+      "expected": "O(n!)",
+      "expected_confidence": "HIGH",
+      "rationale": "回溯生成 n! 个排列，每个叶子输出 n 个数字，主项是 n!",
+      "predicted": "O(n!)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n!)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 11090.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 28
+        },
+        {
+          "n": 5,
+          "work": 63314.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 32
+        },
+        {
+          "n": 6,
+          "work": 437560.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 36
+        },
+        {
+          "n": 7,
+          "work": 3483074.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 40
+        },
+        {
+          "n": 8,
+          "work": 31249574.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 44
+        }
+      ],
+      "rungs_planned": 5,
+      "rungs_ok": 5,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.193,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P36",
+      "title": "N皇后",
+      "family": "SINGLE_INT",
+      "expected": "O(n!)",
+      "expected_confidence": "HIGH",
+      "rationale": "按行放皇后的回溯树节点数按 n! 量级展开，剪枝只改变常数",
+      "predicted": "O(n!)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n!)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 4351.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 24
+        },
+        {
+          "n": 5,
+          "work": 11831.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 24
+        },
+        {
+          "n": 6,
+          "work": 36631.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 24
+        },
+        {
+          "n": 7,
+          "work": 135502.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 24
+        },
+        {
+          "n": 8,
+          "work": 545024.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 24
+        },
+        {
+          "n": 9,
+          "work": 2367755.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 24
+        },
+        {
+          "n": 10,
+          "work": 10774799.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 24
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 5.429,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P37",
+      "title": "数独求解",
+      "family": "FIXED",
+      "expected": "NOT_MEASURABLE",
+      "expected_confidence": "HIGH",
+      "rationale": "数独是固定 9×9 盘面（FIXED 输入族），任何档位都是同一份输入，无法测增长",
+      "predicted": "UNKNOWN",
+      "confidence": null,
+      "method": null,
+      "recurrence": null,
+      "closed_form": null,
+      "notes": [],
+      "limitations": [],
+      "points": [],
+      "rungs_planned": 0,
+      "rungs_ok": 0,
+      "stop_reason": null,
+      "deterministic_repeat": null,
+      "repeat_mismatches": [],
+      "adapter_deterministic": null,
+      "elapsed_seconds": 0.0,
+      "verdict": "not_measurable",
+      "error": "固定盘面输入（数独），规模无法伸缩，降级为不可测"
+    },
+    {
+      "code": "CODE-P38",
+      "title": "图着色",
+      "family": "GRAPH_COLORING",
+      "expected": "O(n^3)",
+      "expected_confidence": "HIGH",
+      "rationale": "每染一个点要扫 n 个候选点、每个再比较 n 个邻接关系，n 个点染色即 n^3",
+      "predicted": "O(n^3)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^3)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 6,
+          "work": 7600.0,
+          "baseline_work": 68.0,
+          "peak_bytes": 260
+        },
+        {
+          "n": 12,
+          "work": 29946.0,
+          "baseline_work": 116.0,
+          "peak_bytes": 476
+        },
+        {
+          "n": 18,
+          "work": 78098.0,
+          "baseline_work": 164.0,
+          "peak_bytes": 692
+        },
+        {
+          "n": 24,
+          "work": 162416.0,
+          "baseline_work": 212.0,
+          "peak_bytes": 908
+        },
+        {
+          "n": 30,
+          "work": 289410.0,
+          "baseline_work": 260.0,
+          "peak_bytes": 1124
+        },
+        {
+          "n": 36,
+          "work": 471400.0,
+          "baseline_work": 308.0,
+          "peak_bytes": 1340
+        },
+        {
+          "n": 42,
+          "work": 721796.0,
+          "baseline_work": 356.0,
+          "peak_bytes": 1556
+        },
+        {
+          "n": 48,
+          "work": 1044754.0,
+          "baseline_work": 404.0,
+          "peak_bytes": 1772
+        }
+      ],
+      "rungs_planned": 8,
+      "rungs_ok": 8,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 5.187,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P39",
+      "title": "括号生成",
+      "family": "SINGLE_INT",
+      "expected": "UNKNOWN",
+      "expected_confidence": "MEDIUM",
+      "rationale": "回溯生成括号串的节点数是 Catalan 数，真实增长 4^n/n^1.5，目录里 O(2^n) 太小、O(n!) 太大",
+      "predicted": "O(2^n)",
+      "confidence": "LOW",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(2^n)",
+      "notes": [
+        "O(2^n) 与 O(n!) 的拟合优度相差很小（AIC 差 0.2），档位数不足以区分两者",
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 8073.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 5,
+          "work": 24669.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 6,
+          "work": 78480.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 7,
+          "work": 257472.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 8,
+          "work": 864936.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        }
+      ],
+      "rungs_planned": 5,
+      "rungs_ok": 5,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 3.745,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P40",
+      "title": "单词搜索",
+      "family": "GRID_WITH_WORD",
+      "expected": "O(n^2)",
+      "expected_confidence": "MEDIUM",
+      "rationale": "n×n 网格逐格尝试 dfs，单词沿第一行铺成直路，多数格子首字符就不匹配，总工作量 n^2",
+      "predicted": "O(n^2 log n)",
+      "confidence": "LOW",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^2 log n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销",
+        "轨迹计数预算用尽，档位数少于计划",
+        "有效档位只有 3 个，增长类别的置信度不会高于中"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 2960.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 96
+        },
+        {
+          "n": 5,
+          "work": 3867.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 120
+        },
+        {
+          "n": 6,
+          "work": 5113.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 144
+        }
+      ],
+      "rungs_planned": 3,
+      "rungs_ok": 3,
+      "stop_reason": "BUDGET_EXHAUSTED",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": null,
+      "elapsed_seconds": 3.617,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P41",
+      "title": "KMP 模式匹配",
+      "family": "TWO_STRINGS",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "KMP 建 next 表 O(m) 加主串单趟扫描 O(n)，两串长度都为 n",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 7011.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 224
+        },
+        {
+          "n": 64,
+          "work": 13306.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 448
+        },
+        {
+          "n": 128,
+          "work": 26057.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 896
+        },
+        {
+          "n": 256,
+          "work": 51395.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 1792
+        },
+        {
+          "n": 512,
+          "work": 101956.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 3584
+        },
+        {
+          "n": 1024,
+          "work": 203484.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 7168
+        },
+        {
+          "n": 2048,
+          "work": 406094.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 14336
+        },
+        {
+          "n": 4096,
+          "work": 810707.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 28672
+        },
+        {
+          "n": 8192,
+          "work": 1621806.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 57344
+        },
+        {
+          "n": 16384,
+          "work": 3241960.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 114688
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.624,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P42",
+      "title": "最长回文子串",
+      "family": "ONE_STRING",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "Manacher 对插入分隔符后的 2n+1 个中心各做均摊常数次扩展",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 7288.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 380
+        },
+        {
+          "n": 64,
+          "work": 13781.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 748
+        },
+        {
+          "n": 128,
+          "work": 27192.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 1484
+        },
+        {
+          "n": 256,
+          "work": 53376.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 2956
+        },
+        {
+          "n": 512,
+          "work": 106492.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 5900
+        },
+        {
+          "n": 1024,
+          "work": 212440.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 11788
+        },
+        {
+          "n": 2048,
+          "work": 424587.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 23564
+        },
+        {
+          "n": 4096,
+          "work": 846343.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 47116
+        },
+        {
+          "n": 8192,
+          "work": 1695429.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 94220
+        },
+        {
+          "n": 16384,
+          "work": 3389912.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 188428
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.439,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P43",
+      "title": "前缀统计",
+      "family": "STRING_LIST",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "字典树按单词总长度插入，q=n 次前缀查询沿树下行，总字符数随 n 线性",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 71603.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 10800540
+        },
+        {
+          "n": 64,
+          "work": 129968.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 10800540
+        },
+        {
+          "n": 128,
+          "work": 251144.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 10800540
+        },
+        {
+          "n": 256,
+          "work": 502898.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 10800540
+        },
+        {
+          "n": 512,
+          "work": 974206.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 10800540
+        },
+        {
+          "n": 1024,
+          "work": 1953741.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 10800540
+        },
+        {
+          "n": 2048,
+          "work": 3720110.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 10800540
+        },
+        {
+          "n": 4096,
+          "work": 7288938.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 10800540
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 8,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.335,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P44",
+      "title": "最长无重复子串",
+      "family": "ONE_STRING",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "滑动窗口左右指针各只前进 n 步",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 5916.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 560
+        },
+        {
+          "n": 64,
+          "work": 8914.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 608
+        },
+        {
+          "n": 128,
+          "work": 14916.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 704
+        },
+        {
+          "n": 256,
+          "work": 26902.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 896
+        },
+        {
+          "n": 512,
+          "work": 50882.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 1280
+        },
+        {
+          "n": 1024,
+          "work": 98854.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 2304
+        },
+        {
+          "n": 2048,
+          "work": 194696.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 4608
+        },
+        {
+          "n": 4096,
+          "work": 386512.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 9216
+        },
+        {
+          "n": 8192,
+          "work": 770088.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 18432
+        },
+        {
+          "n": 16384,
+          "work": 1537194.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 36864
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.304,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P45",
+      "title": "子串哈希查询",
+      "family": "STRING_RANGE_QUERIES",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "前缀哈希预处理 O(n)，q=n 次区间比较每次常数次取模运算",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 8955.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 1104
+        },
+        {
+          "n": 64,
+          "work": 16247.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 2176
+        },
+        {
+          "n": 128,
+          "work": 31077.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 4320
+        },
+        {
+          "n": 256,
+          "work": 60983.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 8608
+        },
+        {
+          "n": 512,
+          "work": 120713.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 17184
+        },
+        {
+          "n": 1024,
+          "work": 240009.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 34336
+        },
+        {
+          "n": 2048,
+          "work": 478847.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 68640
+        },
+        {
+          "n": 4096,
+          "work": 956031.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 137248
+        },
+        {
+          "n": 8192,
+          "work": 1910071.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 274464
+        },
+        {
+          "n": 16384,
+          "work": 3818725.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 548896
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 5.04,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P46",
+      "title": "最长公共前缀",
+      "family": "STRING_LIST",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "n 个定长（≤100 字符）串逐个缩短公共前缀，工作量是总字符数",
+      "predicted": "O(n log n)",
+      "confidence": "MEDIUM",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 90198.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 336
+        },
+        {
+          "n": 57,
+          "work": 200700.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 384
+        },
+        {
+          "n": 101,
+          "work": 321593.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 384
+        },
+        {
+          "n": 179,
+          "work": 571999.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 384
+        },
+        {
+          "n": 317,
+          "work": 991792.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 384
+        },
+        {
+          "n": 563,
+          "work": 1792567.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 384
+        },
+        {
+          "n": 1000,
+          "work": 3319469.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 480
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.057,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P47",
+      "title": "快速排序",
+      "family": "INT_ARRAY",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "随机化三路快排的期望比较次数是 n log n，随机基准只影响常数",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 5767.0,
+          "baseline_work": 140.0,
+          "peak_bytes": 128
+        },
+        {
+          "n": 64,
+          "work": 11716.0,
+          "baseline_work": 268.0,
+          "peak_bytes": 256
+        },
+        {
+          "n": 128,
+          "work": 25587.0,
+          "baseline_work": 524.0,
+          "peak_bytes": 512
+        },
+        {
+          "n": 256,
+          "work": 58548.0,
+          "baseline_work": 1036.0,
+          "peak_bytes": 1024
+        },
+        {
+          "n": 512,
+          "work": 128957.0,
+          "baseline_work": 2060.0,
+          "peak_bytes": 2048
+        },
+        {
+          "n": 1024,
+          "work": 259355.0,
+          "baseline_work": 4108.0,
+          "peak_bytes": 4096
+        },
+        {
+          "n": 2048,
+          "work": 585517.0,
+          "baseline_work": 8204.0,
+          "peak_bytes": 8192
+        },
+        {
+          "n": 4096,
+          "work": 1284665.0,
+          "baseline_work": 16396.0,
+          "peak_bytes": 16384
+        },
+        {
+          "n": 8192,
+          "work": 2644180.0,
+          "baseline_work": 32780.0,
+          "peak_bytes": 32768
+        },
+        {
+          "n": 16384,
+          "work": 5629538.0,
+          "baseline_work": 65548.0,
+          "peak_bytes": 65536
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": false,
+      "repeat_mismatches": [
+        {
+          "n": 32,
+          "first": 5767.0,
+          "second": 6310.0,
+          "delta": 543.0,
+          "delta_ratio": 0.094156
+        },
+        {
+          "n": 64,
+          "first": 11716.0,
+          "second": 12351.0,
+          "delta": 635.0,
+          "delta_ratio": 0.054199
+        },
+        {
+          "n": 128,
+          "first": 25587.0,
+          "second": 27512.0,
+          "delta": 1925.0,
+          "delta_ratio": 0.075234
+        },
+        {
+          "n": 256,
+          "first": 58548.0,
+          "second": 60227.0,
+          "delta": 1679.0,
+          "delta_ratio": 0.028677
+        },
+        {
+          "n": 512,
+          "first": 128957.0,
+          "second": 123871.0,
+          "delta": -5086.0,
+          "delta_ratio": 0.03944
+        },
+        {
+          "n": 1024,
+          "first": 259355.0,
+          "second": 258858.0,
+          "delta": -497.0,
+          "delta_ratio": 0.001916
+        },
+        {
+          "n": 2048,
+          "first": 585517.0,
+          "second": 578902.0,
+          "delta": -6615.0,
+          "delta_ratio": 0.011298
+        },
+        {
+          "n": 4096,
+          "first": 1284665.0,
+          "second": 1255255.0,
+          "delta": -29410.0,
+          "delta_ratio": 0.022893
+        },
+        {
+          "n": 8192,
+          "first": 2644180.0,
+          "second": 2653357.0,
+          "delta": 9177.0,
+          "delta_ratio": 0.003471
+        },
+        {
+          "n": 16384,
+          "first": 5629538.0,
+          "second": 5551994.0,
+          "delta": -77544.0,
+          "delta_ratio": 0.013774
+        }
+      ],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.527,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P48",
+      "title": "第 k 小元素",
+      "family": "INT_ARRAY_WITH_K",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "三路划分快速选择每轮期望折半，总比较次数期望 O(n)",
+      "predicted": "O(n^2)",
+      "confidence": "LOW",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^2)",
+      "notes": [
+        "O(n^2) 与 O(n log n) 的拟合优度相差很小（AIC 差 2.9），档位数不足以区分两者",
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销",
+        "同一档位重复执行的计数不一致（程序含随机或依赖数据的分支），类别按多次运行的中位形态报告"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 2311.0,
+          "baseline_work": 144.0,
+          "peak_bytes": 128
+        },
+        {
+          "n": 64,
+          "work": 3698.0,
+          "baseline_work": 272.0,
+          "peak_bytes": 256
+        },
+        {
+          "n": 128,
+          "work": 9279.0,
+          "baseline_work": 528.0,
+          "peak_bytes": 512
+        },
+        {
+          "n": 256,
+          "work": 19825.0,
+          "baseline_work": 1040.0,
+          "peak_bytes": 1024
+        },
+        {
+          "n": 512,
+          "work": 32357.0,
+          "baseline_work": 2064.0,
+          "peak_bytes": 2048
+        },
+        {
+          "n": 1024,
+          "work": 79689.0,
+          "baseline_work": 4112.0,
+          "peak_bytes": 4096
+        },
+        {
+          "n": 2048,
+          "work": 196497.0,
+          "baseline_work": 8208.0,
+          "peak_bytes": 8192
+        },
+        {
+          "n": 4096,
+          "work": 336955.0,
+          "baseline_work": 16400.0,
+          "peak_bytes": 16384
+        },
+        {
+          "n": 8192,
+          "work": 502025.0,
+          "baseline_work": 32784.0,
+          "peak_bytes": 32768
+        },
+        {
+          "n": 16384,
+          "work": 1264651.0,
+          "baseline_work": 65552.0,
+          "peak_bytes": 65536
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": false,
+      "repeat_mismatches": [
+        {
+          "n": 32,
+          "first": 2311.0,
+          "second": 2855.0,
+          "delta": 544.0,
+          "delta_ratio": 0.235396
+        },
+        {
+          "n": 64,
+          "first": 3698.0,
+          "second": 3185.0,
+          "delta": -513.0,
+          "delta_ratio": 0.138724
+        },
+        {
+          "n": 128,
+          "first": 9279.0,
+          "second": 8096.0,
+          "delta": -1183.0,
+          "delta_ratio": 0.127492
+        },
+        {
+          "n": 256,
+          "first": 19825.0,
+          "second": 18611.0,
+          "delta": -1214.0,
+          "delta_ratio": 0.061236
+        },
+        {
+          "n": 512,
+          "first": 32357.0,
+          "second": 33230.0,
+          "delta": 873.0,
+          "delta_ratio": 0.02698
+        },
+        {
+          "n": 1024,
+          "first": 79689.0,
+          "second": 68765.0,
+          "delta": -10924.0,
+          "delta_ratio": 0.137083
+        },
+        {
+          "n": 2048,
+          "first": 196497.0,
+          "second": 200127.0,
+          "delta": 3630.0,
+          "delta_ratio": 0.018474
+        },
+        {
+          "n": 4096,
+          "first": 336955.0,
+          "second": 283536.0,
+          "delta": -53419.0,
+          "delta_ratio": 0.158535
+        },
+        {
+          "n": 8192,
+          "first": 502025.0,
+          "second": 514346.0,
+          "delta": 12321.0,
+          "delta_ratio": 0.024543
+        },
+        {
+          "n": 16384,
+          "first": 1264651.0,
+          "second": 1236630.0,
+          "delta": -28021.0,
+          "delta_ratio": 0.022157
+        }
+      ],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.506,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P49",
+      "title": "二分查找",
+      "family": "SORTED_ARRAY_QUERIES",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "q=n 次询问各做一次 log n 的二分查找",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 4074.0,
+          "baseline_work": 272.0,
+          "peak_bytes": 128
+        },
+        {
+          "n": 64,
+          "work": 8261.0,
+          "baseline_work": 528.0,
+          "peak_bytes": 256
+        },
+        {
+          "n": 128,
+          "work": 16883.0,
+          "baseline_work": 1040.0,
+          "peak_bytes": 512
+        },
+        {
+          "n": 256,
+          "work": 34851.0,
+          "baseline_work": 2064.0,
+          "peak_bytes": 1024
+        },
+        {
+          "n": 512,
+          "work": 72253.0,
+          "baseline_work": 4112.0,
+          "peak_bytes": 2048
+        },
+        {
+          "n": 1024,
+          "work": 149914.0,
+          "baseline_work": 8208.0,
+          "peak_bytes": 4096
+        },
+        {
+          "n": 2048,
+          "work": 310730.0,
+          "baseline_work": 16400.0,
+          "peak_bytes": 8192
+        },
+        {
+          "n": 4096,
+          "work": 643433.0,
+          "baseline_work": 32784.0,
+          "peak_bytes": 16384
+        },
+        {
+          "n": 8192,
+          "work": 1331284.0,
+          "baseline_work": 65552.0,
+          "peak_bytes": 32768
+        },
+        {
+          "n": 16384,
+          "work": 2752064.0,
+          "baseline_work": 131088.0,
+          "peak_bytes": 65536
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.844,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P50",
+      "title": "滑动窗口最大值",
+      "family": "INT_ARRAY_WITH_K",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "单调队列每个下标最多入队出队一次",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 5983.0,
+          "baseline_work": 144.0,
+          "peak_bytes": 4232
+        },
+        {
+          "n": 64,
+          "work": 11505.0,
+          "baseline_work": 272.0,
+          "peak_bytes": 4360
+        },
+        {
+          "n": 128,
+          "work": 22713.0,
+          "baseline_work": 528.0,
+          "peak_bytes": 4616
+        },
+        {
+          "n": 256,
+          "work": 44954.0,
+          "baseline_work": 1040.0,
+          "peak_bytes": 5128
+        },
+        {
+          "n": 512,
+          "work": 89759.0,
+          "baseline_work": 2064.0,
+          "peak_bytes": 6152
+        },
+        {
+          "n": 1024,
+          "work": 178969.0,
+          "baseline_work": 4112.0,
+          "peak_bytes": 8200
+        },
+        {
+          "n": 2048,
+          "work": 357579.0,
+          "baseline_work": 8208.0,
+          "peak_bytes": 12296
+        },
+        {
+          "n": 4096,
+          "work": 714995.0,
+          "baseline_work": 16400.0,
+          "peak_bytes": 20488
+        },
+        {
+          "n": 8192,
+          "work": 1429928.0,
+          "baseline_work": 32784.0,
+          "peak_bytes": 36872
+        },
+        {
+          "n": 16384,
+          "work": 2859192.0,
+          "baseline_work": 65552.0,
+          "peak_bytes": 69640
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.73,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P51",
+      "title": "下一个更大元素",
+      "family": "INT_ARRAY",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "单调栈每个元素最多入栈出栈一次",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 8958.0,
+          "baseline_work": 140.0,
+          "peak_bytes": 768
+        },
+        {
+          "n": 64,
+          "work": 17228.0,
+          "baseline_work": 268.0,
+          "peak_bytes": 1536
+        },
+        {
+          "n": 128,
+          "work": 33912.0,
+          "baseline_work": 524.0,
+          "peak_bytes": 3072
+        },
+        {
+          "n": 256,
+          "work": 67006.0,
+          "baseline_work": 1036.0,
+          "peak_bytes": 6144
+        },
+        {
+          "n": 512,
+          "work": 133640.0,
+          "baseline_work": 2060.0,
+          "peak_bytes": 12288
+        },
+        {
+          "n": 1024,
+          "work": 266662.0,
+          "baseline_work": 4108.0,
+          "peak_bytes": 24576
+        },
+        {
+          "n": 2048,
+          "work": 533088.0,
+          "baseline_work": 8204.0,
+          "peak_bytes": 49152
+        },
+        {
+          "n": 4096,
+          "work": 1065044.0,
+          "baseline_work": 16396.0,
+          "peak_bytes": 98304
+        },
+        {
+          "n": 8192,
+          "work": 2130198.0,
+          "baseline_work": 32780.0,
+          "peak_bytes": 196608
+        },
+        {
+          "n": 16384,
+          "work": 4260136.0,
+          "baseline_work": 65548.0,
+          "peak_bytes": 393216
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.448,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P52",
+      "title": "数据流中位数",
+      "family": "INT_ARRAY",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "每个数做常数次堆压入/弹出，n 个元素共 O(n log n)",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 27123.0,
+          "baseline_work": 140.0,
+          "peak_bytes": 512
+        },
+        {
+          "n": 64,
+          "work": 57578.0,
+          "baseline_work": 268.0,
+          "peak_bytes": 1024
+        },
+        {
+          "n": 128,
+          "work": 122657.0,
+          "baseline_work": 524.0,
+          "peak_bytes": 2048
+        },
+        {
+          "n": 256,
+          "work": 264343.0,
+          "baseline_work": 1036.0,
+          "peak_bytes": 4096
+        },
+        {
+          "n": 512,
+          "work": 564595.0,
+          "baseline_work": 2060.0,
+          "peak_bytes": 8192
+        },
+        {
+          "n": 1024,
+          "work": 1206985.0,
+          "baseline_work": 4108.0,
+          "peak_bytes": 16384
+        },
+        {
+          "n": 2048,
+          "work": 2584079.0,
+          "baseline_work": 8204.0,
+          "peak_bytes": 32768
+        },
+        {
+          "n": 4096,
+          "work": 5485722.0,
+          "baseline_work": 16396.0,
+          "peak_bytes": 65536
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 8,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.218,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P53",
+      "title": "后缀表达式求值",
+      "family": "POSTFIX_EXPRESSION",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "后缀表达式按 token 逐个入栈或弹栈，token 数随 n 线性",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 27040.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 24
+        },
+        {
+          "n": 64,
+          "work": 54566.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 24
+        },
+        {
+          "n": 128,
+          "work": 109435.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 24
+        },
+        {
+          "n": 256,
+          "work": 218807.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 24
+        },
+        {
+          "n": 512,
+          "work": 438588.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 24
+        },
+        {
+          "n": 1024,
+          "work": 878150.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 24
+        }
+      ],
+      "rungs_planned": 6,
+      "rungs_ok": 6,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 3.921,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P54",
+      "title": "树状数组",
+      "family": "INT_ARRAY_OPERATIONS",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "线性建树 O(n) 后，q=n 次操作各做 log n 次树状数组跳转",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 3207.0,
+          "baseline_work": 528.0,
+          "peak_bytes": 264
+        },
+        {
+          "n": 64,
+          "work": 6674.0,
+          "baseline_work": 1040.0,
+          "peak_bytes": 520
+        },
+        {
+          "n": 128,
+          "work": 14278.0,
+          "baseline_work": 2064.0,
+          "peak_bytes": 1032
+        },
+        {
+          "n": 256,
+          "work": 29571.0,
+          "baseline_work": 4112.0,
+          "peak_bytes": 2056
+        },
+        {
+          "n": 512,
+          "work": 62547.0,
+          "baseline_work": 8208.0,
+          "peak_bytes": 4104
+        },
+        {
+          "n": 1024,
+          "work": 131594.0,
+          "baseline_work": 16400.0,
+          "peak_bytes": 8200
+        },
+        {
+          "n": 2048,
+          "work": 274583.0,
+          "baseline_work": 32784.0,
+          "peak_bytes": 16392
+        },
+        {
+          "n": 4096,
+          "work": 575781.0,
+          "baseline_work": 65552.0,
+          "peak_bytes": 32776
+        },
+        {
+          "n": 8192,
+          "work": 1201667.0,
+          "baseline_work": 131088.0,
+          "peak_bytes": 65544
+        },
+        {
+          "n": 16384,
+          "work": 2507064.0,
+          "baseline_work": 262160.0,
+          "peak_bytes": 131080
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 5.059,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P55",
+      "title": "用两个栈实现队列",
+      "family": "STACK_OPERATIONS",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "q 条操作均摊 O(1) 每条，push/pop 在两个栈之间转移的总次数不超过 q",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 18548.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 8208
+        },
+        {
+          "n": 64,
+          "work": 36682.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 8208
+        },
+        {
+          "n": 128,
+          "work": 72944.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 8208
+        },
+        {
+          "n": 256,
+          "work": 145462.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 8208
+        },
+        {
+          "n": 512,
+          "work": 290492.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 8208
+        },
+        {
+          "n": 1024,
+          "work": 580546.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 8208
+        },
+        {
+          "n": 2048,
+          "work": 1160648.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 8208
+        },
+        {
+          "n": 4096,
+          "work": 2321294.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 16424
+        },
+        {
+          "n": 8192,
+          "work": 4642198.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 20560
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 9,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.804,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P56",
+      "title": "出现频率前 k 高的元素",
+      "family": "INT_ARRAY_WITH_K",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "Counter 计数 O(n) 后对不同元素排序 O(n log n)，排序主导",
+      "predicted": "O(n log n)",
+      "confidence": "MEDIUM",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "标准库调用部分是按理论代价折算的估计，因此置信度不超过中",
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 47651.0,
+          "baseline_work": 144.0,
+          "peak_bytes": 1792
+        },
+        {
+          "n": 64,
+          "work": 116628.0,
+          "baseline_work": 272.0,
+          "peak_bytes": 3584
+        },
+        {
+          "n": 128,
+          "work": 261476.0,
+          "baseline_work": 528.0,
+          "peak_bytes": 7168
+        },
+        {
+          "n": 256,
+          "work": 574507.0,
+          "baseline_work": 1040.0,
+          "peak_bytes": 14336
+        },
+        {
+          "n": 512,
+          "work": 1226825.0,
+          "baseline_work": 2064.0,
+          "peak_bytes": 28672
+        },
+        {
+          "n": 1024,
+          "work": 2635403.0,
+          "baseline_work": 4112.0,
+          "peak_bytes": 57344
+        },
+        {
+          "n": 2048,
+          "work": 5766751.0,
+          "baseline_work": 8208.0,
+          "peak_bytes": 114688
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.607,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P57",
+      "title": "统计素数个数",
+      "family": "SINGLE_INT",
+      "expected": "UNKNOWN",
+      "expected_confidence": "HIGH",
+      "rationale": "切片筛法统计素数，真实增长 n log log n，目录里最近上界是 O(n log n)",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 64,
+          "work": 2219.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 65
+        },
+        {
+          "n": 256,
+          "work": 8165.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 257
+        },
+        {
+          "n": 1024,
+          "work": 32666.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 1025
+        },
+        {
+          "n": 4096,
+          "work": 132975.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 4097
+        },
+        {
+          "n": 16384,
+          "work": 542905.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 16385
+        },
+        {
+          "n": 65536,
+          "work": 2212569.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 65537
+        },
+        {
+          "n": 262144,
+          "work": 9001670.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 262145
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 3.902,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P58",
+      "title": "扩展欧几里得",
+      "family": "TWO_INTS",
+      "expected": "O(log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "欧几里得递归层数是 O(log min(a,b))，两个数都随 n 同阶增长",
+      "predicted": "UNKNOWN",
+      "confidence": "LOW",
+      "method": "UNKNOWN",
+      "recurrence": null,
+      "closed_form": "UNKNOWN",
+      "notes": [
+        "最优类别 O(log n) 只能解释 0.807 的计数变化，结论只能作为参考",
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销",
+        "超过输入解析基准的档位不足 3 个，时间类别按含读入的总工作量报告"
+      ],
+      "points": [
+        {
+          "n": 64,
+          "work": 215.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 256,
+          "work": 250.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 1024,
+          "work": 257.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 4096,
+          "work": 257.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 16384,
+          "work": 285.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 65536,
+          "work": 285.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 262144,
+          "work": 285.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 1048576,
+          "work": 285.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 0
+        }
+      ],
+      "rungs_planned": 8,
+      "rungs_ok": 8,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.111,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P59",
+      "title": "组合数取模",
+      "family": "INT_ARRAY_ROWS",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "T=n 组询问，阶乘表建到最大的 n_i（随 n 增长），建表 O(n) 主导",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 6562.0,
+          "baseline_work": 268.0,
+          "peak_bytes": 784
+        },
+        {
+          "n": 64,
+          "work": 11976.0,
+          "baseline_work": 524.0,
+          "peak_bytes": 1552
+        },
+        {
+          "n": 128,
+          "work": 22796.0,
+          "baseline_work": 1036.0,
+          "peak_bytes": 3088
+        },
+        {
+          "n": 256,
+          "work": 44430.0,
+          "baseline_work": 2060.0,
+          "peak_bytes": 6160
+        },
+        {
+          "n": 512,
+          "work": 87694.0,
+          "baseline_work": 4108.0,
+          "peak_bytes": 12304
+        },
+        {
+          "n": 1024,
+          "work": 174226.0,
+          "baseline_work": 8204.0,
+          "peak_bytes": 24592
+        },
+        {
+          "n": 2048,
+          "work": 347284.0,
+          "baseline_work": 16396.0,
+          "peak_bytes": 49168
+        },
+        {
+          "n": 4096,
+          "work": 693392.0,
+          "baseline_work": 32780.0,
+          "peak_bytes": 98320
+        },
+        {
+          "n": 8192,
+          "work": 1385570.0,
+          "baseline_work": 65548.0,
+          "peak_bytes": 196608
+        }
+      ],
+      "rungs_planned": 9,
+      "rungs_ok": 9,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.378,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P60",
+      "title": "高精度加法",
+      "family": "BIG_TWO_STRINGS",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "从低位到高位逐位相加，循环次数是两数位数",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 9175.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 480
+        },
+        {
+          "n": 57,
+          "work": 15000.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 576
+        },
+        {
+          "n": 101,
+          "work": 25318.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 1152
+        },
+        {
+          "n": 179,
+          "work": 43740.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 1920
+        },
+        {
+          "n": 317,
+          "work": 76051.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 3840
+        },
+        {
+          "n": 563,
+          "work": 133435.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 7680
+        },
+        {
+          "n": 1000,
+          "work": 235347.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 9216
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 3.892,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P61",
+      "title": "进制转换",
+      "family": "TWO_INTS",
+      "expected": "O(log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "短除法每轮除以 2，循环次数就是 log2 n 位",
+      "predicted": "O(log n)",
+      "confidence": "MEDIUM",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(log n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销",
+        "有效档位只有 4 个，增长类别的置信度不会高于中"
+      ],
+      "points": [
+        {
+          "n": 64,
+          "work": 491.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 256,
+          "work": 560.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 1024,
+          "work": 629.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 4096,
+          "work": 698.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 0
+        }
+      ],
+      "rungs_planned": 4,
+      "rungs_ok": 4,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 3.444,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P62",
+      "title": "质因数分解",
+      "family": "SINGLE_INT",
+      "expected": "UNKNOWN",
+      "expected_confidence": "HIGH",
+      "rationale": "试除到 √n，真实增长 √n，目录里最近上界是 O(n)",
+      "predicted": "O(log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(log n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 64,
+          "work": 152.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 256,
+          "work": 158.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 1024,
+          "work": 164.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 4096,
+          "work": 170.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 16384,
+          "work": 176.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 65536,
+          "work": 182.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 262144,
+          "work": 188.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 1048576,
+          "work": 194.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        }
+      ],
+      "rungs_planned": 8,
+      "rungs_ok": 8,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.016,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P63",
+      "title": "只出现一次的数字",
+      "family": "INT_ARRAY",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "单趟异或消去成对出现的数",
+      "predicted": "O(1)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(1)",
+      "notes": [
+        "工作量在全部档位上相同",
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 198.0,
+          "baseline_work": 140.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 64,
+          "work": 326.0,
+          "baseline_work": 268.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 128,
+          "work": 582.0,
+          "baseline_work": 524.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 256,
+          "work": 1094.0,
+          "baseline_work": 1036.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 512,
+          "work": 2118.0,
+          "baseline_work": 2060.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 1024,
+          "work": 4166.0,
+          "baseline_work": 4108.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 2048,
+          "work": 8262.0,
+          "baseline_work": 8204.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 4096,
+          "work": 16454.0,
+          "baseline_work": 16396.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 8192,
+          "work": 32838.0,
+          "baseline_work": 32780.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 16384,
+          "work": 65606.0,
+          "baseline_work": 65548.0,
+          "peak_bytes": 0
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.719,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P64",
+      "title": "二进制中 1 的个数",
+      "family": "INT_ARRAY",
+      "expected": "O(n)",
+      "expected_confidence": "MEDIUM",
+      "rationale": "逐个数统计二进制 1 的个数，值域上界 2^60 固定，故为线性；bit 操作在 bin/count 里看不到",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 2157.0,
+          "baseline_work": 140.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 64,
+          "work": 4435.0,
+          "baseline_work": 268.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 128,
+          "work": 8871.0,
+          "baseline_work": 524.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 256,
+          "work": 18094.0,
+          "baseline_work": 1036.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 512,
+          "work": 36987.0,
+          "baseline_work": 2060.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 1024,
+          "work": 75796.0,
+          "baseline_work": 4108.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 2048,
+          "work": 154440.0,
+          "baseline_work": 8204.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 4096,
+          "work": 314953.0,
+          "baseline_work": 16396.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 8192,
+          "work": 642150.0,
+          "baseline_work": 32780.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 16384,
+          "work": 1310902.0,
+          "baseline_work": 65548.0,
+          "peak_bytes": 0
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.836,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P65",
+      "title": "格雷码",
+      "family": "SINGLE_INT",
+      "expected": "O(2^n)",
+      "expected_confidence": "MEDIUM",
+      "rationale": "枚举 2^n 个格雷码，每个补零到 n 位，主项是 2^n",
+      "predicted": "O(2^n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(2^n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 3083.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 6,
+          "work": 14171.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 7,
+          "work": 30235.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 9,
+          "work": 136219.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 11,
+          "work": 606235.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 13,
+          "work": 2670619.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 14,
+          "work": 5586971.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 0
+        }
+      ],
+      "rungs_planned": 8,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 3.99,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P66",
+      "title": "数字范围按位与",
+      "family": "TWO_INTS",
+      "expected": "O(log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "不断右移直到 l 与 r 相等，循环次数是 r 的位数",
+      "predicted": "O(log n)",
+      "confidence": "MEDIUM",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(log n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销",
+        "有效档位只有 4 个，增长类别的置信度不会高于中"
+      ],
+      "points": [
+        {
+          "n": 64,
+          "work": 94.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 256,
+          "work": 102.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 1024,
+          "work": 110.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 0
+        },
+        {
+          "n": 4096,
+          "work": 118.0,
+          "baseline_work": 16.0,
+          "peak_bytes": 0
+        }
+      ],
+      "rungs_planned": 4,
+      "rungs_ok": 4,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 3.511,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P67",
+      "title": "螺旋矩阵",
+      "family": "MATRIX",
+      "expected": "O(n^2)",
+      "expected_confidence": "HIGH",
+      "rationale": "n×n 矩阵逐层顺时针取数，每个元素恰好访问一次",
+      "predicted": "O(n^2)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^2)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 5308.0,
+          "baseline_work": 80.0,
+          "peak_bytes": 224
+        },
+        {
+          "n": 20,
+          "work": 77380.0,
+          "baseline_work": 1616.0,
+          "peak_bytes": 3680
+        },
+        {
+          "n": 36,
+          "work": 235980.0,
+          "baseline_work": 5200.0,
+          "peak_bytes": 11232
+        },
+        {
+          "n": 52,
+          "work": 481108.0,
+          "baseline_work": 10832.0,
+          "peak_bytes": 22880
+        },
+        {
+          "n": 68,
+          "work": 812764.0,
+          "baseline_work": 18512.0,
+          "peak_bytes": 38624
+        },
+        {
+          "n": 84,
+          "work": 1230948.0,
+          "baseline_work": 28240.0,
+          "peak_bytes": 58464
+        },
+        {
+          "n": 100,
+          "work": 1735660.0,
+          "baseline_work": 40016.0,
+          "peak_bytes": 82400
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.185,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P68",
+      "title": "矩阵旋转",
+      "family": "MATRIX",
+      "expected": "O(n^2)",
+      "expected_confidence": "HIGH",
+      "rationale": "n×n 方阵旋转输出，n^2 个元素各写一次",
+      "predicted": "O(n^2)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^2)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 3618.0,
+          "baseline_work": 80.0,
+          "peak_bytes": 176
+        },
+        {
+          "n": 20,
+          "work": 42242.0,
+          "baseline_work": 1616.0,
+          "peak_bytes": 2160
+        },
+        {
+          "n": 36,
+          "work": 122850.0,
+          "baseline_work": 5200.0,
+          "peak_bytes": 6192
+        },
+        {
+          "n": 52,
+          "work": 245442.0,
+          "baseline_work": 10832.0,
+          "peak_bytes": 12272
+        },
+        {
+          "n": 68,
+          "work": 410018.0,
+          "baseline_work": 18512.0,
+          "peak_bytes": 20400
+        },
+        {
+          "n": 84,
+          "work": 616578.0,
+          "baseline_work": 28240.0,
+          "peak_bytes": 30576
+        },
+        {
+          "n": 100,
+          "work": 865122.0,
+          "baseline_work": 40016.0,
+          "peak_bytes": 42800
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 3.958,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P69",
+      "title": "和为 k 的子数组个数",
+      "family": "INT_ARRAY_WITH_K",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "前缀和加哈希表计数，单趟 n 个元素",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 10526.0,
+          "baseline_work": 144.0,
+          "peak_bytes": 1544
+        },
+        {
+          "n": 64,
+          "work": 20570.0,
+          "baseline_work": 272.0,
+          "peak_bytes": 2936
+        },
+        {
+          "n": 128,
+          "work": 40565.0,
+          "baseline_work": 528.0,
+          "peak_bytes": 5720
+        },
+        {
+          "n": 256,
+          "work": 80604.0,
+          "baseline_work": 1040.0,
+          "peak_bytes": 11288
+        },
+        {
+          "n": 512,
+          "work": 160173.0,
+          "baseline_work": 2064.0,
+          "peak_bytes": 22424
+        },
+        {
+          "n": 1024,
+          "work": 320608.0,
+          "baseline_work": 4112.0,
+          "peak_bytes": 44648
+        },
+        {
+          "n": 2048,
+          "work": 641060.0,
+          "baseline_work": 8208.0,
+          "peak_bytes": 89192
+        },
+        {
+          "n": 4096,
+          "work": 1282741.0,
+          "baseline_work": 16400.0,
+          "peak_bytes": 178040
+        },
+        {
+          "n": 8192,
+          "work": 2563749.0,
+          "baseline_work": 32784.0,
+          "peak_bytes": 355928
+        },
+        {
+          "n": 16384,
+          "work": 5126369.0,
+          "baseline_work": 65552.0,
+          "peak_bytes": 711768
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.678,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P70",
+      "title": "差分数组",
+      "family": "INT_ARRAY_ROWS_TWO_HEADER",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "m=n 次差分更新加一趟前缀和，行数与 n 同阶",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 C++17 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 3146.0,
+          "baseline_work": 400.0,
+          "peak_bytes": 272
+        },
+        {
+          "n": 64,
+          "work": 5994.0,
+          "baseline_work": 784.0,
+          "peak_bytes": 528
+        },
+        {
+          "n": 128,
+          "work": 11690.0,
+          "baseline_work": 1552.0,
+          "peak_bytes": 1040
+        },
+        {
+          "n": 256,
+          "work": 23082.0,
+          "baseline_work": 3088.0,
+          "peak_bytes": 2064
+        },
+        {
+          "n": 512,
+          "work": 45866.0,
+          "baseline_work": 6160.0,
+          "peak_bytes": 4112
+        },
+        {
+          "n": 1024,
+          "work": 91434.0,
+          "baseline_work": 12304.0,
+          "peak_bytes": 8208
+        },
+        {
+          "n": 2048,
+          "work": 182570.0,
+          "baseline_work": 24592.0,
+          "peak_bytes": 16400
+        },
+        {
+          "n": 4096,
+          "work": 364842.0,
+          "baseline_work": 49168.0,
+          "peak_bytes": 32784
+        },
+        {
+          "n": 8192,
+          "work": 729386.0,
+          "baseline_work": 98320.0,
+          "peak_bytes": 65552
+        },
+        {
+          "n": 16384,
+          "work": 1458474.0,
+          "baseline_work": 196624.0,
+          "peak_bytes": 131088
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.898,
+      "verdict": "ok",
+      "error": null
+    }
+  ],
+  "summary": {
+    "total_problems": 70,
+    "labeled": 65,
+    "labeled_measured": 65,
+    "correct": 54,
+    "accuracy": 0.8308,
+    "accuracy_measured": 0.8308,
+    "errors": 0,
+    "not_measurable": 1,
+    "confusion": {
+      "O(n log n)": {
+        "O(n log n)": 17,
+        "O(n^2)": 1,
+        "O(n^2 log n)": 1
+      },
+      "O(1)": {
+        "O(1)": 1
+      },
+      "O(n)": {
+        "O(n)": 19,
+        "O(n^2)": 3,
+        "O(n log n)": 2,
+        "O(1)": 1
+      },
+      "O(log n)": {
+        "O(log n)": 3,
+        "UNKNOWN": 1
+      },
+      "O(2^n)": {
+        "O(2^n)": 2
+      },
+      "O(n^2)": {
+        "O(n^2)": 7,
+        "O(n)": 1,
+        "O(n^2 log n)": 1
+      },
+      "O(n^3)": {
+        "O(n^3)": 3
+      },
+      "O(n!)": {
+        "O(n!)": 2
+      }
+    },
+    "top_confusions": [
+      {
+        "expected": "O(n)",
+        "predicted": "O(n^2)",
+        "count": 3
+      },
+      {
+        "expected": "O(n)",
+        "predicted": "O(n log n)",
+        "count": 2
+      },
+      {
+        "expected": "O(log n)",
+        "predicted": "UNKNOWN",
+        "count": 1
+      }
+    ],
+    "by_expected_class": {
+      "O(1)": {
+        "labeled": 1,
+        "correct": 1,
+        "predicted": {
+          "O(1)": 1
+        }
+      },
+      "O(log n)": {
+        "labeled": 4,
+        "correct": 3,
+        "predicted": {
+          "O(log n)": 3,
+          "UNKNOWN": 1
+        }
+      },
+      "O(n)": {
+        "labeled": 25,
+        "correct": 19,
+        "predicted": {
+          "O(n)": 19,
+          "O(n^2)": 3,
+          "O(n log n)": 2,
+          "O(1)": 1
+        }
+      },
+      "O(n log n)": {
+        "labeled": 19,
+        "correct": 17,
+        "predicted": {
+          "O(n log n)": 17,
+          "O(n^2)": 1,
+          "O(n^2 log n)": 1
+        }
+      },
+      "O(n^2)": {
+        "labeled": 9,
+        "correct": 7,
+        "predicted": {
+          "O(n^2)": 7,
+          "O(n)": 1,
+          "O(n^2 log n)": 1
+        }
+      },
+      "O(n^3)": {
+        "labeled": 3,
+        "correct": 3,
+        "predicted": {
+          "O(n^3)": 3
+        }
+      },
+      "O(2^n)": {
+        "labeled": 2,
+        "correct": 2,
+        "predicted": {
+          "O(2^n)": 2
+        }
+      },
+      "O(n!)": {
+        "labeled": 2,
+        "correct": 2,
+        "predicted": {
+          "O(n!)": 2
+        }
+      }
+    },
+    "not_measurable_items": [
+      {
+        "code": "CODE-P37",
+        "reason": "固定盘面输入（数独），规模无法伸缩，降级为不可测",
+        "family": "FIXED"
+      }
+    ],
+    "unknown_expected": [
+      {
+        "code": "CODE-P15",
+        "rationale": "乘法由 Python 内建 int 完成（大数走 Karatsuba，约 n^1.585），真实增长在解释器内部，目录里最近上界是 O(n^2)",
+        "predicted": "O(n log n)",
+        "error": null
+      },
+      {
+        "code": "CODE-P39",
+        "rationale": "回溯生成括号串的节点数是 Catalan 数，真实增长 4^n/n^1.5，目录里 O(2^n) 太小、O(n!) 太大",
+        "predicted": "O(2^n)",
+        "error": null
+      },
+      {
+        "code": "CODE-P57",
+        "rationale": "切片筛法统计素数，真实增长 n log log n，目录里最近上界是 O(n log n)",
+        "predicted": "O(n)",
+        "error": null
+      },
+      {
+        "code": "CODE-P62",
+        "rationale": "试除到 √n，真实增长 √n，目录里最近上界是 O(n)",
+        "predicted": "O(log n)",
+        "error": null
+      }
+    ],
+    "repeatability": {
+      "runs_per_problem": 2,
+      "compared": 69,
+      "deterministic": 67,
+      "ratio": 0.971,
+      "mismatches": [
+        {
+          "code": "CODE-P47",
+          "mismatches": [
+            {
+              "n": 32,
+              "first": 5767.0,
+              "second": 6310.0,
+              "delta": 543.0,
+              "delta_ratio": 0.094156
+            },
+            {
+              "n": 64,
+              "first": 11716.0,
+              "second": 12351.0,
+              "delta": 635.0,
+              "delta_ratio": 0.054199
+            },
+            {
+              "n": 128,
+              "first": 25587.0,
+              "second": 27512.0,
+              "delta": 1925.0,
+              "delta_ratio": 0.075234
+            },
+            {
+              "n": 256,
+              "first": 58548.0,
+              "second": 60227.0,
+              "delta": 1679.0,
+              "delta_ratio": 0.028677
+            },
+            {
+              "n": 512,
+              "first": 128957.0,
+              "second": 123871.0,
+              "delta": -5086.0,
+              "delta_ratio": 0.03944
+            },
+            {
+              "n": 1024,
+              "first": 259355.0,
+              "second": 258858.0,
+              "delta": -497.0,
+              "delta_ratio": 0.001916
+            },
+            {
+              "n": 2048,
+              "first": 585517.0,
+              "second": 578902.0,
+              "delta": -6615.0,
+              "delta_ratio": 0.011298
+            },
+            {
+              "n": 4096,
+              "first": 1284665.0,
+              "second": 1255255.0,
+              "delta": -29410.0,
+              "delta_ratio": 0.022893
+            },
+            {
+              "n": 8192,
+              "first": 2644180.0,
+              "second": 2653357.0,
+              "delta": 9177.0,
+              "delta_ratio": 0.003471
+            },
+            {
+              "n": 16384,
+              "first": 5629538.0,
+              "second": 5551994.0,
+              "delta": -77544.0,
+              "delta_ratio": 0.013774
+            }
+          ]
+        },
+        {
+          "code": "CODE-P48",
+          "mismatches": [
+            {
+              "n": 32,
+              "first": 2311.0,
+              "second": 2855.0,
+              "delta": 544.0,
+              "delta_ratio": 0.235396
+            },
+            {
+              "n": 64,
+              "first": 3698.0,
+              "second": 3185.0,
+              "delta": -513.0,
+              "delta_ratio": 0.138724
+            },
+            {
+              "n": 128,
+              "first": 9279.0,
+              "second": 8096.0,
+              "delta": -1183.0,
+              "delta_ratio": 0.127492
+            },
+            {
+              "n": 256,
+              "first": 19825.0,
+              "second": 18611.0,
+              "delta": -1214.0,
+              "delta_ratio": 0.061236
+            },
+            {
+              "n": 512,
+              "first": 32357.0,
+              "second": 33230.0,
+              "delta": 873.0,
+              "delta_ratio": 0.02698
+            },
+            {
+              "n": 1024,
+              "first": 79689.0,
+              "second": 68765.0,
+              "delta": -10924.0,
+              "delta_ratio": 0.137083
+            },
+            {
+              "n": 2048,
+              "first": 196497.0,
+              "second": 200127.0,
+              "delta": 3630.0,
+              "delta_ratio": 0.018474
+            },
+            {
+              "n": 4096,
+              "first": 336955.0,
+              "second": 283536.0,
+              "delta": -53419.0,
+              "delta_ratio": 0.158535
+            },
+            {
+              "n": 8192,
+              "first": 502025.0,
+              "second": 514346.0,
+              "delta": 12321.0,
+              "delta_ratio": 0.024543
+            },
+            {
+              "n": 16384,
+              "first": 1264651.0,
+              "second": 1236630.0,
+              "delta": -28021.0,
+              "delta_ratio": 0.022157
+            }
+          ]
+        }
+      ]
+    },
+    "cost_seconds": {
+      "problems": 70,
+      "min": 0.0,
+      "median": 4.45,
+      "max": 5.994,
+      "total": 314.094
+    },
+    "failures": {
+      "by_bucket": {
+        "correct": 54,
+        "not_measurable": 1,
+        "predicted_unknown": 1,
+        "wrong_class": 14
+      },
+      "items": [
+        {
+          "code": "CODE-P06",
+          "title": "排队接水",
+          "bucket": "wrong_class",
+          "verdict": "ok",
+          "expected": "O(n log n)",
+          "predicted": "O(n^2)",
+          "stop_reason": "OK",
+          "error": null
+        },
+        {
+          "code": "CODE-P08",
+          "title": "跳跃游戏",
+          "bucket": "wrong_class",
+          "verdict": "ok",
+          "expected": "O(n)",
+          "predicted": "O(n^2)",
+          "stop_reason": "OK",
+          "error": null
+        },
+        {
+          "code": "CODE-P15",
+          "title": "大整数乘法",
+          "bucket": "wrong_class",
+          "verdict": "ok",
+          "expected": "UNKNOWN",
+          "predicted": "O(n log n)",
+          "stop_reason": "OK",
+          "error": null
+        },
+        {
+          "code": "CODE-P24",
+          "title": "最长公共子串",
+          "bucket": "wrong_class",
+          "verdict": "ok",
+          "expected": "O(n)",
+          "predicted": "O(n^2)",
+          "stop_reason": "OK",
+          "error": null
+        },
+        {
+          "code": "CODE-P26",
+          "title": "单源最短路",
+          "bucket": "wrong_class",
+          "verdict": "ok",
+          "expected": "O(n log n)",
+          "predicted": "O(n^2 log n)",
+          "stop_reason": "OK",
+          "error": null
+        },
+        {
+          "code": "CODE-P27",
+          "title": "负权环判定",
+          "bucket": "wrong_class",
+          "verdict": "ok",
+          "expected": "O(n^2)",
+          "predicted": "O(n)",
+          "stop_reason": "OK",
+          "error": null
+        },
+        {
+          "code": "CODE-P37",
+          "title": "数独求解",
+          "bucket": "not_measurable",
+          "verdict": "not_measurable",
+          "expected": "NOT_MEASURABLE",
+          "predicted": "UNKNOWN",
+          "stop_reason": null,
+          "error": "固定盘面输入（数独），规模无法伸缩，降级为不可测"
+        },
+        {
+          "code": "CODE-P39",
+          "title": "括号生成",
+          "bucket": "wrong_class",
+          "verdict": "ok",
+          "expected": "UNKNOWN",
+          "predicted": "O(2^n)",
+          "stop_reason": "OK",
+          "error": null
+        },
+        {
+          "code": "CODE-P40",
+          "title": "单词搜索",
+          "bucket": "wrong_class",
+          "verdict": "ok",
+          "expected": "O(n^2)",
+          "predicted": "O(n^2 log n)",
+          "stop_reason": "BUDGET_EXHAUSTED",
+          "error": null
+        },
+        {
+          "code": "CODE-P46",
+          "title": "最长公共前缀",
+          "bucket": "wrong_class",
+          "verdict": "ok",
+          "expected": "O(n)",
+          "predicted": "O(n log n)",
+          "stop_reason": "OK",
+          "error": null
+        },
+        {
+          "code": "CODE-P48",
+          "title": "第 k 小元素",
+          "bucket": "wrong_class",
+          "verdict": "ok",
+          "expected": "O(n)",
+          "predicted": "O(n^2)",
+          "stop_reason": "OK",
+          "error": null
+        },
+        {
+          "code": "CODE-P57",
+          "title": "统计素数个数",
+          "bucket": "wrong_class",
+          "verdict": "ok",
+          "expected": "UNKNOWN",
+          "predicted": "O(n)",
+          "stop_reason": "OK",
+          "error": null
+        },
+        {
+          "code": "CODE-P58",
+          "title": "扩展欧几里得",
+          "bucket": "predicted_unknown",
+          "verdict": "ok",
+          "expected": "O(log n)",
+          "predicted": "UNKNOWN",
+          "stop_reason": "OK",
+          "error": null
+        },
+        {
+          "code": "CODE-P62",
+          "title": "质因数分解",
+          "bucket": "wrong_class",
+          "verdict": "ok",
+          "expected": "UNKNOWN",
+          "predicted": "O(log n)",
+          "stop_reason": "OK",
+          "error": null
+        },
+        {
+          "code": "CODE-P63",
+          "title": "只出现一次的数字",
+          "bucket": "wrong_class",
+          "verdict": "ok",
+          "expected": "O(n)",
+          "predicted": "O(1)",
+          "stop_reason": "OK",
+          "error": null
+        },
+        {
+          "code": "CODE-P64",
+          "title": "二进制中 1 的个数",
+          "bucket": "wrong_class",
+          "verdict": "ok",
+          "expected": "O(n)",
+          "predicted": "O(n log n)",
+          "stop_reason": "OK",
+          "error": null
+        }
+      ]
+    },
+    "language": "cpp",
+    "seed": 20261028
+  }
+}

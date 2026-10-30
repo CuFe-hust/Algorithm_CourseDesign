@@ -4,7 +4,7 @@ import secrets
 from sqlalchemy import select
 from app.db.base import utcnow
 from app.db.models.analytics import AnalysisRun,AnalysisBatch,AnalysisInputSnapshot
-from .catalog import invoke,PLUGINS
+from .catalog import invoke,get_plugin
 from .payloads import rule_output
 from .service import root_snapshot,refresh,save_output
 from .contracts import digest
@@ -23,7 +23,7 @@ def recover_expired(db):
 
 def claim(db):
     run=db.scalar(select(AnalysisRun).join(AnalysisBatch).where(AnalysisRun.status=='READY', AnalysisBatch.status=='ACTIVE', AnalysisBatch.configuration['schema_version'].astext=='analysis-v2').order_by(AnalysisRun.id)
-        .with_for_update(skip_locked=True).limit(1))
+        .with_for_update(of=AnalysisRun,skip_locked=True).limit(1))
     if run is None:db.commit();return None
     batch=db.get(AnalysisBatch,run.batch_id);snapshot=db.get(AnalysisInputSnapshot,run.snapshot_id)
     run.status='RUNNING';run.attempt_no+=1;run.attempt_token=secrets.token_hex(24)
@@ -32,7 +32,7 @@ def claim(db):
     ticket=dict(run_id=str(run.id),batch_id=str(batch.id),token=run.attempt_token,algorithm=run.algorithm_key,
         step=run.step_key,payload=snapshot.payload,input_hash=snapshot.input_hash,is_mock=snapshot.is_mock,
         mode=batch.mode,seed=batch.seed,implementation=run.implementation_name,implementation_version=run.implementation_version,
-        root=root_snapshot(db,batch).payload)
+        root=(root_snapshot(db,batch).payload if root_snapshot(db,batch) is not None else {}))
     db.commit();return ticket
 
 
@@ -59,15 +59,15 @@ def process_one(db):
     if ticket is None:return False
     try:
         if ticket['algorithm']:
-            plugin=PLUGINS[ticket['algorithm']]
+            plugin=get_plugin(ticket['algorithm'])
             if plugin.implementation!=ticket['implementation'] or plugin.version!=ticket['implementation_version']:
                 finish(db,ticket,error='IMPLEMENTATION_CHANGED_CREATE_NEW_BATCH');return True
             result=invoke(ticket['algorithm'],ticket['payload'],mode=ticket['mode'],seed=ticket['seed'],
                 input_hash=ticket['input_hash']).model_dump(mode='json')
         else:
             if digest(ticket['payload'])!=ticket['input_hash']:raise ValueError('Input changed')
-            result=dict(schema_version='analysis-v2',algorithm_key=ticket['step'],implementation_name='deterministic_rule',
-                implementation_version='1',input_hash=ticket['input_hash'],is_mock=ticket['is_mock'],status='OK',
+            result=dict(schema_version='analysis-v2',algorithm_key=ticket['step'],implementation_name=ticket['implementation'],
+                implementation_version=ticket['implementation_version'],input_hash=ticket['input_hash'],is_mock=ticket['is_mock'],status='OK',
                 payload=rule_output(ticket['step'],ticket['payload'],ticket['root']),evidence=[],limitations=[])
         finish(db,ticket,result)
     except Exception:

@@ -5,6 +5,7 @@ import { AlertTriangle, ArrowRight, Clock, FileText } from "@lucide/vue";
 import { errorText } from "../../shared/api";
 import { session } from "../../shared/session";
 import * as api from "./api";
+import { formatDateTime, remainingLabel } from "./format";
 import { useJudgePolling } from "./composables/useJudgePolling";
 import type {
   AssignmentSummary,
@@ -110,14 +111,7 @@ async function refresh() {
     /* keep the previous snapshot; the poller retries */
   }
 }
-function deadlineLabel(value: string) {
-  const deadline = new Date(value);
-  const now = new Date(progress.value?.as_of || Date.now());
-  const hours = Math.round((deadline.getTime() - now.getTime()) / 3_600_000);
-  if (hours < 0) return "已截止";
-  if (hours < 48) return `剩余约 ${hours} 小时`;
-  return `剩余约 ${Math.round(hours / 24)} 天`;
-}
+
 function itemState(itemId: string) {
   const entry = progressMap.value.get(itemId);
   if (!entry || !entry.has_submitted) return { label: "未提交", tone: "gray" };
@@ -199,9 +193,13 @@ onBeforeUnmount(() => {
             </RouterLink>
           </h2>
           <p class="muted">
-            截止
-            {{ new Date(assignment.submission_deadline).toLocaleString() }} ·
-            {{ deadlineLabel(assignment.submission_deadline) }}
+            截止 {{ formatDateTime(assignment.submission_deadline) }} ·
+            {{
+              remainingLabel(
+                assignment.submission_deadline,
+                progress?.as_of || Date.now(),
+              )
+            }}
           </p>
         </div>
         <span

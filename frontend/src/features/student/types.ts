@@ -191,3 +191,166 @@ export interface BatchStatusEntry {
   job: JobView | null;
   result: ResultSummary | null;
 }
+
+/* ---------------------------------------------------------- complexity report */
+
+export type ComplexityClass =
+  | "O(1)"
+  | "O(log n)"
+  | "O(n)"
+  | "O(n log n)"
+  | "O(n^2)"
+  | "O(n^2 log n)"
+  | "O(n^3)"
+  | "O(2^n)"
+  | "O(n!)"
+  | "UNKNOWN";
+
+export type Confidence = "LOW" | "MEDIUM" | "HIGH";
+
+export type ComplexityStatus =
+  | "SUCCEEDED"
+  | "NOT_MEASURABLE"
+  | "INELIGIBLE"
+  | "FAILED"
+  | "PENDING"
+  | "RUNNING";
+
+/** Time conclusions always come from the execution trace. */
+export type TimeSource = "TRACE";
+/** Space has no collector for every language, so it can be absent. */
+export type SpaceSource = "TRACE" | "NONE";
+
+/**
+ * How the published class was derived: a recurrence read from the call trace,
+ * a closed-form fit over the counted work, a summation or master-theorem
+ * solution, or nothing reproducible.
+ */
+export type FitMethod =
+  | "RECURRENCE"
+  | "CLOSED_FORM"
+  | "UNKNOWN"
+  | "SUMMATION"
+  | "EXPONENTIAL"
+  | "MASTER";
+
+export interface FitCandidate {
+  class: ComplexityClass;
+  r2: number;
+  sse: number;
+}
+
+/** The winning candidate, with the affine coefficients `work = a*f(n) + b`. */
+export interface FitBest extends FitCandidate {
+  coefficient: number;
+  offset: number;
+}
+
+export interface ComplexityFit {
+  class: ComplexityClass;
+  confidence: Confidence;
+  /** How much smaller the winner's residual is than the runner-up's. */
+  margin: number | null;
+  best: FitBest | null;
+  candidates: FitCandidate[];
+  notes: string[];
+}
+
+export interface ComplexityTime {
+  class: ComplexityClass;
+  confidence: Confidence;
+  source: TimeSource;
+  method: FitMethod;
+  /** e.g. "Θ(n log n)" */
+  closed_form: string;
+  /** e.g. "T(n) = 2·T(n/2) + O(n)" */
+  recurrence: string | null;
+  fit: ComplexityFit | null;
+  notes: string[];
+}
+
+export interface ComplexitySpace {
+  class: ComplexityClass;
+  confidence: Confidence;
+  source: SpaceSource;
+  fit: ComplexityFit | null;
+  /** Fit over peak recursion depth, when the adapter reports it. */
+  depth_fit: ComplexityFit | null;
+  notes: string[];
+}
+
+export interface TraceCount {
+  n: number;
+  count: number;
+}
+
+export interface LineEvidence {
+  kind: "LINE";
+  /** "function:line", e.g. "merge:13" */
+  location: string;
+  class: ComplexityClass;
+  counts: TraceCount[];
+}
+
+export interface RecursionEvidence {
+  kind: "RECURSION";
+  function: string;
+  branching: number;
+  shrink: string;
+  expression: string | null;
+  solution: string | null;
+  share: number;
+}
+
+export type ComplexityEvidence = LineEvidence | RecursionEvidence;
+
+/** Counts recorded for one generated input size; never a duration. */
+export interface TracePoint {
+  n: number;
+  verdict: string;
+  detail: string | null;
+  work: number;
+  /** Work a minimal reader spends on the same input. */
+  baseline_work: number;
+  line_events: number;
+  jump_events: number;
+  library_work: number;
+  max_depth: number;
+  peak_bytes: number | null;
+}
+
+export interface ComplexityTrace {
+  adapter: string;
+  work_unit: string;
+  input_family: string | null;
+  stop_reason: string;
+  deterministic: boolean | null;
+  repeat_delta: number | null;
+  notes: string[];
+  points: TracePoint[];
+  time: ComplexityTime;
+  space: ComplexitySpace;
+  evidence: ComplexityEvidence[];
+}
+
+export interface ComplexityReport {
+  status: ComplexityStatus;
+  language: string | null;
+  implementation_name: string;
+  implementation_version: string;
+  time: ComplexityTime;
+  space: ComplexitySpace;
+  trace: ComplexityTrace;
+  limitations: string[];
+  error: string | null;
+  requested_at: string | null;
+  finished_at: string | null;
+}
+
+export interface ComplexityResponse {
+  submission_id: string;
+  status: ComplexityStatus | "NONE";
+  eligible: boolean | null;
+  report: ComplexityReport | null;
+  reason: string | null;
+}

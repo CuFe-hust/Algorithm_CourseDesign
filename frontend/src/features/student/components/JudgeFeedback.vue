@@ -26,11 +26,17 @@ const tones: Record<string, string> = {
   OUTPUT_LIMIT_EXCEEDED: "amber",
 };
 const modeLabel = computed(() => {
-  const mode = props.result?.execution_mode;
-  if (props.result?.is_mock || mode === "MOCK") return "模拟评测";
+  if (!props.result) return "等待评测";
+  const mode = props.result.execution_mode;
+  if (props.result.is_mock || mode === "MOCK") return "模拟评测";
   if (mode === "LOCAL") return "本机真实执行";
   if (mode === "LINUX_SANDBOX") return "Linux 沙箱";
   return mode || "未标注";
+});
+const modeTone = computed(() => {
+  if (!props.result) return "amber";
+  if (props.result.is_mock) return "gray";
+  return "type";
 });
 const measured = computed(
   () => props.result?.measurement_status === "MEASURED",
@@ -40,9 +46,7 @@ const measured = computed(
   <section class="card judge-feedback">
     <div class="card-heading">
       <h2>评测结果</h2>
-      <span class="badge" :class="result?.is_mock ? 'gray' : 'type'">{{
-        modeLabel
-      }}</span>
+      <span class="badge" :class="modeTone">{{ modeLabel }}</span>
     </div>
     <p v-if="!result" class="muted">
       {{

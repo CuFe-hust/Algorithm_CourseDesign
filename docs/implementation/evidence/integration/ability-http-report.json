@@ -1,0 +1,39 @@
+{
+  "status": "passed",
+  "data_notice": "Synthetic local demo students, real LOCAL judge and reviewed evidence; not real learner validation.",
+  "course_id": "1",
+  "assignment_id": "8",
+  "question_snapshot": "23",
+  "course_snapshot": {
+    "id": "24",
+    "results_snapshot_version": "course-results-54c598ab777c00837bb89545dff916d118ecad929be1182e77e7c20d2d6e3cc4",
+    "source_count": 1,
+    "student_count": 6,
+    "known_count": 12,
+    "total": 12,
+    "output_hash": "b82566bce6244f080fe27f41831ba7939f4b67946ac29a34799c705927d3836e",
+    "is_mock": false
+  },
+  "models": {
+    "b0": {
+      "batch_id": "25",
+      "implementation": "ability_b0",
+      "version": "2",
+      "status": "OK",
+      "is_mock": false,
+      "own_only": true,
+      "source_hash": "d24202ecedaa5a5ee24816fbfb23045c1a31aa18662bcae2516add314541fb71",
+      "converged": null
+    },
+    "d1": {
+      "batch_id": "26",
+      "implementation": "difficulty_fractional",
+      "version": "2",
+      "status": "OK",
+      "is_mock": false,
+      "own_only": true,
+      "source_hash": "41bc0c4864ad8e3604bc9c4244771a5599f6006ce31574a2eb32d66ba4293307",
+      "converged": true
+    }
+  }
+}

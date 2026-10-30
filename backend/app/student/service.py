@@ -213,7 +213,9 @@ def withdraw_submission(db,sid,user):
     row,a,role=visible_submission(db,sid,user)
     if row.student_id!=user.id or role!='STUDENT':
         raise AppError(403,'STUDENT_REQUIRED','只能撤回本人的提交')
-    db.scalar(select(Submission).where(Submission.id==sid).with_for_update())
+    db.scalar(select(User).where(User.id==user.id).with_for_update())
+    a=db.scalar(select(Assignment).where(Assignment.id==a.id).with_for_update().execution_options(populate_existing=True))
+    row=db.scalar(select(Submission).where(Submission.id==sid).with_for_update().execution_options(populate_existing=True))
     job=db.scalar(select(AnalysisJob).where(AnalysisJob.submission_id==sid).with_for_update())
     if row.status=='WITHDRAWN':
         result=submission_receipt(db,row,True);db.commit();return result

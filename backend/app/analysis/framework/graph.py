@@ -38,6 +38,32 @@ BY_KEY={step.key:step for step in STEPS}
 
 
 def steps_for(batch):
+    configuration=batch.configuration or {}
+    pipeline=configuration.get('pipeline')
+    if pipeline in ('QUESTION_RESULTS','COURSE_QUESTION_RESULTS'):
+        return (Step('result_snapshot'),)
+    if pipeline=='REVIEW_ALLOCATION':
+        return (Step('allocation',algorithm='allocation'),
+            Step('open_review',('allocation',),event='OPEN_REVIEW'),
+            Step('collect_reviews',('open_review',),event='SUBMIT_REVIEWS'))
+    if pipeline=='REVIEW_ANALYSIS':
+        return (Step('aggregation',algorithm='aggregation'),Step('review_timing',algorithm='review_timing'),
+            Step('deviation',('aggregation',),algorithm='deviation'),
+            Step('reviewer_bias',('aggregation',),algorithm='reviewer_bias'),
+            Step('relationship',('aggregation',),algorithm='relationship'),
+            Step('resolve',('deviation','reviewer_bias','review_timing','relationship'),event='RESOLVE'))
+    if pipeline=='REVIEW_RECOMPUTE':
+        return (Step('reaggregation',algorithm='aggregation'),Step('effective_subjective_results',('reaggregation',)))
+    if batch.configuration.get('pipeline')=='STUDENT_ABILITY_D1':
+        return (Step('ability',algorithm='ability_d1'),)
+    if batch.configuration.get('pipeline')=='STUDENT_ABILITY_B0':
+        return (Step('ability',algorithm='ability_b0'),)
     if batch.configuration.get('pipeline')=='STUDENT_ABILITY':
         return (Step('ability',algorithm='ability'),)
+    if configuration.get('pipeline')=='CODE_SIMILARITY':
+        # One independent comparison per programming item. Keeping the item id in
+        # the step key is what prevents a course-wide batch from ever comparing
+        # code across different questions.
+        return tuple(Step(f'code_similarity@{item_id}',algorithm='code_similarity')
+                     for item_id in sorted(configuration.get('subjects',{}),key=int))
     return STEPS

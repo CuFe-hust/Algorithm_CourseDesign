@@ -401,7 +401,9 @@ code {
 }
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  /* auto-fit keeps three-card panels (student home) and four-card panels
+     (teacher overview) both balanced instead of leaving an empty column. */
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 18px;
   margin-bottom: 24px;
 }
@@ -1969,4 +1971,293 @@ tbody tr:hover {
   .teacher-choice-list > div {
     align-items: flex-start;
   }
+}
+
+/* ------------------------------------------------------- complexity report */
+
+.complexity-panel .complexity-badges {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin: 4px 0 18px;
+}
+.complexity-badge {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: linear-gradient(180deg, #fbfcff, #ffffff);
+}
+.complexity-badge .small-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.complexity-badge strong {
+  font-size: 24px;
+  letter-spacing: -0.4px;
+  color: #23304a;
+}
+.complexity-badge small {
+  font-size: 11px;
+}
+
+.growth-chart {
+  margin: 0 0 18px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 16px 16px 8px;
+  background: #fff;
+}
+.growth-chart figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+.growth-chart figcaption strong {
+  font-size: 13px;
+}
+.growth-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.growth-chart .axis {
+  stroke: #c9d2e2;
+  stroke-width: 1;
+}
+.growth-chart .grid {
+  stroke: #eef1f7;
+  stroke-width: 1;
+}
+.growth-chart .tick,
+.growth-chart .axis-label {
+  fill: #8b96a8;
+  font-size: 10px;
+  font-family: inherit;
+}
+.growth-chart .curve {
+  fill: none;
+  stroke: #4b71dd;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.growth-chart .point {
+  fill: #315ce8;
+  stroke: #fff;
+  stroke-width: 1.5;
+}
+.growth-chart .point.mutedPoint {
+  fill: #9fb0d8;
+}
+.growth-chart .legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 11px;
+  color: #7b879b;
+  padding: 6px 2px 8px;
+}
+.growth-chart .legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.growth-chart .legend i.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #315ce8;
+}
+.growth-chart .legend i.dot.dim {
+  background: #9fb0d8;
+}
+.growth-chart .legend i.line {
+  width: 16px;
+  height: 2px;
+  background: #4b71dd;
+}
+.growth-empty {
+  padding: 8px 0 14px;
+}
+
+.complexity-details {
+  border-top: 1px solid #f1f3f7;
+  padding: 14px 0 4px;
+}
+.complexity-details summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4c5b74;
+  margin-bottom: 8px;
+}
+.complexity-details ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12px;
+  color: #56627a;
+}
+.complexity-details li {
+  margin: 5px 0;
+}
+.complexity-details .limitations {
+  color: #7a6540;
+}
+.line-chip {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #f1f4fa;
+  color: #5b6780;
+  margin-right: 6px;
+}
+
+/* ------------------------------------------------------------- similarity */
+
+.similarity-form .similarity-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 8px;
+}
+.similarity-form label {
+  margin-bottom: 0;
+}
+.similarity-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.similarity-tabs button {
+  min-height: 36px;
+  background: #fff;
+}
+.similarity-tabs button.selected {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: #edf2ff;
+}
+.cluster-list {
+  display: grid;
+  gap: 8px;
+  padding: 16px 24px 22px;
+}
+.cluster-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-start;
+  text-align: left;
+  padding: 12px 14px;
+  background: #fbfcff;
+}
+.cluster-members {
+  flex: 1;
+  font-size: 13px;
+  color: #38455c;
+}
+.span-list {
+  display: grid;
+  gap: 8px;
+  padding: 0 24px 8px;
+}
+.span-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+}
+.code-compare {
+  display: grid;
+  /* minmax(0, ...) keeps the columns from being widened by the code inside them;
+     without it a long line made the page scroll sideways at narrow widths. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px;
+  padding: 0 24px 24px;
+}
+.code-compare > div {
+  min-width: 0;
+}
+.code-compare h3 {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #5d6a83;
+}
+.code-compare .markdown pre {
+  max-height: 520px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 0;
+}
+.similarity-limitations {
+  margin: 18px 0 0;
+  padding-left: 18px;
+  font-size: 12px;
+  color: #7a6540;
+}
+tr.selected td {
+  background: #f4f7ff;
+}
+@media (max-width: 900px) {
+  .code-compare {
+    grid-template-columns: 1fr;
+    padding: 0 18px 18px;
+  }
+}
+
+.complexity-hint {
+  display: block;
+  margin-top: 4px;
+  color: #6b7a93;
+}
+
+/* ------------------------------------------------- complexity (teacher view) */
+
+.complexity-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 8px;
+}
+.complexity-controls label {
+  margin-bottom: 0;
+}
+.complexity-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+}
+.complexity-warning svg {
+  flex: none;
+  margin-top: 2px;
+}
+.complexity-empty .button {
+  margin-top: 6px;
+}
+.complexity-reason {
+  max-width: 260px;
+  line-height: 1.55;
+  color: #8b96a8;
+}
+.complexity-hint-line {
+  margin: 14px 24px 20px;
+}
+.complexity-limitations {
+  margin: 0;
+  padding: 18px 24px 22px 42px;
+  font-size: 12px;
+  color: #7a6540;
+}
+.complexity-limitations li {
+  margin: 7px 0;
 }

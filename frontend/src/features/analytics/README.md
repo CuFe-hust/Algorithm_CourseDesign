@@ -1,3 +1,7 @@
-# 互评与分析模块接入位置
+# 互评与分析模块
 
-由对应负责人实现。复用共享登录与请求客户端，在 `../../app/router.ts` 注册路由。按 `docs/design/contracts/next-phase.md` 协调匿名任务、教师可见映射和成绩发布接口；不可用模拟判定推算真实分数。
+第③、④条真实链路实现位于 `peer-review/`；教师入口“互评与复核”，学生入口“我的互评”。复用共享登录与API请求客户端，在 `src/app/router.ts` 注册。
+
+接口和架构见仓库 `docs/design/analysis/peer-review-*.md`，运行方式见 `docs/implementation/runbooks/peer-review-setup.md`。其他分析线路按对应契约接入；本模块输出逐题候选，不实现作业总分与正式成绩发布。
+
+整合入口：`AnalysisCenter.vue`（教师六链路状态）、`Results.vue`（教师课程/学生本人报告）。QUESTION_RESULTS固定评测与复核来源，能力模型未接入明确显示；架构见 `docs/design/analysis/platform-integration.md`。

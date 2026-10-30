@@ -133,6 +133,18 @@ def test_concurrent_workers_claim_distinct_runs(db,demo):
     assert all(t['token'] for t in tickets)
 
 
+def test_claim_does_not_lock_the_joined_batch_row(db,demo):
+    from sqlalchemy.orm import Session
+    bid=int(create(db,demo)['id'])
+    # Hold the parent batch lock while an independent connection claims a child
+    # run. FOR UPDATE without OF would skip every run in this batch here.
+    with Session(db.bind) as held,Session(db.bind) as worker:
+        held.scalar(select(AnalysisBatch).where(AnalysisBatch.id==bid).with_for_update())
+        ticket=claim(worker)
+        assert ticket is not None and ticket['batch_id']==str(bid)
+        held.rollback()
+
+
 def test_expired_run_retry_preserves_input_and_rejects_stale_token(db,demo):
     from app.analysis.framework.runner import recover_expired
     bid=int(create(db,demo)['id']);ticket=claim(db);rid=int(ticket['run_id'])
@@ -151,11 +163,11 @@ def test_delayed_steps_keep_version_pinned_at_batch_creation(db,demo,monkeypatch
     from app.analysis.framework.catalog import PLUGINS
     bid=int(create(db,demo)['id']);drain(db)
     plugin=PLUGINS['aggregation']
-    monkeypatch.setitem(PLUGINS,'aggregation',replace(plugin,version='2'))
+    monkeypatch.setitem(PLUGINS,'aggregation',replace(plugin,version='99'))
     for name in ('OPEN_REVIEW','SUBMIT_REVIEWS'):
         event(db,bid,name);drain(db)
     run=db.scalar(select(AnalysisRun).where(AnalysisRun.batch_id==bid,AnalysisRun.step_key=='aggregation'))
-    assert run.implementation_version=='1' and run.status=='FAILED'
+    assert run.implementation_version==plugin.version and run.status=='FAILED'
     assert run.reason['reason']=='IMPLEMENTATION_CHANGED_CREATE_NEW_BATCH'
 
 

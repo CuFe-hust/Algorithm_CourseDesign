@@ -1,6 +1,12 @@
 # 算法课程评审平台
 
-已实现统一教师/学生前端与共享FastAPI、PostgreSQL后端，28张业务表、迁移head为pg0006。教师可管理四类题目、导入及开通学生账号、发放/重置初始密码、创建发布作业、调整截止和查看采用结果；学生可改密、作答、提交、查看历史与LOCAL真实评测。匿名互评、评分聚合、正式成绩与Linux沙箱仍待后续模块。
+已实现统一教师/学生前端与共享FastAPI、PostgreSQL后端，36张业务表、迁移head为pg0010。教师可管理四类题目、导入及开通学生账号、发放/重置初始密码、创建发布作业、调整截止和查看采用结果；学生可改密、作答、提交、查看历史与LOCAL真实评测。已补充第③、④条匿名互评、评分聚合、四类异常证据、教师复核及补评/新版本重算；正式成绩发布与Linux沙箱由后续模块接入。
+
+第六条线交付入口：[完整算法设计说明](docs/design/analysis/student-ability-algorithm-design.md)，包含公式、伪代码、复杂度、实验和队友接入契约。来源分支：`feat/student-ability-delivery`（已接入整合分支）。
+
+最新算法：[D1难度感知章节模型与演示](docs/design/analysis/student-ability-difficulty-model.md)，[独立留出实验](docs/design/analysis/difficulty-experiments.md)。模型、B0对照、提交过程观察已接通；实验保留无难度退化与新题错标失败场景。
+
+2026-10-29会议入口：[第六条线B0与个人雷达面板](docs/design/analysis/student-ability-b0.md)。已接通真实B0、结果持久化、本人读取与合成演示；未布置章节隐藏，编程/主观成绩共同参与。正式逐题证据已通过课程快照接入，教师可在逐题结果页生成B0/D1；[接入与使用说明](docs/design/analysis/student-ability-integration.md)。
 
 ## 三人从这里开始
 
@@ -106,12 +112,43 @@ Remove-Item Env:DB_NAME
 
 队友运行`python -m scripts.import_full_data`默认使用公开脱敏快照，导入ALGO_FULL_2026课程：70编程题、50主观题、350组测试、275份参考答案/代码、217名学生、8班。DEMO_ALGO仍用于四类题的登录与提交流程演示。全量课程不会自动发布作业，名册账号PENDING且无密码，教师端已提供显式开通和作业发布入口，导入不会自动替教师执行这两步。
 
-真实名册只供本机显式导入；不要把数据库备份、身份映射或原始xlsx上传GitHub。不同身份模式不能覆盖同一数据库的已有身份，请选定一种，详见[数据导入](docs/implementation/runbooks/data-import.md)。当前API业务格式保持兼容，迁移head为pg0006；互评和成绩分析框架继续由对应模块推进。
+真实名册只供本机显式导入；不要把数据库备份、身份映射或原始xlsx上传GitHub。不同身份模式不能覆盖同一数据库的已有身份，请选定一种，详见[数据导入](docs/implementation/runbooks/data-import.md)。当前API业务格式保持兼容，迁移head为pg0010；第三、四条链路交接见下方说明。
 
 教师与学生的完整联调见[2026-10-25验证记录](docs/implementation/evidence/teacher/2026-10-25-student-integration.md)，先备份本机库再执行增量迁移。
 
 ## 分析框架与算法研究
 
-新增分析批次、快照、任务与结果记录（28业务表，pg0006），与既有JUDGE队列分开。15插件契约与23步骤，六条合成链路可运行，真实缺输入明确等待；真实互评与正式成绩发布仍待接入。见[运行/逐段演示](docs/implementation/runbooks/analysis-setup.md)、[黑盒输入输出](docs/design/analysis/black-boxes.md)和[4K会议图](docs/assets/diagrams/analysis/README.md)。原生Windows支持API/MOCK/分析，当前POSIX LOCAL启动门不支持原生Windows。
+新增分析批次、快照、任务与结果记录（现36业务表，pg0010），与既有JUDGE队列分开。15插件契约与23步骤，六条合成链路可运行，真实缺输入明确等待；真实互评与聚合复核已接入，逐题快照与个人报告已接入，不恢复作业总分/发布节点。见[运行/逐段演示](docs/implementation/runbooks/analysis-setup.md)、[黑盒输入输出](docs/design/analysis/black-boxes.md)和[4K会议图](docs/assets/diagrams/analysis/README.md)。原生Windows支持API/MOCK/分析，当前POSIX LOCAL启动门不支持原生Windows。
+
+当前②内容证据与⑥学习分析仍有占位模型，不表示全部研究算法完成；见下方整合状态说明。
+
+同题相似检测与已通过代码的复杂度分析已接入（复杂度扩展使用pg0007–pg0009，整合head为pg0010、36业务表）：
+
+```powershell
+..\.venv\Scripts\python.exe -m alembic upgrade head
+..\.venv\Scripts\python.exe -m scripts.seed_complexity_profiles
+..\.venv\Scripts\python.exe -m scripts.run_analysis --watch      # 相似批次
+..\.venv\Scripts\python.exe -m scripts.run_complexity --watch    # 复杂度轨迹采集
+```
+
+复杂度分析会真实执行学生代码、采集执行轨迹计数并推断增长类别（不再测墙钟时间）；与评测一样只适合受控开发环境，没有 Linux 沙箱。见[相似检测](docs/design/analysis/code-similarity.md)、[执行轨迹计数与递推推断](docs/design/analysis/complexity-trace.md)、[2026-10-29 轨迹实验记录](docs/implementation/evidence/similarity-complexity/2026-10-29-trace-experiments.md)。真实 HTTP 冒烟：`scripts/smoke_similarity_complexity_http.py`。
+
+逐段演示见[运行手册](docs/implementation/runbooks/analysis-setup.md)、[黑盒输入输出](docs/design/analysis/black-boxes.md)和[4K会议图](docs/assets/diagrams/analysis/README.md)。原生Windows支持API/MOCK/分析，当前POSIX LOCAL启动门不支持原生Windows。原生Windows支持API/MOCK/分析，当前POSIX LOCAL启动门不支持原生Windows。
 
 第六条线可独立运行：只调用现有ability占位黑盒，不等待其他线路。见[独立线路说明](docs/design/analysis/student-ability-line.md)。
+
+### 第③、④条主观互评与聚合异常
+
+教师“互评与复核”支持冻结输入、分配确认、原始评价、四类证据、显式处置与版本重算；学生“我的互评”支持匿名本人任务与冻结量表评分。必须启动独立分析worker。
+
+- [功能与验收](docs/features/analysis/peer-review-and-resolution.md) · [后端设计](docs/design/analysis/peer-review-backend.md) · [前端设计](docs/design/analysis/peer-review-frontend.md)
+- [算法与复杂度](docs/design/analysis/peer-review-algorithms.md) · [API和第五线交接](docs/design/analysis/peer-review-api.md)
+- [运行手册](docs/implementation/runbooks/peer-review-setup.md) · [验证记录](docs/implementation/evidence/analysis/2026-10-27-peer-review.md)
+
+## 教师 / 学生 / 分析整合版（2026-10-30）
+
+新增教师“分析中心 / 逐题结果”和学生“学习报告”，统一导航及页面设计。编程结果按可验证的测试证据计分，与教师复核后的主观结果共同固定为不可变逐题快照。学生只读本人投影。②文本/AI及⑥掌握/能力/经验难度5个模型仍为占位。
+
+- [六条链路状态、架构与数据边界](docs/design/analysis/platform-integration.md)
+- [整合启动与联调](docs/implementation/runbooks/platform-integration.md)
+- [实测记录与页面截图](docs/implementation/evidence/integration/2026-10-30-platform-integration.md)
