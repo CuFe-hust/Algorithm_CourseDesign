@@ -12,7 +12,7 @@ from app.db.models import Course,User,AssignmentItem,ProblemVersion,Problem
 
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--credentials',type=Path,required=True);parser.add_argument('--prepare-ui',action='store_true')
+    parser=argparse.ArgumentParser();parser.add_argument('--credentials',type=Path,required=True);parser.add_argument('--prepare-ui',action='store_true');parser.add_argument('--with-programming',action='store_true')
     args=parser.parse_args();password=json.loads(args.credentials.read_text())['password']
     client=httpx.Client(base_url='http://127.0.0.1:8000/api/v1',timeout=30,trust_env=False)
     def call(method,path,headers=None,data=None):
@@ -27,16 +27,30 @@ def main():
         item=db.scalar(select(AssignmentItem).join(ProblemVersion,ProblemVersion.id==AssignmentItem.problem_version_id)
             .join(Problem,Problem.id==ProblemVersion.problem_id).where(Problem.course_id==course.id,AssignmentItem.rubric_id.is_not(None)))
         config=dict(problem_version_id=str(item.problem_version_id),rubric_id=str(item.rubric_id),max_score='20',required_reviewers=2 if args.prepare_ui else 3)
+        programming=db.scalar(select(AssignmentItem).join(ProblemVersion,ProblemVersion.id==AssignmentItem.problem_version_id).join(Problem,Problem.id==ProblemVersion.problem_id).where(Problem.course_id==course.id,AssignmentItem.test_suite_id.is_not(None)))
+        program_config=dict(problem_version_id=str(programming.problem_version_id),test_suite_id=str(programming.test_suite_id),max_score='100',required_reviewers=0)
         course_id=str(course.id);users=[(str(u.id),u.login_name) for u in students]
     headers={uid:login(name) for uid,name in users}
     now=lambda:datetime.now(timezone.utc)
     rid=lambda:uuid.uuid4().hex
     a=call('POST',f'/teacher/courses/{course_id}/assignments',teacher,dict(title='合成联调：'+('页面互评验收' if args.prepare_ui else '主观互评全链路')+' '+now().strftime('%H%M%S'),
-        submission_deadline=(now()+timedelta(days=1)).isoformat(),review_deadline=(now()+timedelta(days=3)).isoformat(),items=[config],student_ids=[uid for uid,_ in users]))
+        submission_deadline=(now()+timedelta(days=1)).isoformat(),review_deadline=(now()+timedelta(days=3)).isoformat(),items=[config,*([program_config] if args.with_programming else [])],student_ids=[uid for uid,_ in users]))
     a=call('POST',f"/teacher/assignments/{a['id']}/publish",teacher,dict(expected_updated_at=a['updated_at'],submission_status='OPEN'))
     item_id=a['items'][0]['id']
     for index,(uid,_) in enumerate(users):
         call('POST',f'/assignment-items/{item_id}/submissions',headers[uid],dict(content=f'合成作品 {index+1}：\n\n令搜索区间为 [l,r)，初始 l=0,r=n。取 m=(l+r)//2；若 a[m]<target 则 l=m+1，否则 r=m。\n\n不变量：所有 i<l 满足 a[i]<target，所有 i>=r 满足 a[i]>=target。每步区间缩短，终止时 l=r 即左边界。空数组返回0，目标大于最大值返回n；时间 O(log n)，额外空间 O(1)。',client_request_id=rid()))
+    programming_submissions=[]
+    if args.with_programming:
+        program_item=a['items'][1]['id']
+        code="n=int(input())\nintervals=[tuple(map(int,input().split())) for _ in range(n)]\nlast=-1\nanswer=0\nfor start,end in sorted(intervals,key=lambda x:(x[1],x[0])):\n    if start>=last:\n        last=end\n        answer+=1\nprint(answer)\n"
+        for uid,_ in users:
+            receipt=call('POST',f'/assignment-items/{program_item}/submissions',headers[uid],dict(content=code,language='python3',client_request_id=rid()))
+            programming_submissions.append(receipt['submission_id'])
+        for _ in range(120):
+            details=[call('GET',f'/submissions/{sid}',teacher) for sid in programming_submissions]
+            if all(d.get('result') and d['result']['verdict']=='ACCEPTED' and not d['result']['is_mock'] for d in details):break
+            time.sleep(.25)
+        else:raise AssertionError('Local judge did not accept six synthetic programs')
     cutoff=now();time.sleep(.02)
     a=call('POST',f"/teacher/assignments/{a['id']}/schedule",teacher,dict(expected_updated_at=a['updated_at'],submission_status='CLOSED',submission_deadline=cutoff.isoformat(),review_deadline=(now()+timedelta(days=3)).isoformat()))
     out=ROOT/'local-data/peer-review-qa';out.mkdir(exist_ok=True)
@@ -78,6 +92,14 @@ def main():
     assert call('GET',f"/peer-review/teacher/tasks/{t['task_id']}",teacher)['evaluation']==original
     assert all(x['item_score'] is not None for x in result['rows'])
     report=dict(is_synthetic=True,transport='real HTTP / localhost',worker='separate CLI process',course_id=course_id,assignment_id=a['id'],root_round_id=r['id'],rounds=len(r['rounds']),original_tasks=len(tasks),supplement_tasks=len(new_tasks),analysis_versions=len(r['analyses']),candidate_version=result['version'],candidate_count=len(result['rows']),raw_evaluation_unchanged=True,no_mock_algorithm_outputs=not result['is_mock'],supplement_no_repeated_pairs=True)
+    if args.with_programming:
+        snapshot=call('POST',f'/analysis/courses/{course_id}/question-results',teacher,dict(request_id=rid(),assignment_id=a['id'],reason='整合验收：真实编程评测与主观复核共同形成逐题快照'))
+        assert snapshot['known_count']==12 and snapshot['missing_count']==0
+        assert {row['source']['kind'] for row in snapshot['rows']}=={'JUDGE_RESULT','REVIEW_ANALYSIS'}
+        personal=call('GET',f"/analysis/question-results/{snapshot['id']}",headers[users[0][0]])
+        assert personal['total']==2 and all('student_id' not in row and 'student_name' not in row for row in personal['rows'])
+        report.update(programming_real_accepted=len(programming_submissions),question_results_id=snapshot['id'],known_question_samples=snapshot['known_count'],personal_projection_verified=True)
+        (out/'platform-http-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
     (out/'http-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2));print(json.dumps(report,ensure_ascii=False))
 
 if __name__=='__main__':main()

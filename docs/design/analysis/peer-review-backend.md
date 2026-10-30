@@ -1,6 +1,6 @@
 # 第③、④条链路：后端与数据设计
 
-基线 main `938a8d2` / pg0006 / analysis-v2；本实现新增 pg0007，34张业务表。主入口为 `app/peer_review/router.py`，真实领域流程复用原分析 worker，不通过 DEMO 人工事件写入真实数据。
+基线 main `938a8d2` / pg0006 / analysis-v2；本实现新增 pg0010，36张业务表。主入口为 `app/peer_review/router.py`，真实领域流程复用原分析 worker，不通过 DEMO 人工事件写入真实数据。
 
 ## 模块职责
 

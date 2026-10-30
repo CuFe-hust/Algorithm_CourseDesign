@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import {
   Activity,
   BookOpen,
+  ChartNoAxesCombined,
   LayoutDashboard,
   LibraryBig,
   Users,
@@ -94,6 +95,16 @@ async function leave() {
           :class="{ selected: $route.path.startsWith('/teacher/reviews') }"
           ><ClipboardList :size="19" />互评与复核</RouterLink
         >
+        <RouterLink
+          to="/teacher/analysis"
+          :class="{ selected: $route.path === '/teacher/analysis' }"
+          ><ChartNoAxesCombined :size="19" />分析中心</RouterLink
+        >
+        <RouterLink
+          to="/teacher/results"
+          :class="{ selected: $route.path === '/teacher/results' }"
+          ><ClipboardList :size="19" />逐题结果</RouterLink
+        >
       </nav>
       <div class="sidebar-foot">
         <GraduationCap :size="22" /><strong>算法设计与分析</strong>
@@ -149,7 +160,7 @@ async function leave() {
           </button>
         </div>
       </header>
-      <main class="page">
+      <main class="page teacher-page">
         <div v-if="error" class="alert error">{{ error }}</div>
         <RouterView :key="`${session.courseId}:${$route.path}`" />
       </main>

@@ -14,8 +14,9 @@ from app.analysis import complexity_service
 from app.analysis.framework.contracts import digest
 from app.analysis.profiles import seed_profiles
 from app.db.base import utcnow
+from app.core.errors import AppError
 from app.db.models import (AnalysisJob, Assignment, AssignmentItem, Course, JudgeResult,
-                           Problem, ProblemComplexityProfile, ProblemVersion, Submission, User)
+                           Problem, ProblemComplexityProfile, ProblemVersion, Submission, User, ComplexityReport)
 
 
 ACCEPTED_A = '''
@@ -575,3 +576,29 @@ def test_every_input_family_is_accepted_by_the_profile_constraint(db, demo):
         db.commit()  # must not raise IntegrityError for a family the generator emits
         db.delete(profile)
         db.commit()
+
+
+def test_complexity_wrong_worker_context_does_not_poison_pending_report(db,demo,local_mode,monkeypatch):
+    item=_programming_item(db,demo);submission=_judge(db,_add_submission(db,item,_students(db)[0],ACCEPTED_A));actor=db.get(User,submission.student_id)
+    complexity_service.request_report(db,submission.id,actor,'context-1')
+    monkeypatch.setenv('JUDGE_EXECUTION_MODE','MOCK')
+    assert complexity_service.claim(db) is None
+    report=db.scalar(select(ComplexityReport).where(ComplexityReport.submission_id==submission.id));assert report.status=='PENDING' and report.attempt_no==0
+    monkeypatch.setenv('JUDGE_EXECUTION_MODE','LOCAL');assert complexity_service.claim(db).id==report.id
+
+
+def test_complexity_explicit_retry_is_idempotent_bounded_and_fences_old_attempt(db,demo,local_mode):
+    item=_programming_item(db,demo);submission=_judge(db,_add_submission(db,item,_students(db)[0],ACCEPTED_A));actor=db.get(User,submission.student_id)
+    complexity_service.request_report(db,submission.id,actor,'retry-original')
+    report=complexity_service.claim(db);old_ticket=db.info['complexity_claim'];report.lease_expires_at=utcnow()-timedelta(seconds=1);db.commit()
+    assert complexity_service.recover_expired(db)==1
+    complexity_service.request_report(db,submission.id,actor,'retry-original');db.refresh(report);assert report.status=='FAILED'
+    complexity_service.request_report(db,submission.id,actor,'retry-new');db.refresh(report);assert report.status=='PENDING' and report.history[-1]['event']=='EXPLICIT_RETRY'
+    complexity_service.claim(db);new_ticket=db.info['complexity_claim'];assert new_ticket[1]==2
+    db.info['complexity_claim']=old_ticket;complexity_service._write(db,report.id,status='SUCCEEDED',time_class='O(1)');db.refresh(report)
+    assert report.status=='RUNNING' and report.time_class is None
+    db.info['complexity_claim']=new_ticket;complexity_service._write(db,report.id,status='FAILED',error_message='synthetic infrastructure failure');db.refresh(report)
+    complexity_service.request_report(db,submission.id,actor,'retry-new');db.refresh(report);assert report.status=='FAILED'
+    report.attempt_no=3;db.commit()
+    with pytest.raises(AppError) as err:complexity_service.request_report(db,submission.id,actor,'retry-over-limit')
+    assert err.value.code=='COMPLEXITY_RETRY_LIMIT'

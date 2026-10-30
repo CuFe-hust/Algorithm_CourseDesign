@@ -76,7 +76,7 @@ def eligibility(db: Session, submission: Submission, item: AssignmentItem,
     if not (result.total_cases and result.passed_cases == result.total_cases):
         return False, 'SUBMISSION_NOT_ACCEPTED', {'verdict': result.verdict}
     mode = judge_config.execution_mode()
-    if (result.execution_mode or '').upper() != mode:
+    if (result.execution_mode or '').upper() != mode or result.runtime_profile != judge_config.runtime_profile(mode):
         return False, 'JUDGE_CONTEXT_CHANGED', {'execution_mode': result.execution_mode}
     if not judge_config.driver_available(mode):
         return False, 'JUDGE_CONFIGURATION_UNSUPPORTED', {'execution_mode': mode}
@@ -93,14 +93,33 @@ def profile_for(db: Session, version_id: int) -> ProblemComplexityProfile | None
         ProblemComplexityProfile.problem_version_id == version_id))
 
 
+def _retry_failed_report(db, report, actor, request_id):
+    history=list(report.history or [])
+    if any(h.get('request_id')==request_id and h.get('request_actor')==str(actor.id) for h in history):
+        return False
+    if report.status not in ('FAILED','INELIGIBLE'):return False
+    if report.attempt_no>=3:
+        raise AppError(409,'COMPLEXITY_RETRY_LIMIT','本版本分析已尝试3次，请联系教师检查配置')
+    report.history=[*history,dict(event='EXPLICIT_RETRY',request_id=request_id,request_actor=str(actor.id),
+        status=report.status,error=report.error_message,summary=report.summary,trace_meta=report.trace_meta,
+        trace_series=report.trace_series,time_class=report.time_class,space_class=report.space_class,
+        implementation_name=report.implementation_name,implementation_version=report.implementation_version,
+        finished_at=report.finished_at.isoformat() if report.finished_at else None)]
+    report.status='PENDING';report.requested_by=actor.id;report.requested_at=utcnow()
+    report.finished_at=None;report.lease_expires_at=None;report.error_message=None
+    report.time_class=None;report.space_class=None;report.time_confidence=None;report.space_confidence=None;report.time_source=None
+    report.summary={};report.trace_meta={};report.trace_series={};report.limitations=[]
+    db.flush();return True
+
+
 def request_report(db: Session, submission_id: int, actor: User,
                    client_request_id: str) -> dict:
-    """Idempotent creation of one report per submission.
+    """Idempotent report creation; a new explicit command may retry a failed report.
 
     ``client_request_id`` is accepted for compatibility with the other write
-    endpoints, but the real idempotency key is the submission itself: asking
-    twice for the same submission returns the existing report instead of running
-    the program twice.
+    endpoints, successful/running reports are structurally unique by submission. Replaying
+    a request does not rerun it; a fresh request may retry an eligible FAILED or
+    INELIGIBLE report up to three attempts, preserving history.
     """
     submission = db.scalar(select(Submission).where(Submission.id == submission_id).with_for_update())
     if submission is None:
@@ -159,6 +178,7 @@ def request_report(db: Session, submission_id: int, actor: User,
             existing.requested_at = utcnow()
             db.commit()
             return report_view(db, submission.id, actor)
+        _retry_failed_report(db,existing,actor,client_request_id)
         db.commit()
         return report_view(db, submission.id, actor)
     profile = profile_for(db, item.problem_version_id)
@@ -169,7 +189,7 @@ def request_report(db: Session, submission_id: int, actor: User,
         trace_series={}, summary={}, limitations=[],
         implementation_name=IMPLEMENTATION_NAME,
         implementation_version=IMPLEMENTATION_VERSION, requested_by=actor.id,
-        requested_at=utcnow(), attempt_no=0)
+        requested_at=utcnow(), attempt_no=0,history=[dict(event='REQUESTED',request_id=client_request_id,request_actor=str(actor.id))])
     db.add(report)
     db.commit()
     return report_view(db, submission.id, actor)
@@ -310,7 +330,7 @@ def _eligibility_from_result(submission: Submission, item, problem,
             result.total_cases and result.passed_cases == result.total_cases):
         return False, 'SUBMISSION_NOT_ACCEPTED', {}
     mode = judge_config.execution_mode()
-    if (result.execution_mode or '').upper() != mode:
+    if (result.execution_mode or '').upper() != mode or result.runtime_profile != judge_config.runtime_profile(mode):
         return False, 'JUDGE_CONTEXT_CHANGED', {}
     if not judge_config.driver_available(mode):
         return False, 'JUDGE_CONFIGURATION_UNSUPPORTED', {}
@@ -325,10 +345,12 @@ def _eligibility_from_result(submission: Submission, item, problem,
 
 
 def claim(db: Session) -> ComplexityReport | None:
-    report = db.scalar(select(ComplexityReport)
-                       .where(ComplexityReport.status == 'PENDING')
+    mode=judge_config.execution_mode()
+    report = db.scalar(select(ComplexityReport).join(JudgeResult,JudgeResult.submission_id==ComplexityReport.submission_id)
+                       .where(ComplexityReport.status == 'PENDING',JudgeResult.is_mock.is_(False),
+                              JudgeResult.execution_mode==mode,JudgeResult.runtime_profile==judge_config.runtime_profile(mode))
                        .order_by(ComplexityReport.id)
-                       .with_for_update(skip_locked=True).limit(1))
+                       .with_for_update(of=ComplexityReport,skip_locked=True).limit(1))
     if report is None:
         db.commit()
         return None
@@ -336,6 +358,7 @@ def claim(db: Session) -> ComplexityReport | None:
     report.attempt_no += 1
     report.started_at = utcnow()
     report.lease_expires_at = report.started_at + timedelta(seconds=LEASE_SECONDS)
+    db.info['complexity_claim']=(report.id,report.attempt_no,report.started_at)
     db.commit()
     return report
 
@@ -448,7 +471,8 @@ def _write_plain(db: Session, report_id: int, **values) -> None:
 def _write(db: Session, report_id: int, **values) -> None:
     report = db.scalar(select(ComplexityReport).where(ComplexityReport.id == report_id)
                        .with_for_update().execution_options(populate_existing=True))
-    if report is None or report.status not in ('RUNNING',):
+    ticket=db.info.get('complexity_claim')
+    if report is None or report.status not in ('RUNNING',) or ticket!=(report.id,report.attempt_no,report.started_at):
         db.rollback()
         return
     if report.lease_expires_at is not None and report.lease_expires_at <= utcnow():

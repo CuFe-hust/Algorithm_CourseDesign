@@ -17,6 +17,16 @@ import {
 
 export const teacherRoutes = [
   {
+    path: "analysis",
+    name: "teacher-analysis",
+    component: () => import("../features/analytics/AnalysisCenter.vue"),
+  },
+  {
+    path: "results",
+    name: "teacher-results",
+    component: () => import("../features/analytics/Results.vue"),
+  },
+  {
     path: "reviews",
     name: "teacher-reviews",
     component: () =>
@@ -91,6 +101,11 @@ export const teacherRoutes = [
 ];
 
 export const studentRoutes = [
+  {
+    path: "learning",
+    name: "student-learning",
+    component: () => import("../features/analytics/Results.vue"),
+  },
   {
     path: "reviews",
     name: "student-reviews",

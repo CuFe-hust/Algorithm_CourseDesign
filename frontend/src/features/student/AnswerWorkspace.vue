@@ -329,13 +329,9 @@ onMounted(load);
           本题仅允许 {{ item.allowed_languages.join("、") || "未配置语言" }}
         </p>
         <p v-if="programming && item.execution_budget" class="muted">
-          全题执行预算
+          全题运行预算
           {{ (item.execution_budget.total_budget_ms / 1000).toLocaleString() }}
-          秒（含编译与启动开销，{{
-            item.execution_budget.budget_source === "TEACHER"
-              ? "教师配置"
-              : "历史配置推导"
-          }}）。
+          秒，包含编译与程序启动。
         </p>
         <ProgrammingEditor
           v-if="programming"
@@ -376,8 +372,7 @@ onMounted(load);
           >
         </div>
         <p class="hint">
-          提交后会生成新版本，旧代码保留。202
-          只表示服务器已保存，不代表已经评测完成。
+          提交后会生成新的版本，旧代码保留。评测完成后，可在下方查看结果与历史记录。
         </p>
       </section>
 

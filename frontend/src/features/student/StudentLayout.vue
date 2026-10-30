@@ -3,6 +3,7 @@ import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import {
   BookOpen,
+  ChartNoAxesCombined,
   ClipboardList,
   History,
   LogOut,
@@ -56,6 +57,11 @@ async function switchCourse() {
           :class="{ selected: $route.path.includes('/reviews') }"
           ><ClipboardList :size="19" />我的互评</RouterLink
         >
+        <RouterLink
+          :to="`/student/courses/${$route.params.courseId}/learning`"
+          :class="{ selected: $route.path.includes('/learning') }"
+          ><ChartNoAxesCombined :size="19" />学习报告</RouterLink
+        >
       </nav>
       <button class="sidebar-switch" @click="switchCourse">
         <RefreshCw :size="16" />切换课程
@@ -99,7 +105,7 @@ async function switchCourse() {
           </button>
         </div>
       </header>
-      <main class="page">
+      <main class="page student-page">
         <div v-if="error" class="alert error">{{ error }}</div>
         <RouterView :key="$route.path" />
       </main>

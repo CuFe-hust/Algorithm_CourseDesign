@@ -112,11 +112,11 @@ Remove-Item Env:DB_NAME
 
 ## 分析框架与算法研究
 
-新增分析批次、快照、任务与结果记录（现34业务表，pg0010），与既有JUDGE队列分开。15插件契约与23步骤，六条合成链路可运行，真实缺输入明确等待；真实互评与聚合复核已接入，正式成绩发布仍由第五线负责人完成。见[运行/逐段演示](docs/implementation/runbooks/analysis-setup.md)、[黑盒输入输出](docs/design/analysis/black-boxes.md)和[4K会议图](docs/assets/diagrams/analysis/README.md)。原生Windows支持API/MOCK/分析，当前POSIX LOCAL启动门不支持原生Windows。
+新增分析批次、快照、任务与结果记录（现36业务表，pg0010），与既有JUDGE队列分开。15插件契约与23步骤，六条合成链路可运行，真实缺输入明确等待；真实互评与聚合复核已接入，逐题快照与个人报告已接入，不恢复作业总分/发布节点。见[运行/逐段演示](docs/implementation/runbooks/analysis-setup.md)、[黑盒输入输出](docs/design/analysis/black-boxes.md)和[4K会议图](docs/assets/diagrams/analysis/README.md)。原生Windows支持API/MOCK/分析，当前POSIX LOCAL启动门不支持原生Windows。
 
-分析批次、快照、任务与结果记录（pg0006 起），与既有JUDGE队列分开。15插件契约与23步骤，六条合成链路可运行，真实缺输入明确等待；真实互评与正式成绩发布仍待接入。
+当前②内容证据与⑥学习分析仍有占位模型，不表示全部研究算法完成；见下方整合状态说明。
 
-同题相似检测与已通过代码的复杂度分析已接入（复杂度分析迁移 head 到 pg0009，30业务表）：
+同题相似检测与已通过代码的复杂度分析已接入（复杂度扩展使用pg0007–pg0009，整合head为pg0010、36业务表）：
 
 ```powershell
 ..\.venv\Scripts\python.exe -m alembic upgrade head
@@ -138,3 +138,11 @@ Remove-Item Env:DB_NAME
 - [功能与验收](docs/features/analysis/peer-review-and-resolution.md) · [后端设计](docs/design/analysis/peer-review-backend.md) · [前端设计](docs/design/analysis/peer-review-frontend.md)
 - [算法与复杂度](docs/design/analysis/peer-review-algorithms.md) · [API和第五线交接](docs/design/analysis/peer-review-api.md)
 - [运行手册](docs/implementation/runbooks/peer-review-setup.md) · [验证记录](docs/implementation/evidence/analysis/2026-10-27-peer-review.md)
+
+## 教师 / 学生 / 分析整合版（2026-10-30）
+
+新增教师“分析中心 / 逐题结果”和学生“学习报告”，统一导航及页面设计。编程结果按可验证的测试证据计分，与教师复核后的主观结果共同固定为不可变逐题快照。学生只读本人投影。②文本/AI及⑥掌握/能力/经验难度5个模型仍为占位。
+
+- [六条链路状态、架构与数据边界](docs/design/analysis/platform-integration.md)
+- [整合启动与联调](docs/implementation/runbooks/platform-integration.md)
+- [实测记录与页面截图](docs/implementation/evidence/integration/2026-10-30-platform-integration.md)

@@ -265,6 +265,9 @@ onBeforeUnmount(() => {
     <template v-else>
       <div v-if="report.status === 'INELIGIBLE'" class="alert warning">
         <AlertTriangle :size="15" />{{ report.error }}
+        <button class="small" :disabled="requesting" @click="request">
+          重新检查并分析
+        </button>
       </div>
       <div v-else-if="report.status === 'FAILED'" class="alert error">
         <AlertTriangle :size="15" />分析失败：{{ report.error }}

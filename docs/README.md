@@ -112,3 +112,11 @@ docs/
 - [执行轨迹计数与递推推断](design/analysis/complexity-trace.md)：路线、工作量单位、推断算法、数据与状态机、已声明的限制
 - [2026-10-29 轨迹实验记录](implementation/evidence/similarity-complexity/2026-10-29-trace-experiments.md)：70 道题参考解语料、逐类准确率、可重复性与代价
 - 代码：`backend/app/analysis/trace/`、`backend/app/analysis/probe.py`、`backend/app/analysis/profiles.py`
+
+## 整合版本（2026-10-30）
+
+当前数据库head pg0010、36张业务表。教师、学生和分析已有统一入口与逐题结果边界；仍有5个研究插件占位，不能宣称六条完整结束。
+
+- [实际完成度、接口与统一布局设计](design/analysis/platform-integration.md)
+- [运行与跨模块联调](implementation/runbooks/platform-integration.md)
+- [测试、真实HTTP与浏览器验收](implementation/evidence/integration/2026-10-30-platform-integration.md)

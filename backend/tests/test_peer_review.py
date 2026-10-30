@@ -212,3 +212,14 @@ def test_invalid_override_rolls_back_all_decisions_and_published_schedule_is_fro
     assert err.value.code=='OVERRIDE_OUT_OF_RANGE';db.rollback()
     assert db.scalar(select(func.count()).select_from(ReviewDecision))==0
     db.refresh(a);assert a.resolved_at is None
+
+
+def test_review_candidates_flow_into_shared_question_results_snapshot(db,scope):
+    from app.analysis.question_results import create_snapshot
+    from app.analysis.integration_router import SnapshotCreate
+    r=preview(db,scope);publish(db,scope,r);score_all(db,scope,r);a=close(db,scope,r);resolve(db,scope,r,a)
+    report=create_snapshot(db,db.get(Assignment,scope[2].assignment_id).course_id,scope[0],
+        SnapshotCreate(request_id='bridge-peer-results',assignment_id=str(scope[2].assignment_id),reason='互评复核到逐题快照的真实接口边界'))
+    db.commit();rows=[x for x in report['rows'] if x['normalized_score'] is not None]
+    assert len(rows)==6 and all(x['source']['kind']=='REVIEW_ANALYSIS' and x['source']['version']==2 for x in rows)
+    assert all(Decimal(x['normalized_score'])==Decimal('.8') for x in rows)
