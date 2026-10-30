@@ -1,5 +1,7 @@
 # 算法实验：相似检测的鲁棒性与复杂度估计的可靠度
 
+> **部分内容已被取代。** 本文的相似检测实验仍然有效；第 7、8 节的复杂度实验属于 2026-10-28 的墙钟计时方案，该方案已被[执行轨迹计数与递推推断](complexity-trace.md)取代。新版复杂度实验见[2026-10-29 轨迹实验记录](../../implementation/evidence/similarity-complexity/2026-10-29-trace-experiments.md)。
+
 日期：2026-10-28。被测代码是 `backend/app/analysis/algorithms/similarity.py`（词法规格化 + Winnowing 指纹）、`backend/app/analysis/algorithms/complexity.py`（静态结构分析 + 增长拟合）与 `backend/app/analysis/probe.py`（伸缩档输入生成与真实执行测量）。复现脚本是 `backend/scripts/experiment_similarity_complexity.py`，原始数据是 [experiments-2026-10-28.json](../../implementation/evidence/similarity-complexity/experiments-2026-10-28.json)（144 KB，生成于 2026-10-28T10:15:34；除第 2.1、3.1、4.2、8.5 节明确标注为"不在 JSON 里"的几处之外，本文数字都来自这份文件，第 10 节末尾汇总）。
 
 本文回答三个问题：

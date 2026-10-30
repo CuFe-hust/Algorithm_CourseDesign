@@ -192,16 +192,22 @@ def main() -> int:
         body={'request_id': f'smoke-cx-{uuid.uuid4().hex}'})
     run_worker('scripts.run_complexity', '--limit', '5')
     report = api(f'/analysis/submissions/{target}/complexity', token=student)
-    assert report['status'] in ('SUCCEEDED', 'STATIC_ONLY'), report['status']
+    assert report['status'] in ('SUCCEEDED', 'NOT_MEASURABLE'), report['status']
     body = report['report']
-    assert body['time']['class'] and body['space']['class']
-    assert body['static']['evidence'] is not None
     assert body['limitations']
     if report['status'] == 'SUCCEEDED':
-        assert body['dynamic']['rungs'], 'a measured report must keep its rungs'
-        assert body['dynamic'].get('curve'), 'a measured report must include the chart curve'
-    print(f'  complexity: {report["status"]} time={body["time"]["class"]} '
-          f'space={body["space"]["class"]} source={body["time"]["source"]}')
+        assert body['time']['class'] and body['space']['class']
+        assert body['time']['source'] == 'TRACE'
+        trace = body['trace']
+        assert trace['points'], 'a measured report must keep its per-rung counts'
+        assert trace['evidence'] is not None
+        assert body['trace_meta']['work_unit']
+        print(f'  complexity: {report["status"]} time={body["time"]["class"]} '
+              f'space={body["space"]["class"]} method={body["time"]["method"]} '
+              f'rungs={len(trace["points"])}')
+    else:
+        assert body['error'], 'a NOT_MEASURABLE report must state why'
+        print(f'  complexity: {report["status"]} reason={body["error"]}')
 
     # 4. A submission that never passed is refused, with a stated reason.
     rejected = [sid for sid in submissions.values()

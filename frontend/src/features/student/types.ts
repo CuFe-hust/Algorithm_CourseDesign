@@ -203,121 +203,144 @@ export type ComplexityClass =
   | "O(n^2 log n)"
   | "O(n^3)"
   | "O(2^n)"
+  | "O(n!)"
   | "UNKNOWN";
 
 export type Confidence = "LOW" | "MEDIUM" | "HIGH";
 
-export interface StaticEvidence {
-  line: number;
-  reason: string;
-  kind: string;
-}
+export type ComplexityStatus =
+  | "SUCCEEDED"
+  | "NOT_MEASURABLE"
+  | "INELIGIBLE"
+  | "FAILED"
+  | "PENDING"
+  | "RUNNING";
 
-export interface StaticAnalysis {
-  time_class: ComplexityClass;
-  space_class: ComplexityClass;
-  confidence: Confidence;
-  evidence: StaticEvidence[];
-  loop_depth: number;
-  max_loop_lines: number[];
-  recursive: boolean;
-  recursion_kind: string | null;
-  logarithmic_loops: number;
-  sorts: number;
-  dynamic_allocations: number;
-  notes: string[];
-  profile_family?: string | null;
-}
+/** Time conclusions always come from the execution trace. */
+export type TimeSource = "TRACE";
+/** Space has no collector for every language, so it can be absent. */
+export type SpaceSource = "TRACE" | "NONE";
 
-export interface GrowthPoint {
-  n: number;
-  wall_ms: number;
-  reference_ms?: number | null;
-  io_ratio?: number | null;
-  peak_rss_kib?: number | null;
-  verdict: string;
-  detail?: string | null;
-  repeats?: number;
-}
+/**
+ * How the published class was derived: a recurrence read from the call trace,
+ * a closed-form fit over the counted work, a summation or master-theorem
+ * solution, or nothing reproducible.
+ */
+export type FitMethod =
+  | "RECURRENCE"
+  | "CLOSED_FORM"
+  | "UNKNOWN"
+  | "SUMMATION"
+  | "EXPONENTIAL"
+  | "MASTER";
 
-export interface GrowthCurvePoint {
-  n: number;
-  time_ms: number;
-}
-
-export interface GrowthFitPayload {
-  fitted_class: ComplexityClass;
+export interface FitCandidate {
+  class: ComplexityClass;
   r2: number;
-  exponent: number;
+  sse: number;
+}
+
+/** The winning candidate, with the affine coefficients `work = a*f(n) + b`. */
+export interface FitBest extends FitCandidate {
   coefficient: number;
-  offset_ms: number;
-  floor_ms: number;
+  offset: number;
+}
+
+export interface ComplexityFit {
+  class: ComplexityClass;
   confidence: Confidence;
+  /** How much smaller the winner's residual is than the runner-up's. */
+  margin: number | null;
+  best: FitBest | null;
+  candidates: FitCandidate[];
   notes: string[];
-  used_points: GrowthPoint[];
-  discarded: GrowthPoint[];
 }
 
-export interface DynamicAnalysis {
-  measured_class: ComplexityClass;
-  io_class: ComplexityClass;
-  informative: boolean;
-  r2: number;
-  exponent: number | null;
+export interface ComplexityTime {
+  class: ComplexityClass;
   confidence: Confidence;
-  floor_ms: number;
-  fit: GrowthFitPayload | null;
-  reference_fit: GrowthFitPayload | null;
-  accounting: {
-    n: number;
-    wall_ms: number;
-    reference_ms: number | null;
-    io_ratio: number | null;
-    peak_rss_kib: number | null;
-    verdict: string;
-  }[];
-  stop_reason?: string;
-  rungs?: GrowthPoint[];
-  curve?: GrowthCurvePoint[];
+  source: TimeSource;
+  method: FitMethod;
+  /** e.g. "Θ(n log n)" */
+  closed_form: string;
+  /** e.g. "T(n) = 2·T(n/2) + O(n)" */
+  recurrence: string | null;
+  fit: ComplexityFit | null;
+  notes: string[];
 }
 
-export interface ComplexitySummary {
-  time: {
-    class: ComplexityClass;
-    confidence: Confidence;
-    source: "DYNAMIC" | "STATIC";
-    static_class: ComplexityClass;
-    measured_class: ComplexityClass;
-    agreement: boolean | null;
-    r2?: number;
-    exponent?: number;
-    offset_ms?: number;
-    coefficient?: number;
-  };
-  space: {
-    class: ComplexityClass;
-    confidence: Confidence;
-    source: string;
-    static_class: ComplexityClass;
-  };
-  limitations: string[];
+export interface ComplexitySpace {
+  class: ComplexityClass;
+  confidence: Confidence;
+  source: SpaceSource;
+  fit: ComplexityFit | null;
+  /** Fit over peak recursion depth, when the adapter reports it. */
+  depth_fit: ComplexityFit | null;
+  notes: string[];
+}
+
+export interface TraceCount {
+  n: number;
+  count: number;
+}
+
+export interface LineEvidence {
+  kind: "LINE";
+  /** "function:line", e.g. "merge:13" */
+  location: string;
+  class: ComplexityClass;
+  counts: TraceCount[];
+}
+
+export interface RecursionEvidence {
+  kind: "RECURSION";
+  function: string;
+  branching: number;
+  shrink: string;
+  expression: string | null;
+  solution: string | null;
+  share: number;
+}
+
+export type ComplexityEvidence = LineEvidence | RecursionEvidence;
+
+/** Counts recorded for one generated input size; never a duration. */
+export interface TracePoint {
+  n: number;
+  verdict: string;
+  detail: string | null;
+  work: number;
+  /** Work a minimal reader spends on the same input. */
+  baseline_work: number;
+  line_events: number;
+  jump_events: number;
+  library_work: number;
+  max_depth: number;
+  peak_bytes: number | null;
+}
+
+export interface ComplexityTrace {
+  adapter: string;
+  work_unit: string;
+  input_family: string | null;
+  stop_reason: string;
+  deterministic: boolean | null;
+  repeat_delta: number | null;
+  notes: string[];
+  points: TracePoint[];
+  time: ComplexityTime;
+  space: ComplexitySpace;
+  evidence: ComplexityEvidence[];
 }
 
 export interface ComplexityReport {
-  status:
-    | "SUCCEEDED"
-    | "STATIC_ONLY"
-    | "INELIGIBLE"
-    | "FAILED"
-    | "PENDING"
-    | "RUNNING";
+  status: ComplexityStatus;
   language: string | null;
   implementation_name: string;
   implementation_version: string;
-  time: ComplexitySummary["time"];
-  space: ComplexitySummary["space"];
-  static: StaticAnalysis;
-  dynamic: DynamicAnalysis;
+  time: ComplexityTime;
+  space: ComplexitySpace;
+  trace: ComplexityTrace;
   limitations: string[];
   error: string | null;
   requested_at: string | null;
@@ -326,7 +349,7 @@ export interface ComplexityReport {
 
 export interface ComplexityResponse {
   submission_id: string;
-  status: ComplexityReport["status"] | "NONE";
+  status: ComplexityStatus | "NONE";
   eligible: boolean | null;
   report: ComplexityReport | null;
   reason: string | null;

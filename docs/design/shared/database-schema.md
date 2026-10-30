@@ -179,8 +179,8 @@
 | space_confidence | VARCHAR(8) | 是 | — |
 | time_source | VARCHAR(8) | 是 | — |
 | language | VARCHAR(32) | 是 | — |
-| static_analysis | JSONB | 否 | — |
-| growth | JSONB | 否 | — |
+| trace_meta | JSONB | 否 | — |
+| trace_series | JSONB | 否 | — |
 | summary | JSONB | 否 | — |
 | limitations | JSONB | 否 | — |
 | implementation_name | VARCHAR(64) | 否 | — |

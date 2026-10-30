@@ -1,4 +1,9 @@
 // @vitest-environment jsdom
+/**
+ * Teacher overview of trace-based complexity reports: the published verdict per
+ * student, without the raw counts. The API is stubbed, so nothing here depends
+ * on the backend.
+ */
 import { createApp, defineComponent, h, nextTick } from "vue";
 import { afterEach, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({
@@ -61,8 +66,17 @@ const report: FixtureReport = {
   time_class: "O(n log n)",
   space_class: "O(n)",
   time_confidence: "MEDIUM",
-  time_source: "DYNAMIC",
+  time_source: "TRACE",
   requested_at: "2026-10-27T22:58:16+08:00",
+};
+/** A row whose report measured nothing: no class, no confidence, no source. */
+const unmeasured: FixtureReport = {
+  ...report,
+  status: "NOT_MEASURABLE",
+  time_class: null,
+  space_class: null,
+  time_confidence: null,
+  time_source: null,
 };
 
 type Handler = (path: string) => unknown;
@@ -117,11 +131,13 @@ function rowCells(host: HTMLElement, studentNo: string): string[] {
     tr.textContent?.includes(studentNo),
   );
   return row
-    ? [...row.querySelectorAll("td")].map((td) => td.textContent?.trim() ?? "")
+    ? [...row.querySelectorAll("td")].map((td) =>
+        (td.textContent ?? "").replace(/\s+/g, " ").trim(),
+      )
     : [];
 }
 
-it("renders a succeeded report with class, confidence, source and time", async () => {
+it("renders a succeeded report with item, status, class, confidence, source and time", async () => {
   const host = mount((path) => {
     if (path.startsWith("/analysis/courses/1/complexity/items"))
       return itemsResponse([item]);
@@ -133,14 +149,50 @@ it("renders a succeeded report with class, confidence, source and time", async (
 
   const cells = rowCells(host, "DEMO2026001");
   expect(cells[0]).toContain("演示同学");
-  expect(cells[1]).toBe("DEMO2026001");
-  expect(cells[2]).toBe("O(n log n)");
-  expect(cells[3]).toBe("O(n)");
+  expect(cells[0]).toContain("DEMO2026001");
+  expect(cells[1]).toBe("活动安排问题");
+  expect(cells[2]).toBe("已完成");
+  expect(cells[3]).toBe("O(n log n)");
   expect(cells[4]).toBe("中");
-  expect(cells[5]).toBe("实测");
-  expect(cells[6]).toBe("已完成");
-  expect(cells[7]).toMatch(/2026/);
+  expect(cells[5]).toBe("执行轨迹");
+  expect(cells[6]).toMatch(/2026/);
   expect(host.querySelector(".badge.amber")).toBeTruthy();
+  // The old static/dynamic split must not reappear.
+  expect(body(host)).not.toContain("代码结构");
+});
+
+it("labels a not-measurable report as unable to conclude, with the stored reason", async () => {
+  const host = mount((path) => {
+    if (path.startsWith("/analysis/courses/1/complexity/items"))
+      return itemsResponse([item]);
+    if (path.startsWith("/analysis/courses/1/complexity?"))
+      return overviewResponse([unmeasured]);
+    if (path === "/analysis/submissions/21/complexity")
+      return {
+        submission_id: "21",
+        status: "NOT_MEASURABLE",
+        eligible: true,
+        report: {
+          status: "NOT_MEASURABLE",
+          time: {},
+          space: {},
+          trace: {},
+          limitations: ["该题尚未配置规模伸缩档"],
+          error: "该题没有可用的伸缩档：平台无法测量增长",
+        },
+        reason: null,
+      };
+    return {};
+  });
+  await settle();
+
+  const cells = rowCells(host, "DEMO2026001");
+  expect(cells[2]).toContain("无法给出结论");
+  expect(cells[2]).toContain("伸缩档");
+  expect(cells[3]).toBe("—");
+  expect(cells[4]).toBe("—");
+  expect(cells[5]).toBe("—");
+  expect(host.querySelector(".badge.gray")).toBeTruthy();
 });
 
 it("shows a pending row as analysing without inventing a class", async () => {
@@ -163,11 +215,10 @@ it("shows a pending row as analysing without inventing a class", async () => {
   await settle();
 
   const cells = rowCells(host, "DEMO2026001");
-  expect(cells[2]).toBe("—");
+  expect(cells[2]).toBe("分析中");
   expect(cells[3]).toBe("—");
   expect(cells[4]).toBe("—");
   expect(cells[5]).toBe("—");
-  expect(cells[6]).toBe("分析中");
   expect(body(host)).not.toContain("O(1)");
   expect(body(host)).toContain("仍在分析中");
 });
@@ -200,9 +251,9 @@ it("shows the stored reason for a failed report instead of an empty class", asyn
   await settle();
 
   const cells = rowCells(host, "DEMO2026001");
-  expect(cells[2]).toBe("—");
-  expect(cells[6]).toContain("分析失败");
-  expect(cells[6]).toContain("分析超时");
+  expect(cells[2]).toContain("分析失败");
+  expect(cells[2]).toContain("分析超时");
+  expect(cells[3]).toBe("—");
   expect(body(host)).not.toContain("O(1)");
 });
 
@@ -216,7 +267,8 @@ it("warns when the selected item has no scale profile", async () => {
   });
   await settle();
 
-  expect(body(host)).toContain("该题没有配置规模伸缩档，只能给出结构结论");
+  expect(body(host)).toContain("该题没有配置规模伸缩档");
+  expect(body(host)).toContain("无法给出结论");
   expect(host.querySelector('select[aria-label="选择题目"]')).toBeTruthy();
 });
 
@@ -232,7 +284,6 @@ it("explains who can request a report when the table is empty", async () => {
 
   expect(body(host)).toContain("还没有这道题的复杂度报告");
   expect(body(host)).toContain("学生端");
-  expect(body(host)).toContain("没有批量触发接口");
   for (const button of host.querySelectorAll("button"))
     expect(button.textContent).not.toMatch(/批量|分析全部/);
 });
@@ -390,6 +441,6 @@ it("renders a report with no request time without crashing", async () => {
   expect(cells[0]).toContain("演示同学");
   // An em dash, not "1970年1月1日": formatting a null timestamp still yields a
   // date, so asserting only "no undefined" would not catch it.
-  expect(cells[7]).toBe("—");
+  expect(cells[6]).toBe("—");
   expect(body(host)).not.toContain("1970");
 });

@@ -32,7 +32,7 @@ def test_postgresql_schema_has_complete_foreign_keys_and_repeatable_upgrade(monk
         assert len(inspect(engine).get_foreign_keys('assignment_items')) == 4
         assert engine.dialect.name == 'postgresql'
         with engine.connect() as connection:
-            assert connection.scalar(text('SELECT version_num FROM alembic_version')) == 'pg0008'
+            assert connection.scalar(text('SELECT version_num FROM alembic_version')) == 'pg0009'
             from alembic.autogenerate import compare_metadata
             from alembic.migration import MigrationContext
             assert compare_metadata(MigrationContext.configure(connection), Base.metadata) == []

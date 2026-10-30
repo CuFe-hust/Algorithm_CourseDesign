@@ -1,5 +1,6 @@
 # 相似检测与复杂度分析：实现与验证记录
 
+> **历史记录。** 本文记录 2026-10-28 的第一版复杂度实现（墙钟计时 + 静态结构分析），该实现已被[执行轨迹计数与递推推断](../../../design/analysis/complexity-trace.md)取代，其代码与迁移已下线；新版实验见[2026-10-29 轨迹实验记录](2026-10-29-trace-experiments.md)。
 日期：2026-10-28，Asia/Shanghai。分支 `feat/similarity-and-complexity`，基线为本地 main `938a8d2`，迁移从 pg0006 前进到 pg0007。
 
 本机环境：macOS 15（Darwin 25.6.0、arm64、10 核）、Python 3.14.5、PostgreSQL 18.6（5432）、Node 25.9.0、pnpm 11.21.0、Chrome（headless 实跑）。
