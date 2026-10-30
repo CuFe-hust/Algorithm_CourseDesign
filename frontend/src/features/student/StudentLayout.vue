@@ -51,6 +51,11 @@ async function switchCourse() {
           :class="{ selected: $route.path.includes('/submissions') }"
           ><History :size="19" />本人提交</RouterLink
         >
+        <RouterLink
+          :to="`/student/courses/${$route.params.courseId}/reviews`"
+          :class="{ selected: $route.path.includes('/reviews') }"
+          ><ClipboardList :size="19" />我的互评</RouterLink
+        >
       </nav>
       <button class="sidebar-switch" @click="switchCourse">
         <RefreshCw :size="16" />切换课程

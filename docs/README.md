@@ -23,7 +23,7 @@ docs/
 ├── design/            设计：怎么建
 │   ├── shared/        跨模块共用
 │   │   ├── database.md            业务地图与写入边界
-│   │   ├── database-schema.md     28 张表字段字典（由 SQLAlchemy 模型生成）
+│   │   ├── database-schema.md     34 张表字段字典（由 SQLAlchemy 模型生成）
 │   │   ├── data-flows.md          信息流、状态与失败处理
 │   │   └── api-v1.md              当前 API 格式 v1（已实现）
 │   ├── teacher/       architecture · backend · frontend · database · api
@@ -78,7 +78,7 @@ docs/
 
 ## 分析模块设计与会议材料（2026-10-26）
 
-分析框架与合成演示已实现；研究算法、正式互评/成绩业务仍待接入。
+分析框架与合成演示已实现；第③、④条真实互评与聚合复核已有独立实现，其他链路按各自交接范围接入。
 
 - [分析框架设计、全业务依赖与黑盒契约](superpowers/specs/2026-10-26-analysis-framework-design.md)
 - [六条链路与黑盒输入输出4K图](assets/diagrams/analysis/README.md)
@@ -88,3 +88,10 @@ docs/
 - [分析API](design/analysis/api.md) · [黑盒研究交接](design/analysis/black-boxes.md) · [运行与演示](implementation/runbooks/analysis-setup.md)
 
 第六条线可独立运行：只调用现有ability占位黑盒，不等待其他线路。见[独立线路说明](design/analysis/student-ability-line.md)。
+
+## 主观互评与聚合异常（第③、④条）
+
+- [功能与验收范围](features/analysis/peer-review-and-resolution.md)
+- [后端/数据/并发设计](design/analysis/peer-review-backend.md) · [前端设计](design/analysis/peer-review-frontend.md)
+- [算法、正确性与复杂度](design/analysis/peer-review-algorithms.md) · [API与第五线交接](design/analysis/peer-review-api.md)
+- [运行手册](implementation/runbooks/peer-review-setup.md) · [交付验证记录](implementation/evidence/analysis/2026-10-27-peer-review.md)

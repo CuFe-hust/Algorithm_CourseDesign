@@ -1,6 +1,6 @@
 # 算法课程评审平台
 
-已实现统一教师/学生前端与共享FastAPI、PostgreSQL后端，28张业务表、迁移head为pg0006。教师可管理四类题目、导入及开通学生账号、发放/重置初始密码、创建发布作业、调整截止和查看采用结果；学生可改密、作答、提交、查看历史与LOCAL真实评测。匿名互评、评分聚合、正式成绩与Linux沙箱仍待后续模块。
+已实现统一教师/学生前端与共享FastAPI、PostgreSQL后端，34张业务表、迁移head为pg0007。教师可管理四类题目、导入及开通学生账号、发放/重置初始密码、创建发布作业、调整截止和查看采用结果；学生可改密、作答、提交、查看历史与LOCAL真实评测。已补充第③、④条匿名互评、评分聚合、四类异常证据、教师复核及补评/新版本重算；正式成绩发布与Linux沙箱由后续模块接入。
 
 ## 三人从这里开始
 
@@ -106,12 +106,20 @@ Remove-Item Env:DB_NAME
 
 队友运行`python -m scripts.import_full_data`默认使用公开脱敏快照，导入ALGO_FULL_2026课程：70编程题、50主观题、350组测试、275份参考答案/代码、217名学生、8班。DEMO_ALGO仍用于四类题的登录与提交流程演示。全量课程不会自动发布作业，名册账号PENDING且无密码，教师端已提供显式开通和作业发布入口，导入不会自动替教师执行这两步。
 
-真实名册只供本机显式导入；不要把数据库备份、身份映射或原始xlsx上传GitHub。不同身份模式不能覆盖同一数据库的已有身份，请选定一种，详见[数据导入](docs/implementation/runbooks/data-import.md)。当前API业务格式保持兼容，迁移head为pg0006；互评和成绩分析框架继续由对应模块推进。
+真实名册只供本机显式导入；不要把数据库备份、身份映射或原始xlsx上传GitHub。不同身份模式不能覆盖同一数据库的已有身份，请选定一种，详见[数据导入](docs/implementation/runbooks/data-import.md)。当前API业务格式保持兼容，迁移head为pg0007；第三、四条链路交接见下方说明。
 
 教师与学生的完整联调见[2026-10-25验证记录](docs/implementation/evidence/teacher/2026-10-25-student-integration.md)，先备份本机库再执行增量迁移。
 
 ## 分析框架与算法研究
 
-新增分析批次、快照、任务与结果记录（28业务表，pg0006），与既有JUDGE队列分开。15插件契约与23步骤，六条合成链路可运行，真实缺输入明确等待；真实互评与正式成绩发布仍待接入。见[运行/逐段演示](docs/implementation/runbooks/analysis-setup.md)、[黑盒输入输出](docs/design/analysis/black-boxes.md)和[4K会议图](docs/assets/diagrams/analysis/README.md)。原生Windows支持API/MOCK/分析，当前POSIX LOCAL启动门不支持原生Windows。
+新增分析批次、快照、任务与结果记录（现34业务表，pg0007），与既有JUDGE队列分开。15插件契约与23步骤，六条合成链路可运行，真实缺输入明确等待；真实互评与聚合复核已接入，正式成绩发布仍由第五线负责人完成。见[运行/逐段演示](docs/implementation/runbooks/analysis-setup.md)、[黑盒输入输出](docs/design/analysis/black-boxes.md)和[4K会议图](docs/assets/diagrams/analysis/README.md)。原生Windows支持API/MOCK/分析，当前POSIX LOCAL启动门不支持原生Windows。
 
 第六条线可独立运行：只调用现有ability占位黑盒，不等待其他线路。见[独立线路说明](docs/design/analysis/student-ability-line.md)。
+
+### 第③、④条主观互评与聚合异常
+
+教师“互评与复核”支持冻结输入、分配确认、原始评价、四类证据、显式处置与版本重算；学生“我的互评”支持匿名本人任务与冻结量表评分。必须启动独立分析worker。
+
+- [功能与验收](docs/features/analysis/peer-review-and-resolution.md) · [后端设计](docs/design/analysis/peer-review-backend.md) · [前端设计](docs/design/analysis/peer-review-frontend.md)
+- [算法与复杂度](docs/design/analysis/peer-review-algorithms.md) · [API和第五线交接](docs/design/analysis/peer-review-api.md)
+- [运行手册](docs/implementation/runbooks/peer-review-setup.md) · [验证记录](docs/implementation/evidence/analysis/2026-10-27-peer-review.md)

@@ -66,8 +66,8 @@ def process_one(db):
                 input_hash=ticket['input_hash']).model_dump(mode='json')
         else:
             if digest(ticket['payload'])!=ticket['input_hash']:raise ValueError('Input changed')
-            result=dict(schema_version='analysis-v2',algorithm_key=ticket['step'],implementation_name='deterministic_rule',
-                implementation_version='1',input_hash=ticket['input_hash'],is_mock=ticket['is_mock'],status='OK',
+            result=dict(schema_version='analysis-v2',algorithm_key=ticket['step'],implementation_name=ticket['implementation'],
+                implementation_version=ticket['implementation_version'],input_hash=ticket['input_hash'],is_mock=ticket['is_mock'],status='OK',
                 payload=rule_output(ticket['step'],ticket['payload'],ticket['root']),evidence=[],limitations=[])
         finish(db,ticket,result)
     except Exception:

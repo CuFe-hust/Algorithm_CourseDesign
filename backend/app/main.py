@@ -18,6 +18,7 @@ from app.common.auth import router as auth_router
 from app.student.router import router as student_router
 from app.teacher.router import router as teacher_router
 from app.analysis.router import router as analysis_router
+from app.peer_review.router import router as peer_review_router
 
 
 def create_app() -> FastAPI:
@@ -33,6 +34,7 @@ def create_app() -> FastAPI:
     application.include_router(student_router)
     application.include_router(teacher_router)
     application.include_router(analysis_router)
+    application.include_router(peer_review_router)
 
     @application.middleware('http')
     async def identify(request, call_next):

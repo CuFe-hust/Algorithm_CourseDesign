@@ -38,6 +38,19 @@ BY_KEY={step.key:step for step in STEPS}
 
 
 def steps_for(batch):
+    pipeline=batch.configuration.get('pipeline')
+    if pipeline=='REVIEW_ALLOCATION':
+        return (Step('allocation',algorithm='allocation'),
+            Step('open_review',('allocation',),event='OPEN_REVIEW'),
+            Step('collect_reviews',('open_review',),event='SUBMIT_REVIEWS'))
+    if pipeline=='REVIEW_ANALYSIS':
+        return (Step('aggregation',algorithm='aggregation'),Step('review_timing',algorithm='review_timing'),
+            Step('deviation',('aggregation',),algorithm='deviation'),
+            Step('reviewer_bias',('aggregation',),algorithm='reviewer_bias'),
+            Step('relationship',('aggregation',),algorithm='relationship'),
+            Step('resolve',('deviation','reviewer_bias','review_timing','relationship'),event='RESOLVE'))
+    if pipeline=='REVIEW_RECOMPUTE':
+        return (Step('reaggregation',algorithm='aggregation'),Step('effective_subjective_results',('reaggregation',)))
     if batch.configuration.get('pipeline')=='STUDENT_ABILITY':
         return (Step('ability',algorithm='ability'),)
     return STEPS

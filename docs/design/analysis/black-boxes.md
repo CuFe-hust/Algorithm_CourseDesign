@@ -17,7 +17,7 @@ output=invoke(sample['algorithm_key'],sample['payload'],mode='REAL_INPUT',
 print(output.model_dump_json())
 ```
 
-REAL_INPUT在这里表示不用模拟研究算法回退；独立函数本身不读取真实数据库。匹配/聚合/事件计数/基础统计有基线，其他研究插件目前明确NOT_IMPLEMENTED。DEMO调用未实现插件时才使用固定seed的演示输出，带is_mock=true。相同输入/seed/版本可复现，查询页面不重新生成随机值。
+REAL_INPUT在这里表示不用模拟研究算法回退；独立函数本身不读取真实数据库。匹配（最小费用流）、显式加权聚合、四类可解释异常信号、事件计数及基础统计已有确定性实现；内容相似/AI信号/掌握/能力/经验难度仍明确NOT_IMPLEMENTED。第③、④条的规则、复杂度与限制见[算法设计](peer-review-algorithms.md)。DEMO调用未实现插件时才使用固定seed的演示输出，带is_mock=true。相同输入/seed/版本可复现，查询页面不重新生成随机值。
 
 替换步骤：
 

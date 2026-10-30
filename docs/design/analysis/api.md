@@ -40,3 +40,6 @@ DEMO总是六名合成学生/编程与主观两类题，真实作业身份不进
 常见错误：401未登录；403非任课教师/首次改密；404跨课程或不存在；409 IDEMPOTENCY_CONFLICT、VERSION_CONFLICT、EVENT_NOT_READY、DEMO_ONLY、RETRY_NOT_ALLOWED、WRITE_CONFLICT；422未知字段/非法ID/seed、ANALYSIS_SCOPE_TOO_LARGE。ROOT快照上限8MiB、每批最多100个幂等命令。
 
 第六条线可独立运行：只调用现有ability占位黑盒，不等待其他线路。见[独立线路说明](student-ability-line.md)。
+
+
+第③、④条真实领域业务另见[互评与复核API](peer-review-api.md)：`/api/v1/peer-review`处理分配、本人评分、教师处置及逐题候选。旧FULL真实批次不会通过本模块自动补写原始评价；调用方应使用领域入口创建对应三个子管线，不能用DEMO事件替代真实教师/学生操作。

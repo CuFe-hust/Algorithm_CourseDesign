@@ -38,9 +38,18 @@ def aggregation(data):
         rows=[e for e in data.evaluations if e.answer_key==answer and e.weight>0]
         enough=len(rows)>=data.minimum_samples
         mean=sum((e.score/data.rubric_max*e.weight for e in rows),Decimal(0))/sum((e.weight for e in rows),Decimal(1) if not rows else Decimal(0))
+        if data.method == 'weighted_median' and rows:
+            ordered = sorted(rows, key=lambda e: (e.score, e.evaluation_key))
+            midpoint = sum((e.weight for e in rows), Decimal(0)) / 2
+            cumulative = Decimal(0)
+            for e in ordered:
+                cumulative += e.weight
+                if cumulative >= midpoint:
+                    mean = e.score / data.rubric_max
+                    break
         spread=(max(e.score for e in rows)-min(e.score for e in rows))/data.rubric_max if rows else None
         scores.append(AggregatedScore(answer_key=answer,normalized_score=mean.quantize(Decimal('.000001')) if enough else None,
-            valid_count=len(rows),dispersion=spread,reason=None if enough else 'MINIMUM_SAMPLES_NOT_MET'))
+            valid_count=len(rows),dispersion=spread if enough else None,reason=None if enough else 'MINIMUM_SAMPLES_NOT_MET'))
     return AggregationOutput(scores=scores)
 
 

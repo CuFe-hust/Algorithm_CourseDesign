@@ -62,7 +62,10 @@ def refresh(db,batch):
             run.status='WAITING_INPUT';run.reason={'blocked_by':blocked,
                 'upstream_status':{k:runs[k].status for k in blocked},'reason':'DEPENDENCY_NOT_READY'};continue
         out=outputs(runs,artifacts)
-        invalid=[k for k in step.dependencies if runs[k].business_status not in ('OK',None)
+        partial_review=(batch.configuration.get('pipeline','').startswith('REVIEW_')
+                        and step.key in ('deviation','reviewer_bias','relationship','effective_subjective_results'))
+        invalid=[k for k in step.dependencies if runs[k].business_status not in
+                 (('OK',None,'INSUFFICIENT_DATA') if partial_review else ('OK',None))
                  and step.key!='resolve']
         if invalid:
             run.status='WAITING_INPUT';run.reason={'blocked_by':invalid,'reason':'UPSTREAM_BUSINESS_RESULT_UNAVAILABLE'};continue
@@ -70,7 +73,7 @@ def refresh(db,batch):
             run.status='SKIPPED';run.reason={'reason':'NO_SUPPLEMENT_REQUIRED'};continue
         if step.event:
             run.status='WAITING_HUMAN';run.reason={'event':step.event,'reason':
-                'DEMO_EVENT_REQUIRED' if batch.mode=='DEMO' else 'REAL_DOMAIN_SERVICE_NOT_CONNECTED'};continue
+                'DEMO_EVENT_REQUIRED' if batch.mode=='DEMO' else 'REAL_DOMAIN_EVENT_REQUIRED' if root.get('review_domain') else 'REAL_DOMAIN_SERVICE_NOT_CONNECTED'};continue
         try:payload=prepare(step.key,root,out)
         except NotApplicable as error:
             run.status='SKIPPED';run.reason={'reason':str(error)};continue

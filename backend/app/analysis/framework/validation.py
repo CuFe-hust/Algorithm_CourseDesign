@@ -13,10 +13,14 @@ def validate_output(key,data,result):
         if result.feasible:
             counts=Counter(a for a,_ in edges)
             loads=Counter(r for _,r in edges)
-            if not authors or any(counts[a]!=data.required_reviewers for a in authors) or result.unmet_constraints:
+            if not authors or any(counts[a]!=data.required_by_answer.get(a,data.required_reviewers) for a in authors) or result.unmet_constraints:
                 raise ValueError('Matcher returned an incomplete feasible plan')
             if result.load_metrics!={r:loads[r] for r in data.reviewers}:
                 raise ValueError('Matcher workload metrics do not match edges')
+            if data.max_tasks_per_reviewer is not None:
+                old=Counter(e.reviewer_key for e in data.existing_edges)
+                if any(loads[r]+data.prior_loads.get(r,old[r])>data.max_tasks_per_reviewer for r in data.reviewers):
+                    raise ValueError('Matcher violated the reviewer capacity')
         elif result.edges or not result.unmet_constraints:
             raise ValueError('Infeasible output must explain failure and not expose a partial plan')
     elif key=='aggregation':

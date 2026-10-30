@@ -174,8 +174,8 @@
   "allocation": {
     "schema_version": "analysis-v2",
     "algorithm_key": "allocation",
-    "implementation_name": "balanced_greedy_baseline",
-    "implementation_version": "1",
+    "implementation_name": "convex_load_min_cost_flow",
+    "implementation_version": "2",
     "input_hash": "328db5ea3f09afb743ea46587c3050cee57dda4ca5166df2bbb2efe0825c502a",
     "is_mock": true,
     "status": "OK",
@@ -188,57 +188,57 @@
         },
         {
           "answer_key": "a1",
-          "reviewer_key": "demo-u3"
-        },
-        {
-          "answer_key": "a2",
-          "reviewer_key": "demo-u1"
-        },
-        {
-          "answer_key": "a2",
-          "reviewer_key": "demo-u4"
-        },
-        {
-          "answer_key": "a3",
-          "reviewer_key": "demo-u5"
-        },
-        {
-          "answer_key": "a3",
           "reviewer_key": "demo-u6"
         },
         {
-          "answer_key": "a4",
+          "answer_key": "a2",
           "reviewer_key": "demo-u1"
+        },
+        {
+          "answer_key": "a2",
+          "reviewer_key": "demo-u3"
+        },
+        {
+          "answer_key": "a3",
+          "reviewer_key": "demo-u1"
+        },
+        {
+          "answer_key": "a3",
+          "reviewer_key": "demo-u4"
         },
         {
           "answer_key": "a4",
           "reviewer_key": "demo-u2"
         },
         {
-          "answer_key": "a5",
-          "reviewer_key": "demo-u3"
+          "answer_key": "a4",
+          "reviewer_key": "demo-u5"
         },
         {
           "answer_key": "a5",
           "reviewer_key": "demo-u4"
         },
         {
-          "answer_key": "a6",
-          "reviewer_key": "demo-u5"
+          "answer_key": "a5",
+          "reviewer_key": "demo-u6"
         },
         {
           "answer_key": "a6",
-          "reviewer_key": "demo-u1"
+          "reviewer_key": "demo-u3"
+        },
+        {
+          "answer_key": "a6",
+          "reviewer_key": "demo-u5"
         }
       ],
       "unmet_constraints": [],
       "load_metrics": {
-        "demo-u1": 3,
+        "demo-u1": 2,
         "demo-u2": 2,
         "demo-u3": 2,
         "demo-u4": 2,
         "demo-u5": 2,
-        "demo-u6": 1
+        "demo-u6": 2
       }
     },
     "evidence": [],
@@ -247,9 +247,9 @@
   "aggregation": {
     "schema_version": "analysis-v2",
     "algorithm_key": "aggregation",
-    "implementation_name": "weighted_mean_baseline",
-    "implementation_version": "1",
-    "input_hash": "023b97e4a4877ebbd517dbb8bd96b1f1f601dc9e4e1d5a480b69fc0b05204172",
+    "implementation_name": "explicit_weighted_aggregation",
+    "implementation_version": "2",
+    "input_hash": "46d239da600f18e4bedf98f07915230546dd8e5d292f7f66777ce414be21dd20",
     "is_mock": true,
     "status": "OK",
     "payload": {
@@ -304,102 +304,66 @@
   "review_timing": {
     "schema_version": "analysis-v2",
     "algorithm_key": "review_timing",
-    "implementation_name": "synthetic_demo",
-    "implementation_version": "1",
+    "implementation_name": "server_duration_baseline",
+    "implementation_version": "2",
     "input_hash": "146d0e265733a519da8e4630e3bccc3f2476d57bec56314843b50a9dd438ab1f",
     "is_mock": true,
     "status": "OK",
     "payload": {
-      "signals": [
-        {
-          "object_key": "collect_reviews-0",
-          "kind": "SYNTHETIC_EXAMPLE",
-          "value": null,
-          "explanation": "Demonstration fixture; not a real detected anomaly."
-        }
-      ],
+      "signals": [],
       "sample_count": 12,
       "missing_count": 0
     },
     "evidence": [],
-    "limitations": [
-      "Synthetic demonstration only; not research evidence or a formal grade."
-    ]
+    "limitations": []
   },
   "deviation": {
     "schema_version": "analysis-v2",
     "algorithm_key": "deviation",
-    "implementation_name": "synthetic_demo",
-    "implementation_version": "1",
-    "input_hash": "dbf1b51abef2bdd43111d1496996c1fb01c338c9dfdb35cedc69890bc10fa6de",
+    "implementation_name": "auditable_review_signals",
+    "implementation_version": "2",
+    "input_hash": "c71779ed55803ade5ded3f59e8f0b94c9e49243c4ad9afdc4b28799d77264b18",
     "is_mock": true,
-    "status": "OK",
+    "status": "INSUFFICIENT_DATA",
     "payload": {
-      "signals": [
-        {
-          "object_key": "collect_reviews-0",
-          "kind": "SYNTHETIC_EXAMPLE",
-          "value": null,
-          "explanation": "Demonstration fixture; not a real detected anomaly."
-        }
-      ],
-      "sample_count": 12,
-      "missing_count": 0
+      "signals": [],
+      "sample_count": 0,
+      "missing_count": 12
     },
     "evidence": [],
-    "limitations": [
-      "Synthetic demonstration only; not research evidence or a formal grade."
-    ]
+    "limitations": []
   },
   "reviewer_bias": {
     "schema_version": "analysis-v2",
     "algorithm_key": "reviewer_bias",
-    "implementation_name": "synthetic_demo",
-    "implementation_version": "1",
-    "input_hash": "dbf1b51abef2bdd43111d1496996c1fb01c338c9dfdb35cedc69890bc10fa6de",
+    "implementation_name": "auditable_review_signals",
+    "implementation_version": "2",
+    "input_hash": "c71779ed55803ade5ded3f59e8f0b94c9e49243c4ad9afdc4b28799d77264b18",
     "is_mock": true,
-    "status": "OK",
+    "status": "INSUFFICIENT_DATA",
     "payload": {
-      "signals": [
-        {
-          "object_key": "collect_reviews-0",
-          "kind": "SYNTHETIC_EXAMPLE",
-          "value": null,
-          "explanation": "Demonstration fixture; not a real detected anomaly."
-        }
-      ],
-      "sample_count": 12,
-      "missing_count": 0
+      "signals": [],
+      "sample_count": 0,
+      "missing_count": 6
     },
     "evidence": [],
-    "limitations": [
-      "Synthetic demonstration only; not research evidence or a formal grade."
-    ]
+    "limitations": []
   },
   "relationship": {
     "schema_version": "analysis-v2",
     "algorithm_key": "relationship",
-    "implementation_name": "synthetic_demo",
-    "implementation_version": "1",
-    "input_hash": "dbf1b51abef2bdd43111d1496996c1fb01c338c9dfdb35cedc69890bc10fa6de",
+    "implementation_name": "auditable_review_signals",
+    "implementation_version": "2",
+    "input_hash": "c71779ed55803ade5ded3f59e8f0b94c9e49243c4ad9afdc4b28799d77264b18",
     "is_mock": true,
-    "status": "OK",
+    "status": "INSUFFICIENT_DATA",
     "payload": {
-      "signals": [
-        {
-          "object_key": "collect_reviews-0",
-          "kind": "SYNTHETIC_EXAMPLE",
-          "value": null,
-          "explanation": "Demonstration fixture; not a real detected anomaly."
-        }
-      ],
-      "sample_count": 12,
-      "missing_count": 0
+      "signals": [],
+      "sample_count": 0,
+      "missing_count": 12
     },
     "evidence": [],
-    "limitations": [
-      "Synthetic demonstration only; not research evidence or a formal grade."
-    ]
+    "limitations": []
   },
   "mastery": {
     "schema_version": "analysis-v2",

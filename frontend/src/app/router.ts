@@ -17,6 +17,18 @@ import {
 
 export const teacherRoutes = [
   {
+    path: "reviews",
+    name: "teacher-reviews",
+    component: () =>
+      import("../features/analytics/peer-review/TeacherRounds.vue"),
+  },
+  {
+    path: "reviews/:id",
+    name: "teacher-review",
+    component: () =>
+      import("../features/analytics/peer-review/TeacherRound.vue"),
+  },
+  {
     path: "assignments",
     name: "teacher-assignments",
     component: () => import("../features/teacher/Assignments.vue"),
@@ -69,6 +81,18 @@ export const teacherRoutes = [
 ];
 
 export const studentRoutes = [
+  {
+    path: "reviews",
+    name: "student-reviews",
+    component: () =>
+      import("../features/analytics/peer-review/StudentTasks.vue"),
+  },
+  {
+    path: "reviews/:taskId",
+    name: "student-review",
+    component: () =>
+      import("../features/analytics/peer-review/StudentTask.vue"),
+  },
   {
     path: "",
     name: "student-home",

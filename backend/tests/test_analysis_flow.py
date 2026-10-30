@@ -151,11 +151,11 @@ def test_delayed_steps_keep_version_pinned_at_batch_creation(db,demo,monkeypatch
     from app.analysis.framework.catalog import PLUGINS
     bid=int(create(db,demo)['id']);drain(db)
     plugin=PLUGINS['aggregation']
-    monkeypatch.setitem(PLUGINS,'aggregation',replace(plugin,version='2'))
+    monkeypatch.setitem(PLUGINS,'aggregation',replace(plugin,version='99'))
     for name in ('OPEN_REVIEW','SUBMIT_REVIEWS'):
         event(db,bid,name);drain(db)
     run=db.scalar(select(AnalysisRun).where(AnalysisRun.batch_id==bid,AnalysisRun.step_key=='aggregation'))
-    assert run.implementation_version=='1' and run.status=='FAILED'
+    assert run.implementation_version==plugin.version and run.status=='FAILED'
     assert run.reason['reason']=='IMPLEMENTATION_CHANGED_CREATE_NEW_BATCH'
 
 

@@ -79,6 +79,11 @@ async function leave() {
           :class="{ selected: $route.path.startsWith('/teacher/students') }"
           ><Users :size="19" />学生名单</RouterLink
         >
+        <RouterLink
+          to="/teacher/reviews"
+          :class="{ selected: $route.path.startsWith('/teacher/reviews') }"
+          ><ClipboardList :size="19" />互评与复核</RouterLink
+        >
       </nav>
       <div class="sidebar-foot">
         <GraduationCap :size="22" /><strong>算法设计与分析</strong>

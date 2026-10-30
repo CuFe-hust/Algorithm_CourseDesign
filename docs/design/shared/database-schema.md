@@ -1,6 +1,6 @@
 # 当前数据库字段
 
-实现版本：PostgreSQL迁移pg0006；28张业务表，另有alembic_version。由SQLAlchemy模型自动生成类型与外键。
+实现版本：PostgreSQL迁移pg0007；34张业务表，另有alembic_version。由SQLAlchemy模型自动生成类型与外键。
 
 时间戳均带时区，服务端按UTC输出；ID为有符号64位整数，API以字符串传输。JSON列使用JSONB。
 
@@ -322,6 +322,111 @@
 | window_seconds | INTEGER | 否 | — |
 | counter | INTEGER | 否 | — |
 | expires_at | TIMESTAMP WITH TIME ZONE | 否 | — |
+| id | BIGINT | 否 | — |
+| created_at | TIMESTAMP WITH TIME ZONE | 否 | — |
+
+## review_analyses
+
+| 字段 | PostgreSQL类型 | 可空 | 外键 |
+|---|---|---|---|
+| root_round_id | BIGINT | 否 | review_rounds.id |
+| version_no | INTEGER | 否 | — |
+| kind | VARCHAR(16) | 否 | — |
+| batch_id | BIGINT | 否 | analysis_batches.id |
+| source_hash | VARCHAR(64) | 否 | — |
+| created_by | BIGINT | 否 | users.id |
+| resolved_by | BIGINT | 是 | users.id |
+| resolved_at | TIMESTAMP WITH TIME ZONE | 是 | — |
+| resolution_reason | TEXT | 是 | — |
+| acknowledged_statuses | JSONB | 否 | — |
+| updated_at | TIMESTAMP WITH TIME ZONE | 否 | — |
+| id | BIGINT | 否 | — |
+| created_at | TIMESTAMP WITH TIME ZONE | 否 | — |
+
+## review_commands
+
+| 字段 | PostgreSQL类型 | 可空 | 外键 |
+|---|---|---|---|
+| actor_id | BIGINT | 否 | users.id |
+| request_id | VARCHAR(64) | 否 | — |
+| request_hash | VARCHAR(64) | 否 | — |
+| operation | VARCHAR(32) | 否 | — |
+| payload | JSONB | 否 | — |
+| round_id | BIGINT | 否 | review_rounds.id |
+| analysis_id | BIGINT | 是 | review_analyses.id |
+| id | BIGINT | 否 | — |
+| created_at | TIMESTAMP WITH TIME ZONE | 否 | — |
+
+## review_decisions
+
+| 字段 | PostgreSQL类型 | 可空 | 外键 |
+|---|---|---|---|
+| root_round_id | BIGINT | 否 | review_rounds.id |
+| analysis_id | BIGINT | 否 | review_analyses.id |
+| evaluation_id | BIGINT | 是 | review_evaluations.id |
+| answer_key | VARCHAR(64) | 是 | — |
+| action | VARCHAR(16) | 否 | — |
+| weight | NUMERIC(8, 6) | 是 | — |
+| override_score | NUMERIC(10, 2) | 是 | — |
+| reason | TEXT | 否 | — |
+| created_by | BIGINT | 否 | users.id |
+| id | BIGINT | 否 | — |
+| created_at | TIMESTAMP WITH TIME ZONE | 否 | — |
+
+## review_evaluations
+
+| 字段 | PostgreSQL类型 | 可空 | 外键 |
+|---|---|---|---|
+| task_id | BIGINT | 否 | review_tasks.id |
+| reviewer_id | BIGINT | 否 | users.id |
+| client_request_id | VARCHAR(64) | 否 | — |
+| request_hash | VARCHAR(64) | 否 | — |
+| dimension_scores | JSONB | 否 | — |
+| total_score | NUMERIC(12, 2) | 否 | — |
+| comment | TEXT | 否 | — |
+| opened_at | TIMESTAMP WITH TIME ZONE | 否 | — |
+| submitted_at | TIMESTAMP WITH TIME ZONE | 否 | — |
+| elapsed_seconds | NUMERIC(14, 3) | 否 | — |
+| id | BIGINT | 否 | — |
+| created_at | TIMESTAMP WITH TIME ZONE | 否 | — |
+
+## review_rounds
+
+| 字段 | PostgreSQL类型 | 可空 | 外键 |
+|---|---|---|---|
+| course_id | BIGINT | 否 | courses.id |
+| assignment_item_id | BIGINT | 否 | assignment_items.id |
+| root_round_id | BIGINT | 是 | review_rounds.id |
+| round_no | INTEGER | 否 | — |
+| status | VARCHAR(16) | 否 | — |
+| revision_no | INTEGER | 否 | — |
+| created_by | BIGINT | 否 | users.id |
+| reason | TEXT | 否 | — |
+| policy | JSONB | 否 | — |
+| source_hash | VARCHAR(64) | 否 | — |
+| allocation_batch_id | BIGINT | 是 | analysis_batches.id |
+| review_deadline | TIMESTAMP WITH TIME ZONE | 否 | — |
+| published_at | TIMESTAMP WITH TIME ZONE | 是 | — |
+| published_by | BIGINT | 是 | users.id |
+| closed_at | TIMESTAMP WITH TIME ZONE | 是 | — |
+| closed_by | BIGINT | 是 | users.id |
+| close_reason | TEXT | 是 | — |
+| updated_at | TIMESTAMP WITH TIME ZONE | 否 | — |
+| id | BIGINT | 否 | — |
+| created_at | TIMESTAMP WITH TIME ZONE | 否 | — |
+
+## review_tasks
+
+| 字段 | PostgreSQL类型 | 可空 | 外键 |
+|---|---|---|---|
+| round_id | BIGINT | 否 | review_rounds.id |
+| submission_id | BIGINT | 否 | submissions.id |
+| answer_key | VARCHAR(64) | 否 | — |
+| reviewer_id | BIGINT | 否 | users.id |
+| status | VARCHAR(16) | 否 | — |
+| opened_at | TIMESTAMP WITH TIME ZONE | 是 | — |
+| submitted_at | TIMESTAMP WITH TIME ZONE | 是 | — |
+| updated_at | TIMESTAMP WITH TIME ZONE | 否 | — |
 | id | BIGINT | 否 | — |
 | created_at | TIMESTAMP WITH TIME ZONE | 否 | — |
 

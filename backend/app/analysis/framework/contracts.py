@@ -36,6 +36,10 @@ class AllocationInput(Contract):
     forbidden_edges: list[Edge] = Field(default_factory=list)
     existing_edges: list[Edge] = Field(default_factory=list)
     history: list[Edge] = Field(default_factory=list)
+    required_by_answer: dict[Key, Annotated[int, Field(ge=1, le=10)]] = Field(default_factory=dict)
+    prior_loads: dict[Key, Annotated[int, Field(ge=0)]] = Field(default_factory=dict)
+    max_tasks_per_reviewer: int | None = Field(default=None, ge=1, le=3000)
+    seed: int = 0
 
 
 class AllocationOutput(Contract):
@@ -58,6 +62,7 @@ class AggregationInput(Contract):
     rubric_max: Decimal = Field(gt=0, allow_inf_nan=False)
     minimum_samples: int = Field(default=2, ge=1)
     evaluations: list[Evaluation]
+    method: Literal['weighted_mean', 'weighted_median'] = 'weighted_mean'
 
 
 class AggregatedScore(Contract):
@@ -116,6 +121,9 @@ class DetectionInput(Contract):
     edges: list[Edge] = Field(default_factory=list)
     minimum_samples: int = Field(default=2, ge=1)
     threshold: Ratio = Decimal('0.2')
+    rubric_max: Decimal = Field(default=Decimal('100'), gt=0, allow_inf_nan=False)
+    history_baseline: list[AggregatedScore] = Field(default_factory=list)
+    author_map: dict[Key, Key] = Field(default_factory=dict)
 
 
 class Timing(Contract):
@@ -126,6 +134,8 @@ class Timing(Contract):
 class TimingInput(Contract):
     timings: list[Timing]
     minimum_samples: int = Field(default=2, ge=1)
+    short_seconds: Nonnegative = Decimal('15')
+    relative_fraction: Ratio = Decimal('0.2')
 
 
 class Grade(Contract):

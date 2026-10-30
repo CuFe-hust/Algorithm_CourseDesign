@@ -1,6 +1,6 @@
 # 数据库业务地图与写入边界
 
-当前：PostgreSQL，28张业务表+alembic_version，迁移head为pg0006。SQLAlchemy模型是开发入口，Alembic迁移是建库/升级入口，字段见[数据字典](database-schema.md)。
+当前：PostgreSQL，34张业务表+alembic_version，迁移head为pg0007。SQLAlchemy模型是开发入口，Alembic迁移是建库/升级入口，字段见[数据字典](database-schema.md)。
 
 ## 1. 当前表分组
 
@@ -85,4 +85,4 @@ analysis_jobs.submission_id当前必填，按一份代码提交组织。匹配�
 
 ## 通用分析框架补充
 
-analysis_batches、analysis_input_snapshots、analysis_runs、analysis_artifacts承载批次/不可变输入/依赖任务/版本结果；不混入JUDGE领取队列。真实互评和正式成绩领域表仍未建立。DEMO只用合成身份与评分，REAL_INPUT缺输入明确等待。见[分析设计](../analysis/api.md)。
+analysis_batches、analysis_input_snapshots、analysis_runs、analysis_artifacts承载批次/不可变输入/依赖任务/版本结果；不混入JUDGE领取队列。pg0007新增review_rounds、review_tasks、review_evaluations、review_analyses、review_decisions、review_commands，承载真实互评及复核版本；正式成绩发布仍属第五线。详见[第③、④条设计](../analysis/peer-review-backend.md)。DEMO只用合成身份与评分，REAL_INPUT缺输入明确等待。见[分析设计](../analysis/api.md)。
