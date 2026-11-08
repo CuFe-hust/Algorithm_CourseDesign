@@ -7,7 +7,9 @@ import { renderCode } from "../../shared/markdown";
 import * as api from "./api";
 import JudgeFeedback from "./components/JudgeFeedback.vue";
 import SubmissionStatus from "./components/SubmissionStatus.vue";
+import ComplexityPanel from "./components/ComplexityPanel.vue";
 import { newRequestKey } from "./composables/useSubmission";
+import { formatDateTime } from "./format";
 import type { SubmissionDetail } from "./types";
 
 const route = useRoute();
@@ -25,6 +27,30 @@ const code = computed(() =>
     ? renderCode(detail.value.content, detail.value.language)
     : "",
 );
+
+/** Only a real full pass can be analysed; the backend re-checks this. */
+const analysable = computed(
+  () =>
+    detail.value?.result?.verdict === "ACCEPTED" &&
+    !detail.value.result.is_mock &&
+    detail.value.result.total_cases !== null &&
+    detail.value.result.passed_cases === detail.value.result.total_cases,
+);
+
+/** 面向学生的任务状态文案；内部枚举不直接上界面。 */
+const jobStatusLabels: Record<string, string> = {
+  PENDING: "排队中",
+  RUNNING: "评测中",
+  SUCCEEDED: "评测完成",
+  FAILED: "服务故障",
+  CANCELLED: "已取消",
+  AWAITING_REVIEW: "等待后续处理",
+  SUBMITTED: "已提交",
+  WITHDRAWN: "已撤回",
+};
+function jobStatusLabel(status: string) {
+  return jobStatusLabels[status] || status;
+}
 
 async function load() {
   loading.value = true;
@@ -97,7 +123,7 @@ onMounted(load);
       <span class="eyebrow">VERSION</span>
       <h1>第 {{ detail.version_no }} 版</h1>
       <p class="muted">
-        提交于 {{ new Date(detail.submitted_at).toLocaleString() }} ·
+        提交于 {{ formatDateTime(detail.submitted_at) }} ·
         {{ detail.language || "主观题" }} · 只读
       </p>
     </div>
@@ -113,7 +139,7 @@ onMounted(load);
       <dl class="meta-row">
         <div>
           <dt>任务</dt>
-          <dd>{{ detail.job_status }}</dd>
+          <dd>{{ jobStatusLabel(detail.job_status) }}</dd>
         </div>
         <div>
           <dt>尝试次数</dt>
@@ -121,15 +147,13 @@ onMounted(load);
         </div>
         <div>
           <dt>恢复周期</dt>
-          <dd>{{ detail.job?.recovery_cycle_no ?? 0 }}</dd>
+          <dd>{{ detail.job?.recovery_cycle_no || "—" }}</dd>
         </div>
         <div>
           <dt>撤回时间</dt>
           <dd>
             {{
-              detail.withdrawn_at
-                ? new Date(detail.withdrawn_at).toLocaleString()
-                : "—"
+              detail.withdrawn_at ? formatDateTime(detail.withdrawn_at) : "—"
             }}
           </dd>
         </div>
@@ -160,7 +184,7 @@ onMounted(load);
       >
         当前不可重评：{{ detail.job.retry_block_reason }}
         <template v-if="detail.job.retry_after_at">
-          （{{ new Date(detail.job.retry_after_at).toLocaleString() }}
+          （{{ formatDateTime(detail.job.retry_after_at) }}
           后可重试）
         </template>
       </p>
@@ -171,5 +195,13 @@ onMounted(load);
       <pre v-else class="mono code-block">{{ detail.content }}</pre>
     </section>
     <JudgeFeedback :result="detail.result" :job-status="detail.job_status" />
+    <ComplexityPanel
+      v-if="analysable"
+      :submission-id="detail.submission_id"
+      auto-load
+    />
+    <p v-else-if="detail.result && !detail.result.is_mock" class="hint">
+      复杂度分析只对真实通过（全部测试点通过）的代码开放。
+    </p>
   </template>
 </template>

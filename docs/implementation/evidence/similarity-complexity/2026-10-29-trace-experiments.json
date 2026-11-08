@@ -1,0 +1,6643 @@
+{
+  "meta": {
+    "generated_at": "2026-10-28T21:50:22",
+    "python": "3.14.5",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "language": "python",
+    "reference_language": "Python",
+    "collect_language": "python3",
+    "language_label": "Python 3",
+    "seed": 20261028,
+    "repeat": 2,
+    "collect_budget_ms": 30000,
+    "wall_seconds": 371.218,
+    "question_bank": "data/formatted/questions.programming.json",
+    "label_file": "data/analysis/complexity_expected_classes.json",
+    "codes": "ALL",
+    "problems": 70,
+    "notes": [
+      "只读题库与 PROFILES，不连数据库、不联网；采集与推断走生产代码路径",
+      "expected 取 TIME_CLASSES 的题计入准确率；UNKNOWN 与 NOT_MEASURABLE 不计入分母",
+      "跨语言一致性需要先用另一种语言跑一遍，再用 --compare 读取那份 JSON",
+      "按档位比较的 work 是精确计数，可重复性要求两份结果逐档完全相等"
+    ]
+  },
+  "labels": {
+    "CODE-P01": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "n 个活动读入后整体排序，比较次数由排序主导，按结束时刻的单趟扫描只占 O(n)"
+    },
+    "CODE-P02": {
+      "expected": "O(1)",
+      "confidence": "HIGH",
+      "rationale": "7 种固定面额各做一次除法，循环次数与输入数值无关，算法是常数级"
+    },
+    "CODE-P03": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "n 件物品按单位价值排序，排序 O(n log n) 主导；容量被填满后装包循环提前停止"
+    },
+    "CODE-P04": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "n-1 轮合并，每轮两次 heap 弹出加一次压入各 O(log n)，建堆的 O(n) 被它覆盖"
+    },
+    "CODE-P05": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "n 个区间按左端点排序 O(n log n) 主导，之后单趟覆盖扫描是 O(n)"
+    },
+    "CODE-P06": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "按接水时间排序 O(n log n) 主导，前缀和累加是 O(n)"
+    },
+    "CODE-P07": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "gas 与 cost 两个数组各扫一遍，一次遍历累加油耗差"
+    },
+    "CODE-P08": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "按层贪心只把数组扫一遍，最远可达位置单调前推"
+    },
+    "CODE-P09": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "n 个气球按右端点排序 O(n log n) 主导，射箭扫描 O(n)"
+    },
+    "CODE-P10": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "归并排序递归树每层合并 O(n)、共 log n 层，合并时顺带累加逆序对"
+    },
+    "CODE-P11": {
+      "expected": "O(log n)",
+      "confidence": "HIGH",
+      "rationale": "指数 b 是输入的第二个数、随 n 增长，逐位平方与相乘共 log2 b 次"
+    },
+    "CODE-P12": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "在 [0,max(L)] 上二分 log(max L)=log n 轮，每轮扫描 n 根绳子计数"
+    },
+    "CODE-P13": {
+      "expected": "O(n log n)",
+      "confidence": "MEDIUM",
+      "rationale": "分治最近点对每层归并 O(n)、共 log n 层，主项是 n log n；生成点只有 O(n) 种坐标，重合会让部分层提前返回"
+    },
+    "CODE-P14": {
+      "expected": "O(2^n)",
+      "confidence": "HIGH",
+      "rationale": "汉诺塔递归恰好展开 2^n-1 次移动，每次附加一条输出"
+    },
+    "CODE-P15": {
+      "expected": "UNKNOWN",
+      "confidence": "MEDIUM",
+      "rationale": "乘法由 Python 内建 int 完成（大数走 Karatsuba，约 n^1.585），真实增长在解释器内部，目录里最近上界是 O(n^2)"
+    },
+    "CODE-P16": {
+      "expected": "O(n)",
+      "confidence": "MEDIUM",
+      "rationale": "dp 是 n×W，但 spec 把容量钉在 1000，这套输入族上只有 n 在增长，工作量对 n 线性"
+    },
+    "CODE-P17": {
+      "expected": "O(n^2)",
+      "confidence": "HIGH",
+      "rationale": "两个长度 n 的串做滚动数组 LCS，双重循环 n×n 主导"
+    },
+    "CODE-P18": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "每个元素一次 bisect_left，n 次 O(log n) 的二分查找主导"
+    },
+    "CODE-P19": {
+      "expected": "O(n^2)",
+      "confidence": "HIGH",
+      "rationale": "编辑距离的双重循环 n×n 次状态转移主导"
+    },
+    "CODE-P20": {
+      "expected": "O(n^2)",
+      "confidence": "HIGH",
+      "rationale": "数字三角形共 1+2+…+n 个格子，自底向上逐格合并，工作量 n^2/2"
+    },
+    "CODE-P21": {
+      "expected": "O(n^2)",
+      "confidence": "MEDIUM",
+      "rationale": "完全背包的 dp 规模是硬币数×金额，头部第二个数 k=amount 随 n 增长，故为 n^2"
+    },
+    "CODE-P22": {
+      "expected": "O(n^3)",
+      "confidence": "HIGH",
+      "rationale": "矩阵连乘区间 DP：长度、起点、分割点三重循环，共 n^3/6 次转移"
+    },
+    "CODE-P23": {
+      "expected": "O(n^3)",
+      "confidence": "HIGH",
+      "rationale": "石子合并区间 DP 同样是长度、起点、分割点三重循环"
+    },
+    "CODE-P24": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "后缀自动机构建与匹配都是均摊线性，沿后缀链接回退的总次数不超过 2n"
+    },
+    "CODE-P25": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "只保留前两户最优值的单趟 DP，每户常数次转移"
+    },
+    "CODE-P26": {
+      "expected": "O(n log n)",
+      "confidence": "MEDIUM",
+      "rationale": "堆优化 Dijkstra：n 个点、2n 条边，每次堆操作 log n 主导；随机图多数点不可达，实际堆操作数会低于上界"
+    },
+    "CODE-P27": {
+      "expected": "O(n^2)",
+      "confidence": "MEDIUM",
+      "rationale": "Bellman-Ford 最坏 n-1 轮、每轮扫 Θ(n) 条边即 n^2；但生成边权全为正，首轮无松弛就 break"
+    },
+    "CODE-P28": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "Kruskal 先对 2n 条边排序 O(n log n)，并查集部分近似线性"
+    },
+    "CODE-P29": {
+      "expected": "O(n log n)",
+      "confidence": "MEDIUM",
+      "rationale": "Kahn 每步一次堆弹出/压入，n 个点共 O(n log n)；生成图随机、几乎必含环，实际只弹出少数点"
+    },
+    "CODE-P30": {
+      "expected": "O(n^2)",
+      "confidence": "HIGH",
+      "rationale": "ladder 的 n 是网格边长，BFS 最多访问 n×n 个格子，每格常数次扩展"
+    },
+    "CODE-P31": {
+      "expected": "O(n)",
+      "confidence": "MEDIUM",
+      "rationale": "并查集按大小合并加路径压缩近似线性（α(n)），m 条边与 q 次询问都随 n 增长"
+    },
+    "CODE-P32": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "倍增表 LOG=log n 层、每层填 n 个点，构造 O(n log n)；n 次询问各 O(log n)"
+    },
+    "CODE-P33": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "迭代 Tarjan 对每个点、每条边各处理常数次，m=2n 与 n 同阶"
+    },
+    "CODE-P34": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "BFS 染色对每个点、每条边各访问常数次，m=2n 与 n 同阶"
+    },
+    "CODE-P35": {
+      "expected": "O(n!)",
+      "confidence": "HIGH",
+      "rationale": "回溯生成 n! 个排列，每个叶子输出 n 个数字，主项是 n!"
+    },
+    "CODE-P36": {
+      "expected": "O(n!)",
+      "confidence": "HIGH",
+      "rationale": "按行放皇后的回溯树节点数按 n! 量级展开，剪枝只改变常数"
+    },
+    "CODE-P37": {
+      "expected": "NOT_MEASURABLE",
+      "confidence": "HIGH",
+      "rationale": "数独是固定 9×9 盘面（FIXED 输入族），任何档位都是同一份输入，无法测增长"
+    },
+    "CODE-P38": {
+      "expected": "O(n^3)",
+      "confidence": "HIGH",
+      "rationale": "每染一个点要扫 n 个候选点、每个再比较 n 个邻接关系，n 个点染色即 n^3"
+    },
+    "CODE-P39": {
+      "expected": "UNKNOWN",
+      "confidence": "MEDIUM",
+      "rationale": "回溯生成括号串的节点数是 Catalan 数，真实增长 4^n/n^1.5，目录里 O(2^n) 太小、O(n!) 太大"
+    },
+    "CODE-P40": {
+      "expected": "O(n^2)",
+      "confidence": "MEDIUM",
+      "rationale": "n×n 网格逐格尝试 dfs，单词沿第一行铺成直路，多数格子首字符就不匹配，总工作量 n^2"
+    },
+    "CODE-P41": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "KMP 建 next 表 O(m) 加主串单趟扫描 O(n)，两串长度都为 n"
+    },
+    "CODE-P42": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "Manacher 对插入分隔符后的 2n+1 个中心各做均摊常数次扩展"
+    },
+    "CODE-P43": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "字典树按单词总长度插入，q=n 次前缀查询沿树下行，总字符数随 n 线性"
+    },
+    "CODE-P44": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "滑动窗口左右指针各只前进 n 步"
+    },
+    "CODE-P45": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "前缀哈希预处理 O(n)，q=n 次区间比较每次常数次取模运算"
+    },
+    "CODE-P46": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "n 个定长（≤100 字符）串逐个缩短公共前缀，工作量是总字符数"
+    },
+    "CODE-P47": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "随机化三路快排的期望比较次数是 n log n，随机基准只影响常数"
+    },
+    "CODE-P48": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "三路划分快速选择每轮期望折半，总比较次数期望 O(n)"
+    },
+    "CODE-P49": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "q=n 次询问各做一次 log n 的二分查找"
+    },
+    "CODE-P50": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "单调队列每个下标最多入队出队一次"
+    },
+    "CODE-P51": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "单调栈每个元素最多入栈出栈一次"
+    },
+    "CODE-P52": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "每个数做常数次堆压入/弹出，n 个元素共 O(n log n)"
+    },
+    "CODE-P53": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "后缀表达式按 token 逐个入栈或弹栈，token 数随 n 线性"
+    },
+    "CODE-P54": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "线性建树 O(n) 后，q=n 次操作各做 log n 次树状数组跳转"
+    },
+    "CODE-P55": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "q 条操作均摊 O(1) 每条，push/pop 在两个栈之间转移的总次数不超过 q"
+    },
+    "CODE-P56": {
+      "expected": "O(n log n)",
+      "confidence": "HIGH",
+      "rationale": "Counter 计数 O(n) 后对不同元素排序 O(n log n)，排序主导"
+    },
+    "CODE-P57": {
+      "expected": "UNKNOWN",
+      "confidence": "HIGH",
+      "rationale": "切片筛法统计素数，真实增长 n log log n，目录里最近上界是 O(n log n)"
+    },
+    "CODE-P58": {
+      "expected": "O(log n)",
+      "confidence": "HIGH",
+      "rationale": "欧几里得递归层数是 O(log min(a,b))，两个数都随 n 同阶增长"
+    },
+    "CODE-P59": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "T=n 组询问，阶乘表建到最大的 n_i（随 n 增长），建表 O(n) 主导"
+    },
+    "CODE-P60": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "从低位到高位逐位相加，循环次数是两数位数"
+    },
+    "CODE-P61": {
+      "expected": "O(log n)",
+      "confidence": "HIGH",
+      "rationale": "短除法每轮除以 2，循环次数就是 log2 n 位"
+    },
+    "CODE-P62": {
+      "expected": "UNKNOWN",
+      "confidence": "HIGH",
+      "rationale": "试除到 √n，真实增长 √n，目录里最近上界是 O(n)"
+    },
+    "CODE-P63": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "单趟异或消去成对出现的数"
+    },
+    "CODE-P64": {
+      "expected": "O(n)",
+      "confidence": "MEDIUM",
+      "rationale": "逐个数统计二进制 1 的个数，值域上界 2^60 固定，故为线性；bit 操作在 bin/count 里看不到"
+    },
+    "CODE-P65": {
+      "expected": "O(2^n)",
+      "confidence": "MEDIUM",
+      "rationale": "枚举 2^n 个格雷码，每个补零到 n 位，主项是 2^n"
+    },
+    "CODE-P66": {
+      "expected": "O(log n)",
+      "confidence": "HIGH",
+      "rationale": "不断右移直到 l 与 r 相等，循环次数是 r 的位数"
+    },
+    "CODE-P67": {
+      "expected": "O(n^2)",
+      "confidence": "HIGH",
+      "rationale": "n×n 矩阵逐层顺时针取数，每个元素恰好访问一次"
+    },
+    "CODE-P68": {
+      "expected": "O(n^2)",
+      "confidence": "HIGH",
+      "rationale": "n×n 方阵旋转输出，n^2 个元素各写一次"
+    },
+    "CODE-P69": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "前缀和加哈希表计数，单趟 n 个元素"
+    },
+    "CODE-P70": {
+      "expected": "O(n)",
+      "confidence": "HIGH",
+      "rationale": "m=n 次差分更新加一趟前缀和，行数与 n 同阶"
+    }
+  },
+  "results": [
+    {
+      "code": "CODE-P01",
+      "title": "活动安排问题",
+      "family": "INT_ARRAY_ROWS",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "n 个活动读入后整体排序，比较次数由排序主导，按结束时刻的单趟扫描只占 O(n)",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 659.0,
+          "baseline_work": 186.0,
+          "peak_bytes": 3108
+        },
+        {
+          "n": 57,
+          "work": 1212.475,
+          "baseline_work": 334.0,
+          "peak_bytes": 5557
+        },
+        {
+          "n": 101,
+          "work": 2250.479,
+          "baseline_work": 628.0,
+          "peak_bytes": 9561
+        },
+        {
+          "n": 179,
+          "work": 4274.603,
+          "baseline_work": 1285.0,
+          "peak_bytes": 19606
+        },
+        {
+          "n": 317,
+          "work": 7944.743,
+          "baseline_work": 2407.0,
+          "peak_bytes": 45522
+        },
+        {
+          "n": 563,
+          "work": 14664.126,
+          "baseline_work": 4390.0,
+          "peak_bytes": 104676
+        },
+        {
+          "n": 1000,
+          "work": 27239.784,
+          "baseline_work": 8173.0,
+          "peak_bytes": 205923
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 2.236,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P02",
+      "title": "找零钱",
+      "family": "SINGLE_INT",
+      "expected": "O(1)",
+      "expected_confidence": "HIGH",
+      "rationale": "7 种固定面额各做一次除法，循环次数与输入数值无关，算法是常数级",
+      "predicted": "O(1)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(1)",
+      "notes": [
+        "工作量在全部档位上相同",
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 64,
+          "work": 41.0,
+          "baseline_work": 5.0,
+          "peak_bytes": 549
+        },
+        {
+          "n": 256,
+          "work": 42.0,
+          "baseline_work": 6.0,
+          "peak_bytes": 550
+        },
+        {
+          "n": 1024,
+          "work": 43.0,
+          "baseline_work": 7.0,
+          "peak_bytes": 552
+        },
+        {
+          "n": 4096,
+          "work": 43.0,
+          "baseline_work": 7.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 44.0,
+          "baseline_work": 8.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 65536,
+          "work": 44.0,
+          "baseline_work": 8.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 262144,
+          "work": 45.0,
+          "baseline_work": 9.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 1048576,
+          "work": 46.0,
+          "baseline_work": 10.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 8,
+      "rungs_ok": 8,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 2.729,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P03",
+      "title": "分数背包",
+      "family": "INT_ARRAY_ROWS",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "n 件物品按单位价值排序，排序 O(n log n) 主导；容量被填满后装包循环提前停止",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 1252.0,
+          "baseline_work": 191.0,
+          "peak_bytes": 5031
+        },
+        {
+          "n": 57,
+          "work": 2369.475,
+          "baseline_work": 339.0,
+          "peak_bytes": 8679
+        },
+        {
+          "n": 101,
+          "work": 4355.479,
+          "baseline_work": 633.0,
+          "peak_bytes": 14795
+        },
+        {
+          "n": 179,
+          "work": 8398.603,
+          "baseline_work": 1290.0,
+          "peak_bytes": 30016
+        },
+        {
+          "n": 317,
+          "work": 16106.743,
+          "baseline_work": 2412.0,
+          "peak_bytes": 66220
+        },
+        {
+          "n": 563,
+          "work": 30905.126,
+          "baseline_work": 4395.0,
+          "peak_bytes": 138925
+        },
+        {
+          "n": 1000,
+          "work": 58998.784,
+          "baseline_work": 8178.0,
+          "peak_bytes": 266384
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 3.847,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P04",
+      "title": "合并果子",
+      "family": "INT_ARRAY",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "n-1 轮合并，每轮两次 heap 弹出加一次压入各 O(log n)，建堆的 O(n) 被它覆盖",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销",
+        "空间增长无法匹配任何类别，报告不给出空间结论"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 694.036,
+          "baseline_work": 93.0,
+          "peak_bytes": 152189
+        },
+        {
+          "n": 64,
+          "work": 1579.008,
+          "baseline_work": 190.0,
+          "peak_bytes": 152189
+        },
+        {
+          "n": 128,
+          "work": 3559.496,
+          "baseline_work": 401.0,
+          "peak_bytes": 152189
+        },
+        {
+          "n": 256,
+          "work": 7989.995,
+          "baseline_work": 907.0,
+          "peak_bytes": 152189
+        },
+        {
+          "n": 512,
+          "work": 17636.501,
+          "baseline_work": 1935.0,
+          "peak_bytes": 152189
+        },
+        {
+          "n": 1024,
+          "work": 38465.02,
+          "baseline_work": 3989.0,
+          "peak_bytes": 152189
+        },
+        {
+          "n": 2048,
+          "work": 84265.56,
+          "baseline_work": 9167.0,
+          "peak_bytes": 187970
+        },
+        {
+          "n": 4096,
+          "work": 181833.141,
+          "baseline_work": 19344.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 389401.804,
+          "baseline_work": 39842.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 9,
+      "rungs_ok": 9,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 3.677,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P05",
+      "title": "区间覆盖",
+      "family": "INT_ARRAY_ROWS_TWO_HEADER",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "n 个区间按左端点排序 O(n log n) 主导，之后单趟覆盖扫描是 O(n)",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 479.0,
+          "baseline_work": 173.0,
+          "peak_bytes": 2973
+        },
+        {
+          "n": 64,
+          "work": 1289.0,
+          "baseline_work": 361.0,
+          "peak_bytes": 6161
+        },
+        {
+          "n": 128,
+          "work": 2755.0,
+          "baseline_work": 794.0,
+          "peak_bytes": 13042
+        },
+        {
+          "n": 256,
+          "work": 5885.0,
+          "baseline_work": 1752.0,
+          "peak_bytes": 25442
+        },
+        {
+          "n": 512,
+          "work": 12564.0,
+          "baseline_work": 3818.0,
+          "peak_bytes": 61468
+        },
+        {
+          "n": 1024,
+          "work": 26358.0,
+          "baseline_work": 7882.0,
+          "peak_bytes": 144038
+        },
+        {
+          "n": 2048,
+          "work": 56567.0,
+          "baseline_work": 17619.0,
+          "peak_bytes": 304117
+        },
+        {
+          "n": 4096,
+          "work": 110300.0,
+          "baseline_work": 37895.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 248242.0,
+          "baseline_work": 78715.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 529919.0,
+          "baseline_work": 169425.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.14,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P06",
+      "title": "排队接水",
+      "family": "INT_ARRAY",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "按接水时间排序 O(n log n) 主导，前缀和累加是 O(n)",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 460.0,
+          "baseline_work": 93.0,
+          "peak_bytes": 3023
+        },
+        {
+          "n": 57,
+          "work": 853.475,
+          "baseline_work": 164.0,
+          "peak_bytes": 4804
+        },
+        {
+          "n": 101,
+          "work": 1594.479,
+          "baseline_work": 301.0,
+          "peak_bytes": 7888
+        },
+        {
+          "n": 179,
+          "work": 3038.603,
+          "baseline_work": 610.0,
+          "peak_bytes": 15632
+        },
+        {
+          "n": 317,
+          "work": 5705.743,
+          "baseline_work": 1155.0,
+          "peak_bytes": 35696
+        },
+        {
+          "n": 563,
+          "work": 10679.126,
+          "baseline_work": 2142.0,
+          "peak_bytes": 83404
+        },
+        {
+          "n": 1000,
+          "work": 19866.784,
+          "baseline_work": 3886.0,
+          "peak_bytes": 171210
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 2.21,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P07",
+      "title": "加油站",
+      "family": "TWO_INT_ARRAYS",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "gas 与 cost 两个数组各扫一遍，一次遍历累加油耗差",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 400.0,
+          "baseline_work": 181.0,
+          "peak_bytes": 3323
+        },
+        {
+          "n": 64,
+          "work": 788.0,
+          "baseline_work": 371.0,
+          "peak_bytes": 6581
+        },
+        {
+          "n": 128,
+          "work": 1580.0,
+          "baseline_work": 801.0,
+          "peak_bytes": 13051
+        },
+        {
+          "n": 256,
+          "work": 3403.0,
+          "baseline_work": 1856.0,
+          "peak_bytes": 26602
+        },
+        {
+          "n": 512,
+          "work": 7031.0,
+          "baseline_work": 3874.0,
+          "peak_bytes": 65526
+        },
+        {
+          "n": 1024,
+          "work": 14284.0,
+          "baseline_work": 8031.0,
+          "peak_bytes": 150363
+        },
+        {
+          "n": 2048,
+          "work": 30675.0,
+          "baseline_work": 18336.0,
+          "peak_bytes": 313068
+        },
+        {
+          "n": 4096,
+          "work": 63642.0,
+          "baseline_work": 38791.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 129004.0,
+          "baseline_work": 79687.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 258784.0,
+          "baseline_work": 160185.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 2.711,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P08",
+      "title": "跳跃游戏",
+      "family": "INT_ARRAY",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "按层贪心只把数组扫一遍，最远可达位置单调前推",
+      "predicted": "UNKNOWN",
+      "confidence": "LOW",
+      "method": "UNKNOWN",
+      "recurrence": null,
+      "closed_form": "UNKNOWN",
+      "notes": [
+        "工作量在相邻档位之间下降了 50%，说明执行路径受输入数值影响，不只是由输入规模决定；类别无法只由规模解释",
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销",
+        "工作量在相邻档位之间下降了 50%，说明执行路径受输入数值影响，不只是由输入规模决定；本报告不给出确定的增长类别"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 200.0,
+          "baseline_work": 93.0,
+          "peak_bytes": 1939
+        },
+        {
+          "n": 64,
+          "work": 326.0,
+          "baseline_work": 190.0,
+          "peak_bytes": 3638
+        },
+        {
+          "n": 128,
+          "work": 882.0,
+          "baseline_work": 401.0,
+          "peak_bytes": 6747
+        },
+        {
+          "n": 256,
+          "work": 1176.0,
+          "baseline_work": 907.0,
+          "peak_bytes": 13361
+        },
+        {
+          "n": 512,
+          "work": 2272.0,
+          "baseline_work": 1935.0,
+          "peak_bytes": 31107
+        },
+        {
+          "n": 1024,
+          "work": 7433.0,
+          "baseline_work": 3989.0,
+          "peak_bytes": 72717
+        },
+        {
+          "n": 2048,
+          "work": 16201.0,
+          "baseline_work": 9167.0,
+          "peak_bytes": 159093
+        },
+        {
+          "n": 4096,
+          "work": 27800.0,
+          "baseline_work": 19344.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 44090.0,
+          "baseline_work": 39842.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 136357.0,
+          "baseline_work": 87340.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 3.653,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P09",
+      "title": "引爆气球",
+      "family": "INT_ARRAY_ROWS",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "n 个气球按右端点排序 O(n log n) 主导，射箭扫描 O(n)",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 626.0,
+          "baseline_work": 186.0,
+          "peak_bytes": 3498
+        },
+        {
+          "n": 64,
+          "work": 1304.0,
+          "baseline_work": 380.0,
+          "peak_bytes": 6896
+        },
+        {
+          "n": 128,
+          "work": 2799.0,
+          "baseline_work": 841.0,
+          "peak_bytes": 13329
+        },
+        {
+          "n": 256,
+          "work": 6024.0,
+          "baseline_work": 1882.0,
+          "peak_bytes": 32088
+        },
+        {
+          "n": 512,
+          "work": 12742.0,
+          "baseline_work": 3974.0,
+          "peak_bytes": 93624
+        },
+        {
+          "n": 1024,
+          "work": 26874.0,
+          "baseline_work": 8364.0,
+          "peak_bytes": 210688
+        },
+        {
+          "n": 2048,
+          "work": 57907.0,
+          "baseline_work": 18867.0,
+          "peak_bytes": 440868
+        },
+        {
+          "n": 4096,
+          "work": 121662.0,
+          "baseline_work": 39608.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 253694.0,
+          "baseline_work": 81428.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 540141.0,
+          "baseline_work": 179399.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.326,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P10",
+      "title": "逆序对",
+      "family": "INT_ARRAY",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "归并排序递归树每层合并 O(n)、共 log n 层，合并时顺带累加逆序对",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": {
+        "function": "merge_count",
+        "branching": 2,
+        "shrink": "DATA_DEPENDENT",
+        "frame_class": "O(1)",
+        "expression": null,
+        "solution": null,
+        "class": null,
+        "method": "NONE",
+        "ratio": 1.0,
+        "step": null,
+        "frame_confidence": "LOW",
+        "share": 1.0,
+        "notes": [
+          "每帧非递归工作量的增长形态无法识别，按常数处理",
+          "递归参数按数据切分，没有固定的缩放关系，未还原递推式"
+        ]
+      },
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 1485.0,
+          "baseline_work": 92.0,
+          "peak_bytes": 2880
+        },
+        {
+          "n": 64,
+          "work": 3431.0,
+          "baseline_work": 188.0,
+          "peak_bytes": 5280
+        },
+        {
+          "n": 128,
+          "work": 7753.0,
+          "baseline_work": 410.0,
+          "peak_bytes": 10110
+        },
+        {
+          "n": 256,
+          "work": 17451.0,
+          "baseline_work": 922.0,
+          "peak_bytes": 20030
+        },
+        {
+          "n": 512,
+          "work": 38525.0,
+          "baseline_work": 1946.0,
+          "peak_bytes": 44370
+        },
+        {
+          "n": 1024,
+          "work": 84359.0,
+          "baseline_work": 4020.0,
+          "peak_bytes": 98800
+        },
+        {
+          "n": 2048,
+          "work": 184143.0,
+          "baseline_work": 9140.0,
+          "peak_bytes": 208720
+        },
+        {
+          "n": 4096,
+          "work": 398107.0,
+          "baseline_work": 19380.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 854537.0,
+          "baseline_work": 39860.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 1831377.0,
+          "baseline_work": 87206.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 14.395,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P11",
+      "title": "快速幂",
+      "family": "THREE_INTS",
+      "expected": "O(log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "指数 b 是输入的第二个数、随 n 增长，逐位平方与相乘共 log2 b 次",
+      "predicted": "O(log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 64,
+          "work": 54.0,
+          "baseline_work": 11.0,
+          "peak_bytes": 601
+        },
+        {
+          "n": 256,
+          "work": 67.0,
+          "baseline_work": 14.0,
+          "peak_bytes": 604
+        },
+        {
+          "n": 1024,
+          "work": 80.0,
+          "baseline_work": 17.0,
+          "peak_bytes": 607
+        },
+        {
+          "n": 4096,
+          "work": 90.0,
+          "baseline_work": 17.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 103.0,
+          "baseline_work": 20.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 65536,
+          "work": 113.0,
+          "baseline_work": 20.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 262144,
+          "work": 126.0,
+          "baseline_work": 23.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 1048576,
+          "work": 139.0,
+          "baseline_work": 26.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 8,
+      "rungs_ok": 8,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 1.601,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P12",
+      "title": "切绳子",
+      "family": "INT_ARRAY_WITH_K",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "在 [0,max(L)] 上二分 log(max L)=log n 轮，每轮扫描 n 根绳子计数",
+      "predicted": "O(n log n)",
+      "confidence": "MEDIUM",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 770.0,
+          "baseline_work": 92.0,
+          "peak_bytes": 1834
+        },
+        {
+          "n": 64,
+          "work": 1837.0,
+          "baseline_work": 188.0,
+          "peak_bytes": 3498
+        },
+        {
+          "n": 128,
+          "work": 4171.0,
+          "baseline_work": 411.0,
+          "peak_bytes": 6925
+        },
+        {
+          "n": 256,
+          "work": 9374.0,
+          "baseline_work": 939.0,
+          "peak_bytes": 13901
+        },
+        {
+          "n": 512,
+          "work": 17527.0,
+          "baseline_work": 1953.0,
+          "peak_bytes": 31405
+        },
+        {
+          "n": 1024,
+          "work": 46049.0,
+          "baseline_work": 4032.0,
+          "peak_bytes": 73814
+        },
+        {
+          "n": 2048,
+          "work": 101290.0,
+          "baseline_work": 9162.0,
+          "peak_bytes": 159292
+        },
+        {
+          "n": 4096,
+          "work": 193759.0,
+          "baseline_work": 19396.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 474085.0,
+          "baseline_work": 39851.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 1020993.0,
+          "baseline_work": 87156.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 5.798,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P13",
+      "title": "最近点对",
+      "family": "INT_ARRAY_ROWS",
+      "expected": "O(n log n)",
+      "expected_confidence": "MEDIUM",
+      "rationale": "分治最近点对每层归并 O(n)、共 log n 层，主项是 n log n；生成点只有 O(n) 种坐标，重合会让部分层提前返回",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": {
+        "function": "closest",
+        "branching": 2,
+        "shrink": "DATA_DEPENDENT",
+        "frame_class": "O(1)",
+        "expression": null,
+        "solution": null,
+        "class": null,
+        "method": "NONE",
+        "ratio": 1.0001,
+        "step": null,
+        "frame_confidence": "LOW",
+        "share": 1.0,
+        "notes": [
+          "每帧非递归工作量的增长形态无法识别，按常数处理",
+          "递归参数按数据切分，没有固定的缩放关系，未还原递推式"
+        ]
+      },
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 2926.0,
+          "baseline_work": 186.0,
+          "peak_bytes": 5058
+        },
+        {
+          "n": 64,
+          "work": 5915.0,
+          "baseline_work": 380.0,
+          "peak_bytes": 9416
+        },
+        {
+          "n": 128,
+          "work": 13997.0,
+          "baseline_work": 841.0,
+          "peak_bytes": 17961
+        },
+        {
+          "n": 256,
+          "work": 30886.0,
+          "baseline_work": 1882.0,
+          "peak_bytes": 42436
+        },
+        {
+          "n": 512,
+          "work": 72184.0,
+          "baseline_work": 3974.0,
+          "peak_bytes": 120530
+        },
+        {
+          "n": 1024,
+          "work": 156693.0,
+          "baseline_work": 8364.0,
+          "peak_bytes": 275236
+        },
+        {
+          "n": 2048,
+          "work": 382494.0,
+          "baseline_work": 18867.0,
+          "peak_bytes": 583027
+        },
+        {
+          "n": 4096,
+          "work": 774762.0,
+          "baseline_work": 39608.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 1675909.0,
+          "baseline_work": 81428.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 9,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 18.515,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P14",
+      "title": "汉诺塔",
+      "family": "SINGLE_INT",
+      "expected": "O(2^n)",
+      "expected_confidence": "HIGH",
+      "rationale": "汉诺塔递归恰好展开 2^n-1 次移动，每次附加一条输出",
+      "predicted": "O(2^n)",
+      "confidence": "HIGH",
+      "method": "RECURRENCE",
+      "recurrence": {
+        "function": "hanoi",
+        "branching": 2,
+        "shrink": "DECREMENT",
+        "frame_class": "O(1)",
+        "expression": "T(n) = 2·T(n-1) + O(1)",
+        "solution": "Θ(2^n)",
+        "class": "O(2^n)",
+        "method": "EXPONENTIAL",
+        "ratio": null,
+        "step": 1,
+        "frame_confidence": "HIGH",
+        "share": 0.977,
+        "notes": [
+          "工作量在全部档位上相同"
+        ]
+      },
+      "closed_form": "Θ(2^n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 101.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 1893
+        },
+        {
+          "n": 5,
+          "work": 197.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 2997
+        },
+        {
+          "n": 6,
+          "work": 389.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 5205
+        },
+        {
+          "n": 7,
+          "work": 773.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 9624
+        },
+        {
+          "n": 8,
+          "work": 1541.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 18552
+        },
+        {
+          "n": 9,
+          "work": 3077.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 36184
+        },
+        {
+          "n": 10,
+          "work": 6149.0,
+          "baseline_work": 5.0,
+          "peak_bytes": 72059
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 1.788,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P15",
+      "title": "大整数乘法",
+      "family": "BIG_TWO_STRINGS",
+      "expected": "UNKNOWN",
+      "expected_confidence": "MEDIUM",
+      "rationale": "乘法由 Python 内建 int 完成（大数走 Karatsuba，约 n^1.585），真实增长在解释器内部，目录里最近上界是 O(n^2)",
+      "predicted": "O(1)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(1)",
+      "notes": [
+        "工作量在全部档位上相同",
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 16.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 579
+        },
+        {
+          "n": 37,
+          "work": 82.0,
+          "baseline_work": 78.0,
+          "peak_bytes": 927
+        },
+        {
+          "n": 69,
+          "work": 146.0,
+          "baseline_work": 142.0,
+          "peak_bytes": 1131
+        },
+        {
+          "n": 102,
+          "work": 212.0,
+          "baseline_work": 208.0,
+          "peak_bytes": 1361
+        },
+        {
+          "n": 135,
+          "work": 278.0,
+          "baseline_work": 274.0,
+          "peak_bytes": 1583
+        },
+        {
+          "n": 167,
+          "work": 342.0,
+          "baseline_work": 338.0,
+          "peak_bytes": 1807
+        },
+        {
+          "n": 200,
+          "work": 408.0,
+          "baseline_work": 404.0,
+          "peak_bytes": 2037
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 1.706,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P16",
+      "title": "01背包",
+      "family": "KNAPSACK",
+      "expected": "O(n)",
+      "expected_confidence": "MEDIUM",
+      "rationale": "dp 是 n×W，但 spec 把容量钉在 1000，这套输入族上只有 n 在增长，工作量对 n 线性",
+      "predicted": "O(n)",
+      "confidence": "MEDIUM",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 75498.0,
+          "baseline_work": 257.0,
+          "peak_bytes": 39213
+        },
+        {
+          "n": 57,
+          "work": 105747.0,
+          "baseline_work": 458.0,
+          "peak_bytes": 41509
+        },
+        {
+          "n": 101,
+          "work": 223736.0,
+          "baseline_work": 803.0,
+          "peak_bytes": 42977
+        },
+        {
+          "n": 179,
+          "work": 382774.0,
+          "baseline_work": 1411.0,
+          "peak_bytes": 47994
+        },
+        {
+          "n": 317,
+          "work": 634870.0,
+          "baseline_work": 2495.0,
+          "peak_bytes": 57294
+        },
+        {
+          "n": 563,
+          "work": 1156042.0,
+          "baseline_work": 4401.0,
+          "peak_bytes": 81387
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 6,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 6.989,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P17",
+      "title": "最长公共子序列",
+      "family": "TWO_STRINGS",
+      "expected": "O(n^2)",
+      "expected_confidence": "HIGH",
+      "rationale": "两个长度 n 的串做滚动数组 LCS，双重循环 n×n 主导",
+      "predicted": "O(n^2)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^2)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 6575.0,
+          "baseline_work": 68.0,
+          "peak_bytes": 948
+        },
+        {
+          "n": 57,
+          "work": 20500.0,
+          "baseline_work": 118.0,
+          "peak_bytes": 1199
+        },
+        {
+          "n": 101,
+          "work": 63950.0,
+          "baseline_work": 206.0,
+          "peak_bytes": 1639
+        },
+        {
+          "n": 179,
+          "work": 199963.0,
+          "baseline_work": 362.0,
+          "peak_bytes": 2419
+        },
+        {
+          "n": 317,
+          "work": 625729.0,
+          "baseline_work": 638.0,
+          "peak_bytes": 3800
+        },
+        {
+          "n": 563,
+          "work": 1971034.0,
+          "baseline_work": 1130.0,
+          "peak_bytes": 6260
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 6,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 9.988,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P18",
+      "title": "最长上升子序列",
+      "family": "INT_ARRAY",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "每个元素一次 bisect_left，n 次 O(log n) 的二分查找主导",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 363.702,
+          "baseline_work": 93.0,
+          "peak_bytes": 137187
+        },
+        {
+          "n": 64,
+          "work": 768.058,
+          "baseline_work": 190.0,
+          "peak_bytes": 137187
+        },
+        {
+          "n": 128,
+          "work": 1583.807,
+          "baseline_work": 401.0,
+          "peak_bytes": 137187
+        },
+        {
+          "n": 256,
+          "work": 3499.84,
+          "baseline_work": 907.0,
+          "peak_bytes": 137187
+        },
+        {
+          "n": 512,
+          "work": 7318.986,
+          "baseline_work": 1935.0,
+          "peak_bytes": 137187
+        },
+        {
+          "n": 1024,
+          "work": 15286.256,
+          "baseline_work": 3989.0,
+          "peak_bytes": 137187
+        },
+        {
+          "n": 2048,
+          "work": 32995.784,
+          "baseline_work": 9167.0,
+          "peak_bytes": 137187
+        },
+        {
+          "n": 4096,
+          "work": 69408.367,
+          "baseline_work": 19344.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 143462.563,
+          "baseline_work": 39842.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 303759.385,
+          "baseline_work": 87340.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 2.899,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P19",
+      "title": "编辑距离",
+      "family": "TWO_STRINGS",
+      "expected": "O(n^2)",
+      "expected_confidence": "HIGH",
+      "rationale": "编辑距离的双重循环 n×n 次状态转移主导",
+      "predicted": "O(n^2)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^2)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 10109.0,
+          "baseline_work": 68.0,
+          "peak_bytes": 1013
+        },
+        {
+          "n": 57,
+          "work": 31557.0,
+          "baseline_work": 118.0,
+          "peak_bytes": 1255
+        },
+        {
+          "n": 101,
+          "work": 98550.0,
+          "baseline_work": 206.0,
+          "peak_bytes": 1695
+        },
+        {
+          "n": 179,
+          "work": 308045.0,
+          "baseline_work": 362.0,
+          "peak_bytes": 2476
+        },
+        {
+          "n": 317,
+          "work": 963382.0,
+          "baseline_work": 638.0,
+          "peak_bytes": 11184
+        },
+        {
+          "n": 563,
+          "work": 3033965.0,
+          "baseline_work": 1130.0,
+          "peak_bytes": 21516
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 6,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 17.616,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P20",
+      "title": "数字三角形",
+      "family": "TRIANGLE_ROWS",
+      "expected": "O(n^2)",
+      "expected_confidence": "HIGH",
+      "rationale": "数字三角形共 1+2+…+n 个格子，自底向上逐格合并，工作量 n^2/2",
+      "predicted": "O(n^2)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^2)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 3544.0,
+          "baseline_work": 1826.0,
+          "peak_bytes": 32912
+        },
+        {
+          "n": 57,
+          "work": 10834.0,
+          "baseline_work": 5641.0,
+          "peak_bytes": 103893
+        },
+        {
+          "n": 101,
+          "work": 33453.0,
+          "baseline_work": 17590.0,
+          "peak_bytes": 322968
+        },
+        {
+          "n": 179,
+          "work": 104192.0,
+          "baseline_work": 55140.0,
+          "peak_bytes": 1031324
+        },
+        {
+          "n": 317,
+          "work": 324640.0,
+          "baseline_work": 172157.0,
+          "peak_bytes": 3257391
+        },
+        {
+          "n": 563,
+          "work": 1020468.0,
+          "baseline_work": 541912.0,
+          "peak_bytes": 10022456
+        },
+        {
+          "n": 1000,
+          "work": 3214110.0,
+          "baseline_work": 1708604.0,
+          "peak_bytes": 31855996
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 12.754,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P21",
+      "title": "零钱兑换",
+      "family": "INT_ARRAY_WITH_K",
+      "expected": "O(n^2)",
+      "expected_confidence": "MEDIUM",
+      "rationale": "完全背包的 dp 规模是硬币数×金额，头部第二个数 k=amount 随 n 增长，故为 n^2",
+      "predicted": "O(n^2)",
+      "confidence": "MEDIUM",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^2)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 50.0,
+          "baseline_work": 14.0,
+          "peak_bytes": 616
+        },
+        {
+          "n": 20,
+          "work": 248.0,
+          "baseline_work": 63.0,
+          "peak_bytes": 1467
+        },
+        {
+          "n": 36,
+          "work": 730.0,
+          "baseline_work": 109.0,
+          "peak_bytes": 2213
+        },
+        {
+          "n": 52,
+          "work": 1381.0,
+          "baseline_work": 155.0,
+          "peak_bytes": 2991
+        },
+        {
+          "n": 68,
+          "work": 2111.0,
+          "baseline_work": 201.0,
+          "peak_bytes": 3769
+        },
+        {
+          "n": 84,
+          "work": 3089.0,
+          "baseline_work": 253.0,
+          "peak_bytes": 4725
+        },
+        {
+          "n": 100,
+          "work": 4416.0,
+          "baseline_work": 304.0,
+          "peak_bytes": 5578
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 2.197,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P22",
+      "title": "矩阵连乘",
+      "family": "INT_ARRAY",
+      "expected": "O(n^3)",
+      "expected_confidence": "HIGH",
+      "rationale": "矩阵连乘区间 DP：长度、起点、分割点三重循环，共 n^3/6 次转移",
+      "predicted": "O(n^3)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^3)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 120.0,
+          "baseline_work": 14.0,
+          "peak_bytes": 923
+        },
+        {
+          "n": 20,
+          "work": 6999.0,
+          "baseline_work": 57.0,
+          "peak_bytes": 7229
+        },
+        {
+          "n": 36,
+          "work": 36555.0,
+          "baseline_work": 100.0,
+          "peak_bytes": 29437
+        },
+        {
+          "n": 52,
+          "work": 105169.0,
+          "baseline_work": 153.0,
+          "peak_bytes": 63806
+        },
+        {
+          "n": 68,
+          "work": 230660.0,
+          "baseline_work": 200.0,
+          "peak_bytes": 110398
+        },
+        {
+          "n": 84,
+          "work": 425795.0,
+          "baseline_work": 253.0,
+          "peak_bytes": 169879
+        },
+        {
+          "n": 100,
+          "work": 710314.0,
+          "baseline_work": 300.0,
+          "peak_bytes": 241815
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 10.928,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P23",
+      "title": "石子合并",
+      "family": "INT_ARRAY",
+      "expected": "O(n^3)",
+      "expected_confidence": "HIGH",
+      "rationale": "石子合并区间 DP 同样是长度、起点、分割点三重循环",
+      "predicted": "O(n^3)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^3)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 137.0,
+          "baseline_work": 12.0,
+          "peak_bytes": 955
+        },
+        {
+          "n": 20,
+          "work": 7534.0,
+          "baseline_work": 55.0,
+          "peak_bytes": 4796
+        },
+        {
+          "n": 36,
+          "work": 39381.0,
+          "baseline_work": 97.0,
+          "peak_bytes": 24829
+        },
+        {
+          "n": 52,
+          "work": 114237.0,
+          "baseline_work": 150.0,
+          "peak_bytes": 60637
+        },
+        {
+          "n": 68,
+          "work": 251334.0,
+          "baseline_work": 198.0,
+          "peak_bytes": 107518
+        },
+        {
+          "n": 84,
+          "work": 468922.0,
+          "baseline_work": 250.0,
+          "peak_bytes": 168270
+        },
+        {
+          "n": 100,
+          "work": 781678.0,
+          "baseline_work": 297.0,
+          "peak_bytes": 240174
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 8.945,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P24",
+      "title": "最长公共子串",
+      "family": "TWO_STRINGS",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "后缀自动机构建与匹配都是均摊线性，沿后缀链接回退的总次数不超过 2n",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 1187.0,
+          "baseline_work": 68.0,
+          "peak_bytes": 10748
+        },
+        {
+          "n": 64,
+          "work": 2453.0,
+          "baseline_work": 132.0,
+          "peak_bytes": 22426
+        },
+        {
+          "n": 128,
+          "work": 4889.0,
+          "baseline_work": 260.0,
+          "peak_bytes": 42740
+        },
+        {
+          "n": 256,
+          "work": 9776.0,
+          "baseline_work": 516.0,
+          "peak_bytes": 84444
+        },
+        {
+          "n": 512,
+          "work": 19789.0,
+          "baseline_work": 1028.0,
+          "peak_bytes": 193172
+        },
+        {
+          "n": 1024,
+          "work": 40159.0,
+          "baseline_work": 2052.0,
+          "peak_bytes": 415194
+        }
+      ],
+      "rungs_planned": 6,
+      "rungs_ok": 6,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 2.003,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P25",
+      "title": "打家劫舍",
+      "family": "INT_ARRAY",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "只保留前两户最优值的单趟 DP，每户常数次转移",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 197.0,
+          "baseline_work": 93.0,
+          "peak_bytes": 1939
+        },
+        {
+          "n": 64,
+          "work": 390.0,
+          "baseline_work": 190.0,
+          "peak_bytes": 3638
+        },
+        {
+          "n": 128,
+          "work": 793.0,
+          "baseline_work": 401.0,
+          "peak_bytes": 6747
+        },
+        {
+          "n": 256,
+          "work": 1683.0,
+          "baseline_work": 907.0,
+          "peak_bytes": 13361
+        },
+        {
+          "n": 512,
+          "work": 3479.0,
+          "baseline_work": 1935.0,
+          "peak_bytes": 31107
+        },
+        {
+          "n": 1024,
+          "work": 7069.0,
+          "baseline_work": 3989.0,
+          "peak_bytes": 72717
+        },
+        {
+          "n": 2048,
+          "work": 15319.0,
+          "baseline_work": 9167.0,
+          "peak_bytes": 159093
+        },
+        {
+          "n": 4096,
+          "work": 31640.0,
+          "baseline_work": 19344.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 64426.0,
+          "baseline_work": 39842.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 129363.0,
+          "baseline_work": 80203.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 2.602,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P26",
+      "title": "单源最短路",
+      "family": "GRAPH_EDGES",
+      "expected": "O(n log n)",
+      "expected_confidence": "MEDIUM",
+      "rationale": "堆优化 Dijkstra：n 个点、2n 条边，每次堆操作 log n 主导；随机图多数点不可达，实际堆操作数会低于上界",
+      "predicted": "UNKNOWN",
+      "confidence": "LOW",
+      "method": "UNKNOWN",
+      "recurrence": null,
+      "closed_form": "UNKNOWN",
+      "notes": [
+        "工作量在相邻档位之间下降了 45%，说明执行路径受输入数值影响，不只是由输入规模决定；类别无法只由规模解释",
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销",
+        "超过输入解析基准的档位不足 3 个，时间类别按含读入的总工作量报告",
+        "工作量在相邻档位之间下降了 45%，说明执行路径受输入数值影响，不只是由输入规模决定；本报告不给出确定的增长类别"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 1351.722,
+          "baseline_work": 599.0,
+          "peak_bytes": 152189
+        },
+        {
+          "n": 64,
+          "work": 2640.28,
+          "baseline_work": 1246.0,
+          "peak_bytes": 152189
+        },
+        {
+          "n": 128,
+          "work": 6563.13,
+          "baseline_work": 2614.0,
+          "peak_bytes": 152189
+        },
+        {
+          "n": 256,
+          "work": 13848.269,
+          "baseline_work": 5657.0,
+          "peak_bytes": 152189
+        },
+        {
+          "n": 512,
+          "work": 28231.601,
+          "baseline_work": 11777.0,
+          "peak_bytes": 237997
+        },
+        {
+          "n": 1024,
+          "work": 58455.292,
+          "baseline_work": 24040.0,
+          "peak_bytes": 480666
+        },
+        {
+          "n": 2048,
+          "work": 75036.0,
+          "baseline_work": 52486.0,
+          "peak_bytes": 972742
+        },
+        {
+          "n": 4096,
+          "work": 265552.566,
+          "baseline_work": 109501.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 547877.121,
+          "baseline_work": 223058.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 656916.0,
+          "baseline_work": 476670.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 5.205,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P27",
+      "title": "负权环判定",
+      "family": "GRAPH_EDGES",
+      "expected": "O(n^2)",
+      "expected_confidence": "MEDIUM",
+      "rationale": "Bellman-Ford 最坏 n-1 轮、每轮扫 Θ(n) 条边即 n^2；但生成边权全为正，首轮无松弛就 break",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 1384.0,
+          "baseline_work": 599.0,
+          "peak_bytes": 9133
+        },
+        {
+          "n": 64,
+          "work": 2799.0,
+          "baseline_work": 1246.0,
+          "peak_bytes": 19514
+        },
+        {
+          "n": 128,
+          "work": 5703.0,
+          "baseline_work": 2614.0,
+          "peak_bytes": 42518
+        },
+        {
+          "n": 256,
+          "work": 11818.0,
+          "baseline_work": 5657.0,
+          "peak_bytes": 87265
+        },
+        {
+          "n": 512,
+          "work": 24082.0,
+          "baseline_work": 11777.0,
+          "peak_bytes": 209155
+        },
+        {
+          "n": 1024,
+          "work": 48633.0,
+          "baseline_work": 24040.0,
+          "peak_bytes": 451824
+        }
+      ],
+      "rungs_planned": 6,
+      "rungs_ok": 6,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 1.983,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P28",
+      "title": "最小生成树",
+      "family": "GRAPH_EDGES",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "Kruskal 先对 2n 条边排序 O(n log n)，并查集部分近似线性",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 2411.0,
+          "baseline_work": 599.0,
+          "peak_bytes": 9173
+        },
+        {
+          "n": 64,
+          "work": 5056.0,
+          "baseline_work": 1246.0,
+          "peak_bytes": 19554
+        },
+        {
+          "n": 128,
+          "work": 10424.0,
+          "baseline_work": 2614.0,
+          "peak_bytes": 42558
+        },
+        {
+          "n": 256,
+          "work": 21830.0,
+          "baseline_work": 5657.0,
+          "peak_bytes": 87305
+        },
+        {
+          "n": 512,
+          "work": 45059.0,
+          "baseline_work": 11777.0,
+          "peak_bytes": 209195
+        },
+        {
+          "n": 1024,
+          "work": 93031.0,
+          "baseline_work": 24040.0,
+          "peak_bytes": 451864
+        },
+        {
+          "n": 2048,
+          "work": 194173.0,
+          "baseline_work": 52486.0,
+          "peak_bytes": 943940
+        },
+        {
+          "n": 4096,
+          "work": 401396.0,
+          "baseline_work": 109501.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 822934.0,
+          "baseline_work": 223058.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 1710154.0,
+          "baseline_work": 476670.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 8.959,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P29",
+      "title": "拓扑排序",
+      "family": "GRAPH_EDGES",
+      "expected": "O(n log n)",
+      "expected_confidence": "MEDIUM",
+      "rationale": "Kahn 每步一次堆弹出/压入，n 个点共 O(n log n)；生成图随机、几乎必含环，实际只弹出少数点",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 1410.806,
+          "baseline_work": 350.0,
+          "peak_bytes": 152189
+        },
+        {
+          "n": 64,
+          "work": 2944.584,
+          "baseline_work": 747.0,
+          "peak_bytes": 152189
+        },
+        {
+          "n": 128,
+          "work": 6254.138,
+          "baseline_work": 1616.0,
+          "peak_bytes": 152189
+        },
+        {
+          "n": 256,
+          "work": 13351.079,
+          "baseline_work": 3657.0,
+          "peak_bytes": 152189
+        },
+        {
+          "n": 512,
+          "work": 28002.186,
+          "baseline_work": 7783.0,
+          "peak_bytes": 164566
+        },
+        {
+          "n": 1024,
+          "work": 58103.471,
+          "baseline_work": 16082.0,
+          "peak_bytes": 325089
+        },
+        {
+          "n": 2048,
+          "work": 124316.389,
+          "baseline_work": 36596.0,
+          "peak_bytes": 661075
+        },
+        {
+          "n": 4096,
+          "work": 260642.358,
+          "baseline_work": 77599.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 540883.185,
+          "baseline_work": 159292.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 9,
+      "rungs_ok": 9,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.705,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P30",
+      "title": "迷宫最短路",
+      "family": "GRID",
+      "expected": "O(n^2)",
+      "expected_confidence": "HIGH",
+      "rationale": "ladder 的 n 是网格边长，BFS 最多访问 n×n 个格子，每格常数次扩展",
+      "predicted": "O(n^2)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^2)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 26175.0,
+          "baseline_work": 1064.0,
+          "peak_bytes": 35273
+        },
+        {
+          "n": 46,
+          "work": 52611.0,
+          "baseline_work": 2170.0,
+          "peak_bytes": 80891
+        },
+        {
+          "n": 67,
+          "work": 112211.0,
+          "baseline_work": 4564.0,
+          "peak_bytes": 179742
+        },
+        {
+          "n": 98,
+          "work": 239431.0,
+          "baseline_work": 9710.0,
+          "peak_bytes": 396608
+        },
+        {
+          "n": 142,
+          "work": 503615.0,
+          "baseline_work": 20316.0,
+          "peak_bytes": 844622
+        },
+        {
+          "n": 207,
+          "work": 1072783.0,
+          "baseline_work": 43066.0,
+          "peak_bytes": 2024044
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 6,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 11.223,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P31",
+      "title": "朋友圈",
+      "family": "GRAPH_EDGE_QUERIES",
+      "expected": "O(n)",
+      "expected_confidence": "MEDIUM",
+      "rationale": "并查集按大小合并加路径压缩近似线性（α(n)），m 条边与 q 次询问都随 n 增长",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 1938.0,
+          "baseline_work": 361.0,
+          "peak_bytes": 6170
+        },
+        {
+          "n": 64,
+          "work": 3935.0,
+          "baseline_work": 745.0,
+          "peak_bytes": 12758
+        },
+        {
+          "n": 128,
+          "work": 8032.0,
+          "baseline_work": 1626.0,
+          "peak_bytes": 26149
+        },
+        {
+          "n": 256,
+          "work": 16697.0,
+          "baseline_work": 3658.0,
+          "peak_bytes": 52755
+        },
+        {
+          "n": 512,
+          "work": 33504.0,
+          "baseline_work": 7835.0,
+          "peak_bytes": 110856
+        },
+        {
+          "n": 1024,
+          "work": 67578.0,
+          "baseline_work": 16082.0,
+          "peak_bytes": 220025
+        },
+        {
+          "n": 2048,
+          "work": 140871.0,
+          "baseline_work": 36501.0,
+          "peak_bytes": 452763
+        },
+        {
+          "n": 4096,
+          "work": 285284.0,
+          "baseline_work": 77467.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 578008.0,
+          "baseline_work": 159428.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 1183917.0,
+          "baseline_work": 348798.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 7.935,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P32",
+      "title": "最近公共祖先",
+      "family": "GRAPH_TREE_QUERIES",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "倍增表 LOG=log n 层、每层填 n 个点，构造 O(n log n)；n 次询问各 O(log n)",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 2631.0,
+          "baseline_work": 341.0,
+          "peak_bytes": 9413
+        },
+        {
+          "n": 64,
+          "work": 5855.0,
+          "baseline_work": 720.0,
+          "peak_bytes": 20454
+        },
+        {
+          "n": 128,
+          "work": 12946.0,
+          "baseline_work": 1569.0,
+          "peak_bytes": 46346
+        },
+        {
+          "n": 256,
+          "work": 27950.0,
+          "baseline_work": 3537.0,
+          "peak_bytes": 99934
+        },
+        {
+          "n": 512,
+          "work": 59590.0,
+          "baseline_work": 7528.0,
+          "peak_bytes": 217001
+        },
+        {
+          "n": 1024,
+          "work": 127837.0,
+          "baseline_work": 15759.0,
+          "peak_bytes": 465018
+        },
+        {
+          "n": 2048,
+          "work": 273128.0,
+          "baseline_work": 35467.0,
+          "peak_bytes": 983066
+        },
+        {
+          "n": 4096,
+          "work": 577686.0,
+          "baseline_work": 75749.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 1213690.0,
+          "baseline_work": 156935.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 9,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 17.266,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P33",
+      "title": "强连通分量",
+      "family": "GRAPH_EDGES",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "迭代 Tarjan 对每个点、每条边各处理常数次，m=2n 与 n 同阶",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 2034.0,
+          "baseline_work": 351.0,
+          "peak_bytes": 5811
+        },
+        {
+          "n": 64,
+          "work": 4100.0,
+          "baseline_work": 747.0,
+          "peak_bytes": 12757
+        },
+        {
+          "n": 128,
+          "work": 8315.0,
+          "baseline_work": 1611.0,
+          "peak_bytes": 25471
+        },
+        {
+          "n": 256,
+          "work": 17031.0,
+          "baseline_work": 3660.0,
+          "peak_bytes": 53082
+        },
+        {
+          "n": 512,
+          "work": 34522.0,
+          "baseline_work": 7782.0,
+          "peak_bytes": 135500
+        },
+        {
+          "n": 1024,
+          "work": 69545.0,
+          "baseline_work": 16082.0,
+          "peak_bytes": 295862
+        },
+        {
+          "n": 2048,
+          "work": 143485.0,
+          "baseline_work": 36599.0,
+          "peak_bytes": 631957
+        },
+        {
+          "n": 4096,
+          "work": 291395.0,
+          "baseline_work": 77602.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 586897.0,
+          "baseline_work": 159293.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 9,
+      "rungs_ok": 9,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 8.28,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P34",
+      "title": "二分图判定",
+      "family": "GRAPH_EDGES",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "BFS 染色对每个点、每条边各访问常数次，m=2n 与 n 同阶",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 888.0,
+          "baseline_work": 351.0,
+          "peak_bytes": 6019
+        },
+        {
+          "n": 64,
+          "work": 1656.0,
+          "baseline_work": 747.0,
+          "peak_bytes": 12965
+        },
+        {
+          "n": 128,
+          "work": 3456.0,
+          "baseline_work": 1611.0,
+          "peak_bytes": 25679
+        },
+        {
+          "n": 256,
+          "work": 7169.0,
+          "baseline_work": 3660.0,
+          "peak_bytes": 53290
+        },
+        {
+          "n": 512,
+          "work": 15092.0,
+          "baseline_work": 7782.0,
+          "peak_bytes": 135708
+        },
+        {
+          "n": 1024,
+          "work": 29719.0,
+          "baseline_work": 16082.0,
+          "peak_bytes": 296070
+        },
+        {
+          "n": 2048,
+          "work": 63607.0,
+          "baseline_work": 36599.0,
+          "peak_bytes": 632165
+        },
+        {
+          "n": 4096,
+          "work": 131573.0,
+          "baseline_work": 77602.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 268219.0,
+          "baseline_work": 159293.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 562699.0,
+          "baseline_work": 348925.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 4.919,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P35",
+      "title": "全排列",
+      "family": "SINGLE_INT",
+      "expected": "O(n!)",
+      "expected_confidence": "HIGH",
+      "rationale": "回溯生成 n! 个排列，每个叶子输出 n 个数字，主项是 n!",
+      "predicted": "O(n!)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": {
+        "function": "dfs",
+        "branching": 1,
+        "shrink": "DATA_DEPENDENT",
+        "frame_class": "O(1)",
+        "expression": null,
+        "solution": null,
+        "class": null,
+        "method": "NONE",
+        "ratio": 1.1667,
+        "step": null,
+        "frame_confidence": "LOW",
+        "share": 1.0,
+        "notes": [
+          "每帧非递归工作量的增长形态无法识别，按常数处理",
+          "递归参数按数据切分，没有固定的缩放关系，未还原递推式"
+        ]
+      },
+      "closed_form": "Θ(n!)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 941.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 2817
+        },
+        {
+          "n": 5,
+          "work": 5297.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 10569
+        },
+        {
+          "n": 6,
+          "work": 35459.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 62001
+        },
+        {
+          "n": 7,
+          "work": 274151.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 456361
+        },
+        {
+          "n": 8,
+          "work": 2401001.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 3900746
+        }
+      ],
+      "rungs_planned": 5,
+      "rungs_ok": 5,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 10.275,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P36",
+      "title": "N皇后",
+      "family": "SINGLE_INT",
+      "expected": "O(n!)",
+      "expected_confidence": "HIGH",
+      "rationale": "按行放皇后的回溯树节点数按 n! 量级展开，剪枝只改变常数",
+      "predicted": "O(n!)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": {
+        "function": "dfs",
+        "branching": 1,
+        "shrink": "DATA_DEPENDENT",
+        "frame_class": "O(n log n)",
+        "expression": null,
+        "solution": null,
+        "class": null,
+        "method": "NONE",
+        "ratio": 1.1667,
+        "step": null,
+        "frame_confidence": "LOW",
+        "share": 1.0,
+        "notes": [
+          "O(n log n) 与 O(n^2) 的拟合优度相差很小（AIC 差 1.9），档位数不足以区分两者",
+          "递归参数按数据切分，没有固定的缩放关系，未还原递推式"
+        ]
+      },
+      "closed_form": "Θ(n!)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 337.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 1141
+        },
+        {
+          "n": 5,
+          "work": 1170.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 1223
+        },
+        {
+          "n": 6,
+          "work": 4355.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 1301
+        },
+        {
+          "n": 7,
+          "work": 17146.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 1383
+        },
+        {
+          "n": 8,
+          "work": 73267.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 1423
+        },
+        {
+          "n": 9,
+          "work": 331844.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 1465
+        },
+        {
+          "n": 10,
+          "work": 1571030.0,
+          "baseline_work": 5.0,
+          "peak_bytes": 1536
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 7.788,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P37",
+      "title": "数独求解",
+      "family": "FIXED",
+      "expected": "NOT_MEASURABLE",
+      "expected_confidence": "HIGH",
+      "rationale": "数独是固定 9×9 盘面（FIXED 输入族），任何档位都是同一份输入，无法测增长",
+      "predicted": "UNKNOWN",
+      "confidence": null,
+      "method": null,
+      "recurrence": null,
+      "closed_form": null,
+      "notes": [],
+      "limitations": [],
+      "points": [],
+      "rungs_planned": 0,
+      "rungs_ok": 0,
+      "stop_reason": null,
+      "deterministic_repeat": null,
+      "repeat_mismatches": [],
+      "adapter_deterministic": null,
+      "elapsed_seconds": 0.0,
+      "verdict": "not_measurable",
+      "error": "固定盘面输入（数独），规模无法伸缩，降级为不可测"
+    },
+    {
+      "code": "CODE-P38",
+      "title": "图着色",
+      "family": "GRAPH_COLORING",
+      "expected": "O(n^3)",
+      "expected_confidence": "HIGH",
+      "rationale": "每染一个点要扫 n 个候选点、每个再比较 n 个邻接关系，n 个点染色即 n^3",
+      "predicted": "O(n^3)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": {
+        "function": "dfs",
+        "branching": 1,
+        "shrink": "DATA_DEPENDENT",
+        "frame_class": "O(n log n)",
+        "expression": null,
+        "solution": null,
+        "class": null,
+        "method": "NONE",
+        "ratio": 1.0556,
+        "step": null,
+        "frame_confidence": "HIGH",
+        "share": 0.996,
+        "notes": [
+          "递归参数按数据切分，没有固定的缩放关系，未还原递推式"
+        ]
+      },
+      "closed_form": "Θ(n^3)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 6,
+          "work": 1210.0,
+          "baseline_work": 32.0,
+          "peak_bytes": 2944
+        },
+        {
+          "n": 12,
+          "work": 5862.0,
+          "baseline_work": 67.0,
+          "peak_bytes": 5680
+        },
+        {
+          "n": 18,
+          "work": 16654.0,
+          "baseline_work": 99.0,
+          "peak_bytes": 8928
+        },
+        {
+          "n": 24,
+          "work": 36252.0,
+          "baseline_work": 137.0,
+          "peak_bytes": 12784
+        },
+        {
+          "n": 30,
+          "work": 66811.0,
+          "baseline_work": 170.0,
+          "peak_bytes": 17152
+        },
+        {
+          "n": 36,
+          "work": 111534.0,
+          "baseline_work": 210.0,
+          "peak_bytes": 22160
+        },
+        {
+          "n": 42,
+          "work": 173279.0,
+          "baseline_work": 243.0,
+          "peak_bytes": 27808
+        },
+        {
+          "n": 48,
+          "work": 253573.0,
+          "baseline_work": 284.0,
+          "peak_bytes": 33936
+        }
+      ],
+      "rungs_planned": 8,
+      "rungs_ok": 8,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 5.131,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P39",
+      "title": "括号生成",
+      "family": "SINGLE_INT",
+      "expected": "UNKNOWN",
+      "expected_confidence": "MEDIUM",
+      "rationale": "回溯生成括号串的节点数是 Catalan 数，真实增长 4^n/n^1.5，目录里 O(2^n) 太小、O(n!) 太大",
+      "predicted": "O(2^n)",
+      "confidence": "LOW",
+      "method": "CLOSED_FORM",
+      "recurrence": {
+        "function": "dfs",
+        "branching": 1,
+        "shrink": "DATA_DEPENDENT",
+        "frame_class": "O(1)",
+        "expression": null,
+        "solution": null,
+        "class": null,
+        "method": "NONE",
+        "ratio": 1.0,
+        "step": null,
+        "frame_confidence": "LOW",
+        "share": 1.0,
+        "notes": [
+          "每帧非递归工作量的增长形态无法识别，按常数处理",
+          "递归参数按数据切分，没有固定的缩放关系，未还原递推式"
+        ]
+      },
+      "closed_form": "Θ(2^n)",
+      "notes": [
+        "O(2^n) 与 O(n!) 的拟合优度相差很小（AIC 差 0.1），档位数不足以区分两者",
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 393.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 1819
+        },
+        {
+          "n": 5,
+          "work": 1185.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 4235
+        },
+        {
+          "n": 6,
+          "work": 3759.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 12365
+        },
+        {
+          "n": 7,
+          "work": 12339.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 40866
+        },
+        {
+          "n": 8,
+          "work": 41511.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 143555
+        }
+      ],
+      "rungs_planned": 5,
+      "rungs_ok": 5,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 1.925,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P40",
+      "title": "单词搜索",
+      "family": "GRID_WITH_WORD",
+      "expected": "O(n^2)",
+      "expected_confidence": "MEDIUM",
+      "rationale": "n×n 网格逐格尝试 dfs，单词沿第一行铺成直路，多数格子首字符就不匹配，总工作量 n^2",
+      "predicted": "O(n log n)",
+      "confidence": "LOW",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销",
+        "轨迹计数预算用尽，档位数少于计划",
+        "有效档位只有 3 个，增长类别的置信度不会高于中"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 141.0,
+          "baseline_work": 29.0,
+          "peak_bytes": 1855
+        },
+        {
+          "n": 5,
+          "work": 205.0,
+          "baseline_work": 39.0,
+          "peak_bytes": 2017
+        },
+        {
+          "n": 6,
+          "work": 278.0,
+          "baseline_work": 52.0,
+          "peak_bytes": 2166
+        }
+      ],
+      "rungs_planned": 3,
+      "rungs_ok": 3,
+      "stop_reason": "BUDGET_EXHAUSTED",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": null,
+      "elapsed_seconds": 0.779,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P41",
+      "title": "KMP 模式匹配",
+      "family": "TWO_STRINGS",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "KMP 建 next 表 O(m) 加主串单趟扫描 O(n)，两串长度都为 n",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 441.0,
+          "baseline_work": 68.0,
+          "peak_bytes": 842
+        },
+        {
+          "n": 64,
+          "work": 861.0,
+          "baseline_work": 132.0,
+          "peak_bytes": 1162
+        },
+        {
+          "n": 128,
+          "work": 1729.0,
+          "baseline_work": 260.0,
+          "peak_bytes": 1802
+        },
+        {
+          "n": 256,
+          "work": 3434.0,
+          "baseline_work": 516.0,
+          "peak_bytes": 3082
+        },
+        {
+          "n": 512,
+          "work": 6825.0,
+          "baseline_work": 1028.0,
+          "peak_bytes": 5642
+        },
+        {
+          "n": 1024,
+          "work": 13687.0,
+          "baseline_work": 2052.0,
+          "peak_bytes": 10762
+        },
+        {
+          "n": 2048,
+          "work": 27328.0,
+          "baseline_work": 4100.0,
+          "peak_bytes": 21002
+        },
+        {
+          "n": 4096,
+          "work": 54497.0,
+          "baseline_work": 8196.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 109131.0,
+          "baseline_work": 16388.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 218103.0,
+          "baseline_work": 32772.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 3.975,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P42",
+      "title": "最长回文子串",
+      "family": "ONE_STRING",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "Manacher 对插入分隔符后的 2n+1 个中心各做均摊常数次扩展",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 846.0,
+          "baseline_work": 35.0,
+          "peak_bytes": 1589
+        },
+        {
+          "n": 64,
+          "work": 1640.0,
+          "baseline_work": 67.0,
+          "peak_bytes": 2645
+        },
+        {
+          "n": 128,
+          "work": 3278.0,
+          "baseline_work": 131.0,
+          "peak_bytes": 4759
+        },
+        {
+          "n": 256,
+          "work": 6485.0,
+          "baseline_work": 259.0,
+          "peak_bytes": 8981
+        },
+        {
+          "n": 512,
+          "work": 12975.0,
+          "baseline_work": 515.0,
+          "peak_bytes": 17433
+        },
+        {
+          "n": 1024,
+          "work": 25921.0,
+          "baseline_work": 1027.0,
+          "peak_bytes": 34329
+        },
+        {
+          "n": 2048,
+          "work": 51849.0,
+          "baseline_work": 2051.0,
+          "peak_bytes": 68125
+        },
+        {
+          "n": 4096,
+          "work": 103419.0,
+          "baseline_work": 4099.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 207142.0,
+          "baseline_work": 8195.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 414196.0,
+          "baseline_work": 16387.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 5.806,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P43",
+      "title": "前缀统计",
+      "family": "STRING_LIST",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "字典树按单词总长度插入，q=n 次前缀查询沿树下行，总字符数随 n 线性",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 2725.0,
+          "baseline_work": 309.0,
+          "peak_bytes": 34358
+        },
+        {
+          "n": 64,
+          "work": 5144.0,
+          "baseline_work": 601.0,
+          "peak_bytes": 57370
+        },
+        {
+          "n": 128,
+          "work": 10092.0,
+          "baseline_work": 1187.0,
+          "peak_bytes": 112260
+        },
+        {
+          "n": 256,
+          "work": 20275.0,
+          "baseline_work": 2377.0,
+          "peak_bytes": 237417
+        },
+        {
+          "n": 512,
+          "work": 40163.0,
+          "baseline_work": 4791.0,
+          "peak_bytes": 451028
+        },
+        {
+          "n": 1024,
+          "work": 81157.0,
+          "baseline_work": 9696.0,
+          "peak_bytes": 908949
+        },
+        {
+          "n": 2048,
+          "work": 157456.0,
+          "baseline_work": 19051.0,
+          "peak_bytes": 1661514
+        },
+        {
+          "n": 4096,
+          "work": 312988.0,
+          "baseline_work": 38209.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 620330.0,
+          "baseline_work": 76118.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 1230554.0,
+          "baseline_work": 152260.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 13.713,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P44",
+      "title": "最长无重复子串",
+      "family": "ONE_STRING",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "滑动窗口左右指针各只前进 n 步",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 221.0,
+          "baseline_work": 35.0,
+          "peak_bytes": 1553
+        },
+        {
+          "n": 64,
+          "work": 424.0,
+          "baseline_work": 67.0,
+          "peak_bytes": 1585
+        },
+        {
+          "n": 128,
+          "work": 834.0,
+          "baseline_work": 131.0,
+          "peak_bytes": 1649
+        },
+        {
+          "n": 256,
+          "work": 1643.0,
+          "baseline_work": 259.0,
+          "peak_bytes": 1777
+        },
+        {
+          "n": 512,
+          "work": 3266.0,
+          "baseline_work": 515.0,
+          "peak_bytes": 2033
+        },
+        {
+          "n": 1024,
+          "work": 6516.0,
+          "baseline_work": 1027.0,
+          "peak_bytes": 2545
+        },
+        {
+          "n": 2048,
+          "work": 12964.0,
+          "baseline_work": 2051.0,
+          "peak_bytes": 4507
+        },
+        {
+          "n": 4096,
+          "work": 25928.0,
+          "baseline_work": 4099.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 51829.0,
+          "baseline_work": 8195.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 103606.0,
+          "baseline_work": 16387.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 2.928,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P45",
+      "title": "子串哈希查询",
+      "family": "STRING_RANGE_QUERIES",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "前缀哈希预处理 O(n)，q=n 次区间比较每次常数次取模运算",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 912.0,
+          "baseline_work": 400.0,
+          "peak_bytes": 8996
+        },
+        {
+          "n": 64,
+          "work": 1801.0,
+          "baseline_work": 817.0,
+          "peak_bytes": 19703
+        },
+        {
+          "n": 128,
+          "work": 3784.0,
+          "baseline_work": 1844.0,
+          "peak_bytes": 42580
+        },
+        {
+          "n": 256,
+          "work": 7977.0,
+          "baseline_work": 4113.0,
+          "peak_bytes": 89563
+        },
+        {
+          "n": 512,
+          "work": 16188.0,
+          "baseline_work": 8480.0,
+          "peak_bytes": 183334
+        },
+        {
+          "n": 1024,
+          "work": 32877.0,
+          "baseline_work": 17489.0,
+          "peak_bytes": 366927
+        },
+        {
+          "n": 2048,
+          "work": 70878.0,
+          "baseline_work": 40118.0,
+          "peak_bytes": 743136
+        },
+        {
+          "n": 4096,
+          "work": 145062.0,
+          "baseline_work": 83582.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 292549.0,
+          "baseline_work": 169645.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 625087.0,
+          "baseline_work": 379307.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 6.334,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P46",
+      "title": "最长公共前缀",
+      "family": "STRING_LIST",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "n 个定长（≤100 字符）串逐个缩短公共前缀，工作量是总字符数",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 1662.0,
+          "baseline_work": 1438.0,
+          "peak_bytes": 4593
+        },
+        {
+          "n": 57,
+          "work": 3616.0,
+          "baseline_work": 3217.0,
+          "peak_bytes": 9207
+        },
+        {
+          "n": 101,
+          "work": 5850.0,
+          "baseline_work": 5143.0,
+          "peak_bytes": 14819
+        },
+        {
+          "n": 179,
+          "work": 10400.0,
+          "baseline_work": 9147.0,
+          "peak_bytes": 26025
+        },
+        {
+          "n": 317,
+          "work": 18069.0,
+          "baseline_work": 15850.0,
+          "peak_bytes": 44995
+        },
+        {
+          "n": 563,
+          "work": 32600.0,
+          "baseline_work": 28659.0,
+          "peak_bytes": 80371
+        },
+        {
+          "n": 1000,
+          "work": 60125.0,
+          "baseline_work": 53125.0,
+          "peak_bytes": 147079
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 2.148,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P47",
+      "title": "快速排序",
+      "family": "INT_ARRAY",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "随机化三路快排的期望比较次数是 n log n，随机基准只影响常数",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销",
+        "空间增长无法匹配任何类别，报告不给出空间结论"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 1038.0,
+          "baseline_work": 92.0,
+          "peak_bytes": 200957
+        },
+        {
+          "n": 64,
+          "work": 2561.0,
+          "baseline_work": 188.0,
+          "peak_bytes": 200957
+        },
+        {
+          "n": 128,
+          "work": 7572.0,
+          "baseline_work": 410.0,
+          "peak_bytes": 200957
+        },
+        {
+          "n": 256,
+          "work": 15229.0,
+          "baseline_work": 922.0,
+          "peak_bytes": 200957
+        },
+        {
+          "n": 512,
+          "work": 37431.0,
+          "baseline_work": 1946.0,
+          "peak_bytes": 200957
+        },
+        {
+          "n": 1024,
+          "work": 77306.0,
+          "baseline_work": 4020.0,
+          "peak_bytes": 200957
+        },
+        {
+          "n": 2048,
+          "work": 184527.0,
+          "baseline_work": 9140.0,
+          "peak_bytes": 284178
+        },
+        {
+          "n": 4096,
+          "work": 386338.0,
+          "baseline_work": 19380.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 893837.0,
+          "baseline_work": 39860.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 1782721.0,
+          "baseline_work": 87206.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": false,
+      "repeat_mismatches": [
+        {
+          "n": 32,
+          "first": 1038.0,
+          "second": 1041.0,
+          "delta": 3.0,
+          "delta_ratio": 0.00289
+        },
+        {
+          "n": 64,
+          "first": 2561.0,
+          "second": 2767.0,
+          "delta": 206.0,
+          "delta_ratio": 0.080437
+        },
+        {
+          "n": 128,
+          "first": 7572.0,
+          "second": 6026.0,
+          "delta": -1546.0,
+          "delta_ratio": 0.204173
+        },
+        {
+          "n": 256,
+          "first": 15229.0,
+          "second": 14366.0,
+          "delta": -863.0,
+          "delta_ratio": 0.056668
+        },
+        {
+          "n": 512,
+          "first": 37431.0,
+          "second": 34019.0,
+          "delta": -3412.0,
+          "delta_ratio": 0.091154
+        },
+        {
+          "n": 1024,
+          "first": 77306.0,
+          "second": 87566.0,
+          "delta": 10260.0,
+          "delta_ratio": 0.132719
+        },
+        {
+          "n": 2048,
+          "first": 184527.0,
+          "second": 168577.0,
+          "delta": -15950.0,
+          "delta_ratio": 0.086437
+        },
+        {
+          "n": 4096,
+          "first": 386338.0,
+          "second": 378085.0,
+          "delta": -8253.0,
+          "delta_ratio": 0.021362
+        },
+        {
+          "n": 8192,
+          "first": 893837.0,
+          "second": 843603.0,
+          "delta": -50234.0,
+          "delta_ratio": 0.0562
+        },
+        {
+          "n": 16384,
+          "first": 1782721.0,
+          "second": 1864966.0,
+          "delta": 82245.0,
+          "delta_ratio": 0.046135
+        }
+      ],
+      "adapter_deterministic": false,
+      "elapsed_seconds": 15.176,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P48",
+      "title": "第 k 小元素",
+      "family": "INT_ARRAY_WITH_K",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "三路划分快速选择每轮期望折半，总比较次数期望 O(n)",
+      "predicted": "O(n log n)",
+      "confidence": "LOW",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "O(n log n) 与 O(n) 的拟合优度相差很小（AIC 差 1.8），档位数不足以区分两者",
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销",
+        "空间增长无法匹配任何类别，报告不给出空间结论",
+        "同一档位重复执行的计数不一致（程序含随机或依赖数据的分支），类别按多次运行的中位形态报告"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 456.0,
+          "baseline_work": 92.0,
+          "peak_bytes": 200805
+        },
+        {
+          "n": 64,
+          "work": 1372.0,
+          "baseline_work": 188.0,
+          "peak_bytes": 200805
+        },
+        {
+          "n": 128,
+          "work": 3167.0,
+          "baseline_work": 411.0,
+          "peak_bytes": 200805
+        },
+        {
+          "n": 256,
+          "work": 7597.0,
+          "baseline_work": 939.0,
+          "peak_bytes": 200805
+        },
+        {
+          "n": 512,
+          "work": 9673.0,
+          "baseline_work": 1953.0,
+          "peak_bytes": 200805
+        },
+        {
+          "n": 1024,
+          "work": 13685.0,
+          "baseline_work": 4032.0,
+          "peak_bytes": 200805
+        },
+        {
+          "n": 2048,
+          "work": 59224.0,
+          "baseline_work": 9162.0,
+          "peak_bytes": 241172
+        },
+        {
+          "n": 4096,
+          "work": 138523.0,
+          "baseline_work": 19396.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 156796.0,
+          "baseline_work": 39851.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 471961.0,
+          "baseline_work": 87156.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": false,
+      "repeat_mismatches": [
+        {
+          "n": 32,
+          "first": 456.0,
+          "second": 546.0,
+          "delta": 90.0,
+          "delta_ratio": 0.197368
+        },
+        {
+          "n": 64,
+          "first": 1372.0,
+          "second": 829.0,
+          "delta": -543.0,
+          "delta_ratio": 0.395773
+        },
+        {
+          "n": 128,
+          "first": 3167.0,
+          "second": 1817.0,
+          "delta": -1350.0,
+          "delta_ratio": 0.426271
+        },
+        {
+          "n": 256,
+          "first": 7597.0,
+          "second": 4667.0,
+          "delta": -2930.0,
+          "delta_ratio": 0.385679
+        },
+        {
+          "n": 512,
+          "first": 9673.0,
+          "second": 11475.0,
+          "delta": 1802.0,
+          "delta_ratio": 0.186292
+        },
+        {
+          "n": 1024,
+          "first": 13685.0,
+          "second": 22034.0,
+          "delta": 8349.0,
+          "delta_ratio": 0.610084
+        },
+        {
+          "n": 2048,
+          "first": 59224.0,
+          "second": 42846.0,
+          "delta": -16378.0,
+          "delta_ratio": 0.276543
+        },
+        {
+          "n": 4096,
+          "first": 138523.0,
+          "second": 76374.0,
+          "delta": -62149.0,
+          "delta_ratio": 0.448655
+        },
+        {
+          "n": 8192,
+          "first": 156796.0,
+          "second": 251545.0,
+          "delta": 94749.0,
+          "delta_ratio": 0.604282
+        },
+        {
+          "n": 16384,
+          "first": 471961.0,
+          "second": 497529.0,
+          "delta": 25568.0,
+          "delta_ratio": 0.054174
+        }
+      ],
+      "adapter_deterministic": false,
+      "elapsed_seconds": 4.634,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P49",
+      "title": "二分查找",
+      "family": "SORTED_ARRAY_QUERIES",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "q=n 次询问各做一次 log n 的二分查找",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 1255.0,
+          "baseline_work": 188.0,
+          "peak_bytes": 3498
+        },
+        {
+          "n": 64,
+          "work": 2805.0,
+          "baseline_work": 374.0,
+          "peak_bytes": 6616
+        },
+        {
+          "n": 128,
+          "work": 6279.0,
+          "baseline_work": 813.0,
+          "peak_bytes": 13197
+        },
+        {
+          "n": 256,
+          "work": 14064.0,
+          "baseline_work": 1838.0,
+          "peak_bytes": 26310
+        },
+        {
+          "n": 512,
+          "work": 30878.0,
+          "baseline_work": 3890.0,
+          "peak_bytes": 65726
+        },
+        {
+          "n": 1024,
+          "work": 67104.0,
+          "baseline_work": 8049.0,
+          "peak_bytes": 150727
+        },
+        {
+          "n": 2048,
+          "work": 146597.0,
+          "baseline_work": 18258.0,
+          "peak_bytes": 313094
+        },
+        {
+          "n": 4096,
+          "work": 315942.0,
+          "baseline_work": 38831.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 674651.0,
+          "baseline_work": 79689.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 1446563.0,
+          "baseline_work": 174635.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 9.18,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P50",
+      "title": "滑动窗口最大值",
+      "family": "INT_ARRAY_WITH_K",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "单调队列每个下标最多入队出队一次",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 395.0,
+          "baseline_work": 92.0,
+          "peak_bytes": 3050
+        },
+        {
+          "n": 64,
+          "work": 790.0,
+          "baseline_work": 188.0,
+          "peak_bytes": 4506
+        },
+        {
+          "n": 128,
+          "work": 1621.0,
+          "baseline_work": 411.0,
+          "peak_bytes": 7645
+        },
+        {
+          "n": 256,
+          "work": 3361.0,
+          "baseline_work": 939.0,
+          "peak_bytes": 14109
+        },
+        {
+          "n": 512,
+          "work": 6817.0,
+          "baseline_work": 1953.0,
+          "peak_bytes": 31613
+        },
+        {
+          "n": 1024,
+          "work": 13750.0,
+          "baseline_work": 4032.0,
+          "peak_bytes": 74022
+        },
+        {
+          "n": 2048,
+          "work": 28605.0,
+          "baseline_work": 9162.0,
+          "peak_bytes": 159500
+        },
+        {
+          "n": 4096,
+          "work": 58295.0,
+          "baseline_work": 19396.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 117678.0,
+          "baseline_work": 39851.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 242788.0,
+          "baseline_work": 87156.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 3.827,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P51",
+      "title": "下一个更大元素",
+      "family": "INT_ARRAY",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "单调栈每个元素最多入栈出栈一次",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 380.0,
+          "baseline_work": 93.0,
+          "peak_bytes": 3088
+        },
+        {
+          "n": 64,
+          "work": 762.0,
+          "baseline_work": 190.0,
+          "peak_bytes": 5648
+        },
+        {
+          "n": 128,
+          "work": 1551.0,
+          "baseline_work": 401.0,
+          "peak_bytes": 10796
+        },
+        {
+          "n": 256,
+          "work": 3194.0,
+          "baseline_work": 907.0,
+          "peak_bytes": 21166
+        },
+        {
+          "n": 512,
+          "work": 6533.0,
+          "baseline_work": 1935.0,
+          "peak_bytes": 45932
+        },
+        {
+          "n": 1024,
+          "work": 13184.0,
+          "baseline_work": 3989.0,
+          "peak_bytes": 102186
+        },
+        {
+          "n": 2048,
+          "work": 27593.0,
+          "baseline_work": 9167.0,
+          "peak_bytes": 219192
+        },
+        {
+          "n": 4096,
+          "work": 56168.0,
+          "baseline_work": 19344.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 113541.0,
+          "baseline_work": 39842.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 234770.0,
+          "baseline_work": 87340.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 3.333,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P52",
+      "title": "数据流中位数",
+      "family": "INT_ARRAY",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "每个数做常数次堆压入/弹出，n 个元素共 O(n log n)",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销",
+        "空间增长无法匹配任何类别，报告不给出空间结论"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 667.089,
+          "baseline_work": 93.0,
+          "peak_bytes": 152189
+        },
+        {
+          "n": 64,
+          "work": 1556.351,
+          "baseline_work": 190.0,
+          "peak_bytes": 152189
+        },
+        {
+          "n": 128,
+          "work": 3606.984,
+          "baseline_work": 401.0,
+          "peak_bytes": 152189
+        },
+        {
+          "n": 256,
+          "work": 8303.305,
+          "baseline_work": 907.0,
+          "peak_bytes": 152189
+        },
+        {
+          "n": 512,
+          "work": 18734.976,
+          "baseline_work": 1935.0,
+          "peak_bytes": 152189
+        },
+        {
+          "n": 1024,
+          "work": 41643.332,
+          "baseline_work": 3989.0,
+          "peak_bytes": 167759
+        },
+        {
+          "n": 2048,
+          "work": 92625.051,
+          "baseline_work": 9167.0,
+          "peak_bytes": 324563
+        },
+        {
+          "n": 4096,
+          "work": 202600.492,
+          "baseline_work": 19344.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 439078.375,
+          "baseline_work": 39842.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 951303.144,
+          "baseline_work": 87340.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 3.512,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P53",
+      "title": "后缀表达式求值",
+      "family": "POSTFIX_EXPRESSION",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "后缀表达式按 token 逐个入栈或弹栈，token 数随 n 线性",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 529.0,
+          "baseline_work": 185.0,
+          "peak_bytes": 2251
+        },
+        {
+          "n": 64,
+          "work": 1071.0,
+          "baseline_work": 375.0,
+          "peak_bytes": 4069
+        },
+        {
+          "n": 128,
+          "work": 2152.0,
+          "baseline_work": 752.0,
+          "peak_bytes": 7829
+        },
+        {
+          "n": 256,
+          "work": 4308.0,
+          "baseline_work": 1500.0,
+          "peak_bytes": 15113
+        },
+        {
+          "n": 512,
+          "work": 8637.0,
+          "baseline_work": 3013.0,
+          "peak_bytes": 30493
+        },
+        {
+          "n": 1024,
+          "work": 17295.0,
+          "baseline_work": 6039.0,
+          "peak_bytes": 61077
+        }
+      ],
+      "rungs_planned": 6,
+      "rungs_ok": 6,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 1.783,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P54",
+      "title": "树状数组",
+      "family": "INT_ARRAY_OPERATIONS",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "线性建树 O(n) 后，q=n 次操作各做 log n 次树状数组跳转",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 1525.0,
+          "baseline_work": 421.0,
+          "peak_bytes": 5847
+        },
+        {
+          "n": 64,
+          "work": 3254.0,
+          "baseline_work": 826.0,
+          "peak_bytes": 11374
+        },
+        {
+          "n": 128,
+          "work": 7240.0,
+          "baseline_work": 1756.0,
+          "peak_bytes": 24428
+        },
+        {
+          "n": 256,
+          "work": 15051.0,
+          "baseline_work": 3643.0,
+          "peak_bytes": 52541
+        },
+        {
+          "n": 512,
+          "work": 32024.0,
+          "baseline_work": 7368.0,
+          "peak_bytes": 121476
+        },
+        {
+          "n": 1024,
+          "work": 67532.0,
+          "baseline_work": 14928.0,
+          "peak_bytes": 246802
+        },
+        {
+          "n": 2048,
+          "work": 142113.0,
+          "baseline_work": 31745.0,
+          "peak_bytes": 510161
+        },
+        {
+          "n": 4096,
+          "work": 298645.0,
+          "baseline_work": 64669.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 622542.0,
+          "baseline_work": 130750.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 1309280.0,
+          "baseline_work": 275340.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 10.756,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P55",
+      "title": "用两个栈实现队列",
+      "family": "STACK_OPERATIONS",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "q 条操作均摊 O(1) 每条，push/pop 在两个栈之间转移的总次数不超过 q",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 660.0,
+          "baseline_work": 346.0,
+          "peak_bytes": 4200
+        },
+        {
+          "n": 64,
+          "work": 1301.0,
+          "baseline_work": 682.0,
+          "peak_bytes": 7800
+        },
+        {
+          "n": 128,
+          "work": 2576.0,
+          "baseline_work": 1348.0,
+          "peak_bytes": 14938
+        },
+        {
+          "n": 256,
+          "work": 5133.0,
+          "baseline_work": 2688.0,
+          "peak_bytes": 29242
+        },
+        {
+          "n": 512,
+          "work": 10273.0,
+          "baseline_work": 5395.0,
+          "peak_bytes": 58777
+        },
+        {
+          "n": 1024,
+          "work": 20537.0,
+          "baseline_work": 10794.0,
+          "peak_bytes": 116568
+        },
+        {
+          "n": 2048,
+          "work": 40937.0,
+          "baseline_work": 21465.0,
+          "peak_bytes": 247261
+        },
+        {
+          "n": 4096,
+          "work": 81913.0,
+          "baseline_work": 42984.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 163806.0,
+          "baseline_work": 85964.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 327500.0,
+          "baseline_work": 171833.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 3.415,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P56",
+      "title": "出现频率前 k 高的元素",
+      "family": "INT_ARRAY_WITH_K",
+      "expected": "O(n log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "Counter 计数 O(n) 后对不同元素排序 O(n log n)，排序主导",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 297.0,
+          "baseline_work": 95.0,
+          "peak_bytes": 6228
+        },
+        {
+          "n": 64,
+          "work": 649.0,
+          "baseline_work": 191.0,
+          "peak_bytes": 9692
+        },
+        {
+          "n": 128,
+          "work": 1447.0,
+          "baseline_work": 413.0,
+          "peak_bytes": 16882
+        },
+        {
+          "n": 256,
+          "work": 3240.0,
+          "baseline_work": 926.0,
+          "peak_bytes": 38037
+        },
+        {
+          "n": 512,
+          "work": 7080.0,
+          "baseline_work": 1950.0,
+          "peak_bytes": 87713
+        },
+        {
+          "n": 1024,
+          "work": 15298.0,
+          "baseline_work": 4024.0,
+          "peak_bytes": 192707
+        },
+        {
+          "n": 2048,
+          "work": 33731.0,
+          "baseline_work": 9145.0,
+          "peak_bytes": 401582
+        },
+        {
+          "n": 4096,
+          "work": 72643.0,
+          "baseline_work": 19385.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 154563.0,
+          "baseline_work": 39865.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 332981.0,
+          "baseline_work": 87211.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 2.447,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P57",
+      "title": "统计素数个数",
+      "family": "SINGLE_INT",
+      "expected": "UNKNOWN",
+      "expected_confidence": "HIGH",
+      "rationale": "切片筛法统计素数，真实增长 n log log n，目录里最近上界是 O(n log n)",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 64,
+          "work": 241.0,
+          "baseline_work": 5.0,
+          "peak_bytes": 618
+        },
+        {
+          "n": 256,
+          "work": 892.0,
+          "baseline_work": 6.0,
+          "peak_bytes": 1002
+        },
+        {
+          "n": 1024,
+          "work": 3438.0,
+          "baseline_work": 7.0,
+          "peak_bytes": 2538
+        },
+        {
+          "n": 4096,
+          "work": 13445.0,
+          "baseline_work": 7.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 52995.0,
+          "baseline_work": 8.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 65536,
+          "work": 209758.0,
+          "baseline_work": 8.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 262144,
+          "work": 832542.0,
+          "baseline_work": 9.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 3.504,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P58",
+      "title": "扩展欧几里得",
+      "family": "TWO_INTS",
+      "expected": "O(log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "欧几里得递归层数是 O(log min(a,b))，两个数都随 n 同阶增长",
+      "predicted": "UNKNOWN",
+      "confidence": "LOW",
+      "method": "UNKNOWN",
+      "recurrence": {
+        "function": "exgcd",
+        "branching": 1,
+        "shrink": "DATA_DEPENDENT",
+        "frame_class": "O(1)",
+        "expression": null,
+        "solution": null,
+        "class": null,
+        "method": "NONE",
+        "ratio": 0.618,
+        "step": null,
+        "frame_confidence": "HIGH",
+        "share": 0.642,
+        "notes": [
+          "工作量在全部档位上相同",
+          "递归参数按数据切分，没有固定的缩放关系，未还原递推式"
+        ]
+      },
+      "closed_form": "UNKNOWN",
+      "notes": [
+        "最优类别 O(log n) 只能解释 0.867 的计数变化，结论只能作为参考",
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销",
+        "超过输入解析基准的档位不足 3 个，时间类别按含读入的总工作量报告"
+      ],
+      "points": [
+        {
+          "n": 64,
+          "work": 29.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 1109
+        },
+        {
+          "n": 256,
+          "work": 46.0,
+          "baseline_work": 10.0,
+          "peak_bytes": 1113
+        },
+        {
+          "n": 1024,
+          "work": 50.0,
+          "baseline_work": 11.0,
+          "peak_bytes": 1114
+        },
+        {
+          "n": 4096,
+          "work": 51.0,
+          "baseline_work": 12.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 65.0,
+          "baseline_work": 14.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 65536,
+          "work": 65.0,
+          "baseline_work": 14.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 262144,
+          "work": 67.0,
+          "baseline_work": 16.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 1048576,
+          "work": 68.0,
+          "baseline_work": 17.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 8,
+      "rungs_ok": 8,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 1.558,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P59",
+      "title": "组合数取模",
+      "family": "INT_ARRAY_ROWS",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "T=n 组询问，阶乘表建到最大的 n_i（随 n 增长），建表 O(n) 主导",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 868.0,
+          "baseline_work": 168.0,
+          "peak_bytes": 4187
+        },
+        {
+          "n": 64,
+          "work": 1571.0,
+          "baseline_work": 356.0,
+          "peak_bytes": 8959
+        },
+        {
+          "n": 128,
+          "work": 2981.0,
+          "baseline_work": 740.0,
+          "peak_bytes": 20347
+        },
+        {
+          "n": 256,
+          "work": 5990.0,
+          "baseline_work": 1700.0,
+          "peak_bytes": 50388
+        },
+        {
+          "n": 512,
+          "work": 12065.0,
+          "baseline_work": 3679.0,
+          "peak_bytes": 124080
+        },
+        {
+          "n": 1024,
+          "work": 24312.0,
+          "baseline_work": 7732.0,
+          "peak_bytes": 276093
+        },
+        {
+          "n": 2048,
+          "work": 50080.0,
+          "baseline_work": 17115.0,
+          "peak_bytes": 578068
+        },
+        {
+          "n": 4096,
+          "work": 102724.0,
+          "baseline_work": 36993.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 208376.0,
+          "baseline_work": 77114.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 9,
+      "rungs_ok": 9,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 3.109,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P60",
+      "title": "高精度加法",
+      "family": "BIG_TWO_STRINGS",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "从低位到高位逐位相加，循环次数是两数位数",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 470.0,
+          "baseline_work": 68.0,
+          "peak_bytes": 811
+        },
+        {
+          "n": 57,
+          "work": 820.0,
+          "baseline_work": 118.0,
+          "peak_bytes": 945
+        },
+        {
+          "n": 101,
+          "work": 1428.0,
+          "baseline_work": 206.0,
+          "peak_bytes": 1167
+        },
+        {
+          "n": 179,
+          "work": 2528.0,
+          "baseline_work": 362.0,
+          "peak_bytes": 1550
+        },
+        {
+          "n": 317,
+          "work": 4460.0,
+          "baseline_work": 638.0,
+          "peak_bytes": 2242
+        },
+        {
+          "n": 563,
+          "work": 7896.0,
+          "baseline_work": 1130.0,
+          "peak_bytes": 3521
+        },
+        {
+          "n": 1000,
+          "work": 14022.0,
+          "baseline_work": 2004.0,
+          "peak_bytes": 5674
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 1.751,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P61",
+      "title": "进制转换",
+      "family": "TWO_INTS",
+      "expected": "O(log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "短除法每轮除以 2，循环次数就是 log2 n 位",
+      "predicted": "O(log n)",
+      "confidence": "MEDIUM",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销",
+        "有效档位只有 4 个，增长类别的置信度不会高于中"
+      ],
+      "points": [
+        {
+          "n": 64,
+          "work": 50.0,
+          "baseline_work": 7.0,
+          "peak_bytes": 699
+        },
+        {
+          "n": 256,
+          "work": 61.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 782
+        },
+        {
+          "n": 1024,
+          "work": 72.0,
+          "baseline_work": 9.0,
+          "peak_bytes": 801
+        },
+        {
+          "n": 4096,
+          "work": 82.0,
+          "baseline_work": 9.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 4,
+      "rungs_ok": 4,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 1.186,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P62",
+      "title": "质因数分解",
+      "family": "SINGLE_INT",
+      "expected": "UNKNOWN",
+      "expected_confidence": "HIGH",
+      "rationale": "试除到 √n，真实增长 √n，目录里最近上界是 O(n)",
+      "predicted": "O(log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 64,
+          "work": 44.0,
+          "baseline_work": 5.0,
+          "peak_bytes": 511
+        },
+        {
+          "n": 256,
+          "work": 53.0,
+          "baseline_work": 6.0,
+          "peak_bytes": 513
+        },
+        {
+          "n": 1024,
+          "work": 62.0,
+          "baseline_work": 7.0,
+          "peak_bytes": 515
+        },
+        {
+          "n": 4096,
+          "work": 70.0,
+          "baseline_work": 7.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 79.0,
+          "baseline_work": 8.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 65536,
+          "work": 87.0,
+          "baseline_work": 8.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 262144,
+          "work": 96.0,
+          "baseline_work": 9.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 1048576,
+          "work": 105.0,
+          "baseline_work": 10.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 8,
+      "rungs_ok": 8,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 1.667,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P63",
+      "title": "只出现一次的数字",
+      "family": "INT_ARRAY",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "单趟异或消去成对出现的数",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 195.0,
+          "baseline_work": 93.0,
+          "peak_bytes": 1631
+        },
+        {
+          "n": 64,
+          "work": 388.0,
+          "baseline_work": 190.0,
+          "peak_bytes": 3139
+        },
+        {
+          "n": 128,
+          "work": 791.0,
+          "baseline_work": 401.0,
+          "peak_bytes": 5883
+        },
+        {
+          "n": 256,
+          "work": 1681.0,
+          "baseline_work": 907.0,
+          "peak_bytes": 12043
+        },
+        {
+          "n": 512,
+          "work": 3477.0,
+          "baseline_work": 1935.0,
+          "peak_bytes": 24545
+        },
+        {
+          "n": 1024,
+          "work": 7067.0,
+          "baseline_work": 3989.0,
+          "peak_bytes": 49541
+        },
+        {
+          "n": 2048,
+          "work": 15317.0,
+          "baseline_work": 9167.0,
+          "peak_bytes": 102347
+        },
+        {
+          "n": 4096,
+          "work": 31638.0,
+          "baseline_work": 19344.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 64424.0,
+          "baseline_work": 39842.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 136498.0,
+          "baseline_work": 87340.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 2.444,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P64",
+      "title": "二进制中 1 的个数",
+      "family": "INT_ARRAY",
+      "expected": "O(n)",
+      "expected_confidence": "MEDIUM",
+      "rationale": "逐个数统计二进制 1 的个数，值域上界 2^60 固定，故为线性；bit 操作在 bin/count 里看不到",
+      "predicted": "O(n log n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 398.0,
+          "baseline_work": 93.0,
+          "peak_bytes": 3316
+        },
+        {
+          "n": 64,
+          "work": 854.0,
+          "baseline_work": 190.0,
+          "peak_bytes": 6455
+        },
+        {
+          "n": 128,
+          "work": 1807.0,
+          "baseline_work": 401.0,
+          "peak_bytes": 12444
+        },
+        {
+          "n": 256,
+          "work": 3956.0,
+          "baseline_work": 907.0,
+          "peak_bytes": 25106
+        },
+        {
+          "n": 512,
+          "work": 8600.0,
+          "baseline_work": 1935.0,
+          "peak_bytes": 50372
+        },
+        {
+          "n": 1024,
+          "work": 18286.0,
+          "baseline_work": 3989.0,
+          "peak_bytes": 101506
+        },
+        {
+          "n": 2048,
+          "work": 39991.0,
+          "baseline_work": 9167.0,
+          "peak_bytes": 205653
+        },
+        {
+          "n": 4096,
+          "work": 84788.0,
+          "baseline_work": 19344.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 179074.0,
+          "baseline_work": 39842.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 382550.0,
+          "baseline_work": 87340.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 2.547,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P65",
+      "title": "格雷码",
+      "family": "SINGLE_INT",
+      "expected": "O(2^n)",
+      "expected_confidence": "MEDIUM",
+      "rationale": "枚举 2^n 个格雷码，每个补零到 n 位，主项是 2^n",
+      "predicted": "O(2^n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(2^n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 59.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 1529
+        },
+        {
+          "n": 6,
+          "work": 203.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 4937
+        },
+        {
+          "n": 7,
+          "work": 395.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 9737
+        },
+        {
+          "n": 9,
+          "work": 1547.0,
+          "baseline_work": 4.0,
+          "peak_bytes": 40521
+        },
+        {
+          "n": 11,
+          "work": 6156.0,
+          "baseline_work": 5.0,
+          "peak_bytes": 174380
+        },
+        {
+          "n": 13,
+          "work": 24588.0,
+          "baseline_work": 5.0,
+          "peak_bytes": 739468
+        },
+        {
+          "n": 14,
+          "work": 49164.0,
+          "baseline_work": 5.0,
+          "peak_bytes": 1530077
+        },
+        {
+          "n": 16,
+          "work": 196620.0,
+          "baseline_work": 5.0,
+          "peak_bytes": 6527069
+        }
+      ],
+      "rungs_planned": 8,
+      "rungs_ok": 8,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 2.881,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P66",
+      "title": "数字范围按位与",
+      "family": "TWO_INTS",
+      "expected": "O(log n)",
+      "expected_confidence": "HIGH",
+      "rationale": "不断右移直到 l 与 r 相等，循环次数是 r 的位数",
+      "predicted": "O(log n)",
+      "confidence": "MEDIUM",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(log n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销",
+        "有效档位只有 4 个，增长类别的置信度不会高于中"
+      ],
+      "points": [
+        {
+          "n": 64,
+          "work": 49.0,
+          "baseline_work": 7.0,
+          "peak_bytes": 533
+        },
+        {
+          "n": 256,
+          "work": 60.0,
+          "baseline_work": 8.0,
+          "peak_bytes": 534
+        },
+        {
+          "n": 1024,
+          "work": 71.0,
+          "baseline_work": 9.0,
+          "peak_bytes": 535
+        },
+        {
+          "n": 4096,
+          "work": 81.0,
+          "baseline_work": 9.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 4,
+      "rungs_ok": 4,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 0.941,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P67",
+      "title": "螺旋矩阵",
+      "family": "MATRIX",
+      "expected": "O(n^2)",
+      "expected_confidence": "HIGH",
+      "rationale": "n×n 矩阵逐层顺时针取数，每个元素恰好访问一次",
+      "predicted": "O(n^2)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^2)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 150.0,
+          "baseline_work": 63.0,
+          "peak_bytes": 1858
+        },
+        {
+          "n": 20,
+          "work": 2723.0,
+          "baseline_work": 1372.0,
+          "peak_bytes": 35448
+        },
+        {
+          "n": 36,
+          "work": 8560.0,
+          "baseline_work": 4409.0,
+          "peak_bytes": 119754
+        },
+        {
+          "n": 52,
+          "work": 17721.0,
+          "baseline_work": 9234.0,
+          "peak_bytes": 251896
+        },
+        {
+          "n": 68,
+          "work": 30132.0,
+          "baseline_work": 15773.0,
+          "peak_bytes": 424742
+        },
+        {
+          "n": 84,
+          "work": 45894.0,
+          "baseline_work": 24127.0,
+          "peak_bytes": 659750
+        },
+        {
+          "n": 100,
+          "work": 64762.0,
+          "baseline_work": 34051.0,
+          "peak_bytes": 933862
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 2.172,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P68",
+      "title": "矩阵旋转",
+      "family": "MATRIX",
+      "expected": "O(n^2)",
+      "expected_confidence": "HIGH",
+      "rationale": "n×n 方阵旋转输出，n^2 个元素各写一次",
+      "predicted": "O(n^2)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n^2)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 4,
+          "work": 113.0,
+          "baseline_work": 63.0,
+          "peak_bytes": 1800
+        },
+        {
+          "n": 20,
+          "work": 1902.0,
+          "baseline_work": 1372.0,
+          "peak_bytes": 23562
+        },
+        {
+          "n": 36,
+          "work": 5931.0,
+          "baseline_work": 4409.0,
+          "peak_bytes": 80327
+        },
+        {
+          "n": 52,
+          "work": 12260.0,
+          "baseline_work": 9234.0,
+          "peak_bytes": 171106
+        },
+        {
+          "n": 68,
+          "work": 20815.0,
+          "baseline_work": 15773.0,
+          "peak_bytes": 288817
+        },
+        {
+          "n": 84,
+          "work": 31697.0,
+          "baseline_work": 24127.0,
+          "peak_bytes": 449383
+        },
+        {
+          "n": 100,
+          "work": 44661.0,
+          "baseline_work": 34051.0,
+          "peak_bytes": 635685
+        }
+      ],
+      "rungs_planned": 7,
+      "rungs_ok": 7,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 1.811,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P69",
+      "title": "和为 k 的子数组个数",
+      "family": "INT_ARRAY_WITH_K",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "前缀和加哈希表计数，单趟 n 个元素",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 263.0,
+          "baseline_work": 92.0,
+          "peak_bytes": 2648
+        },
+        {
+          "n": 64,
+          "work": 519.0,
+          "baseline_work": 188.0,
+          "peak_bytes": 4824
+        },
+        {
+          "n": 128,
+          "work": 1062.0,
+          "baseline_work": 411.0,
+          "peak_bytes": 9432
+        },
+        {
+          "n": 256,
+          "work": 2230.0,
+          "baseline_work": 939.0,
+          "peak_bytes": 20856
+        },
+        {
+          "n": 512,
+          "work": 4524.0,
+          "baseline_work": 1953.0,
+          "peak_bytes": 51624
+        },
+        {
+          "n": 1024,
+          "work": 9163.0,
+          "baseline_work": 4032.0,
+          "peak_bytes": 113652
+        },
+        {
+          "n": 2048,
+          "work": 19413.0,
+          "baseline_work": 9162.0,
+          "peak_bytes": 237268
+        },
+        {
+          "n": 4096,
+          "work": 39887.0,
+          "baseline_work": 19396.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 80822.0,
+          "baseline_work": 39851.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 161987.0,
+          "baseline_work": 80056.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 2.647,
+      "verdict": "ok",
+      "error": null
+    },
+    {
+      "code": "CODE-P70",
+      "title": "差分数组",
+      "family": "INT_ARRAY_ROWS_TWO_HEADER",
+      "expected": "O(n)",
+      "expected_confidence": "HIGH",
+      "rationale": "m=n 次差分更新加一趟前缀和，行数与 n 同阶",
+      "predicted": "O(n)",
+      "confidence": "HIGH",
+      "method": "CLOSED_FORM",
+      "recurrence": null,
+      "closed_form": "Θ(n)",
+      "notes": [
+        "轨迹采集自 Python 3 程序的真实执行"
+      ],
+      "limitations": [
+        "工作量已减去输入解析基准（同一输入上典型读法的执行计数），报告的类别描述算法本身，不含把输入读进来的开销"
+      ],
+      "points": [
+        {
+          "n": 32,
+          "work": 593.0,
+          "baseline_work": 260.0,
+          "peak_bytes": 4386
+        },
+        {
+          "n": 64,
+          "work": 1197.0,
+          "baseline_work": 544.0,
+          "peak_bytes": 9078
+        },
+        {
+          "n": 128,
+          "work": 2491.0,
+          "baseline_work": 1198.0,
+          "peak_bytes": 19314
+        },
+        {
+          "n": 256,
+          "work": 5238.0,
+          "baseline_work": 2665.0,
+          "peak_bytes": 39953
+        },
+        {
+          "n": 512,
+          "work": 10877.0,
+          "baseline_work": 5744.0,
+          "peak_bytes": 94766
+        },
+        {
+          "n": 1024,
+          "work": 22144.0,
+          "baseline_work": 11891.0,
+          "peak_bytes": 217281
+        },
+        {
+          "n": 2048,
+          "work": 47223.0,
+          "baseline_work": 26730.0,
+          "peak_bytes": 468514
+        },
+        {
+          "n": 4096,
+          "work": 98184.0,
+          "baseline_work": 57211.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 8192,
+          "work": 200522.0,
+          "baseline_work": 118589.0,
+          "peak_bytes": null
+        },
+        {
+          "n": 16384,
+          "work": 420416.0,
+          "baseline_work": 256563.0,
+          "peak_bytes": null
+        }
+      ],
+      "rungs_planned": 10,
+      "rungs_ok": 10,
+      "stop_reason": "OK",
+      "deterministic_repeat": true,
+      "repeat_mismatches": [],
+      "adapter_deterministic": true,
+      "elapsed_seconds": 3.305,
+      "verdict": "ok",
+      "error": null
+    }
+  ],
+  "summary": {
+    "total_problems": 70,
+    "labeled": 65,
+    "labeled_measured": 65,
+    "correct": 58,
+    "accuracy": 0.8923,
+    "accuracy_measured": 0.8923,
+    "errors": 0,
+    "not_measurable": 1,
+    "confusion": {
+      "O(n log n)": {
+        "O(n log n)": 18,
+        "UNKNOWN": 1
+      },
+      "O(1)": {
+        "O(1)": 1
+      },
+      "O(n)": {
+        "O(n)": 22,
+        "UNKNOWN": 1,
+        "O(n log n)": 2
+      },
+      "O(log n)": {
+        "O(log n)": 3,
+        "UNKNOWN": 1
+      },
+      "O(2^n)": {
+        "O(2^n)": 2
+      },
+      "O(n^2)": {
+        "O(n^2)": 7,
+        "O(n)": 1,
+        "O(n log n)": 1
+      },
+      "O(n^3)": {
+        "O(n^3)": 3
+      },
+      "O(n!)": {
+        "O(n!)": 2
+      }
+    },
+    "top_confusions": [
+      {
+        "expected": "O(n)",
+        "predicted": "O(n log n)",
+        "count": 2
+      },
+      {
+        "expected": "O(log n)",
+        "predicted": "UNKNOWN",
+        "count": 1
+      },
+      {
+        "expected": "O(n log n)",
+        "predicted": "UNKNOWN",
+        "count": 1
+      }
+    ],
+    "by_expected_class": {
+      "O(1)": {
+        "labeled": 1,
+        "correct": 1,
+        "predicted": {
+          "O(1)": 1
+        }
+      },
+      "O(log n)": {
+        "labeled": 4,
+        "correct": 3,
+        "predicted": {
+          "O(log n)": 3,
+          "UNKNOWN": 1
+        }
+      },
+      "O(n)": {
+        "labeled": 25,
+        "correct": 22,
+        "predicted": {
+          "O(n)": 22,
+          "UNKNOWN": 1,
+          "O(n log n)": 2
+        }
+      },
+      "O(n log n)": {
+        "labeled": 19,
+        "correct": 18,
+        "predicted": {
+          "O(n log n)": 18,
+          "UNKNOWN": 1
+        }
+      },
+      "O(n^2)": {
+        "labeled": 9,
+        "correct": 7,
+        "predicted": {
+          "O(n^2)": 7,
+          "O(n)": 1,
+          "O(n log n)": 1
+        }
+      },
+      "O(n^3)": {
+        "labeled": 3,
+        "correct": 3,
+        "predicted": {
+          "O(n^3)": 3
+        }
+      },
+      "O(2^n)": {
+        "labeled": 2,
+        "correct": 2,
+        "predicted": {
+          "O(2^n)": 2
+        }
+      },
+      "O(n!)": {
+        "labeled": 2,
+        "correct": 2,
+        "predicted": {
+          "O(n!)": 2
+        }
+      }
+    },
+    "not_measurable_items": [
+      {
+        "code": "CODE-P37",
+        "reason": "固定盘面输入（数独），规模无法伸缩，降级为不可测",
+        "family": "FIXED"
+      }
+    ],
+    "unknown_expected": [
+      {
+        "code": "CODE-P15",
+        "rationale": "乘法由 Python 内建 int 完成（大数走 Karatsuba，约 n^1.585），真实增长在解释器内部，目录里最近上界是 O(n^2)",
+        "predicted": "O(1)",
+        "error": null
+      },
+      {
+        "code": "CODE-P39",
+        "rationale": "回溯生成括号串的节点数是 Catalan 数，真实增长 4^n/n^1.5，目录里 O(2^n) 太小、O(n!) 太大",
+        "predicted": "O(2^n)",
+        "error": null
+      },
+      {
+        "code": "CODE-P57",
+        "rationale": "切片筛法统计素数，真实增长 n log log n，目录里最近上界是 O(n log n)",
+        "predicted": "O(n)",
+        "error": null
+      },
+      {
+        "code": "CODE-P62",
+        "rationale": "试除到 √n，真实增长 √n，目录里最近上界是 O(n)",
+        "predicted": "O(log n)",
+        "error": null
+      }
+    ],
+    "repeatability": {
+      "runs_per_problem": 2,
+      "compared": 69,
+      "deterministic": 67,
+      "ratio": 0.971,
+      "mismatches": [
+        {
+          "code": "CODE-P47",
+          "mismatches": [
+            {
+              "n": 32,
+              "first": 1038.0,
+              "second": 1041.0,
+              "delta": 3.0,
+              "delta_ratio": 0.00289
+            },
+            {
+              "n": 64,
+              "first": 2561.0,
+              "second": 2767.0,
+              "delta": 206.0,
+              "delta_ratio": 0.080437
+            },
+            {
+              "n": 128,
+              "first": 7572.0,
+              "second": 6026.0,
+              "delta": -1546.0,
+              "delta_ratio": 0.204173
+            },
+            {
+              "n": 256,
+              "first": 15229.0,
+              "second": 14366.0,
+              "delta": -863.0,
+              "delta_ratio": 0.056668
+            },
+            {
+              "n": 512,
+              "first": 37431.0,
+              "second": 34019.0,
+              "delta": -3412.0,
+              "delta_ratio": 0.091154
+            },
+            {
+              "n": 1024,
+              "first": 77306.0,
+              "second": 87566.0,
+              "delta": 10260.0,
+              "delta_ratio": 0.132719
+            },
+            {
+              "n": 2048,
+              "first": 184527.0,
+              "second": 168577.0,
+              "delta": -15950.0,
+              "delta_ratio": 0.086437
+            },
+            {
+              "n": 4096,
+              "first": 386338.0,
+              "second": 378085.0,
+              "delta": -8253.0,
+              "delta_ratio": 0.021362
+            },
+            {
+              "n": 8192,
+              "first": 893837.0,
+              "second": 843603.0,
+              "delta": -50234.0,
+              "delta_ratio": 0.0562
+            },
+            {
+              "n": 16384,
+              "first": 1782721.0,
+              "second": 1864966.0,
+              "delta": 82245.0,
+              "delta_ratio": 0.046135
+            }
+          ]
+        },
+        {
+          "code": "CODE-P48",
+          "mismatches": [
+            {
+              "n": 32,
+              "first": 456.0,
+              "second": 546.0,
+              "delta": 90.0,
+              "delta_ratio": 0.197368
+            },
+            {
+              "n": 64,
+              "first": 1372.0,
+              "second": 829.0,
+              "delta": -543.0,
+              "delta_ratio": 0.395773
+            },
+            {
+              "n": 128,
+              "first": 3167.0,
+              "second": 1817.0,
+              "delta": -1350.0,
+              "delta_ratio": 0.426271
+            },
+            {
+              "n": 256,
+              "first": 7597.0,
+              "second": 4667.0,
+              "delta": -2930.0,
+              "delta_ratio": 0.385679
+            },
+            {
+              "n": 512,
+              "first": 9673.0,
+              "second": 11475.0,
+              "delta": 1802.0,
+              "delta_ratio": 0.186292
+            },
+            {
+              "n": 1024,
+              "first": 13685.0,
+              "second": 22034.0,
+              "delta": 8349.0,
+              "delta_ratio": 0.610084
+            },
+            {
+              "n": 2048,
+              "first": 59224.0,
+              "second": 42846.0,
+              "delta": -16378.0,
+              "delta_ratio": 0.276543
+            },
+            {
+              "n": 4096,
+              "first": 138523.0,
+              "second": 76374.0,
+              "delta": -62149.0,
+              "delta_ratio": 0.448655
+            },
+            {
+              "n": 8192,
+              "first": 156796.0,
+              "second": 251545.0,
+              "delta": 94749.0,
+              "delta_ratio": 0.604282
+            },
+            {
+              "n": 16384,
+              "first": 471961.0,
+              "second": 497529.0,
+              "delta": 25568.0,
+              "delta_ratio": 0.054174
+            }
+          ]
+        }
+      ]
+    },
+    "cost_seconds": {
+      "problems": 70,
+      "min": 0.0,
+      "median": 3.508,
+      "max": 18.515,
+      "total": 371.116
+    },
+    "failures": {
+      "by_bucket": {
+        "correct": 58,
+        "not_measurable": 1,
+        "predicted_unknown": 3,
+        "wrong_class": 8
+      },
+      "items": [
+        {
+          "code": "CODE-P08",
+          "title": "跳跃游戏",
+          "bucket": "predicted_unknown",
+          "verdict": "ok",
+          "expected": "O(n)",
+          "predicted": "UNKNOWN",
+          "stop_reason": "OK",
+          "error": null
+        },
+        {
+          "code": "CODE-P15",
+          "title": "大整数乘法",
+          "bucket": "wrong_class",
+          "verdict": "ok",
+          "expected": "UNKNOWN",
+          "predicted": "O(1)",
+          "stop_reason": "OK",
+          "error": null
+        },
+        {
+          "code": "CODE-P26",
+          "title": "单源最短路",
+          "bucket": "predicted_unknown",
+          "verdict": "ok",
+          "expected": "O(n log n)",
+          "predicted": "UNKNOWN",
+          "stop_reason": "OK",
+          "error": null
+        },
+        {
+          "code": "CODE-P27",
+          "title": "负权环判定",
+          "bucket": "wrong_class",
+          "verdict": "ok",
+          "expected": "O(n^2)",
+          "predicted": "O(n)",
+          "stop_reason": "OK",
+          "error": null
+        },
+        {
+          "code": "CODE-P37",
+          "title": "数独求解",
+          "bucket": "not_measurable",
+          "verdict": "not_measurable",
+          "expected": "NOT_MEASURABLE",
+          "predicted": "UNKNOWN",
+          "stop_reason": null,
+          "error": "固定盘面输入（数独），规模无法伸缩，降级为不可测"
+        },
+        {
+          "code": "CODE-P39",
+          "title": "括号生成",
+          "bucket": "wrong_class",
+          "verdict": "ok",
+          "expected": "UNKNOWN",
+          "predicted": "O(2^n)",
+          "stop_reason": "OK",
+          "error": null
+        },
+        {
+          "code": "CODE-P40",
+          "title": "单词搜索",
+          "bucket": "wrong_class",
+          "verdict": "ok",
+          "expected": "O(n^2)",
+          "predicted": "O(n log n)",
+          "stop_reason": "BUDGET_EXHAUSTED",
+          "error": null
+        },
+        {
+          "code": "CODE-P48",
+          "title": "第 k 小元素",
+          "bucket": "wrong_class",
+          "verdict": "ok",
+          "expected": "O(n)",
+          "predicted": "O(n log n)",
+          "stop_reason": "OK",
+          "error": null
+        },
+        {
+          "code": "CODE-P57",
+          "title": "统计素数个数",
+          "bucket": "wrong_class",
+          "verdict": "ok",
+          "expected": "UNKNOWN",
+          "predicted": "O(n)",
+          "stop_reason": "OK",
+          "error": null
+        },
+        {
+          "code": "CODE-P58",
+          "title": "扩展欧几里得",
+          "bucket": "predicted_unknown",
+          "verdict": "ok",
+          "expected": "O(log n)",
+          "predicted": "UNKNOWN",
+          "stop_reason": "OK",
+          "error": null
+        },
+        {
+          "code": "CODE-P62",
+          "title": "质因数分解",
+          "bucket": "wrong_class",
+          "verdict": "ok",
+          "expected": "UNKNOWN",
+          "predicted": "O(log n)",
+          "stop_reason": "OK",
+          "error": null
+        },
+        {
+          "code": "CODE-P64",
+          "title": "二进制中 1 的个数",
+          "bucket": "wrong_class",
+          "verdict": "ok",
+          "expected": "O(n)",
+          "predicted": "O(n log n)",
+          "stop_reason": "OK",
+          "error": null
+        }
+      ]
+    },
+    "language": "python",
+    "seed": 20261028
+  }
+}

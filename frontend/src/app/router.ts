@@ -17,6 +17,28 @@ import {
 
 export const teacherRoutes = [
   {
+    path: "analysis",
+    name: "teacher-analysis",
+    component: () => import("../features/analytics/AnalysisCenter.vue"),
+  },
+  {
+    path: "results",
+    name: "teacher-results",
+    component: () => import("../features/analytics/Results.vue"),
+  },
+  {
+    path: "reviews",
+    name: "teacher-reviews",
+    component: () =>
+      import("../features/analytics/peer-review/TeacherRounds.vue"),
+  },
+  {
+    path: "reviews/:id",
+    name: "teacher-review",
+    component: () =>
+      import("../features/analytics/peer-review/TeacherRound.vue"),
+  },
+  {
     path: "assignments",
     name: "teacher-assignments",
     component: () => import("../features/teacher/Assignments.vue"),
@@ -30,6 +52,11 @@ export const teacherRoutes = [
     path: "assignments/:id",
     name: "teacher-assignment-edit",
     component: () => import("../features/teacher/AssignmentEditor.vue"),
+  },
+  {
+    path: "complexity",
+    name: "teacher-complexity",
+    component: () => import("../features/teacher/Complexity.vue"),
   },
   {
     path: "students/:studentId/progress",
@@ -57,6 +84,11 @@ export const teacherRoutes = [
     component: () => import("../features/teacher/ProblemEditor.vue"),
   },
   {
+    path: "similarity",
+    name: "teacher-similarity",
+    component: () => import("../features/teacher/Similarity.vue"),
+  },
+  {
     path: "students",
     name: "teacher-students",
     component: () => import("../features/teacher/Students.vue"),
@@ -69,6 +101,28 @@ export const teacherRoutes = [
 ];
 
 export const studentRoutes = [
+  {
+    path: "learning",
+    name: "student-learning",
+    component: () => import("../features/analytics/Results.vue"),
+  },
+  {
+    path: "reviews",
+    name: "student-reviews",
+    component: () =>
+      import("../features/analytics/peer-review/StudentTasks.vue"),
+  },
+  {
+    path: "reviews/:taskId",
+    name: "student-review",
+    component: () =>
+      import("../features/analytics/peer-review/StudentTask.vue"),
+  },
+  {
+    path: "ability",
+    name: "student-ability",
+    component: () => import("../features/student/Ability.vue"),
+  },
   {
     path: "",
     name: "student-home",

@@ -80,39 +80,39 @@
     "schema_version": "analysis-v2",
     "algorithm_key": "code_similarity",
     "snapshot_id": "synthetic-code_similarity",
-    "input_hash": "a5ef15efefa9a598b9b01487b634632a66b30cbbcccd1cef258fce39eb7f6c34",
+    "input_hash": "1413f9f6ba68b7ac01f831a3c597f964f409886768c2946b554b84ddfe778bb9",
     "parameters": {},
     "seed": 20261026,
     "payload": {
       "answers": [
         {
           "answer_key": "c1",
-          "content": "print(1)",
+          "content": "n = int(input())\nitems = [tuple(map(int, input().split())) for _ in range(n)]\nlast, taken = -1, 0\nfor begin, end in sorted(items, key=lambda pair: (pair[1], pair[0])):\n    if begin >= last:\n        last, taken = end, taken + 1\nprint(taken)\n",
           "language": "python3"
         },
         {
           "answer_key": "c2",
-          "content": "print(2)",
+          "content": "count = int(input())\nrows = [tuple(map(int, input().split())) for _ in range(count)]\nboundary = -1\nanswer = 0\nfor start, finish in sorted(rows, key=lambda item: (item[1], item[0])):\n    if start >= boundary:\n        boundary, answer = finish, answer + 1\nprint(answer)\n",
           "language": "python3"
         },
         {
           "answer_key": "c3",
-          "content": "print(3)",
+          "content": "count = int(input())\nintervals = [tuple(map(int, input().split())) for _ in range(count)]\nfinish_of_last = -1\npicked = 0\nfor begin, end in sorted(intervals, key=lambda item: (item[1], item[0])):\n    if begin >= finish_of_last:\n        finish_of_last, picked = end, picked + 1\nprint(picked)\n",
           "language": "python3"
         },
         {
           "answer_key": "c4",
-          "content": "print(4)",
+          "content": "# 贪心：按结束时间排序，依次接纳不冲突的活动\nn = int(input())\nintervals = [tuple(map(int, input().split())) for _ in range(n)]\nlast_end = -1\ntaken = 0\nfor start_time, end_time in sorted(intervals, key=lambda pair: (pair[1], pair[0])):\n    if start_time >= last_end:\n        last_end, taken = end_time, taken + 1\nprint(taken)\n",
           "language": "python3"
         },
         {
           "answer_key": "c5",
-          "content": "print(5)",
+          "content": "total = 0\nfor value in map(int, input().split()):\n    total ^= value\nprint(total)\n",
           "language": "python3"
         },
         {
           "answer_key": "c6",
-          "content": "print(6)",
+          "content": "n = int(input())\nbest = 0\nfor _ in range(n):\n    first, second = map(int, input().split())\n    best = max(best, abs(second - first))\nprint(best)\n",
           "language": "python3"
         }
       ],
@@ -309,7 +309,7 @@
     "schema_version": "analysis-v2",
     "algorithm_key": "aggregation",
     "snapshot_id": "synthetic-aggregation",
-    "input_hash": "023b97e4a4877ebbd517dbb8bd96b1f1f601dc9e4e1d5a480b69fc0b05204172",
+    "input_hash": "46d239da600f18e4bedf98f07915230546dd8e5d292f7f66777ce414be21dd20",
     "parameters": {},
     "seed": 20261026,
     "payload": {
@@ -334,7 +334,7 @@
         {
           "evaluation_key": "collect_reviews-1",
           "answer_key": "a1",
-          "reviewer_key": "demo-u3",
+          "reviewer_key": "demo-u6",
           "score": "56",
           "weight": "1"
         },
@@ -348,63 +348,63 @@
         {
           "evaluation_key": "collect_reviews-3",
           "answer_key": "a2",
-          "reviewer_key": "demo-u4",
+          "reviewer_key": "demo-u3",
           "score": "65",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-4",
           "answer_key": "a3",
-          "reviewer_key": "demo-u5",
+          "reviewer_key": "demo-u1",
           "score": "95",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-5",
           "answer_key": "a3",
-          "reviewer_key": "demo-u6",
+          "reviewer_key": "demo-u4",
           "score": "91",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-6",
           "answer_key": "a4",
-          "reviewer_key": "demo-u1",
+          "reviewer_key": "demo-u2",
           "score": "57",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-7",
           "answer_key": "a4",
-          "reviewer_key": "demo-u2",
+          "reviewer_key": "demo-u5",
           "score": "58",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-8",
           "answer_key": "a5",
-          "reviewer_key": "demo-u3",
+          "reviewer_key": "demo-u4",
           "score": "82",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-9",
           "answer_key": "a5",
-          "reviewer_key": "demo-u4",
+          "reviewer_key": "demo-u6",
           "score": "83",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-10",
           "answer_key": "a6",
-          "reviewer_key": "demo-u5",
+          "reviewer_key": "demo-u3",
           "score": "73",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-11",
           "answer_key": "a6",
-          "reviewer_key": "demo-u1",
+          "reviewer_key": "demo-u5",
           "score": "74",
           "weight": "1"
         }
@@ -476,7 +476,7 @@
     "schema_version": "analysis-v2",
     "algorithm_key": "deviation",
     "snapshot_id": "synthetic-deviation",
-    "input_hash": "dbf1b51abef2bdd43111d1496996c1fb01c338c9dfdb35cedc69890bc10fa6de",
+    "input_hash": "c71779ed55803ade5ded3f59e8f0b94c9e49243c4ad9afdc4b28799d77264b18",
     "parameters": {},
     "seed": 20261026,
     "payload": {
@@ -491,7 +491,7 @@
         {
           "evaluation_key": "collect_reviews-1",
           "answer_key": "a1",
-          "reviewer_key": "demo-u3",
+          "reviewer_key": "demo-u6",
           "score": "56",
           "weight": "1"
         },
@@ -505,63 +505,63 @@
         {
           "evaluation_key": "collect_reviews-3",
           "answer_key": "a2",
-          "reviewer_key": "demo-u4",
+          "reviewer_key": "demo-u3",
           "score": "65",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-4",
           "answer_key": "a3",
-          "reviewer_key": "demo-u5",
+          "reviewer_key": "demo-u1",
           "score": "95",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-5",
           "answer_key": "a3",
-          "reviewer_key": "demo-u6",
+          "reviewer_key": "demo-u4",
           "score": "91",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-6",
           "answer_key": "a4",
-          "reviewer_key": "demo-u1",
+          "reviewer_key": "demo-u2",
           "score": "57",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-7",
           "answer_key": "a4",
-          "reviewer_key": "demo-u2",
+          "reviewer_key": "demo-u5",
           "score": "58",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-8",
           "answer_key": "a5",
-          "reviewer_key": "demo-u3",
+          "reviewer_key": "demo-u4",
           "score": "82",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-9",
           "answer_key": "a5",
-          "reviewer_key": "demo-u4",
+          "reviewer_key": "demo-u6",
           "score": "83",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-10",
           "answer_key": "a6",
-          "reviewer_key": "demo-u5",
+          "reviewer_key": "demo-u3",
           "score": "73",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-11",
           "answer_key": "a6",
-          "reviewer_key": "demo-u1",
+          "reviewer_key": "demo-u5",
           "score": "74",
           "weight": "1"
         }
@@ -618,47 +618,47 @@
         },
         {
           "answer_key": "a1",
-          "reviewer_key": "demo-u3"
-        },
-        {
-          "answer_key": "a2",
-          "reviewer_key": "demo-u1"
-        },
-        {
-          "answer_key": "a2",
-          "reviewer_key": "demo-u4"
-        },
-        {
-          "answer_key": "a3",
-          "reviewer_key": "demo-u5"
-        },
-        {
-          "answer_key": "a3",
           "reviewer_key": "demo-u6"
         },
         {
-          "answer_key": "a4",
+          "answer_key": "a2",
           "reviewer_key": "demo-u1"
+        },
+        {
+          "answer_key": "a2",
+          "reviewer_key": "demo-u3"
+        },
+        {
+          "answer_key": "a3",
+          "reviewer_key": "demo-u1"
+        },
+        {
+          "answer_key": "a3",
+          "reviewer_key": "demo-u4"
         },
         {
           "answer_key": "a4",
           "reviewer_key": "demo-u2"
         },
         {
-          "answer_key": "a5",
-          "reviewer_key": "demo-u3"
+          "answer_key": "a4",
+          "reviewer_key": "demo-u5"
         },
         {
           "answer_key": "a5",
           "reviewer_key": "demo-u4"
         },
         {
-          "answer_key": "a6",
-          "reviewer_key": "demo-u5"
+          "answer_key": "a5",
+          "reviewer_key": "demo-u6"
         },
         {
           "answer_key": "a6",
-          "reviewer_key": "demo-u1"
+          "reviewer_key": "demo-u3"
+        },
+        {
+          "answer_key": "a6",
+          "reviewer_key": "demo-u5"
         }
       ],
       "minimum_samples": 2,
@@ -669,7 +669,7 @@
     "schema_version": "analysis-v2",
     "algorithm_key": "reviewer_bias",
     "snapshot_id": "synthetic-reviewer_bias",
-    "input_hash": "dbf1b51abef2bdd43111d1496996c1fb01c338c9dfdb35cedc69890bc10fa6de",
+    "input_hash": "c71779ed55803ade5ded3f59e8f0b94c9e49243c4ad9afdc4b28799d77264b18",
     "parameters": {},
     "seed": 20261026,
     "payload": {
@@ -684,7 +684,7 @@
         {
           "evaluation_key": "collect_reviews-1",
           "answer_key": "a1",
-          "reviewer_key": "demo-u3",
+          "reviewer_key": "demo-u6",
           "score": "56",
           "weight": "1"
         },
@@ -698,63 +698,63 @@
         {
           "evaluation_key": "collect_reviews-3",
           "answer_key": "a2",
-          "reviewer_key": "demo-u4",
+          "reviewer_key": "demo-u3",
           "score": "65",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-4",
           "answer_key": "a3",
-          "reviewer_key": "demo-u5",
+          "reviewer_key": "demo-u1",
           "score": "95",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-5",
           "answer_key": "a3",
-          "reviewer_key": "demo-u6",
+          "reviewer_key": "demo-u4",
           "score": "91",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-6",
           "answer_key": "a4",
-          "reviewer_key": "demo-u1",
+          "reviewer_key": "demo-u2",
           "score": "57",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-7",
           "answer_key": "a4",
-          "reviewer_key": "demo-u2",
+          "reviewer_key": "demo-u5",
           "score": "58",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-8",
           "answer_key": "a5",
-          "reviewer_key": "demo-u3",
+          "reviewer_key": "demo-u4",
           "score": "82",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-9",
           "answer_key": "a5",
-          "reviewer_key": "demo-u4",
+          "reviewer_key": "demo-u6",
           "score": "83",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-10",
           "answer_key": "a6",
-          "reviewer_key": "demo-u5",
+          "reviewer_key": "demo-u3",
           "score": "73",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-11",
           "answer_key": "a6",
-          "reviewer_key": "demo-u1",
+          "reviewer_key": "demo-u5",
           "score": "74",
           "weight": "1"
         }
@@ -811,47 +811,47 @@
         },
         {
           "answer_key": "a1",
-          "reviewer_key": "demo-u3"
-        },
-        {
-          "answer_key": "a2",
-          "reviewer_key": "demo-u1"
-        },
-        {
-          "answer_key": "a2",
-          "reviewer_key": "demo-u4"
-        },
-        {
-          "answer_key": "a3",
-          "reviewer_key": "demo-u5"
-        },
-        {
-          "answer_key": "a3",
           "reviewer_key": "demo-u6"
         },
         {
-          "answer_key": "a4",
+          "answer_key": "a2",
           "reviewer_key": "demo-u1"
+        },
+        {
+          "answer_key": "a2",
+          "reviewer_key": "demo-u3"
+        },
+        {
+          "answer_key": "a3",
+          "reviewer_key": "demo-u1"
+        },
+        {
+          "answer_key": "a3",
+          "reviewer_key": "demo-u4"
         },
         {
           "answer_key": "a4",
           "reviewer_key": "demo-u2"
         },
         {
-          "answer_key": "a5",
-          "reviewer_key": "demo-u3"
+          "answer_key": "a4",
+          "reviewer_key": "demo-u5"
         },
         {
           "answer_key": "a5",
           "reviewer_key": "demo-u4"
         },
         {
-          "answer_key": "a6",
-          "reviewer_key": "demo-u5"
+          "answer_key": "a5",
+          "reviewer_key": "demo-u6"
         },
         {
           "answer_key": "a6",
-          "reviewer_key": "demo-u1"
+          "reviewer_key": "demo-u3"
+        },
+        {
+          "answer_key": "a6",
+          "reviewer_key": "demo-u5"
         }
       ],
       "minimum_samples": 2,
@@ -862,7 +862,7 @@
     "schema_version": "analysis-v2",
     "algorithm_key": "relationship",
     "snapshot_id": "synthetic-relationship",
-    "input_hash": "dbf1b51abef2bdd43111d1496996c1fb01c338c9dfdb35cedc69890bc10fa6de",
+    "input_hash": "c71779ed55803ade5ded3f59e8f0b94c9e49243c4ad9afdc4b28799d77264b18",
     "parameters": {},
     "seed": 20261026,
     "payload": {
@@ -877,7 +877,7 @@
         {
           "evaluation_key": "collect_reviews-1",
           "answer_key": "a1",
-          "reviewer_key": "demo-u3",
+          "reviewer_key": "demo-u6",
           "score": "56",
           "weight": "1"
         },
@@ -891,63 +891,63 @@
         {
           "evaluation_key": "collect_reviews-3",
           "answer_key": "a2",
-          "reviewer_key": "demo-u4",
+          "reviewer_key": "demo-u3",
           "score": "65",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-4",
           "answer_key": "a3",
-          "reviewer_key": "demo-u5",
+          "reviewer_key": "demo-u1",
           "score": "95",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-5",
           "answer_key": "a3",
-          "reviewer_key": "demo-u6",
+          "reviewer_key": "demo-u4",
           "score": "91",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-6",
           "answer_key": "a4",
-          "reviewer_key": "demo-u1",
+          "reviewer_key": "demo-u2",
           "score": "57",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-7",
           "answer_key": "a4",
-          "reviewer_key": "demo-u2",
+          "reviewer_key": "demo-u5",
           "score": "58",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-8",
           "answer_key": "a5",
-          "reviewer_key": "demo-u3",
+          "reviewer_key": "demo-u4",
           "score": "82",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-9",
           "answer_key": "a5",
-          "reviewer_key": "demo-u4",
+          "reviewer_key": "demo-u6",
           "score": "83",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-10",
           "answer_key": "a6",
-          "reviewer_key": "demo-u5",
+          "reviewer_key": "demo-u3",
           "score": "73",
           "weight": "1"
         },
         {
           "evaluation_key": "collect_reviews-11",
           "answer_key": "a6",
-          "reviewer_key": "demo-u1",
+          "reviewer_key": "demo-u5",
           "score": "74",
           "weight": "1"
         }
@@ -1004,47 +1004,47 @@
         },
         {
           "answer_key": "a1",
-          "reviewer_key": "demo-u3"
-        },
-        {
-          "answer_key": "a2",
-          "reviewer_key": "demo-u1"
-        },
-        {
-          "answer_key": "a2",
-          "reviewer_key": "demo-u4"
-        },
-        {
-          "answer_key": "a3",
-          "reviewer_key": "demo-u5"
-        },
-        {
-          "answer_key": "a3",
           "reviewer_key": "demo-u6"
         },
         {
-          "answer_key": "a4",
+          "answer_key": "a2",
           "reviewer_key": "demo-u1"
+        },
+        {
+          "answer_key": "a2",
+          "reviewer_key": "demo-u3"
+        },
+        {
+          "answer_key": "a3",
+          "reviewer_key": "demo-u1"
+        },
+        {
+          "answer_key": "a3",
+          "reviewer_key": "demo-u4"
         },
         {
           "answer_key": "a4",
           "reviewer_key": "demo-u2"
         },
         {
-          "answer_key": "a5",
-          "reviewer_key": "demo-u3"
+          "answer_key": "a4",
+          "reviewer_key": "demo-u5"
         },
         {
           "answer_key": "a5",
           "reviewer_key": "demo-u4"
         },
         {
-          "answer_key": "a6",
-          "reviewer_key": "demo-u5"
+          "answer_key": "a5",
+          "reviewer_key": "demo-u6"
         },
         {
           "answer_key": "a6",
-          "reviewer_key": "demo-u1"
+          "reviewer_key": "demo-u3"
+        },
+        {
+          "answer_key": "a6",
+          "reviewer_key": "demo-u5"
         }
       ],
       "minimum_samples": 2,

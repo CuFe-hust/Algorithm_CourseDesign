@@ -1,0 +1,118 @@
+{
+  "taxonomy_version": "chapter-taxonomy-v1",
+  "mapping_version": "question-chapter-map-v1",
+  "source": {
+    "programming": "course-review-platform/data/formatted/questions.programming.json",
+    "subjective": "course-review-platform/data/formatted/questions.subjective.json",
+    "original_problems": "2026.10.21 数据库形态与搭建/题目/Problems（相对大作业目录）",
+    "programming_sha256": "44a3d60d3bd571e474d4734a963328137c7f0b133cf4145614993f2536f6c40b",
+    "subjective_sha256": "531be4e3497317dd3d15507a44734ec2ed512fcd5c65ed61b74066aab211fe70"
+  },
+  "axes": [
+    {
+      "order": 1,
+      "code": "CH01",
+      "name": "贪心算法",
+      "source_folder": "01-贪心算法",
+      "in_radar": true
+    },
+    {
+      "order": 2,
+      "code": "CH02",
+      "name": "分治算法",
+      "source_folder": "02-分治算法",
+      "in_radar": true
+    },
+    {
+      "order": 3,
+      "code": "CH03",
+      "name": "动态规划",
+      "source_folder": "03-动态规划",
+      "in_radar": true
+    },
+    {
+      "order": 4,
+      "code": "CH04",
+      "name": "图论",
+      "source_folder": "04-图论",
+      "in_radar": true
+    },
+    {
+      "order": 5,
+      "code": "CH05",
+      "name": "搜索与回溯",
+      "source_folder": "05-搜索与回溯",
+      "in_radar": true
+    },
+    {
+      "order": 6,
+      "code": "CH06",
+      "name": "字符串",
+      "source_folder": "06-字符串",
+      "in_radar": true
+    },
+    {
+      "order": 7,
+      "code": "CH07",
+      "name": "排序与查找",
+      "source_folder": "07-排序与查找",
+      "in_radar": true
+    },
+    {
+      "order": 8,
+      "code": "CH08",
+      "name": "数据结构",
+      "source_folder": "08-数据结构",
+      "in_radar": true
+    },
+    {
+      "order": 9,
+      "code": "CH09",
+      "name": "数学与数论",
+      "source_folder": "09-数学与数论",
+      "in_radar": true
+    },
+    {
+      "order": 10,
+      "code": "CH10",
+      "name": "位运算与杂项",
+      "source_folder": "10-位运算与杂项",
+      "in_radar": true
+    },
+    {
+      "order": 11,
+      "code": "CH11",
+      "name": "数组与模拟",
+      "source_folder": "11-数组与模拟",
+      "in_radar": true
+    }
+  ],
+  "unmapped": {
+    "code": "UNMAPPED",
+    "name": "未映射/不纳入雷达",
+    "in_radar": false
+  },
+  "rules": [
+    "编程题按 source_file 对应的原始文件夹归属，单章节权重 1.0；多标签不重复计入。",
+    "主观题按题干、作答要求、评分标准判断核心算法设计内容；优先单章节。",
+    "确有多章节设计时才拆分权重；权重为正且和为 1；权重是分析归因，不是测量校准参数。",
+    "不适合 11 章的题保留 UNMAPPED 与原因，不强行归属、不新增雷达轴。",
+    "保留原始细粒度知识点标签，章节映射不覆盖/删除标签。"
+  ],
+  "counts": {
+    "total_questions": 120,
+    "programming_questions": 70,
+    "subjective_questions": 50,
+    "unique_codes": 120,
+    "mapped_questions": 115,
+    "unmapped_questions": 5,
+    "cross_chapter_questions": 4,
+    "review_questions": 17,
+    "total_attribution_weight": 115.0,
+    "chapter_weight_total": 115.0,
+    "chapter_distinct_total": 119,
+    "all_codes_unique": true,
+    "all_weights_positive_and_sum_1": true,
+    "programming_folders_match_original": true
+  }
+}

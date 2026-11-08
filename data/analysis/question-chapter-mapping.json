@@ -1,0 +1,2081 @@
+{
+  "mapping_version": "question-chapter-map-v1",
+  "taxonomy_version": "chapter-taxonomy-v1",
+  "source": {
+    "programming": "course-review-platform/data/formatted/questions.programming.json",
+    "subjective": "course-review-platform/data/formatted/questions.subjective.json",
+    "original_problems": "2026.10.21 数据库形态与搭建/题目/Problems（相对大作业目录）",
+    "programming_sha256": "44a3d60d3bd571e474d4734a963328137c7f0b133cf4145614993f2536f6c40b",
+    "subjective_sha256": "531be4e3497317dd3d15507a44734ec2ed512fcd5c65ed61b74066aab211fe70"
+  },
+  "questions": [
+    {
+      "code": "CODE-P01",
+      "type": "PROGRAMMING",
+      "title": "活动安排问题",
+      "source_file": "data/source/programming/01-贪心算法/P01-活动安排问题.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH01": 1.0
+      },
+      "basis": "原始题库文件夹 01-贪心算法（贪心算法）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P02",
+      "type": "PROGRAMMING",
+      "title": "找零钱",
+      "source_file": "data/source/programming/01-贪心算法/P02-找零钱.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH01": 1.0
+      },
+      "basis": "原始题库文件夹 01-贪心算法（贪心算法）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P03",
+      "type": "PROGRAMMING",
+      "title": "分数背包",
+      "source_file": "data/source/programming/01-贪心算法/P03-分数背包.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH01": 1.0
+      },
+      "basis": "原始题库文件夹 01-贪心算法（贪心算法）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P04",
+      "type": "PROGRAMMING",
+      "title": "合并果子",
+      "source_file": "data/source/programming/01-贪心算法/P04-合并果子.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH01": 1.0
+      },
+      "basis": "原始题库文件夹 01-贪心算法（贪心算法）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P05",
+      "type": "PROGRAMMING",
+      "title": "区间覆盖",
+      "source_file": "data/source/programming/01-贪心算法/P05-区间覆盖.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH01": 1.0
+      },
+      "basis": "原始题库文件夹 01-贪心算法（贪心算法）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P06",
+      "type": "PROGRAMMING",
+      "title": "排队接水",
+      "source_file": "data/source/programming/01-贪心算法/P06-排队接水.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH01": 1.0
+      },
+      "basis": "原始题库文件夹 01-贪心算法（贪心算法）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P07",
+      "type": "PROGRAMMING",
+      "title": "加油站",
+      "source_file": "data/source/programming/01-贪心算法/P07-加油站.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH01": 1.0
+      },
+      "basis": "原始题库文件夹 01-贪心算法（贪心算法）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P08",
+      "type": "PROGRAMMING",
+      "title": "跳跃游戏",
+      "source_file": "data/source/programming/01-贪心算法/P08-跳跃游戏.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH01": 1.0
+      },
+      "basis": "原始题库文件夹 01-贪心算法（贪心算法）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P09",
+      "type": "PROGRAMMING",
+      "title": "引爆气球",
+      "source_file": "data/source/programming/01-贪心算法/P09-引爆气球.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH01": 1.0
+      },
+      "basis": "原始题库文件夹 01-贪心算法（贪心算法）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P10",
+      "type": "PROGRAMMING",
+      "title": "逆序对",
+      "source_file": "data/source/programming/02-分治算法/P10-逆序对.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH02": 1.0
+      },
+      "basis": "原始题库文件夹 02-分治算法（分治算法）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P11",
+      "type": "PROGRAMMING",
+      "title": "快速幂",
+      "source_file": "data/source/programming/02-分治算法/P11-快速幂.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH02": 1.0
+      },
+      "basis": "原始题库文件夹 02-分治算法（分治算法）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P12",
+      "type": "PROGRAMMING",
+      "title": "切绳子",
+      "source_file": "data/source/programming/02-分治算法/P12-切绳子.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH02": 1.0
+      },
+      "basis": "原始题库文件夹 02-分治算法（分治算法）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P13",
+      "type": "PROGRAMMING",
+      "title": "最近点对",
+      "source_file": "data/source/programming/02-分治算法/P13-最近点对.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH02": 1.0
+      },
+      "basis": "原始题库文件夹 02-分治算法（分治算法）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P14",
+      "type": "PROGRAMMING",
+      "title": "汉诺塔",
+      "source_file": "data/source/programming/02-分治算法/P14-汉诺塔.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH02": 1.0
+      },
+      "basis": "原始题库文件夹 02-分治算法（分治算法）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P15",
+      "type": "PROGRAMMING",
+      "title": "大整数乘法",
+      "source_file": "data/source/programming/02-分治算法/P15-大整数乘法.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH02": 1.0
+      },
+      "basis": "原始题库文件夹 02-分治算法（分治算法）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P16",
+      "type": "PROGRAMMING",
+      "title": "01背包",
+      "source_file": "data/source/programming/03-动态规划/P16-01背包.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH03": 1.0
+      },
+      "basis": "原始题库文件夹 03-动态规划（动态规划）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P17",
+      "type": "PROGRAMMING",
+      "title": "最长公共子序列",
+      "source_file": "data/source/programming/03-动态规划/P17-最长公共子序列.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH03": 1.0
+      },
+      "basis": "原始题库文件夹 03-动态规划（动态规划）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P18",
+      "type": "PROGRAMMING",
+      "title": "最长上升子序列",
+      "source_file": "data/source/programming/03-动态规划/P18-最长上升子序列.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH03": 1.0
+      },
+      "basis": "原始题库文件夹 03-动态规划（动态规划）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P19",
+      "type": "PROGRAMMING",
+      "title": "编辑距离",
+      "source_file": "data/source/programming/03-动态规划/P19-编辑距离.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH03": 1.0
+      },
+      "basis": "原始题库文件夹 03-动态规划（动态规划）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P20",
+      "type": "PROGRAMMING",
+      "title": "数字三角形",
+      "source_file": "data/source/programming/03-动态规划/P20-数字三角形.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH03": 1.0
+      },
+      "basis": "原始题库文件夹 03-动态规划（动态规划）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P21",
+      "type": "PROGRAMMING",
+      "title": "零钱兑换",
+      "source_file": "data/source/programming/03-动态规划/P21-零钱兑换.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH03": 1.0
+      },
+      "basis": "原始题库文件夹 03-动态规划（动态规划）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P22",
+      "type": "PROGRAMMING",
+      "title": "矩阵连乘",
+      "source_file": "data/source/programming/03-动态规划/P22-矩阵连乘.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH03": 1.0
+      },
+      "basis": "原始题库文件夹 03-动态规划（动态规划）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P23",
+      "type": "PROGRAMMING",
+      "title": "石子合并",
+      "source_file": "data/source/programming/03-动态规划/P23-石子合并.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH03": 1.0
+      },
+      "basis": "原始题库文件夹 03-动态规划（动态规划）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P24",
+      "type": "PROGRAMMING",
+      "title": "最长公共子串",
+      "source_file": "data/source/programming/03-动态规划/P24-最长公共子串.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH03": 1.0
+      },
+      "basis": "原始题库文件夹 03-动态规划（动态规划）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P25",
+      "type": "PROGRAMMING",
+      "title": "打家劫舍",
+      "source_file": "data/source/programming/03-动态规划/P25-打家劫舍.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH03": 1.0
+      },
+      "basis": "原始题库文件夹 03-动态规划（动态规划）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P26",
+      "type": "PROGRAMMING",
+      "title": "单源最短路",
+      "source_file": "data/source/programming/04-图论/P26-单源最短路.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "原始题库文件夹 04-图论（图论）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P27",
+      "type": "PROGRAMMING",
+      "title": "负权环判定",
+      "source_file": "data/source/programming/04-图论/P27-负权环判定.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "原始题库文件夹 04-图论（图论）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P28",
+      "type": "PROGRAMMING",
+      "title": "最小生成树",
+      "source_file": "data/source/programming/04-图论/P28-最小生成树.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "原始题库文件夹 04-图论（图论）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P29",
+      "type": "PROGRAMMING",
+      "title": "拓扑排序",
+      "source_file": "data/source/programming/04-图论/P29-拓扑排序.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "原始题库文件夹 04-图论（图论）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P30",
+      "type": "PROGRAMMING",
+      "title": "迷宫最短路",
+      "source_file": "data/source/programming/04-图论/P30-迷宫最短路.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "原始题库文件夹 04-图论（图论）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P31",
+      "type": "PROGRAMMING",
+      "title": "朋友圈",
+      "source_file": "data/source/programming/04-图论/P31-朋友圈.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "原始题库文件夹 04-图论（图论）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P32",
+      "type": "PROGRAMMING",
+      "title": "最近公共祖先",
+      "source_file": "data/source/programming/04-图论/P32-最近公共祖先.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "原始题库文件夹 04-图论（图论）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P33",
+      "type": "PROGRAMMING",
+      "title": "强连通分量",
+      "source_file": "data/source/programming/04-图论/P33-强连通分量.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "原始题库文件夹 04-图论（图论）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P34",
+      "type": "PROGRAMMING",
+      "title": "二分图判定",
+      "source_file": "data/source/programming/04-图论/P34-二分图判定.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "原始题库文件夹 04-图论（图论）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P35",
+      "type": "PROGRAMMING",
+      "title": "全排列",
+      "source_file": "data/source/programming/05-搜索与回溯/P35-全排列.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH05": 1.0
+      },
+      "basis": "原始题库文件夹 05-搜索与回溯（搜索与回溯）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P36",
+      "type": "PROGRAMMING",
+      "title": "N皇后",
+      "source_file": "data/source/programming/05-搜索与回溯/P36-N皇后.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH05": 1.0
+      },
+      "basis": "原始题库文件夹 05-搜索与回溯（搜索与回溯）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P37",
+      "type": "PROGRAMMING",
+      "title": "数独求解",
+      "source_file": "data/source/programming/05-搜索与回溯/P37-数独求解.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH05": 1.0
+      },
+      "basis": "原始题库文件夹 05-搜索与回溯（搜索与回溯）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P38",
+      "type": "PROGRAMMING",
+      "title": "图着色",
+      "source_file": "data/source/programming/05-搜索与回溯/P38-图着色.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH05": 1.0
+      },
+      "basis": "原始题库文件夹 05-搜索与回溯（搜索与回溯）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P39",
+      "type": "PROGRAMMING",
+      "title": "括号生成",
+      "source_file": "data/source/programming/05-搜索与回溯/P39-括号生成.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH05": 1.0
+      },
+      "basis": "原始题库文件夹 05-搜索与回溯（搜索与回溯）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P40",
+      "type": "PROGRAMMING",
+      "title": "单词搜索",
+      "source_file": "data/source/programming/05-搜索与回溯/P40-单词搜索.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH05": 1.0
+      },
+      "basis": "原始题库文件夹 05-搜索与回溯（搜索与回溯）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P41",
+      "type": "PROGRAMMING",
+      "title": "KMP 模式匹配",
+      "source_file": "data/source/programming/06-字符串/P41-KMP 模式匹配.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH06": 1.0
+      },
+      "basis": "原始题库文件夹 06-字符串（字符串）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P42",
+      "type": "PROGRAMMING",
+      "title": "最长回文子串",
+      "source_file": "data/source/programming/06-字符串/P42-最长回文子串.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH06": 1.0
+      },
+      "basis": "原始题库文件夹 06-字符串（字符串）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P43",
+      "type": "PROGRAMMING",
+      "title": "前缀统计",
+      "source_file": "data/source/programming/06-字符串/P43-前缀统计.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH06": 1.0
+      },
+      "basis": "原始题库文件夹 06-字符串（字符串）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P44",
+      "type": "PROGRAMMING",
+      "title": "最长无重复子串",
+      "source_file": "data/source/programming/06-字符串/P44-最长无重复子串.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH06": 1.0
+      },
+      "basis": "原始题库文件夹 06-字符串（字符串）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P45",
+      "type": "PROGRAMMING",
+      "title": "子串哈希查询",
+      "source_file": "data/source/programming/06-字符串/P45-子串哈希查询.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH06": 1.0
+      },
+      "basis": "原始题库文件夹 06-字符串（字符串）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P46",
+      "type": "PROGRAMMING",
+      "title": "最长公共前缀",
+      "source_file": "data/source/programming/06-字符串/P46-最长公共前缀.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH06": 1.0
+      },
+      "basis": "原始题库文件夹 06-字符串（字符串）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P47",
+      "type": "PROGRAMMING",
+      "title": "快速排序",
+      "source_file": "data/source/programming/07-排序与查找/P47-快速排序.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH07": 1.0
+      },
+      "basis": "原始题库文件夹 07-排序与查找（排序与查找）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P48",
+      "type": "PROGRAMMING",
+      "title": "第 k 小元素",
+      "source_file": "data/source/programming/07-排序与查找/P48-第 k 小元素.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH07": 1.0
+      },
+      "basis": "原始题库文件夹 07-排序与查找（排序与查找）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P49",
+      "type": "PROGRAMMING",
+      "title": "二分查找",
+      "source_file": "data/source/programming/07-排序与查找/P49-二分查找.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH07": 1.0
+      },
+      "basis": "原始题库文件夹 07-排序与查找（排序与查找）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P50",
+      "type": "PROGRAMMING",
+      "title": "滑动窗口最大值",
+      "source_file": "data/source/programming/07-排序与查找/P50-滑动窗口最大值.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH07": 1.0
+      },
+      "basis": "原始题库文件夹 07-排序与查找（排序与查找）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P51",
+      "type": "PROGRAMMING",
+      "title": "下一个更大元素",
+      "source_file": "data/source/programming/08-数据结构/P51-下一个更大元素.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH08": 1.0
+      },
+      "basis": "原始题库文件夹 08-数据结构（数据结构）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P52",
+      "type": "PROGRAMMING",
+      "title": "数据流中位数",
+      "source_file": "data/source/programming/08-数据结构/P52-数据流中位数.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH08": 1.0
+      },
+      "basis": "原始题库文件夹 08-数据结构（数据结构）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P53",
+      "type": "PROGRAMMING",
+      "title": "后缀表达式求值",
+      "source_file": "data/source/programming/08-数据结构/P53-后缀表达式求值.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH08": 1.0
+      },
+      "basis": "原始题库文件夹 08-数据结构（数据结构）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P54",
+      "type": "PROGRAMMING",
+      "title": "树状数组",
+      "source_file": "data/source/programming/08-数据结构/P54-树状数组.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH08": 1.0
+      },
+      "basis": "原始题库文件夹 08-数据结构（数据结构）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P55",
+      "type": "PROGRAMMING",
+      "title": "用两个栈实现队列",
+      "source_file": "data/source/programming/08-数据结构/P55-用两个栈实现队列.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH08": 1.0
+      },
+      "basis": "原始题库文件夹 08-数据结构（数据结构）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P56",
+      "type": "PROGRAMMING",
+      "title": "出现频率前 k 高的元素",
+      "source_file": "data/source/programming/08-数据结构/P56-出现频率前k高的元素.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH08": 1.0
+      },
+      "basis": "原始题库文件夹 08-数据结构（数据结构）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P57",
+      "type": "PROGRAMMING",
+      "title": "统计素数个数",
+      "source_file": "data/source/programming/09-数学与数论/P57-统计素数个数.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH09": 1.0
+      },
+      "basis": "原始题库文件夹 09-数学与数论（数学与数论）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P58",
+      "type": "PROGRAMMING",
+      "title": "扩展欧几里得",
+      "source_file": "data/source/programming/09-数学与数论/P58-扩展欧几里得.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH09": 1.0
+      },
+      "basis": "原始题库文件夹 09-数学与数论（数学与数论）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P59",
+      "type": "PROGRAMMING",
+      "title": "组合数取模",
+      "source_file": "data/source/programming/09-数学与数论/P59-组合数取模.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH09": 1.0
+      },
+      "basis": "原始题库文件夹 09-数学与数论（数学与数论）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P60",
+      "type": "PROGRAMMING",
+      "title": "高精度加法",
+      "source_file": "data/source/programming/09-数学与数论/P60-高精度加法.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH09": 1.0
+      },
+      "basis": "原始题库文件夹 09-数学与数论（数学与数论）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P61",
+      "type": "PROGRAMMING",
+      "title": "进制转换",
+      "source_file": "data/source/programming/09-数学与数论/P61-进制转换.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH09": 1.0
+      },
+      "basis": "原始题库文件夹 09-数学与数论（数学与数论）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P62",
+      "type": "PROGRAMMING",
+      "title": "质因数分解",
+      "source_file": "data/source/programming/09-数学与数论/P62-质因数分解.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH09": 1.0
+      },
+      "basis": "原始题库文件夹 09-数学与数论（数学与数论）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P63",
+      "type": "PROGRAMMING",
+      "title": "只出现一次的数字",
+      "source_file": "data/source/programming/10-位运算与杂项/P63-只出现一次的数字.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH10": 1.0
+      },
+      "basis": "原始题库文件夹 10-位运算与杂项（位运算与杂项）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P64",
+      "type": "PROGRAMMING",
+      "title": "二进制中 1 的个数",
+      "source_file": "data/source/programming/10-位运算与杂项/P64-二进制中 1 的个数.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH10": 1.0
+      },
+      "basis": "原始题库文件夹 10-位运算与杂项（位运算与杂项）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P65",
+      "type": "PROGRAMMING",
+      "title": "格雷码",
+      "source_file": "data/source/programming/10-位运算与杂项/P65-格雷码.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH10": 1.0
+      },
+      "basis": "原始题库文件夹 10-位运算与杂项（位运算与杂项）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P66",
+      "type": "PROGRAMMING",
+      "title": "数字范围按位与",
+      "source_file": "data/source/programming/10-位运算与杂项/P66-数字范围按位与.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH10": 1.0
+      },
+      "basis": "原始题库文件夹 10-位运算与杂项（位运算与杂项）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P67",
+      "type": "PROGRAMMING",
+      "title": "螺旋矩阵",
+      "source_file": "data/source/programming/11-数组与模拟/P67-螺旋矩阵.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH11": 1.0
+      },
+      "basis": "原始题库文件夹 11-数组与模拟（数组与模拟）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P68",
+      "type": "PROGRAMMING",
+      "title": "矩阵旋转",
+      "source_file": "data/source/programming/11-数组与模拟/P68-矩阵旋转.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH11": 1.0
+      },
+      "basis": "原始题库文件夹 11-数组与模拟（数组与模拟）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P69",
+      "type": "PROGRAMMING",
+      "title": "和为 k 的子数组个数",
+      "source_file": "data/source/programming/11-数组与模拟/P69-和为 k 的子数组个数.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH11": 1.0
+      },
+      "basis": "原始题库文件夹 11-数组与模拟（数组与模拟）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "CODE-P70",
+      "type": "PROGRAMMING",
+      "title": "差分数组",
+      "source_file": "data/source/programming/11-数组与模拟/P70-差分数组.md",
+      "source_anchor": null,
+      "chapter_weights": {
+        "CH11": 1.0
+      },
+      "basis": "原始题库文件夹 11-数组与模拟（数组与模拟）；按文件夹归属，单章节权重 1.0。",
+      "review_status": "明确",
+      "note": "不因多知识点标签重复计入其他章节；细粒度标签保留在原始题目数据中。"
+    },
+    {
+      "code": "SUB-A01",
+      "type": "ALGORITHM_ANALYSIS",
+      "title": "调和型循环的精确计数",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "A01",
+      "chapter_weights": {},
+      "basis": "题干要求调和级数的精确计数、求和式与紧确界；属于复杂度分析，不是11个算法设计章节之一。",
+      "review_status": "需人工复核",
+      "note": "不强行归入数学章节；若课程要覆盖复杂度分析，应另设轴，不擅自新增。"
+    },
+    {
+      "code": "SUB-A02",
+      "type": "ALGORITHM_ANALYSIS",
+      "title": "含对数合并代价的递归式",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "A02",
+      "chapter_weights": {
+        "CH02": 1.0
+      },
+      "basis": "题干要求用递归树/主定理分析 T(n)=2T(n/2)+n log n 的分治递归式。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-A03",
+      "type": "ALGORITHM_ANALYSIS",
+      "title": "有序数组中的左边界查找",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "A03",
+      "chapter_weights": {
+        "CH07": 1.0
+      },
+      "basis": "题干要求有序数组左边界二分查找，说明区间语义与终止条件。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-A04",
+      "type": "ALGORITHM_ANALYSIS",
+      "title": "用归并统计逆序对",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "A04",
+      "chapter_weights": {
+        "CH02": 1.0
+      },
+      "basis": "题干要求用归并统计跨左右子区间的逆序对；核心是分治计数，归并排序是实现手段。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-A05",
+      "type": "ALGORITHM_ANALYSIS",
+      "title": "随机选择第 k 小元素",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "A05",
+      "chapter_weights": {
+        "CH07": 1.0
+      },
+      "basis": "题干要求随机选择第 k 小/三路划分，属于顺序统计与选择问题。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-A06",
+      "type": "ALGORITHM_ANALYSIS",
+      "title": "最大连续子数组的两种设计",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "A06",
+      "chapter_weights": {
+        "CH02": 0.5,
+        "CH03": 0.5
+      },
+      "basis": "题干明确要求先给分治跨中点方案，再给线性 DP，并比较复杂度；两种设计都是考查对象。",
+      "review_status": "建议复核",
+      "note": "跨章：分治 + 动态规划；权重按题干要求的两种设计均分。"
+    },
+    {
+      "code": "SUB-A07",
+      "type": "ALGORITHM_ANALYSIS",
+      "title": "最多兼容活动的选择",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "A07",
+      "chapter_weights": {
+        "CH01": 1.0
+      },
+      "basis": "题干要求最多兼容活动选择、交换论证与反例；核心是贪心区间调度。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-A08",
+      "type": "ALGORITHM_ANALYSIS",
+      "title": "哈夫曼编码的总代价",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "A08",
+      "chapter_weights": {
+        "CH01": 1.0
+      },
+      "basis": "题干要求构造哈夫曼最优前缀码并证明反复合并最小权值的最优性；最小堆只是实现。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-A09",
+      "type": "ALGORITHM_ANALYSIS",
+      "title": "零一背包的一维状态压缩",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "A09",
+      "chapter_weights": {
+        "CH03": 1.0
+      },
+      "basis": "题干要求零一背包一维状态压缩、倒序更新理由与伪多项式复杂度；核心是动态规划。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-A10",
+      "type": "ALGORITHM_ANALYSIS",
+      "title": "最长公共子序列的状态设计",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "A10",
+      "chapter_weights": {
+        "CH03": 1.0
+      },
+      "basis": "题干要求 LCS 状态设计、恢复与空间优化；字符串是数据形态，核心是 DP。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-A11",
+      "type": "ALGORITHM_ANALYSIS",
+      "title": "带收益的兼容任务选择",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "A11",
+      "chapter_weights": {
+        "CH03": 1.0
+      },
+      "basis": "题干要求带收益区间调度的兼容前驱/递推；最早结束贪心只作为反例，不是主要设计。",
+      "review_status": "建议复核",
+      "note": "若课程更重视贪心反例，可考虑 0.8 DP + 0.2 贪心；当前按核心设计归 DP。"
+    },
+    {
+      "code": "SUB-A12",
+      "type": "ALGORITHM_ANALYSIS",
+      "title": "矩阵链相乘的区间动态规划",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "A12",
+      "chapter_weights": {
+        "CH03": 1.0
+      },
+      "basis": "题干要求矩阵链相乘的区间 DP、切分状态与最优值。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-A13",
+      "type": "ALGORITHM_ANALYSIS",
+      "title": "非负权图上的优先队列最短路",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "A13",
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "题干要求非负权图 Dijkstra、堆中过期条目与不可达；核心是图最短路。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-A14",
+      "type": "ALGORITHM_ANALYSIS",
+      "title": "依赖任务的最早完工时间",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "A14",
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "题干要求 DAG 依赖任务最早完工、拓扑排序与循环检测。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-A15",
+      "type": "ALGORITHM_ANALYSIS",
+      "title": "最小生成树与并查集",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "A15",
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "题干要求 Kruskal 最小生成树、并查集避环与不连通报告；核心是图算法。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-A16",
+      "type": "ALGORITHM_ANALYSIS",
+      "title": "增广路最大流的执行与分析",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "A16",
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "题干要求 Edmonds–Karp 最大流、最小割证书与复杂度；核心是网络流。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-A17",
+      "type": "ALGORITHM_ANALYSIS",
+      "title": "倍增动态数组的摊还成本",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "A17",
+      "chapter_weights": {
+        "CH08": 1.0
+      },
+      "basis": "题干分析动态数组倍增扩容的聚合/势能摊还成本；对象是数据结构，核心是摊还分析。",
+      "review_status": "建议复核",
+      "note": "若课程把摊还分析单列，应改挂该轴；当前归数据结构。"
+    },
+    {
+      "code": "SUB-A18",
+      "type": "ALGORITHM_ANALYSIS",
+      "title": "拉链哈希的期望与最坏界",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "A18",
+      "chapter_weights": {
+        "CH08": 1.0
+      },
+      "basis": "题干分析拉链哈希的期望/最坏查询成本、装载因子与扩容；对象是哈希表数据结构。",
+      "review_status": "建议复核",
+      "note": "分析色彩强，但数据结构归属明确。"
+    },
+    {
+      "code": "SUB-A19",
+      "type": "ALGORITHM_ANALYSIS",
+      "title": "KMP 中的前缀信息复用",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "A19",
+      "chapter_weights": {
+        "CH06": 1.0
+      },
+      "basis": "题干要求 KMP 前缀函数、失配复用与线性分析；核心是字符串匹配。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-A20",
+      "type": "ALGORITHM_ANALYSIS",
+      "title": "子集和的回溯与界限剪枝",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "A20",
+      "chapter_weights": {
+        "CH05": 1.0
+      },
+      "basis": "题干要求子集和回溯、当前和/剩余和剪枝与负数限制；核心是搜索与回溯。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-O01",
+      "type": "OPEN_QUESTION",
+      "title": "为多种路网条件选择最短路算法",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "O01",
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "题干要求按非负权/负权/DAG/动态更新选择最短路算法；核心是图算法选型。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-O02",
+      "type": "OPEN_QUESTION",
+      "title": "带优先级的任务调度与贪心边界",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "O02",
+      "chapter_weights": {
+        "CH03": 0.7,
+        "CH01": 0.3
+      },
+      "basis": "题干要求带收益任务调度的基础算法、贪心失败例与公平约束状态；核心是 DP，贪心边界是明确考查点。",
+      "review_status": "建议复核",
+      "note": "跨章：0.7 DP + 0.3 贪心；权重为分析归因，不是测量校准。"
+    },
+    {
+      "code": "SUB-O03",
+      "type": "OPEN_QUESTION",
+      "title": "公平比较两种排序算法",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "O03",
+      "chapter_weights": {
+        "CH07": 1.0
+      },
+      "basis": "题干要求公平比较随机快速排序与归并排序的实验设计；核心是排序算法实验。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-O04",
+      "type": "OPEN_QUESTION",
+      "title": "有限内存下的日志排序与前 K 大值",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "O04",
+      "chapter_weights": {
+        "CH07": 0.6,
+        "CH08": 0.4
+      },
+      "basis": "题干任务一外部归并排序，任务二流式堆/前 K；两个任务分别对应排序与数据结构。",
+      "review_status": "建议复核",
+      "note": "跨章：0.6 排序 + 0.4 数据结构；权重为分析归因。"
+    },
+    {
+      "code": "SUB-O05",
+      "type": "OPEN_QUESTION",
+      "title": "匿名互评的公平分配模型",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "O05",
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "题干要求匿名互评的可行性分配、任务量公平与历史组合；核心是二分图/容量流模型。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-O06",
+      "type": "OPEN_QUESTION",
+      "title": "评分聚合与异常处理的取舍",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "O06",
+      "chapter_weights": {},
+      "basis": "题干比较均值/截尾均值/中位数与异常处置；属于统计聚合与评审公平，不是11个算法设计章节。",
+      "review_status": "不纳入雷达",
+      "note": "非算法章节；不强行归入数据结构或数学。"
+    },
+    {
+      "code": "SUB-O07",
+      "type": "OPEN_QUESTION",
+      "title": "代码相似性检测的分层方案",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "O07",
+      "chapter_weights": {
+        "CH06": 1.0
+      },
+      "basis": "题干要求代码指纹、候选检索与精细比较；核心是字符串指纹/相似性。",
+      "review_status": "建议复核",
+      "note": "也可涉及哈希/数据结构；按字符串主题归。"
+    },
+    {
+      "code": "SUB-O08",
+      "type": "OPEN_QUESTION",
+      "title": "配送巡回的精确与近似设计",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "O08",
+      "chapter_weights": {
+        "CH03": 0.5,
+        "CH04": 0.5
+      },
+      "basis": "题干 n≤18 精确 TSP 用状态压缩 DP，n=500 用 MST 二近似；两种设计分别对应 DP 与图论。",
+      "review_status": "建议复核",
+      "note": "跨章：0.5 DP + 0.5 图论；权重为分析归因。"
+    },
+    {
+      "code": "SUB-O09",
+      "type": "OPEN_QUESTION",
+      "title": "从课程数据估计难度与掌握情况",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "O09",
+      "chapter_weights": {},
+      "basis": "题干设计通过率/经验难度/知识点掌握指标与缺失处理；属于学习分析，不是11个算法设计章节。",
+      "review_status": "不纳入雷达",
+      "note": "非算法章节；不强行归入统计或数据结构。"
+    },
+    {
+      "code": "SUB-O10",
+      "type": "OPEN_QUESTION",
+      "title": "可信自动评测与复杂度实验",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "O10",
+      "chapter_weights": {},
+      "basis": "题干设计自动评测隔离/判定/恢复与复杂度实验；属于评测系统与实验方法，不是11个算法设计章节。",
+      "review_status": "不纳入雷达",
+      "note": "非算法章节；不强行归入图论或字符串。"
+    },
+    {
+      "code": "SUB-P01",
+      "type": "PROOF",
+      "title": "左边界二分查找的循环不变式",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "P01",
+      "chapter_weights": {
+        "CH07": 1.0
+      },
+      "basis": "题干用循环不变式证明左边界二分查找；核心是查找算法正确性。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-P02",
+      "type": "PROOF",
+      "title": "归并排序的正确性与稳定性",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "P02",
+      "chapter_weights": {
+        "CH07": 1.0
+      },
+      "basis": "题干证明归并排序的正确性与稳定性；核心是排序算法。",
+      "review_status": "建议复核",
+      "note": "归并排序也可归分治；按“排序算法”主题归 CH07，保留复核。"
+    },
+    {
+      "code": "SUB-P03",
+      "type": "PROOF",
+      "title": "比较排序的最坏下界",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "P03",
+      "chapter_weights": {
+        "CH07": 1.0
+      },
+      "basis": "题干证明比较排序的最坏 Ω(n log n) 下界与比较模型边界。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-P04",
+      "type": "PROOF",
+      "title": "五元组中位数选择的最坏线性界",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "P04",
+      "chapter_weights": {
+        "CH07": 1.0
+      },
+      "basis": "题干证明五元组中位数选择的最坏线性界；核心是选择/顺序统计。",
+      "review_status": "建议复核",
+      "note": "算法本身是分治，但问题主题是选择；按 CH07 归。"
+    },
+    {
+      "code": "SUB-P05",
+      "type": "PROOF",
+      "title": "最早结束活动的交换论证",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "P05",
+      "chapter_weights": {
+        "CH01": 1.0
+      },
+      "basis": "题干用交换论证证明最早结束活动贪心的最优性。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-P06",
+      "type": "PROOF",
+      "title": "哈夫曼合并规则的最优性",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "P06",
+      "chapter_weights": {
+        "CH01": 1.0
+      },
+      "basis": "题干证明哈夫曼最小频数合并规则的最优性。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-P07",
+      "type": "PROOF",
+      "title": "分数背包的密度贪心与适用边界",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "P07",
+      "chapter_weights": {
+        "CH01": 1.0
+      },
+      "basis": "题干证明分数背包按价值密度贪心的最优性，并给出零一背包反例。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-P08",
+      "type": "PROOF",
+      "title": "Dijkstra 定点步骤为何需要非负权",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "P08",
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "题干证明 Dijkstra 定点步骤依赖非负权，并构造负边反例。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-P09",
+      "type": "PROOF",
+      "title": "最小生成树的割安全性",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "P09",
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "题干证明最小生成树割安全性。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-P10",
+      "type": "PROOF",
+      "title": "最小生成树的环排除性质",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "P10",
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "题干证明最小生成树环排除性质与平权弱结论。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-P11",
+      "type": "PROOF",
+      "title": "BFS 的层次就是最少边数距离",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "P11",
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "题干证明 BFS 层次距离与一次访问性质。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-P12",
+      "type": "PROOF",
+      "title": "拓扑序存在当且仅当图无环",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "P12",
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "题干证明拓扑序存在当且仅当图无环。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-P13",
+      "type": "PROOF",
+      "title": "零一背包倒序更新的不变式",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "P13",
+      "chapter_weights": {
+        "CH03": 1.0
+      },
+      "basis": "题干证明零一背包一维倒序更新的不变式与正序反例。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-P14",
+      "type": "PROOF",
+      "title": "最长公共子序列递推的完备性",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "P14",
+      "chapter_weights": {
+        "CH03": 1.0
+      },
+      "basis": "题干证明 LCS 递推的完备性与边界。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-P15",
+      "type": "PROOF",
+      "title": "无增广路与最大流最小割",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "P15",
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "题干证明最大流、无增广路、最小割三者等价。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-P16",
+      "type": "PROOF",
+      "title": "一对一互评分配的 Hall 条件",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "P16",
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "题干证明互评分配模型的 Hall 条件；核心是二分图匹配。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-P17",
+      "type": "PROOF",
+      "title": "多次弹栈的势能分析",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "P17",
+      "chapter_weights": {
+        "CH08": 1.0
+      },
+      "basis": "题干证明栈 MULTIPOP 的势能摊还成本；对象是栈数据结构。",
+      "review_status": "建议复核",
+      "note": "摊还分析色彩强；当前归数据结构。"
+    },
+    {
+      "code": "SUB-P18",
+      "type": "PROOF",
+      "title": "随机快速排序的期望比较次数",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "P18",
+      "chapter_weights": {
+        "CH07": 1.0
+      },
+      "basis": "题干证明随机快速排序的期望比较次数与最坏时间。",
+      "review_status": "明确",
+      "note": ""
+    },
+    {
+      "code": "SUB-P19",
+      "type": "PROOF",
+      "title": "用独立集归约证明顶点覆盖 NP 完全",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "P19",
+      "chapter_weights": {},
+      "basis": "题干要求独立集到顶点覆盖的 NP 完全性归约；核心是复杂性理论，不是图论算法设计。",
+      "review_status": "需人工复核",
+      "note": "不强行归入图论；若课程要覆盖复杂性理论，应另设轴。"
+    },
+    {
+      "code": "SUB-P20",
+      "type": "PROOF",
+      "title": "极大匹配给出二近似顶点覆盖",
+      "source_file": "data/source/subjective-50.docx",
+      "source_anchor": "P20",
+      "chapter_weights": {
+        "CH04": 1.0
+      },
+      "basis": "题干要求极大匹配给出顶点覆盖二近似；是图上的近似算法。",
+      "review_status": "建议复核",
+      "note": "近似算法不属于11章的标准设计范式，按图论主题归。"
+    }
+  ],
+  "coverage": {
+    "chapters": [
+      {
+        "order": 1,
+        "code": "CH01",
+        "name": "贪心算法",
+        "source_folder": "01-贪心算法",
+        "programming_questions": 9,
+        "subjective_questions": 6,
+        "distinct_questions": 15,
+        "weight_total": 14.3,
+        "programming_codes": [
+          "CODE-P01",
+          "CODE-P02",
+          "CODE-P03",
+          "CODE-P04",
+          "CODE-P05",
+          "CODE-P06",
+          "CODE-P07",
+          "CODE-P08",
+          "CODE-P09"
+        ],
+        "subjective_codes": [
+          "SUB-A07",
+          "SUB-A08",
+          "SUB-O02",
+          "SUB-P05",
+          "SUB-P06",
+          "SUB-P07"
+        ]
+      },
+      {
+        "order": 2,
+        "code": "CH02",
+        "name": "分治算法",
+        "source_folder": "02-分治算法",
+        "programming_questions": 6,
+        "subjective_questions": 3,
+        "distinct_questions": 9,
+        "weight_total": 8.5,
+        "programming_codes": [
+          "CODE-P10",
+          "CODE-P11",
+          "CODE-P12",
+          "CODE-P13",
+          "CODE-P14",
+          "CODE-P15"
+        ],
+        "subjective_codes": [
+          "SUB-A02",
+          "SUB-A04",
+          "SUB-A06"
+        ]
+      },
+      {
+        "order": 3,
+        "code": "CH03",
+        "name": "动态规划",
+        "source_folder": "03-动态规划",
+        "programming_questions": 10,
+        "subjective_questions": 9,
+        "distinct_questions": 19,
+        "weight_total": 17.7,
+        "programming_codes": [
+          "CODE-P16",
+          "CODE-P17",
+          "CODE-P18",
+          "CODE-P19",
+          "CODE-P20",
+          "CODE-P21",
+          "CODE-P22",
+          "CODE-P23",
+          "CODE-P24",
+          "CODE-P25"
+        ],
+        "subjective_codes": [
+          "SUB-A06",
+          "SUB-A09",
+          "SUB-A10",
+          "SUB-A11",
+          "SUB-A12",
+          "SUB-O02",
+          "SUB-O08",
+          "SUB-P13",
+          "SUB-P14"
+        ]
+      },
+      {
+        "order": 4,
+        "code": "CH04",
+        "name": "图论",
+        "source_folder": "04-图论",
+        "programming_questions": 9,
+        "subjective_questions": 15,
+        "distinct_questions": 24,
+        "weight_total": 23.5,
+        "programming_codes": [
+          "CODE-P26",
+          "CODE-P27",
+          "CODE-P28",
+          "CODE-P29",
+          "CODE-P30",
+          "CODE-P31",
+          "CODE-P32",
+          "CODE-P33",
+          "CODE-P34"
+        ],
+        "subjective_codes": [
+          "SUB-A13",
+          "SUB-A14",
+          "SUB-A15",
+          "SUB-A16",
+          "SUB-O01",
+          "SUB-O05",
+          "SUB-O08",
+          "SUB-P08",
+          "SUB-P09",
+          "SUB-P10",
+          "SUB-P11",
+          "SUB-P12",
+          "SUB-P15",
+          "SUB-P16",
+          "SUB-P20"
+        ]
+      },
+      {
+        "order": 5,
+        "code": "CH05",
+        "name": "搜索与回溯",
+        "source_folder": "05-搜索与回溯",
+        "programming_questions": 6,
+        "subjective_questions": 1,
+        "distinct_questions": 7,
+        "weight_total": 7.0,
+        "programming_codes": [
+          "CODE-P35",
+          "CODE-P36",
+          "CODE-P37",
+          "CODE-P38",
+          "CODE-P39",
+          "CODE-P40"
+        ],
+        "subjective_codes": [
+          "SUB-A20"
+        ]
+      },
+      {
+        "order": 6,
+        "code": "CH06",
+        "name": "字符串",
+        "source_folder": "06-字符串",
+        "programming_questions": 6,
+        "subjective_questions": 2,
+        "distinct_questions": 8,
+        "weight_total": 8.0,
+        "programming_codes": [
+          "CODE-P41",
+          "CODE-P42",
+          "CODE-P43",
+          "CODE-P44",
+          "CODE-P45",
+          "CODE-P46"
+        ],
+        "subjective_codes": [
+          "SUB-A19",
+          "SUB-O07"
+        ]
+      },
+      {
+        "order": 7,
+        "code": "CH07",
+        "name": "排序与查找",
+        "source_folder": "07-排序与查找",
+        "programming_questions": 4,
+        "subjective_questions": 9,
+        "distinct_questions": 13,
+        "weight_total": 12.6,
+        "programming_codes": [
+          "CODE-P47",
+          "CODE-P48",
+          "CODE-P49",
+          "CODE-P50"
+        ],
+        "subjective_codes": [
+          "SUB-A03",
+          "SUB-A05",
+          "SUB-O03",
+          "SUB-O04",
+          "SUB-P01",
+          "SUB-P02",
+          "SUB-P03",
+          "SUB-P04",
+          "SUB-P18"
+        ]
+      },
+      {
+        "order": 8,
+        "code": "CH08",
+        "name": "数据结构",
+        "source_folder": "08-数据结构",
+        "programming_questions": 6,
+        "subjective_questions": 4,
+        "distinct_questions": 10,
+        "weight_total": 9.4,
+        "programming_codes": [
+          "CODE-P51",
+          "CODE-P52",
+          "CODE-P53",
+          "CODE-P54",
+          "CODE-P55",
+          "CODE-P56"
+        ],
+        "subjective_codes": [
+          "SUB-A17",
+          "SUB-A18",
+          "SUB-O04",
+          "SUB-P17"
+        ]
+      },
+      {
+        "order": 9,
+        "code": "CH09",
+        "name": "数学与数论",
+        "source_folder": "09-数学与数论",
+        "programming_questions": 6,
+        "subjective_questions": 0,
+        "distinct_questions": 6,
+        "weight_total": 6.0,
+        "programming_codes": [
+          "CODE-P57",
+          "CODE-P58",
+          "CODE-P59",
+          "CODE-P60",
+          "CODE-P61",
+          "CODE-P62"
+        ],
+        "subjective_codes": []
+      },
+      {
+        "order": 10,
+        "code": "CH10",
+        "name": "位运算与杂项",
+        "source_folder": "10-位运算与杂项",
+        "programming_questions": 4,
+        "subjective_questions": 0,
+        "distinct_questions": 4,
+        "weight_total": 4.0,
+        "programming_codes": [
+          "CODE-P63",
+          "CODE-P64",
+          "CODE-P65",
+          "CODE-P66"
+        ],
+        "subjective_codes": []
+      },
+      {
+        "order": 11,
+        "code": "CH11",
+        "name": "数组与模拟",
+        "source_folder": "11-数组与模拟",
+        "programming_questions": 4,
+        "subjective_questions": 0,
+        "distinct_questions": 4,
+        "weight_total": 4.0,
+        "programming_codes": [
+          "CODE-P67",
+          "CODE-P68",
+          "CODE-P69",
+          "CODE-P70"
+        ],
+        "subjective_codes": []
+      }
+    ],
+    "cross_chapter": [
+      {
+        "code": "SUB-A06",
+        "title": "最大连续子数组的两种设计",
+        "weights": {
+          "CH02": 0.5,
+          "CH03": 0.5
+        },
+        "basis": "题干明确要求先给分治跨中点方案，再给线性 DP，并比较复杂度；两种设计都是考查对象。"
+      },
+      {
+        "code": "SUB-O02",
+        "title": "带优先级的任务调度与贪心边界",
+        "weights": {
+          "CH03": 0.7,
+          "CH01": 0.3
+        },
+        "basis": "题干要求带收益任务调度的基础算法、贪心失败例与公平约束状态；核心是 DP，贪心边界是明确考查点。"
+      },
+      {
+        "code": "SUB-O04",
+        "title": "有限内存下的日志排序与前 K 大值",
+        "weights": {
+          "CH07": 0.6,
+          "CH08": 0.4
+        },
+        "basis": "题干任务一外部归并排序，任务二流式堆/前 K；两个任务分别对应排序与数据结构。"
+      },
+      {
+        "code": "SUB-O08",
+        "title": "配送巡回的精确与近似设计",
+        "weights": {
+          "CH03": 0.5,
+          "CH04": 0.5
+        },
+        "basis": "题干 n≤18 精确 TSP 用状态压缩 DP，n=500 用 MST 二近似；两种设计分别对应 DP 与图论。"
+      }
+    ],
+    "unmapped": [
+      {
+        "code": "SUB-A01",
+        "title": "调和型循环的精确计数",
+        "type": "ALGORITHM_ANALYSIS",
+        "reason": "题干要求调和级数的精确计数、求和式与紧确界；属于复杂度分析，不是11个算法设计章节之一。",
+        "review_status": "需人工复核"
+      },
+      {
+        "code": "SUB-O06",
+        "title": "评分聚合与异常处理的取舍",
+        "type": "OPEN_QUESTION",
+        "reason": "题干比较均值/截尾均值/中位数与异常处置；属于统计聚合与评审公平，不是11个算法设计章节。",
+        "review_status": "不纳入雷达"
+      },
+      {
+        "code": "SUB-O09",
+        "title": "从课程数据估计难度与掌握情况",
+        "type": "OPEN_QUESTION",
+        "reason": "题干设计通过率/经验难度/知识点掌握指标与缺失处理；属于学习分析，不是11个算法设计章节。",
+        "review_status": "不纳入雷达"
+      },
+      {
+        "code": "SUB-O10",
+        "title": "可信自动评测与复杂度实验",
+        "type": "OPEN_QUESTION",
+        "reason": "题干设计自动评测隔离/判定/恢复与复杂度实验；属于评测系统与实验方法，不是11个算法设计章节。",
+        "review_status": "不纳入雷达"
+      },
+      {
+        "code": "SUB-P19",
+        "title": "用独立集归约证明顶点覆盖 NP 完全",
+        "type": "PROOF",
+        "reason": "题干要求独立集到顶点覆盖的 NP 完全性归约；核心是复杂性理论，不是图论算法设计。",
+        "review_status": "需人工复核"
+      }
+    ],
+    "review": [
+      {
+        "code": "SUB-A01",
+        "title": "调和型循环的精确计数",
+        "weights": {},
+        "review_status": "需人工复核",
+        "note": "不强行归入数学章节；若课程要覆盖复杂度分析，应另设轴，不擅自新增。"
+      },
+      {
+        "code": "SUB-A06",
+        "title": "最大连续子数组的两种设计",
+        "weights": {
+          "CH02": 0.5,
+          "CH03": 0.5
+        },
+        "review_status": "建议复核",
+        "note": "跨章：分治 + 动态规划；权重按题干要求的两种设计均分。"
+      },
+      {
+        "code": "SUB-A11",
+        "title": "带收益的兼容任务选择",
+        "weights": {
+          "CH03": 1.0
+        },
+        "review_status": "建议复核",
+        "note": "若课程更重视贪心反例，可考虑 0.8 DP + 0.2 贪心；当前按核心设计归 DP。"
+      },
+      {
+        "code": "SUB-A17",
+        "title": "倍增动态数组的摊还成本",
+        "weights": {
+          "CH08": 1.0
+        },
+        "review_status": "建议复核",
+        "note": "若课程把摊还分析单列，应改挂该轴；当前归数据结构。"
+      },
+      {
+        "code": "SUB-A18",
+        "title": "拉链哈希的期望与最坏界",
+        "weights": {
+          "CH08": 1.0
+        },
+        "review_status": "建议复核",
+        "note": "分析色彩强，但数据结构归属明确。"
+      },
+      {
+        "code": "SUB-O02",
+        "title": "带优先级的任务调度与贪心边界",
+        "weights": {
+          "CH03": 0.7,
+          "CH01": 0.3
+        },
+        "review_status": "建议复核",
+        "note": "跨章：0.7 DP + 0.3 贪心；权重为分析归因，不是测量校准。"
+      },
+      {
+        "code": "SUB-O04",
+        "title": "有限内存下的日志排序与前 K 大值",
+        "weights": {
+          "CH07": 0.6,
+          "CH08": 0.4
+        },
+        "review_status": "建议复核",
+        "note": "跨章：0.6 排序 + 0.4 数据结构；权重为分析归因。"
+      },
+      {
+        "code": "SUB-O06",
+        "title": "评分聚合与异常处理的取舍",
+        "weights": {},
+        "review_status": "不纳入雷达",
+        "note": "非算法章节；不强行归入数据结构或数学。"
+      },
+      {
+        "code": "SUB-O07",
+        "title": "代码相似性检测的分层方案",
+        "weights": {
+          "CH06": 1.0
+        },
+        "review_status": "建议复核",
+        "note": "也可涉及哈希/数据结构；按字符串主题归。"
+      },
+      {
+        "code": "SUB-O08",
+        "title": "配送巡回的精确与近似设计",
+        "weights": {
+          "CH03": 0.5,
+          "CH04": 0.5
+        },
+        "review_status": "建议复核",
+        "note": "跨章：0.5 DP + 0.5 图论；权重为分析归因。"
+      },
+      {
+        "code": "SUB-O09",
+        "title": "从课程数据估计难度与掌握情况",
+        "weights": {},
+        "review_status": "不纳入雷达",
+        "note": "非算法章节；不强行归入统计或数据结构。"
+      },
+      {
+        "code": "SUB-O10",
+        "title": "可信自动评测与复杂度实验",
+        "weights": {},
+        "review_status": "不纳入雷达",
+        "note": "非算法章节；不强行归入图论或字符串。"
+      },
+      {
+        "code": "SUB-P02",
+        "title": "归并排序的正确性与稳定性",
+        "weights": {
+          "CH07": 1.0
+        },
+        "review_status": "建议复核",
+        "note": "归并排序也可归分治；按“排序算法”主题归 CH07，保留复核。"
+      },
+      {
+        "code": "SUB-P04",
+        "title": "五元组中位数选择的最坏线性界",
+        "weights": {
+          "CH07": 1.0
+        },
+        "review_status": "建议复核",
+        "note": "算法本身是分治，但问题主题是选择；按 CH07 归。"
+      },
+      {
+        "code": "SUB-P17",
+        "title": "多次弹栈的势能分析",
+        "weights": {
+          "CH08": 1.0
+        },
+        "review_status": "建议复核",
+        "note": "摊还分析色彩强；当前归数据结构。"
+      },
+      {
+        "code": "SUB-P19",
+        "title": "用独立集归约证明顶点覆盖 NP 完全",
+        "weights": {},
+        "review_status": "需人工复核",
+        "note": "不强行归入图论；若课程要覆盖复杂性理论，应另设轴。"
+      },
+      {
+        "code": "SUB-P20",
+        "title": "极大匹配给出二近似顶点覆盖",
+        "weights": {
+          "CH04": 1.0
+        },
+        "review_status": "建议复核",
+        "note": "近似算法不属于11章的标准设计范式，按图论主题归。"
+      }
+    ]
+  },
+  "validation": {
+    "total_questions": 120,
+    "programming_questions": 70,
+    "subjective_questions": 50,
+    "unique_codes": 120,
+    "mapped_questions": 115,
+    "unmapped_questions": 5,
+    "cross_chapter_questions": 4,
+    "review_questions": 17,
+    "total_attribution_weight": 115.0,
+    "chapter_weight_total": 115.0,
+    "chapter_distinct_total": 119,
+    "all_codes_unique": true,
+    "all_weights_positive_and_sum_1": true,
+    "programming_folders_match_original": true
+  }
+}

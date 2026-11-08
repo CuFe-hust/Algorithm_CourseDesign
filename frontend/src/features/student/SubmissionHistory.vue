@@ -4,7 +4,12 @@ import { useRoute } from "vue-router";
 import { History } from "@lucide/vue";
 import { errorText } from "../../shared/api";
 import * as api from "./api";
-import type { AssignmentSummary, HistoryEntry } from "./types";
+import { formatDateTime } from "./format";
+import type {
+  AssignmentSummary,
+  ComplexityResponse,
+  HistoryEntry,
+} from "./types";
 
 const route = useRoute();
 const courseId = computed(() => String(route.params.courseId));
@@ -27,6 +32,69 @@ const items = computed(() => {
 });
 const pages = computed(() => Math.max(1, Math.ceil(total.value / limit)));
 
+/**
+ * Complexity verdict per submission, fetched only for rows that are really
+ * accepted. The list stays readable without it: a missing entry simply renders
+ * no badge, it never guesses a class.
+ */
+const complexity = ref<Record<string, ComplexityResponse>>({});
+const COMPLEXITY_BATCH = 8;
+
+function analysable(entry: HistoryEntry) {
+  const summary = entry.summary;
+  return Boolean(
+    entry.status === "SUBMITTED" &&
+    summary &&
+    summary.verdict === "ACCEPTED" &&
+    !summary.is_mock &&
+    summary.total_cases !== null &&
+    summary.passed_cases === summary.total_cases,
+  );
+}
+
+async function loadComplexity(entries: HistoryEntry[]) {
+  const targets = entries
+    .filter(analysable)
+    .map((entry) => entry.submission_id);
+  for (let index = 0; index < targets.length; index += COMPLEXITY_BATCH) {
+    const chunk = targets.slice(index, index + COMPLEXITY_BATCH);
+    const results = await Promise.all(
+      chunk.map((id) =>
+        api
+          .getComplexity(id)
+          .then((value) => [id, value] as const)
+          .catch(() => null),
+      ),
+    );
+    const next = { ...complexity.value };
+    for (const row of results) if (row) next[row[0]] = row[1];
+    complexity.value = next;
+  }
+}
+
+/**
+ * Short complexity hint for a history row.
+ *
+ * The backend omits ``report`` entirely while a report is PENDING/RUNNING and
+ * writes empty class objects for a report that could not measure, so the label
+ * is derived from the response ``status`` first. Interpolating a missing class
+ * produced "时间 undefined · 空间 undefined" in review.
+ */
+function complexityLabel(entry: HistoryEntry): string {
+  const response = complexity.value[entry.submission_id];
+  if (!response || response.status === "NONE") return "";
+  if (response.status === "PENDING" || response.status === "RUNNING")
+    return "分析中";
+  if (response.status === "FAILED") return "分析失败";
+  if (response.status === "INELIGIBLE") return "无法分析";
+  if (response.status === "NOT_MEASURABLE") return "无法给出结论";
+  const timeClass = response.report?.time?.class;
+  if (!timeClass || timeClass === "UNKNOWN") return "";
+  const spaceClass = response.report?.space?.class;
+  if (!spaceClass || spaceClass === "UNKNOWN") return `时间 ${timeClass}`;
+  return `时间 ${timeClass} · 空间 ${spaceClass}`;
+}
+
 async function load() {
   loading.value = true;
   error.value = "";
@@ -41,6 +109,7 @@ async function load() {
     });
     entries.value = page.items;
     total.value = page.total;
+    void loadComplexity(page.items);
   } catch (e) {
     error.value = errorText(e);
   } finally {
@@ -161,12 +230,18 @@ onMounted(async () => {
             <td>v{{ entry.version_no }}</td>
             <td>{{ entry.language || "主观题" }}</td>
             <td class="nowrap">
-              {{ new Date(entry.submitted_at).toLocaleString() }}
+              {{ formatDateTime(entry.submitted_at) }}
             </td>
             <td>
               <span class="badge" :class="verdict(entry).tone">{{
                 verdict(entry).label
               }}</span>
+              <small
+                v-if="complexityLabel(entry)"
+                class="secondary-line complexity-hint mono"
+              >
+                {{ complexityLabel(entry) }}
+              </small>
             </td>
           </tr>
         </tbody>

@@ -178,6 +178,10 @@ def schedule(db, assignment_id, actor, body):
     if (body.submission_deadline <= assignment.published_at
             or body.review_deadline is not None and body.review_deadline <= body.submission_deadline):
         raise AppError(422, 'INVALID_DEADLINE', '截止需晚于发布时间，评审截止需晚于提交截止')
+    from app.db.models import ReviewRound
+    frozen = db.scalar(select(ReviewRound.id).join(AssignmentItem,AssignmentItem.id==ReviewRound.assignment_item_id).where(AssignmentItem.assignment_id==assignment.id,ReviewRound.published_at.is_not(None)).limit(1))
+    if frozen and (body.submission_status!='CLOSED' or body.submission_deadline!=assignment.submission_deadline or body.review_deadline!=assignment.review_deadline):
+        raise AppError(409,'REVIEW_SOURCE_FROZEN','互评已发布，不能重新开放提交或修改源截止；请在互评页延长评审截止')
     if body.submission_status == 'OPEN':
         if body.submission_deadline <= utcnow():
             raise AppError(422, 'INVALID_DEADLINE', '开放提交时截止必须在未来')

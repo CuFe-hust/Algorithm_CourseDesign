@@ -5,6 +5,7 @@ import { ArrowLeft, Clock } from "@lucide/vue";
 import { errorText } from "../../shared/api";
 import MarkdownPreview from "../../shared/MarkdownPreview.vue";
 import * as api from "./api";
+import { formatDateTime, remainingLabel } from "./format";
 import type {
   AssignmentDetail,
   ProgressEntry,
@@ -35,14 +36,10 @@ const open = computed(() => {
 });
 const remaining = computed(() => {
   if (!assignment.value) return "";
-  const diff =
-    new Date(assignment.value.submission_deadline).getTime() -
-    new Date(assignment.value.server_time).getTime();
-  if (diff <= 0) return "已截止";
-  const hours = Math.floor(diff / 3_600_000);
-  return hours >= 48
-    ? `${Math.floor(hours / 24)} 天后截止`
-    : `${hours} 小时后截止`;
+  return remainingLabel(
+    assignment.value.submission_deadline,
+    assignment.value.server_time,
+  );
 });
 function state(itemId: string) {
   const entry = entries.value.get(itemId);
@@ -97,7 +94,7 @@ onMounted(load);
       <h1>{{ assignment.title }}</h1>
       <p class="muted">
         <Clock :size="14" />
-        截止 {{ new Date(assignment.submission_deadline).toLocaleString() }} ·
+        截止 {{ formatDateTime(assignment.submission_deadline) }} ·
         {{ remaining }} ·
         <span class="badge" :class="open ? 'green' : 'gray'">{{
           open ? "可提交" : "不可提交新版本"

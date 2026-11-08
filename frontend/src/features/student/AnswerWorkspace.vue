@@ -12,9 +12,11 @@ import SubjectiveEditor from "./components/SubjectiveEditor.vue";
 import DraftStatus from "./components/DraftStatus.vue";
 import JudgeFeedback from "./components/JudgeFeedback.vue";
 import SubmissionStatus from "./components/SubmissionStatus.vue";
+import ComplexityPanel from "./components/ComplexityPanel.vue";
 import { useDraft } from "./composables/useDraft";
 import { useSubmission } from "./composables/useSubmission";
 import { useJudgePolling } from "./composables/useJudgePolling";
+import { formatDateTime } from "./format";
 import {
   SUBJECTIVE_LANGUAGE,
   draftStore,
@@ -49,6 +51,18 @@ const dirty = ref(false);
 const pendingLoad = ref<SubmissionDetail | null>(null);
 
 const programming = computed(() => item.value?.question_type === "PROGRAMMING");
+/** A real full pass is the only thing the complexity analysis accepts. */
+const analysable = computed(() => {
+  const result = detail.value?.result;
+  return Boolean(
+    programming.value &&
+    result &&
+    result.verdict === "ACCEPTED" &&
+    !result.is_mock &&
+    result.total_cases !== null &&
+    result.passed_cases === result.total_cases,
+  );
+});
 const draftContext = () => ({
   userId: userId.value,
   itemId: itemId.value,
@@ -278,6 +292,10 @@ onMounted(load);
   <div v-else-if="item" class="answer-layout">
     <div class="answer-main">
       <ProblemStatement :item="item" />
+      <ComplexityPanel
+        v-if="analysable && detail"
+        :submission-id="detail.submission_id"
+      />
       <section v-if="pendingLoad" class="alert warning">
         即将载入第
         {{ pendingLoad.version_no }} 版内容。这会替换当前草稿，且不会自动提交。
@@ -311,13 +329,9 @@ onMounted(load);
           本题仅允许 {{ item.allowed_languages.join("、") || "未配置语言" }}
         </p>
         <p v-if="programming && item.execution_budget" class="muted">
-          全题执行预算
+          全题运行预算
           {{ (item.execution_budget.total_budget_ms / 1000).toLocaleString() }}
-          秒（含编译与启动开销，{{
-            item.execution_budget.budget_source === "TEACHER"
-              ? "教师配置"
-              : "历史配置推导"
-          }}）。
+          秒，包含编译与程序启动。
         </p>
         <ProgrammingEditor
           v-if="programming"
@@ -358,8 +372,7 @@ onMounted(load);
           >
         </div>
         <p class="hint">
-          提交后会生成新版本，旧代码保留。202
-          只表示服务器已保存，不代表已经评测完成。
+          提交后会生成新的版本，旧代码保留。评测完成后，可在下方查看结果与历史记录。
         </p>
       </section>
 
@@ -374,9 +387,7 @@ onMounted(load);
           class="pending-row"
         >
           <span class="mono">{{ request.clientRequestId.slice(0, 8) }}…</span>
-          <span class="muted">{{
-            new Date(request.createdAt).toLocaleString()
-          }}</span>
+          <span class="muted">{{ formatDateTime(request.createdAt) }}</span>
           <button class="small" @click="retryPending(request.clientRequestId)">
             重试同一请求
           </button>
@@ -396,7 +407,7 @@ onMounted(load);
           />
         </div>
         <p class="muted">
-          提交于 {{ new Date(detail.submitted_at).toLocaleString() }}
+          提交于 {{ formatDateTime(detail.submitted_at) }}
           <template v-if="detail.job">
             · 第 {{ detail.job.attempt_no }} 次尝试</template
           >
@@ -452,9 +463,7 @@ onMounted(load);
               :to="`/student/courses/${courseId}/submissions/${version.submission_id}`"
             >
               <span>v{{ version.version_no }}</span>
-              <small>{{
-                new Date(version.submitted_at).toLocaleString()
-              }}</small>
+              <small>{{ formatDateTime(version.submitted_at) }}</small>
               <span
                 class="badge"
                 :class="version.status === 'WITHDRAWN' ? 'gray' : 'type'"

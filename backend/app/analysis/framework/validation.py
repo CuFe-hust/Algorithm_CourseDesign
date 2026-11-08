@@ -13,10 +13,14 @@ def validate_output(key,data,result):
         if result.feasible:
             counts=Counter(a for a,_ in edges)
             loads=Counter(r for _,r in edges)
-            if not authors or any(counts[a]!=data.required_reviewers for a in authors) or result.unmet_constraints:
+            if not authors or any(counts[a]!=data.required_by_answer.get(a,data.required_reviewers) for a in authors) or result.unmet_constraints:
                 raise ValueError('Matcher returned an incomplete feasible plan')
             if result.load_metrics!={r:loads[r] for r in data.reviewers}:
                 raise ValueError('Matcher workload metrics do not match edges')
+            if data.max_tasks_per_reviewer is not None:
+                old=Counter(e.reviewer_key for e in data.existing_edges)
+                if any(loads[r]+data.prior_loads.get(r,old[r])>data.max_tasks_per_reviewer for r in data.reviewers):
+                    raise ValueError('Matcher violated the reviewer capacity')
         elif result.edges or not result.unmet_constraints:
             raise ValueError('Infeasible output must explain failure and not expose a partial plan')
     elif key=='aggregation':
@@ -34,6 +38,21 @@ def validate_output(key,data,result):
             if pair.left_key not in known or pair.right_key not in known or pair.left_key==pair.right_key or relation in seen:
                 raise ValueError('Similarity pair is not a unique pair of source answers')
             seen.add(relation)
+            if pair.similarity<0 or pair.similarity>1:
+                raise ValueError('Similarity must stay inside [0,1]')
+        if key=='code_similarity':
+            # A cluster is only meaningful when every member really exists and
+            # no member was skipped for being too short.
+            skipped={row.answer_key for row in result.insufficient}
+            for cluster in result.clusters:
+                members=set(cluster.member_keys)
+                if len(members)!=len(cluster.member_keys) or cluster.size!=len(members):
+                    raise ValueError('Cluster members are not unique')
+                if not members<=known or members&skipped:
+                    raise ValueError('Cluster references an unknown or skipped answer')
+            for row in result.insufficient:
+                if row.answer_key not in known:
+                    raise ValueError('Skipped submission is not part of the input')
     elif key in ('mastery','ability','empirical_difficulty'):
         known={g.item_key if key=='empirical_difficulty' else g.student_key for g in data.grades}
         if any(e.object_key not in known for e in result.estimates):raise ValueError('Unknown learning subject')

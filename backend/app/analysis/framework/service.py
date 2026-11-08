@@ -53,7 +53,9 @@ def save_output(db,run,output,is_mock):
 
 def refresh(db,batch):
     """Called with the batch lock held. Never runs algorithms or invents human input."""
-    runs,artifacts=records(db,batch);root=root_snapshot(db,batch).payload
+    root_row=root_snapshot(db,batch)
+    runs,artifacts=records(db,batch)
+    root=root_row.payload if root_row is not None else {}
     for step in steps_for(batch):
         run=runs[step.key]
         if run.status not in ('WAITING_INPUT','WAITING_HUMAN'):continue
@@ -62,7 +64,10 @@ def refresh(db,batch):
             run.status='WAITING_INPUT';run.reason={'blocked_by':blocked,
                 'upstream_status':{k:runs[k].status for k in blocked},'reason':'DEPENDENCY_NOT_READY'};continue
         out=outputs(runs,artifacts)
-        invalid=[k for k in step.dependencies if runs[k].business_status not in ('OK',None)
+        partial_review=(batch.configuration.get('pipeline','').startswith('REVIEW_')
+                        and step.key in ('deviation','reviewer_bias','relationship','effective_subjective_results'))
+        invalid=[k for k in step.dependencies if runs[k].business_status not in
+                 (('OK',None,'INSUFFICIENT_DATA') if partial_review else ('OK',None))
                  and step.key!='resolve']
         if invalid:
             run.status='WAITING_INPUT';run.reason={'blocked_by':invalid,'reason':'UPSTREAM_BUSINESS_RESULT_UNAVAILABLE'};continue
@@ -70,7 +75,7 @@ def refresh(db,batch):
             run.status='SKIPPED';run.reason={'reason':'NO_SUPPLEMENT_REQUIRED'};continue
         if step.event:
             run.status='WAITING_HUMAN';run.reason={'event':step.event,'reason':
-                'DEMO_EVENT_REQUIRED' if batch.mode=='DEMO' else 'REAL_DOMAIN_SERVICE_NOT_CONNECTED'};continue
+                'DEMO_EVENT_REQUIRED' if batch.mode=='DEMO' else 'REAL_DOMAIN_EVENT_REQUIRED' if root.get('review_domain') else 'REAL_DOMAIN_SERVICE_NOT_CONNECTED'};continue
         try:payload=prepare(step.key,root,out)
         except NotApplicable as error:
             run.status='SKIPPED';run.reason={'reason':str(error)};continue
@@ -121,10 +126,15 @@ def create_batch(db,course_id,actor,body):
 
 def batch_view(db,batch_id,actor):
     batch=context(db,batch_id,actor);runs,artifacts=records(db,batch);root=root_snapshot(db,batch)
+    # Similarity batches keep one snapshot per item and no ROOT row: comparing
+    # submissions of different questions has no meaning, so there is no single
+    # course-wide input to hash.
     return dict(id=str(batch.id),course_id=str(batch.course_id),mode=batch.mode,status=batch.status,
-        revision_no=batch.revision_no,seed=batch.seed,schema_version='analysis-v2',input_hash=root.input_hash,
+        revision_no=batch.revision_no,seed=batch.seed,schema_version='analysis-v2',
+        input_hash=root.input_hash if root is not None else None,
         pipeline=batch.configuration.get('pipeline','FULL'),
-        is_mock=root.is_mock,created_at=batch.created_at.astimezone(timezone.utc).isoformat(),
+        is_mock=root.is_mock if root is not None else any(a.is_mock for a in artifacts.values()),
+        created_at=batch.created_at.astimezone(timezone.utc).isoformat(),
         steps=[dict(id=str(r.id),key=r.step_key,algorithm=r.algorithm_key,status=r.status,
             business_status=r.business_status,dependencies=r.dependencies,dependency_refs=r.dependency_refs,
             reason=r.reason,attempt_no=r.attempt_no,result=artifacts[r.id].payload if r.id in artifacts and r.status in TERMINAL else None)
@@ -214,12 +224,13 @@ def create_ability_batch(db,course_id,actor,body):
 
 def ability_input_view(db,batch_id,actor):
     batch=context(db,batch_id,actor)
-    if batch.configuration.get('pipeline')!='STUDENT_ABILITY':
+    if batch.configuration.get('pipeline') not in ('STUDENT_ABILITY','STUDENT_ABILITY_B0','STUDENT_ABILITY_D1'):
         raise AppError(404,'NOT_FOUND','此入口仅用于第六条独立线路')
     snap=root_snapshot(db,batch)
     run=db.scalar(select(AnalysisRun).where(AnalysisRun.batch_id==batch.id,AnalysisRun.step_key=='ability'))
     algorithm_input=db.get(AnalysisInputSnapshot,run.snapshot_id) if run.snapshot_id else None
-    return dict(batch_id=str(batch.id),schema_version='analysis-v2',algorithm_key='ability',seed=batch.seed,parameters={},
+    return dict(batch_id=str(batch.id),schema_version='analysis-v2',algorithm_key=run.algorithm_key,seed=batch.seed,
+        parameters=(algorithm_input.payload.get('model_parameters',algorithm_input.payload.get('parameters',{})) if algorithm_input else {}),
         snapshot_id=str(algorithm_input.id) if algorithm_input else None,
         input_hash=algorithm_input.input_hash if algorithm_input else None,is_mock=snap.is_mock,
         source_snapshot_id=str(snap.id),source_hash=snap.input_hash,

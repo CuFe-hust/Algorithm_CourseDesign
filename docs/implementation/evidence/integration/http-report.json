@@ -1,0 +1,21 @@
+{
+  "is_synthetic": true,
+  "transport": "real HTTP / localhost",
+  "worker": "separate CLI process",
+  "course_id": "1",
+  "assignment_id": "8",
+  "root_round_id": "7",
+  "rounds": 2,
+  "original_tasks": 18,
+  "supplement_tasks": 1,
+  "analysis_versions": 3,
+  "candidate_version": 3,
+  "candidate_count": 6,
+  "raw_evaluation_unchanged": true,
+  "no_mock_algorithm_outputs": true,
+  "supplement_no_repeated_pairs": true,
+  "programming_real_accepted": 6,
+  "question_results_id": "21",
+  "known_question_samples": 12,
+  "personal_projection_verified": true
+}

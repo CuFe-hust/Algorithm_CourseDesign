@@ -1,6 +1,14 @@
 # 三人协作开发主文档
 
-版本：教师/学生联调切片；更新日期：2026-10-25。
+版本：教师、学生与分析整合版；更新日期：2026-10-30。
+
+晚间讲图：[四张4K图与建议顺序](docs/assets/diagrams/analysis/README.md)、[逐图讲解提纲](docs/design/analysis/meeting-d1-talk-track.md)。
+
+算法负责人交付：[学生章节表现评价算法设计说明](docs/design/analysis/student-ability-algorithm-design.md)。算法、实验、持久化与演示已完成；现已补齐[真实逐题证据与教师生成入口](docs/design/analysis/student-ability-integration.md)。
+
+第六条线算法升级：[D1设计及运行入口](docs/design/analysis/student-ability-difficulty-model.md)、[完整实验结果](docs/design/analysis/difficulty-experiments.md)。D1与B0并列，历史数据不改写；真人能力效度未由合成实验验证。
+
+2026-10-29新增交付：[章节表现B0、个人面板与会议演示](docs/design/analysis/student-ability-b0.md)，[4K当前数据流](docs/assets/diagrams/analysis/06-student-ability-b0-delivery-4k.png)。旧章节中的“学习分析仍是占位”不适用于此独立B0扩展；正式来源已通过课程冻结快照接入。
 
 教师端本轮实现及边界见 [教师端架构索引](docs/design/teacher/architecture.md)。
 
@@ -14,19 +22,23 @@
 
 四类题目在业务上走两条路径：编程题走编译/测试；算法分析题、证明题、开放性问答题走主观答案/匿名互评。算法研究建议聚焦匹配、评分聚合和四类异常检测，先完成流程和可替换框架，再三人分担算法设计、复杂度和对比实验。
 
-## 2. 这份main已经交付什么
+## 2. 本整合版本提供什么
 
 | 能力 | 当前状态 |
 |---|---|
-| 统一Python后端、PostgreSQL连接与迁移 | 已实现，28张业务表，迁移pg0006 |
+| 统一Python后端、PostgreSQL连接与迁移 | 已实现，36张业务表，迁移pg0010 |
 | 账户/课程权限/数据库会话 | 已实现，首次改密、空闲2小时与绝对24小时上限 |
 | 四类演示题、量表、测试配置、班级与名单 | 已实现，1教师+6合成学生、2班、2作业 |
 | 学生读题、正式提交、版本、撤回、幂等 | 已实现 |
 | 代码任务与模拟结果持久化、教师查提交 | 已实现；支持MOCK与LOCAL真实执行，尚无Linux沙箱 |
 | PostgreSQL自动化验证和真实HTTP联调 | 最新测试与HTTP证据见教师/学生implementation/evidence |
 | 教师Vue工作台、CSV导入、四类题目与版本写接口 | 已实现，并含账号开通/重置、作业发布和截止管理 |
-| 匹配、互评原始分、聚合、异常、发布成绩 | 待分析Issue先补契约/表，再各模块接入 |
-| 真实沙箱评测与复杂算法 | 后续实现与实验，不以随机值冒充真实效果 |
+| 主观互评、原始评分、聚合异常、教师复核及补评/重算 | 已实现第③、④条，见[交接说明](docs/design/analysis/peer-review-api.md) |
+| 逐题结果与个人报告 | 已接入有来源的编程/主观快照，不计算作业总分 |
+| 同题相似代码检测 | 已实现，词法规格化 + Winnowing；教师证据页含行号区间与相似簇 |
+| 已通过代码复杂度分析 | 已实现，执行轨迹计数 + 递推推断；学生端递推式、闭式类别与逐档计数 |
+| 文本/AI、掌握/能力/经验难度模型 | 5项仍为占位，不宣称六条全部完成 |
+| Linux隔离执行 | 后续能力，当前真实联调用LOCAL |
 
 **底座完成**指三个人可以使用同一工程、数据库结构、模拟数据和已实现接口并行开发，不表示课程项目的全部功能已经完成。另两台电脑仍需按README首次启动验证。
 
@@ -36,7 +48,7 @@
 |---|---|---|---|
 | T | 队友：教师负责人 | 名单、题库、作业、教师查询和复核操作入口 | backend/app/teacher；frontend/src/features/teacher |
 | S | 队友：学生负责人 | 作答、历史、匿名互评、反馈 | backend/app/student；frontend/src/features/student |
-| A | 你：数据库与分析负责人 | 共享模型/迁移、分析框架、匹配/聚合/检测、统计和成绩版本 | backend/app/db、analysis；frontend/src/features/analytics（待建） |
+| A | 你：数据库与第六条线负责人 | 共享模型/迁移、分析框架、章节评价算法、对照实验和个人面板 | backend/app/db、analysis；frontend/src/features/student/Ability.vue |
 
 真实姓名/GitHub用户名在创建Issue时填写；上述标识只表示职责。每个人负责自己板块的页面、后端业务、验证、运行说明和报告章节。复杂算法研究后续由三人另行认领，不默认全部压给A。
 
@@ -90,7 +102,7 @@ flowchart TB
 4. A交付一组匿名任务、量表与评分请求样例；S实现互评，T实现开放/预览/复核入口。
 5. 再打通聚合、异常、教师处置和发布；最后并行研究复杂算法并跑实验。
 
-前端当前没有Vue工程，避免T/S分别生成两个不同工程。TH00合并前，S可按[前端目录约定](frontend/README.md)准备组件与样例，A不依赖前端开展后台流程。互评接口未落地时用明确标识的本地fixture，不调用不存在的接口后把404当空结果。
+统一Vue工程已存在，教师、学生与个人章节面板复用登录、课程选择和路由。T/S/A继续在同一工程内开发，不另建网站。互评接口未落地时用明确标识的fixture，不调用不存在的接口后把404当空结果。
 
 ## 8. 谁负责写哪些数据
 
@@ -116,12 +128,22 @@ flowchart TB
 
 仅推送本工程目录，禁止将上级课程资料、真实学生名册、.env、本地数据库、虚拟环境和日志一起上传。题库来源见[data/source说明](data/source/README.md)，仓库包含开发用题目材料；真实名单不打包。
 
-仓库本地main已整理；远程仓库地址与可见性由你决定，当前未自动发布。具体流程见[Git协作与推送](docs/implementation/runbooks/collaboration.md)。三个Issue文件的正文可复制到GitHub，只需指定负责人和替换实际Issue编号。
+第六条线交付整理在本地 `feat/student-ability-d1` 分支；本轮没有自动推送或合并main。具体流程见[Git协作与推送](docs/implementation/runbooks/collaboration.md)。三个Issue文件继续用于各模块协同；当前代码状态以实现、测试和对应验收记录为准。
 
-## PostgreSQL与全量快照更新
+## PostgreSQL与全量快照更新（早期迁移记录）
 
 默认数据库已切换PostgreSQL，独立迁移pg0001，21张业务表不变。data/formatted提交120题、350组测试和217名脱敏学生/8班；默认导入ALGO_FULL_2026，演示课程独立保留。真实名册只在本机私有目录，公开仓库不含原姓名、学号或班名。三位成员拉取后按README重新配置本地PostgreSQL、升级迁移、演示种子和全量导入；原MySQL数据不直接混入新库。分析业务流程本轮未扩展，后续另行对齐。
+
+## 相似检测与复杂度分析交付
+
+`code_similarity` 插件由 `not_implemented` 升级为 `winnowing_token` v2，新增 `CODE_SIMILARITY` 批次（每题一个任务，绝不跨题）；新增迁移 pg0010 与两张表，承接每题的规模伸缩档与每次提交的复杂度报告。详细设计与验证见[相似检测](docs/design/analysis/code-similarity.md)、[算法实验报告](docs/design/analysis/algorithm-experiments.md)与[实现记录](docs/implementation/evidence/similarity-complexity/2026-10-28-implementation.md)。项目验收要求“至少 2-3 个核心问题说明算法思想、流程、时空复杂度并做实验”，算法实验报告逐项对应。
+
+## 复杂度分析升级：执行轨迹计数（2026-10-29）
+
+上一版复杂度分析用墙钟时间拟合增长，`n` 与 `n log n` 在可测区间内分不开、程序跑不赢读输入就只能给上界，于是靠"log 因子由结构裁定"等规则补丁，公开实验里 6 组对照只有 2 组由实测定案。新版把被测量换成**整数的执行事件计数**：Python 用 `sys.monitoring` 采集行事件、跳转事件与已知库函数的调用规模，C/C++ 用覆盖率插桩（gcov）统计被执行的源码行，两者都减去同一输入上最小读取程序的计数。计数无噪声、与机器无关，`n` 与 `n log n` 直接分得开；递归程序再从调用树里读出递推式（如归并的 `T(n)=2T(n/2)+O(n)`），用 Master 定理、求和与指数规则求解，并与实测总量交叉校验。迁移 head 到 pg0009，旧报告归档为 `NOT_MEASURABLE` 并提示重新请求；Java 没有精确循环计数采集器，请求明确拒绝而不退回词法猜测。设计与限制见[执行轨迹计数与递推推断](docs/design/analysis/complexity-trace.md)，实验数字见[2026-10-29 轨迹实验记录](docs/implementation/evidence/similarity-complexity/2026-10-29-trace-experiments.md)。
 
 ## 分析运行框架交付
 
 已完成15黑盒槽位、23步骤、四类持久化记录与独立worker，普通/补评合成链路均可运行。研究者从data/analysis取成对样例，按docs/design/analysis/black-boxes.md替换实现；会议按docs/design/analysis/meeting-walkthrough.md讲解。正式互评/发布仍需领域服务接入，不把DEMO当作正式成绩。
+
+2026-10-30整合：见[六条链路实际状态与模块边界](docs/design/analysis/platform-integration.md)、[运行手册](docs/implementation/runbooks/platform-integration.md)。

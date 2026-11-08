@@ -75,7 +75,7 @@ def test_invalid_matching_references_and_empty_population_are_not_publishable():
 ])
 def test_framework_rejects_malformed_replacement_matcher(monkeypatch,edges):
     from app.analysis.algorithms import baseline
-    monkeypatch.setattr(baseline,'allocation',lambda data:dict(feasible=True,edges=edges,unmet_constraints=[],load_metrics={}))
+    monkeypatch.setattr(__import__('app.analysis.algorithms.review',fromlist=['allocation']),'allocation',lambda data:dict(feasible=True,edges=edges,unmet_constraints=[],load_metrics={}))
     with pytest.raises(ValueError):call('allocation',allocation())
 
 

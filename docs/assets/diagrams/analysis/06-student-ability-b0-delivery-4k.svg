@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160">
+<rect width="3840" height="2160" fill="#F4F7FB"/>
+<text x="90.0" y="63.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#53677F">ALGORITHM COURSE REVIEW  /  TEAM BRIEFING  /  07</text>
+<text x="90.0" y="170.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="74" font-weight="700" fill="#102A43">第六条线：B0 与个人面板</text>
+<text x="90.0" y="235.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#53677F">章节作答表现：冻结输入 → 真实计算 → 保存结果 → 本人读取；合成演示与正式数据分开。</text>
+<rect x="2680" y="98" width="1070" height="82" rx="18" fill="#E6EDF7" stroke="none" stroke-width="2"/>
+<text x="3071.5" y="154.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="28" font-weight="400" fill="#102A43">2026-10-29 · 会议交付</text>
+<polyline points="90,270 3750,270" fill="none" stroke="#CCD7E4" stroke-width="2" stroke-linejoin="round"/>
+<rect x="100" y="520" width="650" height="660" rx="20" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="130.0" y="612.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="42" font-weight="700" fill="#2563EB">01 逐题结果</text>
+<text x="130.0" y="732.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#102A43">编程题 + 主观题</text>
+<text x="130.0" y="832.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#102A43">单题归一化成绩</text>
+<text x="130.0" y="932.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#102A43">未交 / 待评不补零</text>
+<text x="130.0" y="1032.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#102A43">正式评分由上游负责</text>
+<polyline points="750,850 840,850" fill="none" stroke="#2563EB" stroke-width="5" stroke-linejoin="round"/>
+<polygon points="840.0,850.0 827.4,856.1 827.4,843.9" fill="#2563EB"/>
+<rect x="840" y="520" width="650" height="660" rx="20" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="870.0" y="612.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="42" font-weight="700" fill="#2563EB">02 冻结本次输入</text>
+<text x="870.0" y="732.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#102A43">章节词表与120题映射</text>
+<text x="870.0" y="832.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#102A43">学生名单与已布置关系</text>
+<text x="870.0" y="932.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#102A43">成绩、状态、政策版本</text>
+<text x="870.0" y="1032.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#102A43">保存输入快照与 hash</text>
+<polyline points="1490,850 1580,850" fill="none" stroke="#2563EB" stroke-width="5" stroke-linejoin="round"/>
+<polygon points="1580.0,850.0 1567.4,856.1 1567.4,843.9" fill="#2563EB"/>
+<rect x="1580" y="520" width="650" height="660" rx="20" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="1610.0" y="612.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="42" font-weight="700" fill="#2563EB">03 B0 纯函数</text>
+<text x="1610.0" y="732.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#102A43">逐学生、逐章节聚合</text>
+<text x="1610.0" y="832.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#102A43">Σ(章节权重 × 单题成绩)</text>
+<text x="1610.0" y="932.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#102A43">再除以有效章节权重和</text>
+<text x="1610.0" y="1032.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#102A43">不求作业总分 / rating</text>
+<polyline points="2230,850 2320,850" fill="none" stroke="#2563EB" stroke-width="5" stroke-linejoin="round"/>
+<polygon points="2320.0,850.0 2307.4,856.1 2307.4,843.9" fill="#2563EB"/>
+<rect x="2320" y="520" width="650" height="660" rx="20" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="2350.0" y="612.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="42" font-weight="700" fill="#2563EB">04 结果持久化</text>
+<text x="2350.0" y="732.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#102A43">现有分析 worker 执行</text>
+<text x="2350.0" y="832.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#102A43">记录实现版本与输入 hash</text>
+<text x="2350.0" y="932.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#102A43">artifact 保存真实计算值</text>
+<text x="2350.0" y="1032.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#102A43">查询不重算、不生成随机值</text>
+<polyline points="2970,850 3060,850" fill="none" stroke="#2563EB" stroke-width="5" stroke-linejoin="round"/>
+<polygon points="3060.0,850.0 3047.4,856.1 3047.4,843.9" fill="#2563EB"/>
+<rect x="3060" y="520" width="650" height="660" rx="20" fill="#FFFFFF" stroke="#2563EB" stroke-width="3"/>
+<text x="3090.0" y="612.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="42" font-weight="700" fill="#2563EB">05 个人面板</text>
+<text x="3090.0" y="732.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#102A43">本人只读 API + Vue</text>
+<text x="3090.0" y="832.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#102A43">未布置的章节隐藏</text>
+<text x="3090.0" y="932.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#102A43">待评无证据留空，不补零</text>
+<text x="3090.0" y="1032.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" font-weight="400" fill="#102A43">雷达 + 题型分项 + 证据表</text>
+<rect x="100" y="1320" width="3610" height="260" rx="20" fill="#E6F6F0" stroke="none" stroke-width="2"/>
+<text x="140.0" y="1410.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="40" font-weight="700" fill="#059669">已实现：真实 B0、数据库快照/结果、本人权限、章节雷达、明确标记的合成演示。</text>
+<text x="140.0" y="1500.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="35" font-weight="400" fill="#102A43">固定11章词表；页面只显示已布置章节。两类题不额外各占50%，保留分项结果。</text>
+<rect x="100" y="1680" width="3610" height="300" rx="20" fill="#FFF2DF" stroke="none" stroke-width="2"/>
+<text x="140.0" y="1768.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="38" font-weight="700" fill="#C87914">证据边界：这是课程章节作答表现，不是掌握概率、真实能力或岗位胜任力。</text>
+<text x="140.0" y="1860.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="35" font-weight="400" fill="#102A43">待队友接入：正式编程计分、真实互评聚合与带完整元数据的课程结果快照。</text>
+<text x="140.0" y="1933.0" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="33" font-weight="400" fill="#102A43">模拟数据可以演示全链路；正式面板缺少上游数据时明确等待，不用模拟结果顶替。</text>
+</svg>

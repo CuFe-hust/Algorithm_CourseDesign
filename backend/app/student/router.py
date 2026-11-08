@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, Path, Query, Request
+from fastapi import APIRouter, Depends, Path, Query, Request, Response
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from app.db.session import get_db
@@ -15,6 +15,34 @@ router=APIRouter(prefix='/api/v1',tags=['学生与公共查询'])
 Id=Annotated[int,Path(gt=0,le=9223372036854775807)]
 Limit=Annotated[int|None,Query(ge=1,le=100)]
 Offset=Annotated[int|None,Query(ge=0)]
+
+
+def ability_no_store(response:Response):
+    response.headers['Cache-Control']='no-store'
+
+
+@router.get('/courses/{course_id}/my-ability',dependencies=[Depends(ability_no_store)])
+def my_ability(course_id:Id,user:User=Depends(current_user),db:Session=Depends(get_db)):
+    from app.analysis.framework.ability_b0_line import project
+    return project(db,course_id,user)
+
+
+@router.get('/courses/{course_id}/my-ability/demo',dependencies=[Depends(ability_no_store)])
+def my_ability_demo(course_id:Id,user:User=Depends(current_user),db:Session=Depends(get_db)):
+    from app.analysis.framework.ability_b0_line import project
+    return project(db,course_id,user,demo=True)
+
+
+@router.get('/courses/{course_id}/my-ability/difficulty',dependencies=[Depends(ability_no_store)])
+def my_ability_difficulty(course_id:Id,user:User=Depends(current_user),db:Session=Depends(get_db)):
+    from app.analysis.framework.ability_b0_line import project
+    return project(db,course_id,user,model='d1')
+
+
+@router.get('/courses/{course_id}/my-ability/difficulty/demo',dependencies=[Depends(ability_no_store)])
+def my_ability_difficulty_demo(course_id:Id,user:User=Depends(current_user),db:Session=Depends(get_db)):
+    from app.analysis.framework.ability_b0_line import project
+    return project(db,course_id,user,demo=True,model='d1')
 
 
 @router.get('/courses')

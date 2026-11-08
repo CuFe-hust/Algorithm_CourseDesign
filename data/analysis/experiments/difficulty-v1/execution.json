@@ -1,0 +1,10 @@
+{
+  "wall_seconds": 99.25567050000245,
+  "final_model_evaluations": 192,
+  "final_fit_evaluations": 144,
+  "final_nonconverged": 0,
+  "maximum_final_iterations": 134,
+  "validation_fits": 72,
+  "d0_validation_fits": 36,
+  "note": "Wall time captured from successful harness stdout; prior validation restarts excluded."
+}

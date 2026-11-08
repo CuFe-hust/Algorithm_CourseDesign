@@ -12,6 +12,15 @@ def body(outputs,key):
 
 
 def prepare(key,root,outputs):
+    if root.get('review_domain'):
+        if key=='allocation':return root['allocation_input']
+        if key in ('aggregation','reaggregation'):return root['aggregation_input']
+        if key=='review_timing':return root['timing_input']
+        if key in ('deviation','reviewer_bias','relationship'):
+            return dict(root['detection_inputs'][key],baseline=body(outputs,'aggregation')['scores'])
+        if key=='effective_subjective_results':
+            return dict(scores=body(outputs,'reaggregation')['scores'])
+        raise MissingInput('PEER_REVIEW_INPUT_REQUIRED')
     if key=='ability' and 'learning_input' in root:
         if root['learning_input'] is None:raise MissingInput('QUESTION_RESULTS_REQUIRED')
         return root['learning_input']
@@ -70,6 +79,9 @@ def prepare(key,root,outputs):
 
 
 def rule_output(key,payload,root):
+    if key=='effective_subjective_results':
+        from app.peer_review.analyses import effective_output
+        return effective_output(payload,root)
     if key=='item_scores':
         authors={a['answer_key']:a['author_key'] for a in root['answers']};grades=[]
         for score in payload['subjective_scores']:

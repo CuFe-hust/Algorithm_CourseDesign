@@ -3,6 +3,7 @@ import type {
   AssignmentDetail,
   AssignmentSummary,
   BatchStatusEntry,
+  ComplexityResponse,
   HistoryEntry,
   ItemDetail,
   Page,
@@ -86,5 +87,19 @@ export function discoverJobs(courseId?: string, cursor?: string, limit = 100) {
 export function activeJobs(courseId?: string, limit = 20, offset = 0) {
   return request<Page<{ submission_id: string; job: { status: string } }>>(
     `/me/judge-jobs?${query({ course_id: courseId, filter: "ACTIVE", limit, offset })}`,
+  );
+}
+
+export function getComplexity(submissionId: string) {
+  return request<ComplexityResponse>(
+    `/analysis/submissions/${submissionId}/complexity`,
+  );
+}
+export function requestComplexity(submissionId: string) {
+  return post<{ submission_id: string; status: string }>(
+    `/analysis/submissions/${submissionId}/complexity`,
+    {
+      request_id: `cx-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
+    },
   );
 }
