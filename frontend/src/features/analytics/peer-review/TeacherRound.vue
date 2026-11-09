@@ -255,8 +255,8 @@ onUnmounted(() => {
     <RouterLink to="/teacher/reviews">← 互评轮次</RouterLink>
     <header class="page-heading">
       <div>
-        <p class="eyebrow">互评轮次 · {{ r?.assignment_title }}</p>
         <h1>{{ r?.question.title || "互评详情" }}</h1>
+        <p v-if="r">{{ r.assignment_title }}</p>
       </div>
       <button class="button" :disabled="busy" @click="load">刷新</button>
     </header>

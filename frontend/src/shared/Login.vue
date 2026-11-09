@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { BookOpen, ArrowRight } from "@lucide/vue";
+import { BookOpen, ArrowRight, Eye, EyeOff } from "@lucide/vue";
 import { login, session } from "./session";
 import { errorText } from "./api";
 import { startActivityTracking } from "./activity";
@@ -11,6 +11,7 @@ const router = useRouter(),
 const name = ref(""),
   password = ref(""),
   busy = ref(false),
+  visiblePassword = ref(false),
   error = ref("");
 async function submit() {
   busy.value = true;
@@ -36,45 +37,55 @@ async function submit() {
 }
 </script>
 <template>
-  <main class="login-page">
-    <section class="login-story">
-      <div class="brand"><BookOpen :size="25" /> AlgoClass</div>
-      <div>
-        <span class="eyebrow">算法课程平台</span>
-        <h1>从一道题开始，<br />看见思考的过程。</h1>
-        <p>
-          算法设计与分析 · 课程平台<br />同一入口登录，按所选课程进入对应工作区。
-        </p>
+  <main class="access-page">
+    <section class="access-context" aria-label="平台介绍">
+      <div class="brand">
+        <BookOpen :size="24" aria-hidden="true" /> AlgoClass
       </div>
-      <small>课程设计 · 共享课程平台</small>
+      <div class="access-context-title">
+        <h1>算法设计与分析</h1>
+        <p>课程作业与评阅</p>
+      </div>
     </section>
-    <section class="login-form">
+    <section class="access-form" aria-labelledby="login-title">
       <form @submit.prevent="submit">
-        <span class="eyebrow">账户登录</span>
-        <h2>登录课程平台</h2>
-        <p class="muted">使用课程平台账户继续</p>
+        <h2 id="login-title">登录</h2>
         <div v-if="error" class="alert error" role="alert">{{ error }}</div>
-        <label
-          >登录名<input
-            v-model="name"
-            autocomplete="username"
-            required
-            maxlength="64"
-            placeholder="请输入登录名"
-            autofocus /></label
-        ><label
-          >密码<input
+        <label for="account-name">登录名</label>
+        <input
+          id="account-name"
+          v-model="name"
+          autocomplete="username"
+          required
+          maxlength="64"
+          placeholder="请输入登录名"
+          autofocus
+        />
+        <label for="account-password">密码</label>
+        <div class="password-field">
+          <input
+            id="account-password"
             v-model="password"
-            type="password"
+            :type="visiblePassword ? 'text' : 'password'"
             autocomplete="current-password"
             required
-            placeholder="请输入密码" /></label
-        ><button class="primary full" :disabled="busy">
-          {{ busy ? "正在登录…" : "登录" }}<ArrowRight :size="17" />
+            placeholder="请输入密码"
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            :aria-label="visiblePassword ? '隐藏密码' : '显示密码'"
+            @click="visiblePassword = !visiblePassword"
+          >
+            <EyeOff v-if="visiblePassword" :size="20" aria-hidden="true" />
+            <Eye v-else :size="20" aria-hidden="true" />
+          </button>
+        </div>
+        <button class="primary full" :disabled="busy" :aria-busy="busy">
+          {{ busy ? "正在登录…" : "登录"
+          }}<ArrowRight :size="18" aria-hidden="true" />
         </button>
-        <p class="hint">
-          首次登录会先要求修改初始密码；账号开通与密码重置请联系任课教师。
-        </p>
+        <p class="access-help">账号未开通或忘记密码？请联系任课教师。</p>
       </form>
     </section>
   </main>

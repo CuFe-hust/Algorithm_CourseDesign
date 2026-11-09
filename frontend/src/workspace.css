@@ -1116,3 +1116,246 @@ button.small {
 .alert pre {
   font-size: 13px;
 }
+
+/* Course workspace variant */
+:root {
+  font-size: 16px;
+  --muted: #536072;
+}
+.page-heading p,
+.hint,
+.small-label,
+.account small,
+.table-wrap table,
+.course-info small,
+.review-page .hint {
+  font-size: 14px;
+}
+.page-heading {
+  margin-bottom: 22px;
+  gap: 16px;
+}
+.sidebar nav {
+  margin-top: 24px;
+}
+.sidebar nav a {
+  min-height: 44px;
+  font-size: 15px;
+}
+.topbar {
+  min-height: 62px;
+  height: auto;
+  backdrop-filter: none;
+}
+.course-select {
+  min-width: 0;
+}
+.course-select strong {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.course-picker .page-heading {
+  display: block;
+}
+.course-picker .course-card {
+  min-height: 80px;
+}
+.course-picker .course-info strong {
+  font-size: 17px;
+}
+button,
+.button,
+input,
+select {
+  min-height: 44px;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+.answer-actions {
+  align-items: center;
+  gap: 12px;
+}
+.answer-actions .primary {
+  font-size: 16px;
+}
+.access-page {
+  min-height: 100svh;
+  display: grid;
+  align-content: center;
+}
+.access-context .brand {
+  font-size: 22px;
+}
+.access-context-title h1 {
+  margin: 0;
+  line-height: 1.25;
+}
+.access-context-title p {
+  font-size: 17px;
+  margin: 10px 0 0;
+}
+.access-form form {
+  width: min(100%, 410px);
+  display: grid;
+  gap: 10px;
+}
+.access-form h2 {
+  font-size: 28px;
+  margin: 0 0 16px;
+}
+.access-form label {
+  font-size: 15px;
+  margin: 5px 0 0;
+}
+.access-form input {
+  width: 100%;
+  font-size: 16px;
+}
+.access-form .primary {
+  margin-top: 10px;
+  font-size: 16px;
+  justify-content: space-between;
+}
+.access-help {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 10px 0 0;
+}
+.password-field {
+  position: relative;
+}
+.password-field input {
+  padding-right: 54px;
+}
+.password-field input::-ms-reveal {
+  display: none;
+}
+.password-field .password-toggle {
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  bottom: 1px;
+  min-height: 0;
+  width: 44px;
+  padding: 0;
+  border: 0;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  background: transparent;
+}
+@media (max-width: 768px) {
+  .topbar {
+    padding: 8px 12px;
+  }
+  .course-select strong {
+    font-size: 14px;
+  }
+  .access-form {
+    padding: 24px;
+  }
+}
+
+:root {
+  --blue: #0c665d;
+  --border: #d5e4df;
+  --muted: #455c57;
+  background: #f1f8f5;
+  color: #173d37;
+  font-family: "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
+}
+body {
+  background: #f1f8f5;
+}
+.sidebar {
+  background: #fbfefc;
+  border-color: #d5e4df;
+}
+.sidebar .brand-icon {
+  background: #0c665d;
+}
+.sidebar nav a.selected,
+.sidebar nav a.selected svg {
+  background: #dceee7;
+  color: #084f47;
+}
+.sidebar nav a:hover {
+  background: #e9f5ef;
+}
+.sidebar nav a {
+  border-radius: 6px;
+}
+.nav-group {
+  display: grid;
+  gap: 3px;
+  margin-bottom: 12px;
+}
+.nav-group p {
+  margin: 0 0 2px;
+  padding: 0 12px;
+  color: #405953;
+  font-size: 14px;
+  font-weight: 700;
+}
+.topbar {
+  background: #fff;
+  border-color: #d5e4df;
+}
+.card {
+  border-radius: 9px;
+  box-shadow: none;
+}
+.access-page {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-content: stretch;
+}
+.access-context {
+  padding: clamp(28px, 7vw, 106px);
+  background: #103c36;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 44px;
+}
+.access-context .brand {
+  color: white;
+}
+.access-context-title {
+  max-width: 370px;
+  padding-bottom: 10vh;
+}
+.access-context-title h1 {
+  font-size: clamp(34px, 4.5vw, 63px);
+  font-weight: 740;
+}
+.access-context-title p {
+  color: #d2e8e1;
+}
+.access-form {
+  background: #fff;
+  display: grid;
+  place-items: center;
+  padding: clamp(30px, 7vw, 90px);
+}
+@media (max-width: 768px) {
+  .access-page {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  .access-context {
+    padding: 22px 24px;
+    gap: 24px;
+  }
+  .access-context-title {
+    padding-bottom: 0;
+  }
+  .access-context-title h1 {
+    font-size: 30px;
+  }
+  .access-form {
+    place-items: start center;
+    padding: 28px 24px;
+  }
+}

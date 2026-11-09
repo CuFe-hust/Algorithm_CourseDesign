@@ -90,7 +90,6 @@ onMounted(load);
   <div v-if="loading" class="loading">正在读取作业…</div>
   <template v-else-if="assignment">
     <div class="page-heading">
-      <span class="eyebrow">课程作业</span>
       <h1>{{ assignment.title }}</h1>
       <p class="muted">
         <Clock :size="14" />

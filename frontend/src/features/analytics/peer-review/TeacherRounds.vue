@@ -92,7 +92,6 @@ onMounted(load);
   <section class="review-page">
     <header class="page-heading">
       <div>
-        <p class="eyebrow">互评轮次与复核</p>
         <h1>互评与复核</h1>
         <p>先冻结答案与量表，再确认分配；所有异常信号交由教师复核。</p>
       </div>

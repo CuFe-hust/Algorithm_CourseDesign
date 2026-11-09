@@ -141,7 +141,6 @@ watch(assignment, () => {
 <template>
   <header class="page-heading">
     <div>
-      <span class="eyebrow">{{ teacher ? "逐题结果" : "学习报告" }}</span>
       <h1>{{ teacher ? "逐题结果与学习分析" : "我的学习报告" }}</h1>
       <p>
         {{

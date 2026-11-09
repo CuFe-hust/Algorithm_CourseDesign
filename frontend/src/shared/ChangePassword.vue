@@ -43,7 +43,6 @@ async function submit() {
 <template>
   <main class="center-page card">
     <div class="page-heading">
-      <span class="eyebrow"><KeyRound :size="14" /> 账户设置</span>
       <h1>{{ forced() ? "设置你的新密码" : "修改密码" }}</h1>
       <p class="muted">
         {{

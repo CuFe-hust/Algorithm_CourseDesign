@@ -146,7 +146,6 @@ onMounted(load);
   <div v-if="loading" class="loading">正在读取版本…</div>
   <template v-else-if="detail">
     <div class="page-heading">
-      <span class="eyebrow">提交版本</span>
       <h1>{{ context.itemTitle || "提交版本" }}</h1>
       <p class="muted submission-context">
         <span v-if="context.assignmentTitle"

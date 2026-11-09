@@ -155,7 +155,6 @@ watch(
 <template>
   <div class="page-heading ability-heading">
     <div>
-      <span class="eyebrow">章节表现</span>
       <h1>个人章节表现</h1>
       <p class="muted">
         {{

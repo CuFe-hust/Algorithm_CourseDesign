@@ -11,7 +11,6 @@ import {
   LogOut,
   ChevronDown,
   Menu,
-  GraduationCap,
   ClipboardList,
   Layers,
 } from "@lucide/vue";
@@ -63,86 +62,94 @@ async function leave() {
         ><span class="brand-icon"><BookOpen :size="22" /></span
         >AlgoClass</RouterLink
       >
-      <div class="workspace-label">教师工作台 <span>教师端</span></div>
+
       <nav aria-label="主导航" @click="mobile = false">
-        <RouterLink
-          to="/teacher"
-          exact-active-class="selected"
-          :class="{ selected: $route.path === '/teacher' }"
-          :aria-current="$route.path === '/teacher' ? 'page' : undefined"
-          ><LayoutDashboard :size="19" />课程概览</RouterLink
-        ><RouterLink
-          to="/teacher/assignments"
-          :class="{ selected: $route.path.startsWith('/teacher/assignments') }"
-          :aria-current="
-            $route.path.startsWith('/teacher/assignments') ? 'page' : undefined
-          "
-          ><ClipboardList :size="19" />作业管理</RouterLink
-        ><RouterLink
-          to="/teacher/problems"
-          :class="{ selected: $route.path.startsWith('/teacher/problems') }"
-          :aria-current="
-            $route.path.startsWith('/teacher/problems') ? 'page' : undefined
-          "
-          ><LibraryBig :size="19" />题库管理</RouterLink
-        ><RouterLink
-          to="/teacher/similarity"
-          :class="{ selected: $route.path.startsWith('/teacher/similarity') }"
-          :aria-current="
-            $route.path.startsWith('/teacher/similarity') ? 'page' : undefined
-          "
-          ><Layers :size="19" />相似检测</RouterLink
-        ><RouterLink
-          to="/teacher/complexity"
-          :class="{ selected: $route.path.startsWith('/teacher/complexity') }"
-          :aria-current="
-            $route.path.startsWith('/teacher/complexity') ? 'page' : undefined
-          "
-          ><Activity :size="19" />复杂度分析</RouterLink
-        ><RouterLink
-          to="/teacher/students"
-          :class="{ selected: $route.path.startsWith('/teacher/students') }"
-          :aria-current="
-            $route.path.startsWith('/teacher/students') ? 'page' : undefined
-          "
-          ><Users :size="19" />学生名单</RouterLink
-        >
-        <RouterLink
-          to="/teacher/reviews"
-          :class="{ selected: $route.path.startsWith('/teacher/reviews') }"
-          :aria-current="
-            $route.path.startsWith('/teacher/reviews') ? 'page' : undefined
-          "
-          ><ClipboardList :size="19" />互评与复核</RouterLink
-        >
-        <RouterLink
-          to="/teacher/analysis"
-          :class="{ selected: $route.path === '/teacher/analysis' }"
-          :aria-current="
-            $route.path === '/teacher/analysis' ? 'page' : undefined
-          "
-          ><ChartNoAxesCombined :size="19" />分析中心</RouterLink
-        >
-        <RouterLink
-          to="/teacher/results"
-          :class="{ selected: $route.path === '/teacher/results' }"
-          :aria-current="
-            $route.path === '/teacher/results' ? 'page' : undefined
-          "
-          ><ClipboardList :size="19" />逐题结果</RouterLink
-        >
+        <section class="nav-group" aria-label="课程管理">
+          <p>课程管理</p>
+          <RouterLink
+            to="/teacher"
+            exact-active-class="selected"
+            :class="{ selected: $route.path === '/teacher' }"
+            :aria-current="$route.path === '/teacher' ? 'page' : undefined"
+            ><LayoutDashboard :size="19" />课程概览</RouterLink
+          ><RouterLink
+            to="/teacher/assignments"
+            :class="{
+              selected: $route.path.startsWith('/teacher/assignments'),
+            }"
+            :aria-current="
+              $route.path.startsWith('/teacher/assignments')
+                ? 'page'
+                : undefined
+            "
+            ><ClipboardList :size="19" />作业管理</RouterLink
+          ><RouterLink
+            to="/teacher/problems"
+            :class="{ selected: $route.path.startsWith('/teacher/problems') }"
+            :aria-current="
+              $route.path.startsWith('/teacher/problems') ? 'page' : undefined
+            "
+            ><LibraryBig :size="19" />题库管理</RouterLink
+          ><RouterLink
+            to="/teacher/students"
+            :class="{ selected: $route.path.startsWith('/teacher/students') }"
+            :aria-current="
+              $route.path.startsWith('/teacher/students') ? 'page' : undefined
+            "
+            ><Users :size="19" />学生名单</RouterLink
+          >
+        </section>
+        <section class="nav-group" aria-label="评分与分析">
+          <p>评分与分析</p>
+          <RouterLink
+            to="/teacher/reviews"
+            :class="{ selected: $route.path.startsWith('/teacher/reviews') }"
+            :aria-current="
+              $route.path.startsWith('/teacher/reviews') ? 'page' : undefined
+            "
+            ><ClipboardList :size="19" />互评与复核</RouterLink
+          ><RouterLink
+            to="/teacher/results"
+            :class="{ selected: $route.path === '/teacher/results' }"
+            :aria-current="
+              $route.path === '/teacher/results' ? 'page' : undefined
+            "
+            ><ClipboardList :size="19" />逐题结果</RouterLink
+          ><RouterLink
+            to="/teacher/analysis"
+            :class="{ selected: $route.path === '/teacher/analysis' }"
+            :aria-current="
+              $route.path === '/teacher/analysis' ? 'page' : undefined
+            "
+            ><ChartNoAxesCombined :size="19" />分析中心</RouterLink
+          >
+        </section>
+        <section class="nav-group" aria-label="代码检查">
+          <p>代码检查</p>
+          <RouterLink
+            to="/teacher/similarity"
+            :class="{ selected: $route.path.startsWith('/teacher/similarity') }"
+            :aria-current="
+              $route.path.startsWith('/teacher/similarity') ? 'page' : undefined
+            "
+            ><Layers :size="19" />相似检测</RouterLink
+          ><RouterLink
+            to="/teacher/complexity"
+            :class="{ selected: $route.path.startsWith('/teacher/complexity') }"
+            :aria-current="
+              $route.path.startsWith('/teacher/complexity') ? 'page' : undefined
+            "
+            ><Activity :size="19" />复杂度分析</RouterLink
+          >
+        </section>
       </nav>
-      <div class="sidebar-foot">
-        <GraduationCap :size="22" /><strong>算法设计与分析</strong>
-        <p>备好每一题，关注每一次成长。</p>
-      </div>
     </aside>
     <div v-if="mobile" class="scrim" @click="mobile = false"></div>
     <div class="main-shell">
       <header class="topbar">
         <button
           class="icon-button mobile-menu"
-          aria-label="展开导航"
+          :aria-label="mobile ? '关闭导航' : '打开导航'"
           aria-controls="teacher-sidebar"
           :aria-expanded="mobile"
           @click="mobile = !mobile"
@@ -150,7 +157,6 @@ async function leave() {
           <Menu :size="22" />
         </button>
         <div class="course-select">
-          <span class="small-label">当前课程</span>
           <div>
             <select
               :value="session.courseId"
@@ -192,9 +198,6 @@ async function leave() {
         <div v-if="error" class="alert error">{{ error }}</div>
         <RouterView :key="`${session.courseId}:${$route.path}`" />
       </main>
-      <footer class="page-footer">
-        AlgoClass · {{ course?.term }}<span>算法课程教学工作台</span>
-      </footer>
     </div>
   </div>
 </template>

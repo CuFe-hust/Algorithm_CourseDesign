@@ -73,11 +73,8 @@ onMounted(() => {
 <template>
   <main class="center-page card course-picker">
     <div class="page-heading">
-      <span class="eyebrow"><BookOpen :size="14" /> 课程工作区</span>
-      <h1>选择要进入的课程</h1>
-      <p class="muted">
-        同一个账号在不同课程中可能是教师或学生，进入后按该课程的角色显示功能。
-      </p>
+      <h1>选择课程</h1>
+      <p class="muted">选择一门课程进入。</p>
     </div>
     <div v-if="error" class="alert error" role="alert">
       {{ error }}
@@ -87,7 +84,7 @@ onMounted(() => {
     <div v-else-if="!session.courses.length" class="empty">
       <Users :size="30" />
       <h3>当前账号还没有可访问的课程</h3>
-      <p>请联系任课教师完成课程名单导入或账号开通后重试。</p>
+      <p>如果你已选课，请联系任课教师确认名单。</p>
       <button class="small" @click="load">重新加载</button>
     </div>
     <ul v-else class="course-list">
