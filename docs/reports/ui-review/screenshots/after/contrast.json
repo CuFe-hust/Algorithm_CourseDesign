@@ -1,0 +1,62 @@
+{
+  "method": "Computed styles read from Microsoft Edge via Playwright on 2026-11-09; ratios use the WCAG relative-luminance formula.",
+  "page_background": "#f5f6f8",
+  "checks": [
+    {
+      "target": "正文",
+      "foreground": "#243044",
+      "background": "#f5f6f8",
+      "ratio": 12.28,
+      "font_size": "15px"
+    },
+    {
+      "target": "眉题/辅助（白底）",
+      "foreground": "#5b6b82",
+      "background": "#ffffff",
+      "ratio": 5.43,
+      "font_size": "12px"
+    },
+    {
+      "target": "眉题/辅助（页面灰底）",
+      "foreground": "#5b6b82",
+      "background": "#f5f6f8",
+      "ratio": 5.02,
+      "font_size": "12px"
+    },
+    {
+      "target": "灰色徽标",
+      "foreground": "#596a86",
+      "background": "#f0f2f6",
+      "ratio": 4.89,
+      "font_size": "12px"
+    },
+    {
+      "target": "琥珀色徽标",
+      "foreground": "#7a5510",
+      "background": "#fff6e6",
+      "ratio": 6.25,
+      "font_size": "12px"
+    },
+    {
+      "target": "绿色徽标",
+      "foreground": "#1f6b51",
+      "background": "#eaf7f0",
+      "ratio": 5.81,
+      "font_size": "12px"
+    },
+    {
+      "target": "红色徽标",
+      "foreground": "#9f2a2a",
+      "background": "#fff0f0",
+      "ratio": 6.68,
+      "font_size": "12px"
+    },
+    {
+      "target": "字段错误",
+      "foreground": "#a51c14",
+      "background": "#fffafa",
+      "ratio": 7.31,
+      "font_size": "13px"
+    }
+  ]
+}

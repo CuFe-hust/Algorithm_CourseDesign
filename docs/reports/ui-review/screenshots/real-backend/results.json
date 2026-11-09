@@ -1,0 +1,103 @@
+[
+  {
+    "slug": "teacher-results",
+    "route": "/teacher/results",
+    "expected": [
+      "逐题结果",
+      "课程章节分析",
+      "已完成"
+    ],
+    "width": 1440,
+    "scroll": 1440
+  },
+  {
+    "slug": "teacher-assignments-mobile",
+    "route": "/teacher/assignments",
+    "expected": [
+      "四类混合题"
+    ],
+    "width": 390,
+    "scroll": 390
+  },
+  {
+    "slug": "student-submissions",
+    "route": "/student/courses/1/submissions",
+    "expected": [
+      "本人提交",
+      "上方筛选的是提交状态"
+    ],
+    "width": 1440,
+    "scroll": 1440
+  },
+  {
+    "slug": "student-submission-detail",
+    "route": "/student/courses/1/submissions/4",
+    "expected": [
+      "所属作业",
+      "第 2 版"
+    ],
+    "width": 1440,
+    "scroll": 1440
+  },
+  {
+    "slug": "student-b0",
+    "route": "/student/courses/1/ability",
+    "expected": [
+      "个人章节表现",
+      "贪心算法",
+      "100.0%"
+    ],
+    "width": 1440,
+    "scroll": 1440
+  },
+  {
+    "slug": "student-d1-mobile",
+    "route": "/student/courses/1/ability?model=d1",
+    "expected": [
+      "难度感知模型",
+      "贪心算法",
+      "81.9%"
+    ],
+    "width": 390,
+    "scroll": 390
+  },
+  {
+    "slug": "student-learning",
+    "route": "/student/courses/1/learning",
+    "expected": [
+      "学习报告",
+      "真实编程评测"
+    ],
+    "width": 1440,
+    "scroll": 1440
+  },
+  {
+    "slug": "student-reviews",
+    "route": "/student/courses/1/reviews",
+    "expected": [
+      "我的互评任务",
+      "查看已提交评价"
+    ],
+    "width": 1440,
+    "scroll": 1440
+  },
+  {
+    "slug": "student-review-readonly",
+    "route": "/student/courses/1/reviews/1",
+    "expected": [
+      "95.00",
+      "114.711"
+    ],
+    "width": 1440,
+    "scroll": 1440
+  },
+  {
+    "slug": "student-no-evidence",
+    "route": "/student/courses/1/ability",
+    "expected": [
+      "暂无有效证据"
+    ],
+    "width": 1440,
+    "scroll": 1440
+  }
+]

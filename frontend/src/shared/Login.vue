@@ -40,7 +40,7 @@ async function submit() {
     <section class="login-story">
       <div class="brand"><BookOpen :size="25" /> AlgoClass</div>
       <div>
-        <span class="eyebrow">ALGORITHM COURSE WORKSPACE</span>
+        <span class="eyebrow">算法课程平台</span>
         <h1>从一道题开始，<br />看见思考的过程。</h1>
         <p>
           算法设计与分析 · 课程平台<br />同一入口登录，按所选课程进入对应工作区。
@@ -50,7 +50,7 @@ async function submit() {
     </section>
     <section class="login-form">
       <form @submit.prevent="submit">
-        <span class="eyebrow">WELCOME BACK</span>
+        <span class="eyebrow">账户登录</span>
         <h2>登录课程平台</h2>
         <p class="muted">使用课程平台账户继续</p>
         <div v-if="error" class="alert error" role="alert">{{ error }}</div>

@@ -1,0 +1,65 @@
+{
+  "selected": {
+    "s1/CH01": {
+      "value": "1",
+      "status": "LOW_EVIDENCE",
+      "assigned_items": 2,
+      "scored_items": 1,
+      "W_sum": "1",
+      "W_assigned": "2",
+      "coverage_items": "0.5",
+      "coverage_weight": "0.5",
+      "missing": {
+        "pending": 0,
+        "not_submitted": 1,
+        "invalid": 0
+      },
+      "by_type": {
+        "PROGRAMMING": {
+          "value": "1",
+          "n_items": 1
+        }
+      }
+    },
+    "s1/CH02": {
+      "value": null,
+      "status": "NO_EVIDENCE",
+      "assigned_items": 1,
+      "scored_items": 0,
+      "W_sum": "0",
+      "W_assigned": "1",
+      "coverage_items": "0",
+      "coverage_weight": "0",
+      "missing": {
+        "pending": 1,
+        "not_submitted": 0,
+        "invalid": 0
+      },
+      "by_type": {}
+    },
+    "s2/CH01": {
+      "value": null,
+      "status": "NO_EVIDENCE",
+      "assigned_items": 1,
+      "scored_items": 0,
+      "W_sum": "0",
+      "W_assigned": "1",
+      "coverage_items": "0",
+      "coverage_weight": "0",
+      "missing": {
+        "pending": 0,
+        "not_submitted": 1,
+        "invalid": 0
+      },
+      "by_type": {}
+    }
+  },
+  "diagnostics": {
+    "method": "B0",
+    "merge_policy": "CHAPTER_WEIGHT",
+    "min_items": 3,
+    "min_coverage_items": "0.5",
+    "unmapped_item_count": 0,
+    "warnings": []
+  }
+}

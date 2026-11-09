@@ -11,6 +11,7 @@ const route = useRoute(),
   comment = ref(""),
   error = ref(""),
   busy = ref(false),
+  attempted = ref(false),
   requestId = ref(crypto.randomUUID());
 const dirty = computed(
   () =>
@@ -42,15 +43,27 @@ async function load() {
 function changed() {
   requestId.value = crypto.randomUUID();
 }
+function fieldError(dimension: { id: string; max_score: string }) {
+  if (!attempted.value) return "";
+  const value = String(scores.value[dimension.id] ?? "");
+  if (
+    !/^\d+(\.\d{1,2})?$/.test(value) ||
+    Number(value) > Number(dimension.max_score)
+  )
+    return `请输入 0～${dimension.max_score} 范围内、最多两位小数的得分。`;
+  return "";
+}
+const commentError = computed(() =>
+  attempted.value && !comment.value.trim() ? "请写出具体的评审意见。" : "",
+);
 async function submit() {
   if (!task.value || busy.value) return;
   error.value = "";
-  for (const d of task.value.rubric) {
-    const v = String(scores.value[d.id] ?? "");
-    if (!/^\d+(\.\d{1,2})?$/.test(v) || Number(v) > Number(d.max_score)) {
-      error.value = `请填写「${d.name}」0～${d.max_score} 范围内、最多两位小数的得分`;
-      return;
-    }
+  attempted.value = true;
+  const invalid = task.value.rubric.find((d) => fieldError(d));
+  if (invalid) {
+    error.value = `请检查「${invalid.name}」的得分后再提交。`;
+    return;
   }
   if (!comment.value.trim()) {
     error.value = "请写出具体的评审意见";
@@ -105,7 +118,7 @@ onUnmounted(() => window.removeEventListener("beforeunload", unload));
     <h1>{{ task?.question.title || "评审任务" }}</h1>
     <p v-if="error" role="alert" class="alert error">{{ error }}</p>
     <template v-if="task"
-      ><div class="review-status">
+      ><div class="review-status" aria-live="polite">
         第 {{ task.round_no }} 轮 · 截止
         {{ new Date(task.review_deadline).toLocaleString() }}
         <p>
@@ -133,7 +146,7 @@ onUnmounted(() => window.removeEventListener("beforeunload", unload));
       </section>
       <section class="card review-card">
         <h2>量表评分 · 满分 {{ task.rubric_max }}</h2>
-        <form @submit.prevent="submit" @input="changed">
+        <form novalidate @submit.prevent="submit" @input="changed">
           <fieldset :disabled="busy || !!task.evaluation || !task.can_submit">
             <div v-for="d in task.rubric" :key="d.id" class="signal">
               <label :for="`dimension-${d.id}`"
@@ -148,7 +161,18 @@ onUnmounted(() => window.removeEventListener("beforeunload", unload));
                 :max="d.max_score"
                 step="0.01"
                 required
+                :aria-invalid="fieldError(d) ? 'true' : undefined"
+                :aria-describedby="
+                  fieldError(d) ? `dimension-error-${d.id}` : undefined
+                "
               />
+              <p
+                v-if="fieldError(d)"
+                :id="`dimension-error-${d.id}`"
+                class="field-error"
+              >
+                {{ fieldError(d) }}
+              </p>
             </div>
             <label
               >具体评审意见<textarea
@@ -156,9 +180,14 @@ onUnmounted(() => window.removeEventListener("beforeunload", unload));
                 rows="5"
                 maxlength="8192"
                 required
+                :aria-invalid="commentError ? 'true' : undefined"
+                aria-describedby="comment-error"
                 placeholder="说明依据、指出不足，并给出可操作的改进建议。"
               />
             </label>
+            <p v-if="commentError" id="comment-error" class="field-error">
+              {{ commentError }}
+            </p>
           </fieldset>
           <p v-if="task.evaluation">
             原始总分 {{ task.evaluation.total_score }} / {{ task.rubric_max }} ·
@@ -168,6 +197,7 @@ onUnmounted(() => window.removeEventListener("beforeunload", unload));
             v-else
             class="button primary"
             :disabled="busy || !task.can_submit"
+            :aria-busy="busy"
           >
             {{ busy ? "提交中…" : "确认提交评价" }}
           </button>

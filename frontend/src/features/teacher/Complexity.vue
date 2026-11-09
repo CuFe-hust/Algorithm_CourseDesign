@@ -334,7 +334,7 @@ onBeforeUnmount(() => {
 <template>
   <div class="page-heading">
     <div>
-      <span class="eyebrow">COMPLEXITY</span>
+      <span class="eyebrow">运行证据</span>
       <h1>复杂度分析</h1>
       <p class="muted">
         每道编程题、每位学生最新一份复杂度报告。结论是估计值，不参与评分，也不改变评测结果。

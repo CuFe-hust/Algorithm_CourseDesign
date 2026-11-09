@@ -165,7 +165,7 @@ onMounted(async () => {
 </script>
 <template>
   <div class="page-heading">
-    <span class="eyebrow">MY SUBMISSIONS</span>
+    <span class="eyebrow">提交记录</span>
     <h1>本人提交</h1>
     <p class="muted">列表只显示摘要；正文与编译诊断请进入版本详情查看。</p>
   </div>
@@ -191,13 +191,16 @@ onMounted(async () => {
       <option value="java">Java</option>
       <option value="subjective">主观题</option>
     </select>
-    <select v-model="status" aria-label="按状态筛选">
-      <option value="">全部状态</option>
-      <option value="SUBMITTED">已提交</option>
+    <select v-model="status" aria-label="按提交状态筛选">
+      <option value="">全部提交状态</option>
+      <option value="SUBMITTED">已提交（未撤回）</option>
       <option value="WITHDRAWN">已撤回</option>
     </select>
     <span class="toolbar-meta">共 {{ total }} 条</span>
   </div>
+  <p class="hint">
+    上方筛选的是提交状态；评测结论与复杂度提示在列表状态列和版本详情中查看。
+  </p>
   <div v-if="loading" class="loading">正在读取提交历史…</div>
   <div v-else-if="!entries.length" class="empty">
     <History :size="28" />

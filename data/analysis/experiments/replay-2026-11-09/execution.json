@@ -1,0 +1,36 @@
+{
+  "command": "python -m scripts.experiment_ability_difficulty --output ../data/analysis/experiments/replay-2026-11-09",
+  "working_directory": "backend",
+  "python": "3.11.9",
+  "platform": "Windows-10-10.0.19044-SP0",
+  "total_seconds": 93.11048970000411,
+  "replicate_model_evaluations": 192,
+  "validation_fits": 72,
+  "d0_validation_fits": 36,
+  "final_nonconverged": [],
+  "max_iterations_observed": 134,
+  "iteration_budget": 180,
+  "all_optimizer_fits_converged": true,
+  "d1_mean_seconds": 1.1913224437503231,
+  "b0_mean_seconds": 0.01170457916699282,
+  "selected_parameters": {
+    "learner_l2": 0.05,
+    "item_l2": 0.3,
+    "difficulty_scale": 0.75,
+    "max_iterations": 180,
+    "tolerance": 1e-06,
+    "calibrate_items": true
+  },
+  "comparison_to_archived": {
+    "archived_directory": "data/analysis/experiments/difficulty-v1",
+    "protocol_equal_excluding_timestamp": true,
+    "source_sha256_equal": true,
+    "core_sha256_equal": true,
+    "rmse_max_abs_difference": 0.0,
+    "mae_max_abs_difference": 0.0,
+    "loss_max_abs_difference": 0.0,
+    "iteration_max_abs_difference": 0,
+    "auxiliary_float_max_abs_difference": 2.220446049250313e-16,
+    "note": "Archived receipt reports Python 3.12+; replay used Python 3.11.9. Headline metrics, loss and iterations reproduce exactly; a few auxiliary floating-point aggregates differ in the last bit."
+  }
+}

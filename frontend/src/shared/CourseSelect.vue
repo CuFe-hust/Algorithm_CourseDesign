@@ -73,7 +73,7 @@ onMounted(() => {
 <template>
   <main class="center-page card course-picker">
     <div class="page-heading">
-      <span class="eyebrow"><BookOpen :size="14" /> SELECT COURSE</span>
+      <span class="eyebrow"><BookOpen :size="14" /> 课程工作区</span>
       <h1>选择要进入的课程</h1>
       <p class="muted">
         同一个账号在不同课程中可能是教师或学生，进入后按该课程的角色显示功能。

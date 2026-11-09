@@ -50,6 +50,31 @@ const canResolve = computed(
     detectors.value.length === 4 &&
     detectors.value.every((x) => x.status === "SUCCEEDED" && ack.value[x.key]),
 );
+const allocationLoads = computed(() => {
+  const metrics = r.value?.allocation.output?.load_metrics ?? {};
+  return Object.entries(metrics)
+    .map(([reviewer, count]) => ({ reviewer, count: Number(count) }))
+    .sort((a, b) => b.count - a.count || a.reviewer.localeCompare(b.reviewer));
+});
+const allocationSummary = computed(() => {
+  const counts = allocationLoads.value.map((row) => row.count);
+  const tasks = counts.reduce((sum, value) => sum + value, 0);
+  return {
+    tasks,
+    reviewers: counts.length,
+    min: counts.length ? Math.min(...counts) : 0,
+    max: counts.length ? Math.max(...counts) : 0,
+    mean: counts.length ? (tasks / counts.length).toFixed(1) : "0.0",
+  };
+});
+const constraintLabels: Record<string, string> = {
+  NO_ANSWERS: "没有可分配的作品",
+  GLOBAL_CAPACITY_OR_FORBIDDEN_RELATIONS_INFEASIBLE:
+    "总容量或禁止关系导致分配不可行",
+};
+function constraintText(value: string) {
+  return constraintLabels[value] || `未满足约束：${value}`;
+}
 let stopped = false;
 let timer: ReturnType<typeof setTimeout> | undefined;
 let pending: { signature: string; id: string } | null = null;
@@ -230,7 +255,7 @@ onUnmounted(() => {
     <RouterLink to="/teacher/reviews">← 互评轮次</RouterLink>
     <header class="page-heading">
       <div>
-        <p class="eyebrow">链路 ③ / ④ · {{ r?.assignment_title }}</p>
+        <p class="eyebrow">互评轮次 · {{ r?.assignment_title }}</p>
         <h1>{{ r?.question.title || "互评详情" }}</h1>
       </div>
       <button class="button" :disabled="busy" @click="load">刷新</button>
@@ -263,17 +288,89 @@ onUnmounted(() => {
         </details>
         <div v-if="r.status === 'PREVIEW'" class="review-status">
           <strong
-            >分配：{{ label(r.allocation.status) }} ·
+            >分配状态：{{ label(r.allocation.status) }} ·
             {{ label(r.allocation.business_status) }}</strong
           >
-          <p>确认前会重新校验输入摘要。不可行时不创建任何部分任务。</p>
-          <details v-if="r.allocation.output">
-            <summary>可行性与负载明细</summary>
-            <pre>{{ JSON.stringify(r.allocation.output, null, 2) }}</pre>
-          </details>
+          <template v-if="r.allocation.output">
+            <div class="allocation-summary" aria-label="互评分配预览摘要">
+              <div class="allocation-metrics">
+                <div>
+                  <strong>{{ r.answer_count }}</strong
+                  ><span>待评作品</span>
+                </div>
+                <div>
+                  <strong>{{ r.reviewer_count }}</strong
+                  ><span>可用评审人</span>
+                </div>
+                <div>
+                  <strong>{{ allocationSummary.tasks }}</strong
+                  ><span>计划任务</span>
+                </div>
+                <div>
+                  <strong
+                    >{{ allocationSummary.min }}–{{
+                      allocationSummary.max
+                    }}</strong
+                  ><span>每人任务范围</span>
+                </div>
+                <div>
+                  <strong>{{ allocationSummary.mean }}</strong
+                  ><span>平均任务</span>
+                </div>
+              </div>
+              <p
+                class="allocation-state"
+                :class="
+                  r.allocation.output.feasible ? 'feasible' : 'infeasible'
+                "
+              >
+                {{
+                  r.allocation.output.feasible
+                    ? "分配可行，确认后将按此负载开放互评。"
+                    : "分配不可行，不会创建部分任务。"
+                }}
+              </p>
+              <ul
+                v-if="r.allocation.output.unmet_constraints.length"
+                class="allocation-constraints"
+              >
+                <li
+                  v-for="item in r.allocation.output.unmet_constraints"
+                  :key="item"
+                >
+                  {{ constraintText(item) }}
+                </li>
+              </ul>
+              <p class="hint">
+                确认前会重新校验输入摘要；不可行时不创建任何部分任务。
+              </p>
+            </div>
+            <details class="allocation-details">
+              <summary>查看每人任务数与原始输出</summary>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>评审人编号</th>
+                      <th>任务数</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="row in allocationLoads" :key="row.reviewer">
+                      <td>{{ row.reviewer }}</td>
+                      <td>{{ row.count }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <pre>{{ JSON.stringify(r.allocation.output, null, 2) }}</pre>
+            </details>
+          </template>
+          <p v-else class="hint">分配仍在计算或尚未产生输出，请稍后刷新。</p>
           <button
             class="button primary"
             :disabled="busy || r.allocation.business_status !== 'OK'"
+            :aria-busy="busy"
             @click="command('publish')"
           >
             确认并开放互评
@@ -331,9 +428,9 @@ onUnmounted(() => {
           <table>
             <thead>
               <tr>
-                <th>任务 / 评价ID</th>
-                <th>作品代号</th>
-                <th>评审学生ID</th>
+                <th>任务编号 / 评价编号</th>
+                <th>作品匿名代号</th>
+                <th>评审学生编号</th>
                 <th>原分 / 秒</th>
                 <th>查看</th>
               </tr>

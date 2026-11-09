@@ -153,7 +153,7 @@ onBeforeRouteLeave(
   >
   <div class="page-heading">
     <div>
-      <span class="eyebrow">IMPORT STUDENTS</span>
+      <span class="eyebrow">名单维护</span>
       <h1>导入学生名单</h1>
       <p>先检查，再入库。让每一次数据变更清晰可见。</p>
     </div>

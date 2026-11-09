@@ -155,7 +155,7 @@ watch(
 <template>
   <div class="page-heading ability-heading">
     <div>
-      <span class="eyebrow">CHAPTER PERFORMANCE</span>
+      <span class="eyebrow">章节表现</span>
       <h1>个人章节表现</h1>
       <p class="muted">
         {{
@@ -661,7 +661,7 @@ watch(
 .ability-model-explanation {
   margin-bottom: 24px;
   padding: 22px 26px;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.7;
 }
 .ability-model-explanation h2 {
@@ -684,7 +684,7 @@ watch(
 }
 .ability-demo p {
   margin: 3px 0 0;
-  font-size: 12px;
+  font-size: 13px;
 }
 .ability-demo button {
   margin-left: auto;
@@ -710,7 +710,7 @@ watch(
   margin-bottom: 24px;
 }
 .card-heading p {
-  font-size: 12px;
+  font-size: 13px;
   margin: 5px 0 0;
 }
 .ability-chart-layout {
@@ -735,12 +735,12 @@ watch(
 }
 .ability-axis-label {
   fill: #43516a;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
 }
 .ability-scale {
   fill: #7e8ba2;
-  font-size: 10px;
+  font-size: 11px;
 }
 .ability-edge {
   stroke: var(--blue);
@@ -789,7 +789,7 @@ watch(
 }
 .ability-bar-item {
   margin-bottom: 22px;
-  font-size: 12px;
+  font-size: 13px;
 }
 .ability-bar-baseline {
   display: block;
@@ -821,7 +821,7 @@ watch(
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-size: 12px;
+  font-size: 14px;
 }
 .ability-evidence th,
 .ability-evidence td,
@@ -845,13 +845,13 @@ watch(
 }
 .ability-evidence small {
   display: block;
-  font-size: 11px;
+  font-size: 13px;
   margin-top: 3px;
   white-space: nowrap;
 }
 .ability-chapter-code {
   display: block;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 1px;
   color: var(--muted);
 }
@@ -871,7 +871,7 @@ watch(
   padding: 0 24px 20px;
 }
 .ability-provenance {
-  font-size: 12px;
+  font-size: 13px;
   color: #657188;
   margin: 18px 0;
 }

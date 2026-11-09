@@ -1,0 +1,8 @@
+{
+  "learner_l2": 0.05,
+  "item_l2": 0.3,
+  "difficulty_scale": 0.75,
+  "max_iterations": 180,
+  "tolerance": 1e-06,
+  "calibrate_items": true
+}

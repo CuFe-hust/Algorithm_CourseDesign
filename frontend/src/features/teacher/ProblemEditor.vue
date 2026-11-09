@@ -281,7 +281,7 @@ watch(tab, () => {
   >
   <div class="page-heading editor-heading">
     <div>
-      <span class="eyebrow">QUESTION EDITOR</span>
+      <span class="eyebrow">题目编辑</span>
       <h1>
         {{ existing ? "题目详情" : "创建题目"
         }}<span

@@ -818,3 +818,301 @@ tbody tr:hover td {
 .student-page .report-controls label {
   margin-bottom: 0;
 }
+
+/* ---------------------------------------------------------------------------
+   Readability pass 2026-11-09: Chinese-first typography, visible form states,
+   keyboard skip link and shared helper semantics. Business contracts are not
+   changed here; these rules only raise the floor for dense teaching pages.
+   --------------------------------------------------------------------------- */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  font-family:
+    "Noto Sans SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei",
+    "Segoe UI", system-ui, sans-serif;
+  font-size: 15px;
+}
+code,
+pre,
+.mono {
+  font-family:
+    "Cascadia Mono", "JetBrains Mono", "SFMono-Regular", Consolas,
+    "Microsoft YaHei", monospace;
+  font-variant-ligatures: none;
+}
+.eyebrow {
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  color: #5d6d86;
+  text-transform: none;
+}
+.small-label {
+  font-size: 13px;
+  color: #5d6d86;
+}
+.workspace-label {
+  font-size: 12px;
+  color: #64738a;
+}
+.workspace-label span {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  color: #5d6d86;
+  background: #f1f4f9;
+}
+.sidebar nav a {
+  font-size: 14px;
+}
+.sidebar-foot strong {
+  font-size: 13px;
+}
+.sidebar-foot p {
+  font-size: 12px;
+}
+.account strong {
+  font-size: 13px;
+}
+.account small {
+  font-size: 12px;
+}
+.page-footer {
+  font-size: 12px;
+}
+.text-link {
+  font-size: 13px;
+}
+th {
+  font-size: 13px;
+}
+td {
+  font-size: 14px;
+}
+.badge {
+  font-size: 12px;
+}
+.secondary-line {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.report-source,
+.snapshot-version {
+  font-size: 12px;
+  line-height: 1.65;
+}
+.hint {
+  font-size: 13px;
+  line-height: 1.7;
+}
+.alert {
+  font-size: 14px;
+}
+.inline-note {
+  font-size: 13px;
+  line-height: 1.7;
+}
+.empty h3 {
+  font-size: 16px;
+}
+.empty p {
+  font-size: 14px;
+  line-height: 1.7;
+}
+.loading {
+  font-size: 14px;
+}
+.meta-row dt {
+  font-size: 13px;
+}
+.meta-row dd {
+  font-size: 15px;
+}
+.analysis-intro p,
+.chain-card p,
+.model-pending p,
+.result-note {
+  font-size: 14px;
+}
+.report-metric span {
+  font-size: 13px;
+}
+.result-bar {
+  font-size: 14px;
+}
+.stat > div,
+.stat small {
+  font-size: 13px;
+}
+.page-heading p {
+  font-size: 14px;
+}
+.markdown {
+  font-size: 15px;
+}
+.markdown table th,
+.markdown table td {
+  font-size: 14px;
+}
+
+/* Keyboard users can jump over the fixed navigation. */
+.skip-link {
+  position: fixed;
+  left: 16px;
+  top: -100px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: #1f3f8f;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 6px 20px #1f3f8f33;
+}
+.skip-link:focus {
+  top: 16px;
+  outline: 3px solid #9db8ff;
+  outline-offset: 2px;
+}
+
+/* Screen-reader-only captions and status text. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Form states are visible in text, not only colour. */
+input[aria-invalid="true"],
+textarea[aria-invalid="true"],
+select[aria-invalid="true"] {
+  border-color: #b42318;
+  background: #fffafa;
+}
+input[aria-invalid="true"]:focus,
+textarea[aria-invalid="true"]:focus,
+select[aria-invalid="true"]:focus {
+  outline-color: #b4231833;
+  border-color: #b42318;
+}
+.field-error {
+  display: block;
+  margin: 6px 0 0;
+  color: #a51c14;
+  font-size: 13px;
+  line-height: 1.65;
+  font-weight: 500;
+}
+.form-status {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.65;
+}
+.form-status.error {
+  color: #8f1d16;
+  background: #fff4f2;
+  border: 1px solid #f3c7c1;
+}
+.form-status.success {
+  color: #17624f;
+  background: #f0faf5;
+  border: 1px solid #b9e4d4;
+}
+fieldset:disabled {
+  opacity: 0.82;
+}
+[aria-busy="true"] {
+  cursor: progress;
+}
+button[aria-busy="true"] {
+  cursor: progress;
+}
+.submission-context {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+}
+.submission-context span + span {
+  padding-left: 16px;
+  border-left: 1px solid #dfe5ee;
+}
+@media (max-width: 600px) {
+  .submission-context {
+    display: grid;
+    gap: 4px;
+  }
+  .submission-context span + span {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+.page-heading .eyebrow,
+.page-heading > .eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+button.small {
+  font-size: 13px;
+  min-height: 32px;
+}
+/* Contrast pass: helper and status text stays >= 4.5:1 on white and page grey. */
+:root {
+  --muted: #5b6b82;
+}
+.sidebar nav a {
+  color: #5b6b82;
+}
+.account small,
+.stat small,
+.page-footer,
+.report-source,
+.snapshot-version,
+.secondary-line,
+.back-link,
+.version {
+  color: #64738a;
+}
+.inline-note {
+  color: #4f6180;
+}
+.badge {
+  color: #596a86;
+  background: #eef2f8;
+}
+.badge.type {
+  color: #5b6b82;
+}
+.badge.green {
+  color: #1f6b51;
+  background: #eaf7f0;
+}
+.badge.amber {
+  color: #7a5510;
+  background: #fff6e6;
+}
+.badge.gray {
+  color: #596a86;
+  background: #f0f2f6;
+}
+.badge.red {
+  color: #9f2a2a;
+  background: #fff0f0;
+}
+.chain-card p,
+.model-pending p,
+.result-note,
+.analysis-intro p {
+  color: #5b6b82;
+}
+.alert pre {
+  font-size: 13px;
+}

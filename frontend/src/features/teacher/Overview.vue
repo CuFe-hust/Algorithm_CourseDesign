@@ -39,7 +39,7 @@ onMounted(load);
 <template>
   <div class="page-heading">
     <div>
-      <span class="eyebrow">COURSE OVERVIEW</span>
+      <span class="eyebrow">教学准备</span>
       <h1>课程概览</h1>
       <p>从这里开始今天的教学准备。</p>
     </div>

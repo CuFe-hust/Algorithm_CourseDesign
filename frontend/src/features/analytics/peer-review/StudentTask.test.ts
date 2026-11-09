@@ -81,6 +81,9 @@ it("requires every score and sends exact string IDs without client time or autho
     .dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
   await settle();
   expect(mocks.post).not.toHaveBeenCalled();
+  expect(host.querySelector('input[aria-invalid="true"]')).not.toBeNull();
+  expect(host.querySelector('textarea[aria-invalid="true"]')).not.toBeNull();
+  expect(host.textContent).toContain("请输入 0～10");
   fill(host);
   await settle();
   mocks.confirm.mockResolvedValue(true);

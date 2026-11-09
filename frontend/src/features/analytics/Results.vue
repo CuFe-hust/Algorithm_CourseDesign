@@ -141,9 +141,7 @@ watch(assignment, () => {
 <template>
   <header class="page-heading">
     <div>
-      <span class="eyebrow">{{
-        teacher ? "QUESTION RESULTS" : "MY LEARNING"
-      }}</span>
+      <span class="eyebrow">{{ teacher ? "逐题结果" : "学习报告" }}</span>
       <h1>{{ teacher ? "逐题结果与学习分析" : "我的学习报告" }}</h1>
       <p>
         {{
@@ -342,7 +340,7 @@ watch(assignment, () => {
     <section class="card">
       <div class="card-heading">
         <h2>学习分析与数据边界</h2>
-        <span class="badge amber">模型尚未全部接入</span>
+        <span class="badge amber">知识掌握待接入</span>
       </div>
       <div class="model-pending">
         <Info :size="20" />

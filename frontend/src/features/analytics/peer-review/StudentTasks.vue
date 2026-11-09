@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { request, errorText } from "../../../shared/api";
 import { type Page, type Task, label } from "./types";
@@ -9,6 +9,12 @@ const route = useRoute(),
   offset = ref(0),
   error = ref(""),
   busy = ref(false);
+const pendingCount = computed(
+  () => items.value.filter((task) => task.status !== "SUBMITTED").length,
+);
+const submittedCount = computed(
+  () => items.value.filter((task) => task.status === "SUBMITTED").length,
+);
 async function load() {
   busy.value = true;
   try {
@@ -30,25 +36,51 @@ onMounted(load);
   <section class="review-page">
     <header class="page-heading">
       <div>
-        <p class="eyebrow">PEER REVIEW</p>
+        <p class="eyebrow">学生互评</p>
         <h1>我的互评任务</h1>
         <p>独立阅读作品，按冻结量表逐项评分，并写出具体改进建议。</p>
       </div>
-      <button class="button" :disabled="busy" @click="load">刷新任务</button>
+      <button class="button" :disabled="busy" :aria-busy="busy" @click="load">
+        刷新任务
+      </button>
     </header>
     <p v-if="error" class="alert error" role="alert">{{ error }}</p>
     <section class="card review-card">
       <p v-if="!items.length">
         {{ busy ? "正在读取任务…" : "当前没有分配给你的互评任务。" }}
       </p>
-      <div v-for="t in items" :key="t.id" class="signal">
-        <p class="muted">{{ t.assignment_title }}</p>
+      <div v-else class="review-summary" aria-label="本页互评任务摘要">
+        <div>
+          <strong>{{ items.length }}</strong
+          ><span>本页任务</span>
+        </div>
+        <div>
+          <strong>{{ pendingCount }}</strong
+          ><span>待评审</span>
+        </div>
+        <div>
+          <strong>{{ submittedCount }}</strong
+          ><span>已提交</span>
+        </div>
+        <div>
+          <strong>{{ total }}</strong
+          ><span>全部任务</span>
+        </div>
+      </div>
+      <div v-for="t in items" :key="t.id" class="signal task-card">
+        <div class="task-card-head">
+          <p class="muted">{{ t.assignment_title }}</p>
+          <span
+            class="badge"
+            :class="t.status === 'SUBMITTED' ? 'green' : 'amber'"
+            >{{ label(t.status) }}</span
+          >
+        </div>
         <h2>{{ t.title }}</h2>
-        <p>
-          第 {{ t.round_no }} 轮 · {{ label(t.status) }} ·
-          {{ label(t.round_status) }}
+        <p class="task-meta">
+          第 {{ t.round_no }} 轮 · {{ label(t.round_status) }} · 截止
+          {{ new Date(t.review_deadline).toLocaleString() }}
         </p>
-        <p>截止 {{ new Date(t.review_deadline).toLocaleString() }}</p>
         <RouterLink
           class="button primary"
           :to="`/student/courses/${route.params.courseId}/reviews/${t.id}`"

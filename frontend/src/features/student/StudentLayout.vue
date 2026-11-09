@@ -33,38 +33,50 @@ async function switchCourse() {
 </script>
 <template>
   <div class="workspace">
-    <aside class="sidebar" :class="{ open: mobile }">
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+    <aside id="student-sidebar" class="sidebar" :class="{ open: mobile }">
       <RouterLink :to="`/student/courses/${session.courseId}`" class="brand"
         ><span class="brand-icon"><BookOpen :size="22" /></span
         >AlgoClass</RouterLink
       >
-      <div class="workspace-label">学生课程 <span>STUDENT</span></div>
+      <div class="workspace-label">学生课程 <span>学生端</span></div>
       <nav aria-label="学生导航" @click="mobile = false">
         <RouterLink
           :to="`/student/courses/${session.courseId}`"
           :class="{
             selected: $route.path === `/student/courses/${session.courseId}`,
           }"
+          :aria-current="
+            $route.path === `/student/courses/${session.courseId}`
+              ? 'page'
+              : undefined
+          "
           ><ClipboardList :size="19" />作业与作答</RouterLink
         >
         <RouterLink
           :to="`/student/courses/${session.courseId}/ability`"
           :class="{ selected: $route.path.endsWith('/ability') }"
+          :aria-current="$route.path.endsWith('/ability') ? 'page' : undefined"
           ><ChartNoAxesCombined :size="19" />个人章节表现</RouterLink
         >
         <RouterLink
           :to="`/student/courses/${session.courseId}/submissions`"
           :class="{ selected: $route.path.includes('/submissions') }"
+          :aria-current="
+            $route.path.includes('/submissions') ? 'page' : undefined
+          "
           ><History :size="19" />本人提交</RouterLink
         >
         <RouterLink
           :to="`/student/courses/${$route.params.courseId}/reviews`"
           :class="{ selected: $route.path.includes('/reviews') }"
+          :aria-current="$route.path.includes('/reviews') ? 'page' : undefined"
           ><ClipboardList :size="19" />我的互评</RouterLink
         >
         <RouterLink
           :to="`/student/courses/${$route.params.courseId}/learning`"
           :class="{ selected: $route.path.includes('/learning') }"
+          :aria-current="$route.path.includes('/learning') ? 'page' : undefined"
           ><ChartNoAxesCombined :size="19" />学习报告</RouterLink
         >
       </nav>
@@ -82,6 +94,8 @@ async function switchCourse() {
         <button
           class="icon-button mobile-menu"
           aria-label="展开导航"
+          aria-controls="student-sidebar"
+          :aria-expanded="mobile"
           @click="mobile = !mobile"
         >
           <Menu :size="22" />
@@ -110,7 +124,7 @@ async function switchCourse() {
           </button>
         </div>
       </header>
-      <main class="page student-page">
+      <main id="main-content" class="page student-page" tabindex="-1">
         <div v-if="error" class="alert error">{{ error }}</div>
         <RouterView :key="$route.path" />
       </main>

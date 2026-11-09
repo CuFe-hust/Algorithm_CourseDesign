@@ -21,6 +21,31 @@ const loading = ref(true);
 const error = ref("");
 const notice = ref("");
 const busy = ref(false);
+const context = ref<{ assignmentTitle: string; itemTitle: string }>({
+  assignmentTitle: "",
+  itemTitle: "",
+});
+
+/**
+ * The submission API returns the assignment and item identifiers but not their
+ * titles. Read the assignment detail once so the version page can say which
+ * assignment this same-named problem belongs to. A failure here must not hide
+ * the submission itself, so it is deliberately non-fatal.
+ */
+async function loadContext(value: SubmissionDetail) {
+  try {
+    const assignment = await api.getAssignment(value.assignment_id);
+    const item = assignment.items.find(
+      (entry) => entry.id === value.assignment_item_id,
+    );
+    context.value = {
+      assignmentTitle: assignment.title,
+      itemTitle: item?.title || "",
+    };
+  } catch {
+    context.value = { assignmentTitle: "", itemTitle: "" };
+  }
+}
 
 const code = computed(() =>
   detail.value?.language
@@ -57,6 +82,7 @@ async function load() {
   error.value = "";
   try {
     detail.value = await api.getSubmission(submissionId.value);
+    await loadContext(detail.value);
   } catch (e) {
     error.value = errorText(e);
   } finally {
@@ -116,15 +142,21 @@ onMounted(load);
     <ArrowLeft :size="15" />返回提交历史
   </RouterLink>
   <div v-if="error" class="alert error">{{ error }}</div>
-  <div v-if="notice" class="alert success">{{ notice }}</div>
+  <div v-if="notice" class="alert success" role="status">{{ notice }}</div>
   <div v-if="loading" class="loading">正在读取版本…</div>
   <template v-else-if="detail">
     <div class="page-heading">
-      <span class="eyebrow">VERSION</span>
-      <h1>第 {{ detail.version_no }} 版</h1>
-      <p class="muted">
-        提交于 {{ formatDateTime(detail.submitted_at) }} ·
-        {{ detail.language || "主观题" }} · 只读
+      <span class="eyebrow">提交版本</span>
+      <h1>{{ context.itemTitle || "提交版本" }}</h1>
+      <p class="muted submission-context">
+        <span v-if="context.assignmentTitle"
+          >所属作业：{{ context.assignmentTitle }}</span
+        >
+        <span>第 {{ detail.version_no }} 版</span>
+        <span
+          >提交于 {{ formatDateTime(detail.submitted_at) }} ·
+          {{ detail.language || "主观题" }} · 只读</span
+        >
       </p>
     </div>
     <section class="card">

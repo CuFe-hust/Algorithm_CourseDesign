@@ -109,7 +109,7 @@ it("keeps a real zero distinct from missing and never invents learning-model sco
   expect(host.textContent).toContain("0.00");
   expect(host.textContent).toContain("等待互评处理");
   expect(host.textContent).toContain("暂无结果");
-  expect(host.textContent).toContain("模型尚未全部接入");
+  expect(host.textContent).toContain("知识掌握待接入");
   expect(host.querySelector("a")?.getAttribute("href")).toBe(
     "/student/courses/7/submissions/9223372036854775805",
   );

@@ -46,7 +46,7 @@ onMounted(load);
 <template>
   <header class="page-heading">
     <div>
-      <span class="eyebrow">COURSE INSIGHTS</span>
+      <span class="eyebrow">课程分析</span>
       <h1>分析中心</h1>
       <p>从提交到互评、从证据到结果，在同一课程中查看六条业务链路。</p>
     </div>
@@ -83,7 +83,7 @@ onMounted(load);
     <section class="chain-grid">
       <article v-for="c in data.chains" :key="c.number" class="card chain-card">
         <div class="chain-top">
-          <span class="chain-number">WORKFLOW / 0{{ c.number }}</span
+          <span class="chain-number">链路 0{{ c.number }}</span
           ><span class="badge" :class="c.state === 'READY' ? 'green' : 'amber'"
             ><CheckCircle2 v-if="c.state === 'READY'" :size="12" /><Clock3
               v-else

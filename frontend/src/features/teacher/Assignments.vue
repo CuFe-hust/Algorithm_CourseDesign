@@ -37,7 +37,7 @@ onMounted(() => load());
 <template>
   <div class="page-heading">
     <div>
-      <span class="eyebrow">ASSIGNMENTS</span>
+      <span class="eyebrow">教学组织</span>
       <h1>作业管理</h1>
       <p>固定题目版本与应交名单，再决定何时开放提交。</p>
     </div>
