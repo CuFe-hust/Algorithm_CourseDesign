@@ -44,7 +44,6 @@ onMounted(() => load());
 <template>
   <div class="page-heading">
     <div>
-      <span class="eyebrow">题目资源</span>
       <h1>题库管理</h1>
       <p>统一维护题目内容、参考答案和评分配置。</p>
     </div>

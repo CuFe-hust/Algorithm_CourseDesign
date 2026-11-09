@@ -137,7 +137,6 @@ onBeforeUnmount(() => {
 </script>
 <template>
   <div class="page-heading">
-    <span class="eyebrow">学习任务</span>
     <h1>课程作业</h1>
     <p class="muted">选择作业进入题目；草稿保存在本机，提交后生成新版本。</p>
   </div>

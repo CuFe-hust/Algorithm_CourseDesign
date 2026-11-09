@@ -260,7 +260,6 @@ onMounted(async () => {
 <template>
   <div class="page-heading">
     <div>
-      <span class="eyebrow">查重证据</span>
       <h1>相似代码检测</h1>
       <p class="muted">
         只比较同一道题内、截止前每人最后一次有效提交。相似度是证据，不是抄袭判定。

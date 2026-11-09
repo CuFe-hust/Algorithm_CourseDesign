@@ -143,7 +143,6 @@ onMounted(async () => {
 <template>
   <div class="page-heading">
     <div>
-      <span class="eyebrow">课程成员</span>
       <h1>学生名单</h1>
       <p>管理本课程的学生信息与班级归属。</p>
     </div>

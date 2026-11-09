@@ -1116,3 +1116,237 @@ button.small {
 .alert pre {
   font-size: 13px;
 }
+
+/* Course workspace variant */
+:root {
+  font-size: 16px;
+  --muted: #536072;
+}
+.page-heading p,
+.hint,
+.small-label,
+.account small,
+.table-wrap table,
+.course-info small,
+.review-page .hint {
+  font-size: 14px;
+}
+.page-heading {
+  margin-bottom: 22px;
+  gap: 16px;
+}
+.sidebar nav {
+  margin-top: 24px;
+}
+.sidebar nav a {
+  min-height: 44px;
+  font-size: 15px;
+}
+.topbar {
+  min-height: 62px;
+  height: auto;
+  backdrop-filter: none;
+}
+.course-select {
+  min-width: 0;
+}
+.course-select strong {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.course-picker .page-heading {
+  display: block;
+}
+.course-picker .course-card {
+  min-height: 80px;
+}
+.course-picker .course-info strong {
+  font-size: 17px;
+}
+button,
+.button,
+input,
+select {
+  min-height: 44px;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+.answer-actions {
+  align-items: center;
+  gap: 12px;
+}
+.answer-actions .primary {
+  font-size: 16px;
+}
+.access-page {
+  min-height: 100svh;
+  display: grid;
+  align-content: center;
+}
+.access-context .brand {
+  font-size: 22px;
+}
+.access-context-title h1 {
+  margin: 0;
+  line-height: 1.25;
+}
+.access-context-title p {
+  font-size: 17px;
+  margin: 10px 0 0;
+}
+.access-form form {
+  width: min(100%, 410px);
+  display: grid;
+  gap: 10px;
+}
+.access-form h2 {
+  font-size: 28px;
+  margin: 0 0 16px;
+}
+.access-form label {
+  font-size: 15px;
+  margin: 5px 0 0;
+}
+.access-form input {
+  width: 100%;
+  font-size: 16px;
+}
+.access-form .primary {
+  margin-top: 10px;
+  font-size: 16px;
+  justify-content: space-between;
+}
+.access-help {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 10px 0 0;
+}
+.password-field {
+  position: relative;
+}
+.password-field input {
+  padding-right: 54px;
+}
+.password-field input::-ms-reveal {
+  display: none;
+}
+.password-field .password-toggle {
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  bottom: 1px;
+  min-height: 0;
+  width: 44px;
+  padding: 0;
+  border: 0;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  background: transparent;
+}
+@media (max-width: 768px) {
+  .topbar {
+    padding: 8px 12px;
+  }
+  .course-select strong {
+    font-size: 14px;
+  }
+  .access-form {
+    padding: 24px;
+  }
+}
+
+:root {
+  --blue: #244f9e;
+  --border: #dadad1;
+  --muted: #4f5b68;
+  background: #f5f4ed;
+  color: #202b3c;
+  font-family: "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
+}
+body {
+  background: #f5f4ed;
+}
+h1 {
+  font-weight: 720;
+  letter-spacing: -0.04em;
+}
+.sidebar {
+  background: #172b43;
+  border-right: 0;
+  color: #f8f9fc;
+}
+.sidebar .brand {
+  color: #fff;
+}
+.sidebar .brand-icon {
+  background: #305692;
+  border-radius: 6px;
+}
+.sidebar nav a,
+.sidebar nav a svg {
+  color: #dce6f2;
+}
+.sidebar nav a:hover {
+  background: #263e59;
+}
+.sidebar nav a.selected,
+.sidebar nav a.selected svg {
+  color: #fff;
+  background: #2e4a6b;
+}
+.sidebar nav a.selected {
+  box-shadow: inset 3px 0 #e5b669;
+}
+.sidebar-switch {
+  background: #223954;
+  border-color: #48617b;
+  color: #fff;
+}
+.topbar {
+  background: #fffefa;
+  border-bottom-color: #deddd2;
+}
+.card {
+  border-radius: 7px;
+  box-shadow: none;
+  background: #fffefa;
+}
+.answer-layout .answer-card {
+  border-top: 3px solid #244f9e;
+}
+.access-page {
+  width: min(100% - 32px, 530px);
+  margin: auto;
+  padding: 26px 0;
+  grid-template-columns: 1fr;
+}
+.access-context {
+  padding: 26px 36px 22px;
+  border-bottom: 1px solid #deddd2;
+}
+.access-context-title {
+  margin-top: 30px;
+}
+.access-context-title h1 {
+  font-family: "Noto Serif CJK SC", "Songti SC", SimSun, serif;
+  font-size: clamp(28px, 5vw, 44px);
+}
+.access-context-title p {
+  color: #536072;
+}
+.access-form {
+  padding: 28px 36px;
+  background: #fffefa;
+  border-bottom: 2px solid #b48443;
+}
+.access-form form {
+  width: 100%;
+}
+@media (max-width: 768px) {
+  .access-context,
+  .access-form {
+    padding-inline: 22px;
+  }
+}

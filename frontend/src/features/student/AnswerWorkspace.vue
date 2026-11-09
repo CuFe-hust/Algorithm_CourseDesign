@@ -308,7 +308,7 @@ onMounted(load);
         <div class="card-heading">
           <h2>我的作答</h2>
           <span v-if="item.submission_open" class="badge green">可提交</span>
-          <span v-else class="badge gray">不可提交</span>
+          <span v-else class="badge gray">提交已关闭</span>
         </div>
         <label v-if="programming && item.allowed_languages.length > 1">
           语言
@@ -361,19 +361,24 @@ onMounted(load);
             @click="submit"
           >
             <Send :size="16" />{{
-              submission.busy.value ? "正在提交…" : "提交新版本"
+              submission.busy.value
+                ? "正在提交…"
+                : versions.length
+                  ? "提交新版本"
+                  : "提交作答"
             }}
           </button>
-          <span v-if="submission.receipt.value" class="badge type">
+          <span
+            v-if="submission.receipt.value"
+            class="badge type"
+            role="status"
+          >
             已接收 v{{ submission.receipt.value.version_no }}
           </span>
           <span v-if="dirty && submission.receipt.value" class="badge amber"
             >有新修改未提交</span
           >
         </div>
-        <p class="hint">
-          提交后会生成新的版本，旧代码保留。评测完成后，可在下方查看结果与历史记录。
-        </p>
       </section>
 
       <section v-if="submission.pending.value.length" class="card">

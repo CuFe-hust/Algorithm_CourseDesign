@@ -46,7 +46,6 @@ onMounted(load);
 <template>
   <header class="page-heading">
     <div>
-      <span class="eyebrow">课程分析</span>
       <h1>分析中心</h1>
       <p>从提交到互评、从证据到结果，在同一课程中查看六条业务链路。</p>
     </div>

@@ -165,7 +165,6 @@ onMounted(async () => {
 </script>
 <template>
   <div class="page-heading">
-    <span class="eyebrow">提交记录</span>
     <h1>本人提交</h1>
     <p class="muted">列表只显示摘要；正文与编译诊断请进入版本详情查看。</p>
   </div>
