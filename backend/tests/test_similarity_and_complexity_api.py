@@ -270,7 +270,7 @@ def test_complexity_accepts_teacher_requests_but_not_other_students(client, auth
     assert teacher.status_code == 202
 
 
-def test_complexity_not_measurable_without_scale_profile(client, auth, db, demo, local_mode):
+def test_complexity_discovers_a_missing_scale_profile(client, auth, db, demo, local_mode):
     item = _programming_item(db, demo)
     version = db.get(ProblemVersion, item.problem_version_id)
     db.query(ProblemComplexityProfile).filter(
@@ -282,10 +282,10 @@ def test_complexity_not_measurable_without_scale_profile(client, auth, db, demo,
     assert complexity_service.process_one(db, measure=True) is True
     body = client.get(f'/api/v1/analysis/submissions/{submission.id}/complexity',
                       headers=auth('demo.student01')).json()
-    assert body['status'] == 'NOT_MEASURABLE'
-    assert body['report']['status'] == 'NOT_MEASURABLE'
-    assert body['reason'] and '可伸缩' in body['reason']
-    assert body['report']['time'] == {} and body['report']['trace'] == {}
+    assert body['status'] == 'SUCCEEDED', body
+    assert body['report']['trace_meta']['adaptive']['status'] == 'READY'
+    assert body['report']['trace_meta']['profile_version'] >= 1
+    assert body['report']['trace']['points']
 
 
 def test_fixed_input_problems_say_the_class_is_not_about_growth(client, auth, db, demo, local_mode):
@@ -602,3 +602,145 @@ def test_complexity_explicit_retry_is_idempotent_bounded_and_fences_old_attempt(
     report.attempt_no=3;db.commit()
     with pytest.raises(AppError) as err:complexity_service.request_report(db,submission.id,actor,'retry-over-limit')
     assert err.value.code=='COMPLEXITY_RETRY_LIMIT'
+
+
+def _new_adaptive_problem(db, item, example):
+    from sqlalchemy import delete
+    from app.db.models import ReferenceSolution, TestCase, TestSuite
+    from test_probe_families import _adaptive_example
+    metadata, cases, source, _ = _adaptive_example(example)
+    version = db.get(ProblemVersion, item.problem_version_id)
+    problem = db.get(Problem, version.problem_id)
+    problem.code = example[0]
+    version.input_spec_md = metadata.input_spec_md
+    version.data_constraints_md = metadata.data_constraints_md
+    db.execute(delete(ProblemComplexityProfile).where(ProblemComplexityProfile.problem_version_id == version.id))
+    db.execute(delete(ReferenceSolution).where(ReferenceSolution.problem_version_id == version.id))
+    db.add(ReferenceSolution(problem_version_id=version.id, language='python3', content=source,
+                             created_by=problem.created_by))
+    suite = db.scalar(select(TestSuite).where(TestSuite.problem_version_id == version.id)
+                      .order_by(TestSuite.version_no.desc()))
+    db.execute(delete(TestCase).where(TestCase.test_suite_id == suite.id))
+    for order, (text, expected) in enumerate(cases):
+        db.add(TestCase(test_suite_id=suite.id, sort_order=order, input_text=text,
+                        expected_output=expected, weight=1, is_public=True))
+    db.commit()
+    return version, source
+
+
+@pytest.mark.parametrize('example_index', [0, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15])
+def test_new_problem_gets_real_complexity_without_any_code_mapping(client, auth, db, demo,
+                                                                  local_mode, example_index):
+    from test_probe_families import ADAPTIVE_EXAMPLES
+    item = _programming_item(db, demo)
+    version, source = _new_adaptive_problem(db, item, ADAPTIVE_EXAMPLES[example_index])
+    # Re-running the old seed creates an unmeasurable placeholder for a new code;
+    # discovery must upgrade it rather than trust the placeholder forever.
+    seed_profiles(db)
+    submission = _judge(db, _add_submission(db, item, _students(db)[0], source))
+    headers = auth('demo.student01')
+    response = client.post(f'/api/v1/analysis/submissions/{submission.id}/complexity',
+                           headers=headers, json={'request_id': 'adaptive-new'})
+    assert response.status_code == 202
+    assert complexity_service.process_one(db)
+    result = client.get(f'/api/v1/analysis/submissions/{submission.id}/complexity', headers=headers).json()
+    assert result['status'] == 'SUCCEEDED', result
+    assert result['report']['trace_meta']['adaptive']['status'] == 'READY'
+    assert result['report']['trace_meta']['validation']['known_cases'] == 1
+    assert len(result['report']['trace']['points']) >= 3
+    if example_index == 7:
+        assert result['report']['time']['class'] == 'O(1)'
+    profile = complexity_service.profile_for(db, version.id)
+    assert profile.family != 'EXISTING_CASES'
+
+
+def test_adaptive_profile_is_reused_and_revalidated_when_reference_changes(db, demo, local_mode, monkeypatch):
+    from app.analysis import profiles
+    from app.db.models import ReferenceSolution
+    from test_probe_families import ADAPTIVE_EXAMPLES
+    item = _programming_item(db, demo)
+    version, _ = _new_adaptive_problem(db, item, ADAPTIVE_EXAMPLES[7])
+    calls, original = [], profiles.validate_adaptive
+    def counted(*args, **kwargs):
+        calls.append(1)
+        return original(*args, **kwargs)
+    monkeypatch.setattr(profiles, 'validate_adaptive', counted)
+    first = profiles.resolve_adaptive_profile(db, version, None)
+    revision = first.version_no
+    second = profiles.resolve_adaptive_profile(db, version, first)
+    assert first.id == second.id and len(calls) == 1
+    reference = db.scalar(select(ReferenceSolution).where(ReferenceSolution.problem_version_id == version.id))
+    reference.content += '\n# reference revision\n'
+    db.commit()
+    third = profiles.resolve_adaptive_profile(db, version, second)
+    assert third.id == first.id and third.version_no == revision + 1 and len(calls) == 2
+    third.source = 'TEACHER'
+    db.commit()
+    profiles.resolve_adaptive_profile(db, version, third)
+    assert len(calls) == 2, 'explicit teacher profiles must not be replaced'
+
+
+def test_generator_upgrade_retries_a_cached_unsupported_layout(db, demo, local_mode, monkeypatch):
+    from app.analysis import profiles
+    from test_probe_families import ADAPTIVE_EXAMPLES
+    item = _programming_item(db, demo)
+    version, _ = _new_adaptive_problem(db, item, ADAPTIVE_EXAMPLES[7])
+    with monkeypatch.context() as previous:
+        previous.setattr(profiles, 'ADAPTIVE_VERSION', 'previous-generator')
+        previous.setattr(profiles, 'adaptive_candidates', lambda *args: ([], '旧生成器不支持此布局'))
+        unsupported = profiles.resolve_adaptive_profile(db, version, None)
+        assert unsupported.spec['adaptive']['status'] == 'UNSUPPORTED'
+        revision = unsupported.version_no
+    ready = profiles.resolve_adaptive_profile(db, version, unsupported)
+    assert ready.id == unsupported.id and ready.version_no == revision + 1
+    assert ready.spec['adaptive']['status'] == 'READY'
+
+
+def test_unmeasurable_report_can_retry_after_input_metadata_is_completed(client, auth, db, demo, local_mode):
+    from test_probe_families import ADAPTIVE_EXAMPLES
+    item = _programming_item(db, demo)
+    version, source = _new_adaptive_problem(db, item, ADAPTIVE_EXAMPLES[7])
+    complete_description = version.input_spec_md
+    version.input_spec_md = ''
+    db.commit()
+    submission = _judge(db, _add_submission(db, item, _students(db)[0], source))
+    actor = db.get(User, submission.student_id)
+    complexity_service.request_report(db, submission.id, actor, 'before-description')
+    assert complexity_service.process_one(db)
+    assert complexity_service.report_view(db, submission.id, actor)['status'] == 'NOT_MEASURABLE'
+    version.input_spec_md = complete_description
+    db.commit()
+    complexity_service.request_report(db, submission.id, actor, 'after-description')
+    assert complexity_service.process_one(db)
+    assert complexity_service.report_view(db, submission.id, actor)['status'] == 'SUCCEEDED'
+
+
+def test_generated_answer_disagreement_does_not_publish_complexity_or_change_judging(db, demo, local_mode):
+    from test_probe_families import ADAPTIVE_EXAMPLES
+    item = _programming_item(db, demo)
+    _new_adaptive_problem(db, item, ADAPTIVE_EXAMPLES[7])
+    submission = _judge(db, _add_submission(db, item, _students(db)[0], 'print(55)'))
+    actor = db.get(User, submission.student_id)
+    complexity_service.request_report(db, submission.id, actor, 'constant-wrong-output')
+    assert complexity_service.process_one(db)
+    result = complexity_service.report_view(db, submission.id, actor)
+    assert result['status'] == 'NOT_MEASURABLE'
+    assert '参考解不一致' in result['reason']
+    verdict = db.scalar(select(JudgeResult).where(JudgeResult.submission_id == submission.id))
+    assert verdict.verdict == 'ACCEPTED'
+
+
+def test_transient_profile_validation_failure_can_be_retried_without_changing_the_problem(db, demo, monkeypatch):
+    from app.analysis import profiles
+    from test_probe_families import ADAPTIVE_EXAMPLES
+    item = _programming_item(db, demo)
+    version, _ = _new_adaptive_problem(db, item, ADAPTIVE_EXAMPLES[7])
+    original, calls = profiles.validate_adaptive, []
+    def intermittent(*args, **kwargs):
+        calls.append(1)
+        return (None, '预算不足') if len(calls) == 1 else original(*args, **kwargs)
+    monkeypatch.setattr(profiles, 'validate_adaptive', intermittent)
+    failed = profiles.resolve_adaptive_profile(db, version, None)
+    assert failed.spec['adaptive']['status'] == 'VALIDATION_FAILED'
+    ready = profiles.resolve_adaptive_profile(db, version, failed)
+    assert ready.spec['adaptive']['status'] == 'READY' and len(calls) == 2

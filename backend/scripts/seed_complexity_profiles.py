@@ -6,7 +6,7 @@ Run once after ``alembic upgrade head`` and after the demo or full data import:
 
 Each profile is acceptance-tested by running the bank's own reference solution
 over its generated ladder with the trace collector: the input must be readable,
-several rungs must finish, and the counted work must grow with n. A profile that
+several rungs must finish with nonempty execution traces. Constant work is valid. A profile that
 fails is stored as ``EXISTING_CASES`` (the problem is reported as unmeasurable)
 together with the reason. To check the table offline, without a database, run
 ``python -m scripts.validate_complexity_profiles``.

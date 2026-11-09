@@ -103,7 +103,12 @@ let unmounted = false;
 const currentItem = computed(
   () => items.value.find((item) => item.item_id === itemId.value) ?? null,
 );
-const hasProfile = computed(() => Boolean(currentItem.value?.profile_family));
+const hasProfile = computed(() =>
+  Boolean(
+    currentItem.value?.profile_family &&
+    currentItem.value.profile_family !== "EXISTING_CASES",
+  ),
+);
 const visibleItems = computed(() =>
   items.value.filter(
     (item) => !assignmentId.value || item.assignment_id === assignmentId.value,
@@ -277,7 +282,12 @@ async function loadRows(silent = false) {
 function pickItem(pool: ComplexityItem[]) {
   if (pool.some((item) => item.item_id === itemId.value)) return;
   itemId.value =
-    (pool.find((item) => item.profile_family) ?? pool[0])?.item_id ?? "";
+    (
+      pool.find(
+        (item) =>
+          item.profile_family && item.profile_family !== "EXISTING_CASES",
+      ) ?? pool[0]
+    )?.item_id ?? "";
 }
 
 async function loadItems() {
@@ -340,7 +350,7 @@ onBeforeUnmount(() => {
   >
     <AlertTriangle :size="15" />
     <span>
-      该题没有配置规模伸缩档，平台无法测量增长，报告的结论会是“无法给出结论”。请先为该题配置伸缩档，再请求复杂度分析。
+      该题尚未配置输入生成方案。请求分析后，系统会尝试自动识别输入结构并校验生成数据；暂不支持的格式会显示具体原因。
     </span>
   </div>
 
@@ -389,7 +399,11 @@ onBeforeUnmount(() => {
               :value="item.item_id"
             >
               {{ item.problem_code }} · {{ item.title
-              }}{{ item.profile_family ? "" : "（无伸缩档）" }}
+              }}{{
+                item.profile_family && item.profile_family !== "EXISTING_CASES"
+                  ? ""
+                  : "（待自动识别输入）"
+              }}
             </option>
           </select>
         </label>
@@ -404,7 +418,7 @@ onBeforeUnmount(() => {
         </button>
         <button
           class="small"
-          :disabled="queueing || !itemId || !hasProfile"
+          :disabled="queueing || !itemId"
           title="为该题全部真实通过的提交排队复杂度分析；已有报告的提交自动跳过"
           @click="queueBatch"
         >
@@ -449,7 +463,7 @@ onBeforeUnmount(() => {
           学生通过真实评测后，可以在学生端的提交详情里请求分析，报告会出现在这里。
         </p>
         <p>
-          教师也可以按单份提交调用分析接口触发，但平台没有批量触发接口，所以本页不提供批量分析按钮。
+          可以点击上方按钮批量请求分析。没有输入配置的题目，系统会先尝试自动识别并验收生成方案。
         </p>
         <RouterLink to="/teacher/students" class="button subtle"
           >查看学生名单</RouterLink

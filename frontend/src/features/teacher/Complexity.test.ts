@@ -257,7 +257,7 @@ it("shows the stored reason for a failed report instead of an empty class", asyn
   expect(body(host)).not.toContain("O(1)");
 });
 
-it("warns when the selected item has no scale profile", async () => {
+it("explains automatic input discovery when the item has no profile", async () => {
   const host = mount((path) => {
     if (path.startsWith("/analysis/courses/1/complexity/items"))
       return itemsResponse([{ ...item, profile_family: null }]);
@@ -267,8 +267,8 @@ it("warns when the selected item has no scale profile", async () => {
   });
   await settle();
 
-  expect(body(host)).toContain("该题没有配置规模伸缩档");
-  expect(body(host)).toContain("无法给出结论");
+  expect(body(host)).toContain("自动识别输入结构");
+  expect(body(host)).toContain("暂不支持的格式会显示具体原因");
   expect(host.querySelector('select[aria-label="选择题目"]')).toBeTruthy();
 });
 
@@ -417,18 +417,22 @@ it("queues analysis for the whole item from the teacher page", async () => {
   expect(host.textContent).toContain("已为 3 份提交排队分析");
 });
 
-it("hides the batch button when the item has no scale profile", async () => {
-  const host = mount((path) => {
-    if (path.startsWith("/analysis/courses/1/complexity/items"))
-      return itemsResponse([{ ...item, profile_family: null }]);
-    return overviewResponse([]);
-  });
-  await settle();
-  const button = [...host.querySelectorAll("button")].find((b) =>
-    b.textContent?.includes("排队分析"),
-  );
-  expect(button?.disabled).toBe(true);
-});
+it.each([null, "EXISTING_CASES"])(
+  "allows input discovery for an unconfigured item (%s)",
+  async (profile_family) => {
+    const host = mount((path) => {
+      if (path.startsWith("/analysis/courses/1/complexity/items"))
+        return itemsResponse([{ ...item, profile_family }]);
+      return overviewResponse([]);
+    });
+    await settle();
+    const button = [...host.querySelectorAll("button")].find((b) =>
+      b.textContent?.includes("排队分析"),
+    );
+    expect(button).toBeDefined();
+    expect(button?.disabled).toBe(false);
+  },
+);
 
 it("renders a report with no request time without crashing", async () => {
   const host = mount((path) => {

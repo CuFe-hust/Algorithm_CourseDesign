@@ -14,6 +14,7 @@ being given a lexical guess.
 from __future__ import annotations
 
 import json
+import time
 from datetime import timedelta
 
 from sqlalchemy import func, select
@@ -22,6 +23,7 @@ from sqlalchemy.orm import Session
 from app.analysis.trace import collect as trace_collect
 from app.analysis.trace import infer as trace_infer
 from app.analysis.trace import report as trace_report
+from app.analysis.profiles import check_adaptive_submission, resolve_adaptive_profile
 from app.common.permissions import course_role, require_teacher
 from app.core.errors import AppError
 from app.db.base import utcnow
@@ -30,7 +32,7 @@ from app.db.models import (Assignment, AssignmentItem, ComplexityReport, JudgeRe
 from app.judge import config as judge_config
 
 IMPLEMENTATION_NAME = 'complexity_trace'
-IMPLEMENTATION_VERSION = '1'
+IMPLEMENTATION_VERSION = '3'
 LEASE_SECONDS = 180
 # Counting is cheap compared with the old wall-clock ladder; the budget mostly
 # guards against a pathological submission.
@@ -97,7 +99,7 @@ def _retry_failed_report(db, report, actor, request_id):
     history=list(report.history or [])
     if any(h.get('request_id')==request_id and h.get('request_actor')==str(actor.id) for h in history):
         return False
-    if report.status not in ('FAILED','INELIGIBLE'):return False
+    if report.status not in ('FAILED','INELIGIBLE','NOT_MEASURABLE'):return False
     if report.attempt_no>=3:
         raise AppError(409,'COMPLEXITY_RETRY_LIMIT','本版本分析已尝试3次，请联系教师检查配置')
     report.history=[*history,dict(event='EXPLICIT_RETRY',request_id=request_id,request_actor=str(actor.id),
@@ -140,8 +142,11 @@ def request_report(db: Session, submission_id: int, actor: User,
         raise AppError(409, reason, _reason_message(reason), details)
     existing = db.scalar(select(ComplexityReport).where(ComplexityReport.submission_id == submission.id))
     if existing is not None:
+        profile = profile_for(db, item.problem_version_id)
+        profile_changed = profile is not None and existing.trace_meta.get('profile_version') is not None \
+            and existing.trace_meta['profile_version'] != profile.version_no
         if existing.implementation_name != IMPLEMENTATION_NAME \
-                or existing.implementation_version != IMPLEMENTATION_VERSION:
+                or existing.implementation_version != IMPLEMENTATION_VERSION or profile_changed:
             # A new implementation must produce a new report rather than silently
             # mixing two methods under one row. The superseded conclusion is kept
             # in history: a teacher who read the old verdict can see it changed.
@@ -416,13 +421,7 @@ def _analyse(db: Session, report_id: int, *, measure: bool) -> None:
                      error_message='本次请求没有执行轨迹采集，报告不给出复杂度结论',
                      limitations=[])
         return
-    if profile is None:
-        _write_plain(db, report_id, status='NOT_MEASURABLE',
-                     error_message='该题尚未配置可伸缩的输入形态，无法采集执行轨迹，'
-                                   '因此不给出复杂度结论',
-                     limitations=['没有可伸缩输入就没有执行轨迹，本报告不做推测'],
-                     trace_meta={'profile_family': None})
-        return
+    profile = resolve_adaptive_profile(db, version, profile)
     if profile.family == 'FIXED':
         _write_plain(db, report_id, status='NOT_MEASURABLE',
                      error_message='该题输入规模固定（没有可伸缩的规模参数），'
@@ -435,11 +434,25 @@ def _analyse(db: Session, report_id: int, *, measure: bool) -> None:
         _write_plain(db, report_id, status='NOT_MEASURABLE',
                      error_message=f'该题没有可用的可伸缩输入：{detail}',
                      limitations=['没有可伸缩输入就没有执行轨迹，本报告不做推测'],
-                     trace_meta={'profile_family': profile.family})
+                     trace_meta={'profile_family': profile.family, 'profile_version': profile.version_no,
+                                 'adaptive': (profile.spec or {}).get('adaptive')})
         return
     language_label = trace_collect.language_label(language)
+    # Fix inputs by problem/profile, so students solving the same version see
+    # the same distributions. The input seed is recorded for reproducibility.
+    spec = dict(profile.spec or {})
+    input_seed = spec['validation']['seed'] if spec.get('adaptive') else version.id * 1000 + profile.version_no
+    if spec.get('adaptive'):
+        checked, error = check_adaptive_submission(submission.content, language, profile.family, spec)
+        if checked is None:
+            _write_plain(db, report_id, status='NOT_MEASURABLE', error_message=error,
+                         trace_meta={'profile_family': profile.family, 'profile_version': profile.version_no,
+                                     'adaptive': spec['adaptive']}, limitations=[])
+            return
+        spec = checked
+    deadline = time.monotonic() + TRACE_BUDGET_MS / 1000
     ladder = trace_collect.collect(submission.content, language, profile.family,
-                                   profile.spec or {}, seed=report.id,
+                                   spec, seed=input_seed,
                                    budget_ms=TRACE_BUDGET_MS)
     if not ladder.ok_points:
         detail = next((point.detail for point in ladder.points if point.detail), None)
@@ -450,6 +463,29 @@ def _analyse(db: Session, report_id: int, *, measure: bool) -> None:
     payload = trace_report.build(ladder, conclusion, language=language,
                                  language_label=language_label,
                                  profile_family=profile.family)
+    payload['trace_meta'].update(profile_version=profile.version_no, input_seed=input_seed)
+    if spec.get('adaptive'):
+        payload['trace_meta'].update(adaptive=spec['adaptive'], scale=spec['scale'],
+                                     validation=spec['validation'])
+        payload['limitations'].append('输入方案由系统自动识别并验收；' + spec['scale'])
+        scenarios = [{'distribution': spec.get('distributions', ['random'])[0], 'time_class': conclusion.time.time_class,
+                      'completed_sizes': [point.n for point in ladder.ok_points]}]
+        labels = {'ascending': '升序', 'descending': '逆序', 'identical': '相同字符串', 'repeated': '重复字符',
+                  'within_capacity': '优先生成可装入物品的'}
+        for distribution in spec.get('distributions', ['random'])[1:]:
+            remaining = int((deadline - time.monotonic()) * 1000)
+            if remaining < 1000:
+                payload['limitations'].append('采集预算已耗尽，部分输入分布没有完成测量')
+                break
+            extra = trace_collect.collect(submission.content, language, profile.family,
+                dict(spec, distribution=distribution), seed=input_seed, budget_ms=remaining)
+            result = trace_infer.infer(extra, language_label=language_label)
+            scenarios.append({'distribution': distribution, 'time_class': result.time.time_class,
+                              'completed_sizes': [point.n for point in extra.ok_points],
+                              'stop_reason': extra.stop_reason})
+            payload['limitations'].append(f"{labels[distribution]}输入上的增长类别为 {result.time.time_class}；"
+                                         '主图展示默认输入分布，均不代表全部输入的最坏情况')
+        payload['trace_series']['scenarios'] = scenarios
     summary = payload['summary']
     _write(db, report_id, status='SUCCEEDED', summary=summary,
            trace_meta=payload['trace_meta'], trace_series=payload['trace_series'],

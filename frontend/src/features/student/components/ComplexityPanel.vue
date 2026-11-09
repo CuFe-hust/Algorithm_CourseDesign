@@ -280,6 +280,9 @@ onBeforeUnmount(() => {
         无法给出结论：{{
           report.error || "没有可用的伸缩档，平台无法测量增长。"
         }}
+        <button class="small" :disabled="requesting" @click="request">
+          重新检查并分析
+        </button>
       </div>
 
       <template v-if="report.status === 'SUCCEEDED'">
