@@ -1359,3 +1359,177 @@ body {
     padding: 28px 24px;
   }
 }
+/* The school site's navy and light blue, with separate semantic status colors. */
+:root {
+  --blue: #005299;
+  --border: #d7e3ee;
+  --muted: #4c6076;
+  color: #142d47;
+  background: #f1f7fc;
+}
+body {
+  background: #f1f7fc;
+}
+.sidebar {
+  background: #fbfdff;
+  border-color: var(--border);
+}
+.sidebar .brand-icon,
+.access-context {
+  background: #005299;
+}
+.sidebar nav a.selected,
+.sidebar nav a.selected svg {
+  background: #dceeff;
+  color: #00477f;
+}
+.sidebar nav a:hover {
+  background: #eaf4fc;
+}
+.nav-group p {
+  color: #395470;
+}
+.access-context-title p {
+  color: #d9edfb;
+}
+.topbar {
+  border-color: var(--border);
+}
+.student-task-strip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 24px;
+}
+.task-tile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 72px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  color: #142d47;
+}
+.task-tile > span {
+  min-width: 0;
+}
+.task-tile > span:not(.status-dot) {
+  display: grid;
+  gap: 2px;
+}
+.task-tile > span > span,
+.record-main > span,
+.record-outcome > span:not(.status-dot) {
+  font-size: 14px;
+  color: var(--muted);
+}
+.task-tile strong {
+  font-size: 17px;
+}
+.task-tile svg:last-child {
+  margin-left: auto;
+}
+.student-card-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+  display: grid;
+  gap: 10px;
+}
+.student-record {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  min-height: 72px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  color: #142d47;
+}
+a.student-record:hover,
+a.task-tile:hover {
+  background: #eaf4fc;
+  border-color: #83b4db;
+  text-decoration: none;
+}
+.record-main,
+.record-outcome {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.record-main > strong {
+  font-size: 17px;
+}
+.record-main .record-deadline {
+  color: #142d47;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+.record-outcome {
+  text-align: right;
+  justify-items: end;
+}
+.record-score {
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+.status-dot {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  font-size: 14px;
+  color: #30475e;
+}
+.status-dot::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #718399;
+  align-self: center;
+  flex: 0 0 8px;
+}
+.status-dot[data-tone="green"]::before {
+  background: #16834e;
+}
+.status-dot[data-tone="amber"]::before {
+  background: #b66b00;
+}
+.status-dot[data-tone="red"]::before {
+  background: #bd313b;
+}
+.status-dot[data-tone="type"]::before {
+  background: #005299;
+}
+.question-score {
+  margin: 0 0 16px;
+  justify-content: space-between;
+}
+.question-score strong {
+  font-size: 22px;
+}
+@media (max-width: 560px) {
+  .student-task-strip {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .student-record {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px 10px;
+  }
+  .record-outcome {
+    grid-column: 1;
+    grid-row: 2;
+    justify-items: start;
+    text-align: left;
+  }
+  .student-record > :last-child {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+}

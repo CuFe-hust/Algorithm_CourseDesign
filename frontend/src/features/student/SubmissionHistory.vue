@@ -166,7 +166,6 @@ onMounted(async () => {
 <template>
   <div class="page-heading">
     <h1>本人提交</h1>
-    <p class="muted">列表只显示摘要；正文与编译诊断请进入版本详情查看。</p>
   </div>
   <div v-if="error" class="alert error">
     {{ error }}<button @click="load">重试</button>
@@ -197,58 +196,43 @@ onMounted(async () => {
     </select>
     <span class="toolbar-meta">共 {{ total }} 条</span>
   </div>
-  <p class="hint">
-    上方筛选的是提交状态；评测结论与复杂度提示在列表状态列和版本详情中查看。
-  </p>
   <div v-if="loading" class="loading">正在读取提交历史…</div>
   <div v-else-if="!entries.length" class="empty">
     <History :size="28" />
     <h3>没有符合条件的提交</h3>
     <p>换一个筛选条件，或先完成一次作答。</p>
   </div>
-  <div v-else class="card">
-    <div class="table-scroll">
-      <table>
-        <thead>
-          <tr>
-            <th>题目</th>
-            <th>版本</th>
-            <th>语言</th>
-            <th>提交时间</th>
-            <th>状态</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="entry in entries" :key="entry.submission_id">
-            <td>
-              <RouterLink
-                class="table-title"
-                :to="`/student/courses/${courseId}/submissions/${entry.submission_id}`"
-              >
-                {{ items.get(entry.assignment_item_id) || entry.title }}
-              </RouterLink>
-              <small class="secondary-line">{{ entry.assignment_title }}</small>
-            </td>
-            <td>v{{ entry.version_no }}</td>
-            <td>{{ entry.language || "主观题" }}</td>
-            <td class="nowrap">
-              {{ formatDateTime(entry.submitted_at) }}
-            </td>
-            <td>
-              <span class="badge" :class="verdict(entry).tone">{{
-                verdict(entry).label
-              }}</span>
-              <small
-                v-if="complexityLabel(entry)"
-                class="secondary-line complexity-hint mono"
-              >
-                {{ complexityLabel(entry) }}
-              </small>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <div v-else>
+    <ul class="student-card-list">
+      <li v-for="entry in entries" :key="entry.submission_id">
+        <RouterLink
+          class="student-record"
+          :to="`/student/courses/${courseId}/submissions/${entry.submission_id}`"
+        >
+          <span class="record-main">
+            <strong>{{
+              items.get(entry.assignment_item_id) || entry.title
+            }}</strong>
+            <span
+              >{{ entry.assignment_title }} · 第 {{ entry.version_no }} 版</span
+            >
+          </span>
+          <span class="record-outcome">
+            <span class="status-dot" :data-tone="verdict(entry).tone">{{
+              verdict(entry).label
+            }}</span>
+            <span
+              >{{ formatDateTime(entry.submitted_at) }} ·
+              {{ entry.language || "主观题" }}</span
+            >
+            <span v-if="complexityLabel(entry)">{{
+              complexityLabel(entry)
+            }}</span>
+          </span>
+          <span aria-hidden="true">→</span>
+        </RouterLink>
+      </li>
+    </ul>
     <div class="pagination">
       <span>第 {{ Math.floor(offset / limit) + 1 }} / {{ pages }} 页</span>
       <div>

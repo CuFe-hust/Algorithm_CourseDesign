@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import { ArrowLeft, Clock } from "@lucide/vue";
+import { ArrowLeft, ArrowRight } from "@lucide/vue";
 import { errorText } from "../../shared/api";
 import MarkdownPreview from "../../shared/MarkdownPreview.vue";
 import * as api from "./api";
-import { formatDateTime, remainingLabel } from "./format";
+import { formatDateTime } from "./format";
 import type {
   AssignmentDetail,
   ProgressEntry,
@@ -34,13 +34,13 @@ const open = computed(() => {
       new Date(assignment.value.server_time)
   );
 });
-const remaining = computed(() => {
-  if (!assignment.value) return "";
-  return remainingLabel(
-    assignment.value.submission_deadline,
-    assignment.value.server_time,
-  );
-});
+const scores = ref<Record<string, string | null>>({});
+const submitted = computed(
+  () =>
+    assignment.value?.items.filter(
+      (item) => entries.value.get(item.id)?.has_submitted,
+    ).length ?? 0,
+);
 function state(itemId: string) {
   const entry = entries.value.get(itemId);
   if (!entry?.has_submitted) return { label: "未提交", tone: "gray" };
@@ -72,6 +72,12 @@ async function load() {
     ]);
     assignment.value = detail;
     progress.value = report;
+    void api
+      .fixedScores(courseId.value, assignmentId.value)
+      .then((value) => {
+        scores.value = value;
+      })
+      .catch(() => {});
   } catch (e) {
     error.value = errorText(e);
   } finally {
@@ -91,42 +97,53 @@ onMounted(load);
   <template v-else-if="assignment">
     <div class="page-heading">
       <h1>{{ assignment.title }}</h1>
-      <p class="muted">
-        <Clock :size="14" />
-        截止 {{ formatDateTime(assignment.submission_deadline) }} ·
-        {{ remaining }} ·
-        <span class="badge" :class="open ? 'green' : 'gray'">{{
-          open ? "可提交" : "不可提交新版本"
-        }}</span>
-      </p>
     </div>
+    <section class="student-task-strip" aria-label="作业进度">
+      <div class="task-tile">
+        <span
+          ><strong
+            >{{ submitted }} / {{ assignment.items.length }} 题已提交</strong
+          >
+          <span>{{
+            submitted === assignment.items.length
+              ? "已交齐"
+              : `还差 ${assignment.items.length - submitted} 题`
+          }}</span>
+        </span>
+      </div>
+      <div class="task-tile">
+        <span
+          ><strong
+            >截止 {{ formatDateTime(assignment.submission_deadline) }}</strong
+          >
+          <span class="status-dot" :data-tone="open ? 'green' : 'gray'">{{
+            open ? "可提交" : "提交已关闭"
+          }}</span>
+        </span>
+      </div>
+    </section>
     <div v-if="assignment.description_md" class="card">
       <MarkdownPreview :source="assignment.description_md" />
     </div>
-    <div v-if="!open" class="alert warning">
-      作业已关闭或截止。已接收的提交仍会继续评测，历史版本可在「本人提交」中查看；如需再次提交请联系任课教师。
-    </div>
-    <ul class="item-list large">
+    <ul class="student-card-list">
       <li v-for="item in assignment.items" :key="item.id">
         <RouterLink
+          class="student-record"
           :to="`/student/courses/${courseId}/assignments/${assignment.id}/items/${item.id}`"
-          class="item-row"
         >
-          <span class="item-index">{{
-            (item.sort_order ?? 0).toString().padStart(2, "0")
-          }}</span>
-          <span class="item-main">
-            <strong>{{ item.title }}</strong>
-            <small>
-              {{ typeName(item.question_type) }} · 满分 {{ item.max_score }}
-              <template v-if="entries.get(item.id)">
-                · 已提交 {{ entries.get(item.id)?.submission_count ?? 0 }} 次
-              </template>
-            </small>
+          <span class="record-main"
+            ><strong>{{ item.title }}</strong
+            ><span>{{ typeName(item.question_type) }}</span></span
+          >
+          <span class="record-outcome">
+            <strong class="record-score"
+              >{{ scores[item.id] ?? "—" }} / {{ item.max_score }} 分</strong
+            >
+            <span class="status-dot" :data-tone="state(item.id).tone">{{
+              state(item.id).label
+            }}</span>
           </span>
-          <span class="badge" :class="state(item.id).tone">{{
-            state(item.id).label
-          }}</span>
+          <ArrowRight :size="18" aria-hidden="true" />
         </RouterLink>
       </li>
     </ul>

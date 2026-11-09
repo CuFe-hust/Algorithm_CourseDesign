@@ -32,6 +32,7 @@ const itemId = computed(() => String(route.params.itemId));
 const userId = computed(() => session.user?.id || "__anonymous__");
 
 const item = ref<ItemDetail | null>(null);
+const fixedScore = ref<string | null>(null);
 const language = ref("");
 const loading = ref(true);
 const error = ref("");
@@ -175,6 +176,12 @@ async function load() {
   error.value = "";
   try {
     item.value = await api.getItem(itemId.value);
+    void api
+      .fixedScores(courseId.value, assignmentId.value)
+      .then((scores) => {
+        fixedScore.value = scores[itemId.value] ?? null;
+      })
+      .catch(() => {});
     degraded.value = (await draftStore()).degraded;
     const target = await initialLanguage();
     await adoptDraftLanguage(target);
@@ -289,197 +296,220 @@ onMounted(load);
   <div v-if="error" class="alert error">{{ error }}</div>
   <div v-if="notice" class="alert success">{{ notice }}</div>
   <div v-if="loading" class="loading">正在读取题目…</div>
-  <div v-else-if="item" class="answer-layout">
-    <div class="answer-main">
-      <ProblemStatement :item="item" />
-      <ComplexityPanel
-        v-if="analysable && detail"
-        :submission-id="detail.submission_id"
-      />
-      <section v-if="pendingLoad" class="alert warning">
-        即将载入第
-        {{ pendingLoad.version_no }} 版内容。这会替换当前草稿，且不会自动提交。
-        <button class="small" @click="confirmLoad">确认载入</button>
-        <button class="small" @click="pendingLoad = null">取消</button>
-      </section>
+  <template v-else-if="item">
+    <div class="task-tile question-score">
+      <span
+        ><strong>{{ fixedScore ?? "—" }} / {{ item.max_score }} 分</strong
+        ><span>{{
+          fixedScore === null ? "暂无正式分数" : "已固定分数"
+        }}</span></span
+      >
+      <span
+        class="status-dot"
+        :data-tone="item.submission_open ? 'green' : 'gray'"
+        >{{ item.submission_open ? "可提交" : "提交已关闭" }}</span
+      >
     </div>
-    <div class="answer-side">
-      <section class="card answer-card">
-        <div class="card-heading">
-          <h2>我的作答</h2>
-          <span v-if="item.submission_open" class="badge green">可提交</span>
-          <span v-else class="badge gray">提交已关闭</span>
-        </div>
-        <label v-if="programming && item.allowed_languages.length > 1">
-          语言
-          <select
-            :value="language"
-            @change="switchLanguage(($event.target as HTMLSelectElement).value)"
-          >
-            <option
-              v-for="lang in item.allowed_languages"
-              :key="lang"
-              :value="lang"
-            >
-              {{ lang }}
-            </option>
-          </select>
-        </label>
-        <p v-else-if="programming" class="muted">
-          本题仅允许 {{ item.allowed_languages.join("、") || "未配置语言" }}
-        </p>
-        <p v-if="programming && item.execution_budget" class="muted">
-          全题运行预算
-          {{ (item.execution_budget.total_budget_ms / 1000).toLocaleString() }}
-          秒，包含编译与程序启动。
-        </p>
-        <ProgrammingEditor
-          v-if="programming"
-          v-model="editorValue"
-          :language="language"
-          :readonly="!item.submission_open"
+    <div class="answer-layout">
+      <div class="answer-main">
+        <ProblemStatement :item="item" />
+        <ComplexityPanel
+          v-if="analysable && detail"
+          :submission-id="detail.submission_id"
         />
-        <SubjectiveEditor
-          v-else
-          v-model="editorValue"
-          :readonly="!item.submission_open"
-        />
-        <DraftStatus
-          :status="draft.status.value"
-          :message="draft.message.value"
-          :last-saved-at="draft.lastSavedAt.value"
-          :degraded="degraded"
-          :conflict="draft.conflict.value"
-          @accept="draft.acceptConflict()"
-          @dismiss="draft.dismissConflict()"
-        />
-        <p v-if="restoredFrom" class="muted">已恢复：{{ restoredFrom }}</p>
-        <div class="answer-actions">
-          <button
-            class="primary"
-            :disabled="submission.busy.value || !item.submission_open"
-            @click="submit"
-          >
-            <Send :size="16" />{{
-              submission.busy.value
-                ? "正在提交…"
-                : versions.length
-                  ? "提交新版本"
-                  : "提交作答"
-            }}
-          </button>
-          <span
-            v-if="submission.receipt.value"
-            class="badge type"
-            role="status"
-          >
-            已接收 v{{ submission.receipt.value.version_no }}
-          </span>
-          <span v-if="dirty && submission.receipt.value" class="badge amber"
-            >有新修改未提交</span
-          >
-        </div>
-      </section>
-
-      <section v-if="submission.pending.value.length" class="card">
-        <div class="card-heading"><h2>未确认的提交</h2></div>
-        <p class="muted">
-          上一次请求的结果未知，可用同一请求标识与相同内容重试，不会重复生成版本；修改内容需要新的提交。
-        </p>
-        <div
-          v-for="request in submission.pending.value"
-          :key="request.clientRequestId"
-          class="pending-row"
-        >
-          <span class="mono">{{ request.clientRequestId.slice(0, 8) }}…</span>
-          <span class="muted">{{ formatDateTime(request.createdAt) }}</span>
-          <button class="small" @click="retryPending(request.clientRequestId)">
-            重试同一请求
-          </button>
-          <button class="small" @click="submission.discard(request)">
-            放弃记录
-          </button>
-        </div>
-      </section>
-
-      <section v-if="detail" class="card">
-        <div class="card-heading">
-          <h2>第 {{ detail.version_no }} 版</h2>
-          <SubmissionStatus
-            :status="detail.status"
-            :phase="detail.job?.phase"
-            :queue-reason="detail.job?.queue_reason"
-          />
-        </div>
-        <p class="muted">
-          提交于 {{ formatDateTime(detail.submitted_at) }}
-          <template v-if="detail.job">
-            · 第 {{ detail.job.attempt_no }} 次尝试</template
-          >
-        </p>
-        <div v-if="detail.job?.status === 'FAILED'" class="alert warning">
-          <AlertTriangle :size="15" />
-          评测服务故障：{{
-            detail.job.message || detail.job.error_code || "未知原因"
+        <section v-if="pendingLoad" class="alert warning">
+          即将载入第
+          {{
+            pendingLoad.version_no
           }}
-          <button
-            class="small"
-            :disabled="!detail.job.can_retry"
-            @click="refreshDetail"
-          >
-            刷新状态
-          </button>
-          <span v-if="detail.job.retry_block_reason" class="badge amber">{{
-            detail.job.retry_block_reason
-          }}</span>
-        </div>
-        <JudgeFeedback
-          :result="detail.result"
-          :job-status="detail.job_status"
-        />
-        <div class="answer-actions">
-          <button
-            v-if="
-              detail.status === 'SUBMITTED' &&
-              item.submission_open &&
-              detail.job_status !== 'RUNNING'
-            "
-            class="small"
-            @click="withdrawCurrent"
-          >
-            撤回该版本
-          </button>
-          <RouterLink
-            class="button small"
-            :to="`/student/courses/${courseId}/submissions/${detail.submission_id}`"
-          >
-            查看版本详情
-          </RouterLink>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="card-heading">
-          <h2><History :size="17" /> 最近版本</h2>
-        </div>
-        <ul v-if="versions.length" class="version-list">
-          <li v-for="version in versions" :key="version.submission_id">
-            <RouterLink
-              :to="`/student/courses/${courseId}/submissions/${version.submission_id}`"
+          版内容。这会替换当前草稿，且不会自动提交。
+          <button class="small" @click="confirmLoad">确认载入</button>
+          <button class="small" @click="pendingLoad = null">取消</button>
+        </section>
+      </div>
+      <div class="answer-side">
+        <section class="card answer-card">
+          <div class="card-heading">
+            <h2>我的作答</h2>
+          </div>
+          <label v-if="programming && item.allowed_languages.length > 1">
+            语言
+            <select
+              :value="language"
+              @change="
+                switchLanguage(($event.target as HTMLSelectElement).value)
+              "
             >
-              <span>v{{ version.version_no }}</span>
-              <small>{{ formatDateTime(version.submitted_at) }}</small>
-              <span
-                class="badge"
-                :class="version.status === 'WITHDRAWN' ? 'gray' : 'type'"
+              <option
+                v-for="lang in item.allowed_languages"
+                :key="lang"
+                :value="lang"
               >
-                {{ version.status === "WITHDRAWN" ? "已撤回" : "已提交" }}
-              </span>
+                {{ lang }}
+              </option>
+            </select>
+          </label>
+          <p v-else-if="programming" class="muted">
+            本题仅允许 {{ item.allowed_languages.join("、") || "未配置语言" }}
+          </p>
+          <p v-if="programming && item.execution_budget" class="muted">
+            全题运行预算
+            {{
+              (item.execution_budget.total_budget_ms / 1000).toLocaleString()
+            }}
+            秒，包含编译与程序启动。
+          </p>
+          <ProgrammingEditor
+            v-if="programming"
+            v-model="editorValue"
+            :language="language"
+            :readonly="!item.submission_open"
+          />
+          <SubjectiveEditor
+            v-else
+            v-model="editorValue"
+            :readonly="!item.submission_open"
+          />
+          <DraftStatus
+            :status="draft.status.value"
+            :message="draft.message.value"
+            :last-saved-at="draft.lastSavedAt.value"
+            :degraded="degraded"
+            :conflict="draft.conflict.value"
+            @accept="draft.acceptConflict()"
+            @dismiss="draft.dismissConflict()"
+          />
+          <p v-if="restoredFrom" class="muted">已恢复：{{ restoredFrom }}</p>
+          <div class="answer-actions">
+            <button
+              class="primary"
+              :disabled="submission.busy.value || !item.submission_open"
+              @click="submit"
+            >
+              <Send :size="16" />{{
+                submission.busy.value
+                  ? "正在提交…"
+                  : versions.length
+                    ? "提交新版本"
+                    : "提交作答"
+              }}
+            </button>
+            <span
+              v-if="submission.receipt.value"
+              class="badge type"
+              role="status"
+            >
+              已接收 v{{ submission.receipt.value.version_no }}
+            </span>
+            <span v-if="dirty && submission.receipt.value" class="badge amber"
+              >有新修改未提交</span
+            >
+          </div>
+        </section>
+
+        <section v-if="submission.pending.value.length" class="card">
+          <div class="card-heading"><h2>未确认的提交</h2></div>
+          <p class="muted">
+            上一次请求的结果未知，可用同一请求标识与相同内容重试，不会重复生成版本；修改内容需要新的提交。
+          </p>
+          <div
+            v-for="request in submission.pending.value"
+            :key="request.clientRequestId"
+            class="pending-row"
+          >
+            <span class="mono">{{ request.clientRequestId.slice(0, 8) }}…</span>
+            <span class="muted">{{ formatDateTime(request.createdAt) }}</span>
+            <button
+              class="small"
+              @click="retryPending(request.clientRequestId)"
+            >
+              重试同一请求
+            </button>
+            <button class="small" @click="submission.discard(request)">
+              放弃记录
+            </button>
+          </div>
+        </section>
+
+        <section v-if="detail" class="card">
+          <div class="card-heading">
+            <h2>第 {{ detail.version_no }} 版</h2>
+            <SubmissionStatus
+              :status="detail.status"
+              :phase="detail.job?.phase"
+              :queue-reason="detail.job?.queue_reason"
+            />
+          </div>
+          <p class="muted">
+            提交于 {{ formatDateTime(detail.submitted_at) }}
+            <template v-if="detail.job">
+              · 第 {{ detail.job.attempt_no }} 次尝试</template
+            >
+          </p>
+          <div v-if="detail.job?.status === 'FAILED'" class="alert warning">
+            <AlertTriangle :size="15" />
+            评测服务故障：{{
+              detail.job.message || detail.job.error_code || "未知原因"
+            }}
+            <button
+              class="small"
+              :disabled="!detail.job.can_retry"
+              @click="refreshDetail"
+            >
+              刷新状态
+            </button>
+            <span v-if="detail.job.retry_block_reason" class="badge amber">{{
+              detail.job.retry_block_reason
+            }}</span>
+          </div>
+          <JudgeFeedback
+            :result="detail.result"
+            :job-status="detail.job_status"
+          />
+          <div class="answer-actions">
+            <button
+              v-if="
+                detail.status === 'SUBMITTED' &&
+                item.submission_open &&
+                detail.job_status !== 'RUNNING'
+              "
+              class="small"
+              @click="withdrawCurrent"
+            >
+              撤回该版本
+            </button>
+            <RouterLink
+              class="button small"
+              :to="`/student/courses/${courseId}/submissions/${detail.submission_id}`"
+            >
+              查看版本详情
             </RouterLink>
-          </li>
-        </ul>
-        <p v-else class="muted">还没有提交记录。</p>
-      </section>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-heading">
+            <h2><History :size="17" /> 最近版本</h2>
+          </div>
+          <ul v-if="versions.length" class="version-list">
+            <li v-for="version in versions" :key="version.submission_id">
+              <RouterLink
+                :to="`/student/courses/${courseId}/submissions/${version.submission_id}`"
+              >
+                <span>v{{ version.version_no }}</span>
+                <small>{{ formatDateTime(version.submitted_at) }}</small>
+                <span
+                  class="badge"
+                  :class="version.status === 'WITHDRAWN' ? 'gray' : 'type'"
+                >
+                  {{ version.status === "WITHDRAWN" ? "已撤回" : "已提交" }}
+                </span>
+              </RouterLink>
+            </li>
+          </ul>
+          <p v-else class="muted">还没有提交记录。</p>
+        </section>
+      </div>
     </div>
-  </div>
+  </template>
 </template>

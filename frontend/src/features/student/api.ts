@@ -57,11 +57,21 @@ export function mySubmissions(filters: {
     `/me/submissions?${query({ ...filters })}`,
   );
 }
-export function myProgress(courseId: string, assignmentId?: string) {
-  return request<ProgressResponse>(
-    `/courses/${courseId}/my-progress?${query({ assignment_id: assignmentId })}`,
-  );
+export async function myProgress(courseId: string, assignmentId?: string) {
+  const getPage = (offset: number) =>
+    request<ProgressResponse>(
+      `/courses/${courseId}/my-progress?${query({ assignment_id: assignmentId, limit: 100, offset })}`,
+    );
+  const first = await getPage(0);
+  const items = [...first.items];
+  while (items.length < first.total) {
+    const page = await getPage(items.length);
+    if (!page.items.length) break;
+    items.push(...page.items);
+  }
+  return { ...first, items };
 }
+
 export function batchStatus(submissionIds: string[]) {
   return post<{ items: BatchStatusEntry[] }>("/me/judge-jobs/status", {
     submission_ids: submissionIds,
@@ -102,4 +112,21 @@ export function requestComplexity(submissionId: string) {
       request_id: `cx-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
     },
   );
+}
+
+export async function fixedScores(courseId: string, assignmentId: string) {
+  const scores: Record<string, string | null> = {};
+  let offset = 0;
+  for (;;) {
+    const page = await request<{
+      rows: { assignment_item_id: string; item_score: string | null }[];
+      total: number;
+    }>(
+      `/analysis/courses/${courseId}/question-results/latest?${query({ assignment_id: assignmentId, limit: 100, offset })}`,
+    );
+    for (const row of page.rows)
+      scores[row.assignment_item_id] = row.item_score;
+    offset += page.rows.length;
+    if (!page.rows.length || offset >= page.total) return scores;
+  }
 }

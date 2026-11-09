@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import { AlertTriangle, ArrowRight, Clock, FileText } from "@lucide/vue";
-import { errorText } from "../../shared/api";
-import { session } from "../../shared/session";
+import { ArrowRight, Clock, FileText } from "@lucide/vue";
+import { errorText, request } from "../../shared/api";
+import type { Page, Task } from "../analytics/peer-review/types";
 import * as api from "./api";
 import { formatDateTime, remainingLabel } from "./format";
 import { useJudgePolling } from "./composables/useJudgePolling";
@@ -26,7 +26,73 @@ const progressMap = computed(() => {
     map.set(entry.assignment_item_id, entry);
   return map;
 });
-const summary = computed(() => progress.value?.summary);
+const reviewTasks = ref<Task[] | null>(null);
+const now = computed(() =>
+  new Date(progress.value?.as_of ?? Date.now()).getTime(),
+);
+const pendingReviews = computed(() =>
+  (reviewTasks.value ?? [])
+    .filter(
+      (task) =>
+        task.status !== "SUBMITTED" &&
+        task.round_status === "OPEN" &&
+        Date.parse(task.review_deadline) > now.value,
+    )
+    .sort(
+      (a, b) => Date.parse(a.review_deadline) - Date.parse(b.review_deadline),
+    ),
+);
+const assignmentCards = computed(() =>
+  assignments.value
+    .map((assignment) => {
+      const remaining = assignment.items.filter(
+        (item) => !progressMap.value.get(item.id)?.has_submitted,
+      );
+      const open =
+        assignment.submission_status === "OPEN" &&
+        Date.parse(assignment.submission_deadline) > now.value;
+      const complete = assignment.items.length > 0 && remaining.length === 0;
+      return {
+        ...assignment,
+        remaining,
+        open,
+        complete,
+        submitted: assignment.items.length - remaining.length,
+      };
+    })
+    .sort(
+      (a, b) =>
+        Number(b.open && !b.complete) - Number(a.open && !a.complete) ||
+        Date.parse(a.submission_deadline) - Date.parse(b.submission_deadline),
+    ),
+);
+const pendingQuestions = computed(() =>
+  assignmentCards.value.reduce(
+    (total, assignment) =>
+      total + (assignment.open ? assignment.remaining.length : 0),
+    0,
+  ),
+);
+const nextAssignment = computed(() =>
+  assignmentCards.value.find((a) => a.open && a.remaining.length),
+);
+async function loadReviews() {
+  try {
+    const tasks: Task[] = [];
+    let offset = 0;
+    for (;;) {
+      const page = await request<Page<Task>>(
+        `/peer-review/courses/${courseId.value}/my-tasks?limit=50&offset=${offset}`,
+      );
+      tasks.push(...page.items);
+      offset += page.items.length;
+      if (!page.items.length || offset >= page.total) break;
+    }
+    reviewTasks.value = tasks;
+  } catch {
+    reviewTasks.value = null;
+  }
+}
 
 // Authoritative discovery: page through the keyset scan instead of trusting the
 // progress snapshot, so more than 100 jobs and jobs restored by an operator are
@@ -112,19 +178,8 @@ async function refresh() {
   }
 }
 
-function itemState(itemId: string) {
-  const entry = progressMap.value.get(itemId);
-  if (!entry || !entry.has_submitted) return { label: "未提交", tone: "gray" };
-  if (entry.failed_job_count) return { label: "评测故障", tone: "red" };
-  if (entry.running_job_count) return { label: "评测中", tone: "amber" };
-  if (entry.pending_job_count) return { label: "排队中", tone: "amber" };
-  if (entry.has_passed) return { label: "已通过", tone: "green" };
-  if (entry.question_type !== "PROGRAMMING")
-    return { label: "已提交", tone: "type" };
-  return { label: "未通过", tone: "amber" };
-}
 onMounted(async () => {
-  await load();
+  await Promise.all([load(), loadReviews()]);
   await scanJobs();
   // Periodic keyset rescan finds jobs that an operator or another page resumed.
   rescanTimer = setInterval(() => void scanJobs(), 60_000);
@@ -136,101 +191,104 @@ onBeforeUnmount(() => {
 });
 </script>
 <template>
-  <div class="page-heading">
-    <h1>课程作业</h1>
-    <p class="muted">选择作业进入题目；草稿保存在本机，提交后生成新版本。</p>
-  </div>
-  <div v-if="error" class="alert error">
-    {{ error }}<button @click="load">重试</button>
+  <div class="page-heading"><h1>课程作业</h1></div>
+  <div v-if="error" class="alert error" role="alert">
+    {{ error }} <button @click="load">重试</button>
   </div>
   <div v-if="loading" class="loading">正在读取作业…</div>
   <template v-else>
-    <section v-if="summary" class="stats-grid">
-      <div class="stat">
-        <div><FileText :size="18" /></div>
-        <strong
-          >{{ summary.submitted_item_count }} / {{ summary.item_count }}</strong
+    <section class="student-task-strip" aria-label="我的待办">
+      <RouterLink
+        v-if="nextAssignment"
+        class="task-tile"
+        :to="`/student/courses/${courseId}/assignments/${nextAssignment.id}/items/${nextAssignment.remaining[0]!.id}`"
+      >
+        <FileText :size="20" aria-hidden="true" />
+        <span
+          ><strong>待作答 {{ pendingQuestions }} 题</strong
+          ><span>{{ nextAssignment.title }}</span></span
         >
-        <small>已提交题目</small>
-      </div>
-      <div class="stat">
-        <div><ArrowRight :size="18" /></div>
-        <strong
-          >{{ summary.passed_programming_item_count }} /
-          {{ summary.programming_item_count }}</strong
-        >
-        <small>编程题已真实通过</small>
-      </div>
-      <div class="stat">
-        <div><Clock :size="18" /></div>
-        <strong>{{
-          summary.pending_job_count + summary.running_job_count
+        <ArrowRight :size="18" aria-hidden="true" />
+      </RouterLink>
+      <div v-else class="task-tile">
+        <FileText :size="20" aria-hidden="true" /><strong>{{
+          progress ? "没有待作答的题目" : "作业进度暂不可用"
         }}</strong>
-        <small>待处理评测任务</small>
       </div>
+      <RouterLink
+        class="task-tile"
+        :to="
+          pendingReviews[0]
+            ? `/student/courses/${courseId}/reviews/${pendingReviews[0].id}`
+            : `/student/courses/${courseId}/reviews`
+        "
+      >
+        <Clock :size="20" aria-hidden="true" />
+        <span
+          ><strong>{{
+            reviewTasks ? `待互评 ${pendingReviews.length} 项` : "查看互评任务"
+          }}</strong>
+          <span v-if="pendingReviews[0]"
+            >最早截止
+            {{ formatDateTime(pendingReviews[0].review_deadline) }}</span
+          >
+        </span>
+        <ArrowRight :size="18" aria-hidden="true" />
+      </RouterLink>
     </section>
     <p v-if="polling.error.value" class="alert warning">
       {{ polling.error.value }}
     </p>
-    <div v-if="!assignments.length" class="empty">
-      <FileText :size="28" />
-      <h3>这门课程还没有已发布的作业</h3>
-      <p>教师发布后刷新页面即可看到。</p>
-    </div>
-    <section
-      v-for="assignment in assignments"
-      :key="assignment.id"
-      class="card assignment-card"
-    >
-      <div class="card-heading">
-        <div>
-          <h2>
-            <RouterLink
-              :to="`/student/courses/${courseId}/assignments/${assignment.id}`"
-            >
-              {{ assignment.title }}
-            </RouterLink>
-          </h2>
-          <p class="muted">
-            截止 {{ formatDateTime(assignment.submission_deadline) }} ·
-            {{
-              remainingLabel(
-                assignment.submission_deadline,
-                progress?.as_of || Date.now(),
-              )
-            }}
-          </p>
-        </div>
-        <span
-          class="badge"
-          :class="assignment.submission_status === 'OPEN' ? 'green' : 'gray'"
+    <p v-if="!assignments.length && !error" class="empty">暂无已发布作业</p>
+    <ul v-else class="student-card-list">
+      <li v-for="assignment in assignmentCards" :key="assignment.id">
+        <RouterLink
+          class="student-record"
+          :to="`/student/courses/${courseId}/assignments/${assignment.id}`"
         >
-          {{ assignment.submission_status === "OPEN" ? "进行中" : "已关闭" }}
-        </span>
-      </div>
-      <ul class="item-list">
-        <li v-for="item in assignment.items" :key="item.id">
-          <RouterLink
-            :to="`/student/courses/${courseId}/assignments/${assignment.id}/items/${item.id}`"
-          >
-            <span>{{ item.title }}</span>
-            <span class="badge" :class="itemState(item.id).tone">{{
-              itemState(item.id).label
+          <span class="record-main">
+            <strong>{{ assignment.title }}</strong>
+            <span class="record-deadline"
+              >截止
+              <time :datetime="assignment.submission_deadline">{{
+                formatDateTime(assignment.submission_deadline)
+              }}</time></span
+            >
+            <span v-if="assignment.open">{{
+              remainingLabel(assignment.submission_deadline, now)
             }}</span>
-          </RouterLink>
-        </li>
-      </ul>
-    </section>
-    <p v-if="summary && summary.failed_job_count" class="alert warning">
-      <AlertTriangle :size="15" />
-      有
-      {{ summary.failed_job_count }}
-      个任务因评测服务故障失败，可进入对应题目查看并申请重评。
-    </p>
-    <p class="muted small-note">
-      已通过仅在当前评测环境（{{
-        progress?.evaluation_context.execution_mode
-      }}）内计算，模拟结果不计入。
-    </p>
+          </span>
+          <span class="record-outcome">
+            <strong v-if="progress"
+              >{{ assignment.submitted }} /
+              {{ assignment.items.length }} 题已提交</strong
+            >
+            <span
+              class="status-dot"
+              :data-tone="
+                !progress
+                  ? 'gray'
+                  : assignment.complete
+                    ? 'green'
+                    : assignment.open
+                      ? 'amber'
+                      : 'red'
+              "
+            >
+              {{
+                !progress
+                  ? "进度未知"
+                  : assignment.complete
+                    ? "已交齐"
+                    : assignment.open
+                      ? `还差 ${assignment.remaining.length} 题`
+                      : "已关闭 · 未交齐"
+              }}
+            </span>
+          </span>
+          <ArrowRight :size="18" aria-hidden="true" />
+        </RouterLink>
+      </li>
+    </ul>
   </template>
 </template>
