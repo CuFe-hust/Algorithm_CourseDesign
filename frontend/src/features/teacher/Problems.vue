@@ -45,7 +45,6 @@ onMounted(() => load());
   <div class="page-heading">
     <div>
       <h1>题库管理</h1>
-      <p>统一维护题目内容、参考答案和评分配置。</p>
     </div>
     <RouterLink to="/teacher/problems/new" class="button primary"
       ><Plus :size="17" />创建题目</RouterLink

@@ -38,7 +38,6 @@ onMounted(() => load());
   <div class="page-heading">
     <div>
       <h1>作业管理</h1>
-      <p>固定题目版本与应交名单，再决定何时开放提交。</p>
     </div>
     <RouterLink class="button primary" to="/teacher/assignments/new"
       ><Plus :size="18" />创建作业</RouterLink

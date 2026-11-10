@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import InfoDisclosure from "../../shared/InfoDisclosure.vue";
 import { computed, onMounted, onBeforeUnmount, ref } from "vue";
 import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 import {
@@ -395,9 +396,7 @@ onBeforeUnmount(() => window.removeEventListener("beforeunload", beforeUnload));
       <div class="section-heading">
         <h2>已选题目 · {{ items.length }} 题</h2>
       </div>
-      <p class="hint">
-        各题独立记录表现。主观题的评审人数仅保留配置，不触发互评。
-      </p>
+
       <div class="table-scroll">
         <table>
           <thead>
@@ -493,9 +492,9 @@ onBeforeUnmount(() => window.removeEventListener("beforeunload", beforeUnload));
     </section>
     <section class="card teacher-form">
       <h2>应交名单 · {{ selected.length }} 人</h2>
-      <p class="hint">
-        发布时保存班级快照；之后导入新学生不会自动加入这份作业。待开通学生需先在学生名单中开通账号。
-      </p>
+      <InfoDisclosure label="名单范围"
+        ><p>发布时固定应交名单。之后导入的学生不会自动加入。</p></InfoDisclosure
+      >
       <template v-if="draft"
         ><form class="toolbar" @submit.prevent="loadStudents()">
           <input
@@ -582,10 +581,7 @@ onBeforeUnmount(() => window.removeEventListener("beforeunload", beforeUnload));
           <option value="OPEN">发布并开放提交</option>
         </select></label
       >
-      <p class="hint">
-        开放提交前会校验当前评测节点支持的语言和预算。LOCAL
-        在服务主机运行程序，团队部署时需按评测运行说明配置隔离和执行环境。
-      </p>
+
       <button class="primary" :disabled="busy || dirty" @click="publish">
         确认发布
       </button>

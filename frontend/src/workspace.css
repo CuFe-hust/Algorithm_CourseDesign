@@ -1533,3 +1533,51 @@ a.task-tile:hover {
     grid-row: 1 / span 2;
   }
 }
+/* Secondary context stays near its subject and opens on demand. */
+.info-disclosure {
+  min-width: 0;
+}
+.info-disclosure summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 4px 8px;
+  color: var(--blue);
+  cursor: pointer;
+  list-style: none;
+  font-size: 14px;
+}
+.info-disclosure summary::-webkit-details-marker {
+  display: none;
+}
+.info-disclosure summary:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+  border-radius: 5px;
+}
+.info-disclosure[open] summary {
+  font-weight: 650;
+}
+.info-disclosure-content {
+  max-width: 64ch;
+  border-left: 2px solid var(--border);
+  margin: 0 0 12px 9px;
+  padding: 6px 12px;
+  font-size: 14px;
+}
+.info-disclosure-content p {
+  margin: 0 0 8px;
+}
+.info-disclosure-content p:last-child {
+  margin-bottom: 0;
+}
+.chart-foot {
+  padding: 4px 20px 12px;
+}
+.chart-legend {
+  display: block;
+  margin: 6px 8px 0;
+  color: var(--muted);
+  font-size: 14px;
+}

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import InfoDisclosure from "../../shared/InfoDisclosure.vue";
 import { onMounted, ref } from "vue";
 import { ChartNoAxesCombined, RefreshCw } from "@lucide/vue";
 import { request, post, errorText } from "../../shared/api";
@@ -106,10 +107,6 @@ onMounted(load);
       </button>
     </div>
     <div class="chapter-body">
-      <p class="result-note">
-        将每次作业最新的逐题快照汇合，生成原始表现 B0 与难度感知模型
-        D1。仅采用已固定的真实评分，缺失保持为空；学生只能查看本人章节结果。
-      </p>
       <div class="chapter-models">
         <article v-for="m in models" :key="m.model">
           <strong>{{
@@ -127,23 +124,20 @@ onMounted(load);
         </article>
       </div>
       <form class="chapter-form" @submit.prevent="generate">
-        <label
-          >生成理由<input
-            v-model="reason"
-            maxlength="2000"
-            placeholder="例如：本轮互评复核完成，更新课程章节表现"
-        /></label>
+        <label>生成理由<input v-model="reason" maxlength="2000" /></label>
         <button class="primary" :disabled="busy || !reason.trim()">
           {{ busy ? "正在固定与提交…" : "生成课程章节分析" }}
         </button>
       </form>
       <p v-if="error" class="alert error" role="alert">{{ error }}</p>
       <p v-if="notice" class="alert success" role="status">{{ notice }}</p>
-      <p class="hint">
-        新增评分或补评后，先重新固定对应作业的逐题结果，再生成新分析。B0
-        是已评分题的章节均值，D1
-        是模型参考表现；二者都不是作业总分或知识掌握概率。
-      </p>
+      <InfoDisclosure label="分析口径">
+        <p>
+          新增评分或补评后，先重新固定对应作业的逐题结果，再生成新分析。B0
+          是已评分题的章节均值，D1
+          是模型参考表现；二者都不是作业总分或知识掌握概率。
+        </p>
+      </InfoDisclosure>
     </div>
   </section>
 </template>

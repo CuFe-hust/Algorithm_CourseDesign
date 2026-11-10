@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import InfoDisclosure from "../../shared/InfoDisclosure.vue";
 /**
  * Teacher overview of complexity reports for one programming item.
  *
@@ -335,9 +336,11 @@ onBeforeUnmount(() => {
   <div class="page-heading">
     <div>
       <h1>复杂度分析</h1>
-      <p class="muted">
-        每道编程题、每位学生最新一份复杂度报告。结论是估计值，不参与评分，也不改变评测结果。
-      </p>
+      <InfoDisclosure label="结果口径"
+        ><p>
+          每道编程题、每位学生最新一份复杂度报告。结论是估计值，不参与评分，也不改变评测结果。
+        </p></InfoDisclosure
+      >
     </div>
   </div>
 

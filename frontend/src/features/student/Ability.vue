@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import InfoDisclosure from "../../shared/InfoDisclosure.vue";
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { ChartNoAxesCombined, RefreshCw } from "@lucide/vue";
@@ -156,13 +157,6 @@ watch(
   <div class="page-heading ability-heading">
     <div>
       <h1>个人章节表现</h1>
-      <p class="muted">
-        {{
-          difficultyModel
-            ? "结合题目难度查看参考表现，同时对照已评分题目的原始均值与证据。"
-            : "从已评分题目了解各章节的作答表现，同时查看支撑它的证据。"
-        }}
-      </p>
     </div>
     <button :disabled="loading" @click="load">
       <RefreshCw :size="16" />刷新
@@ -189,7 +183,6 @@ watch(
     <span class="badge amber">合成演示</span>
     <div>
       <strong>当前展示合成数据，不代表你的真实学习表现。</strong>
-      <p>数据由服务端演示批次生成，与正式分析分开展示。</p>
     </div>
     <button @click="switchMode">返回正式分析</button>
   </div>
@@ -199,7 +192,7 @@ watch(
   <div v-if="loading" class="loading" role="status">正在读取章节表现…</div>
   <template v-else-if="report">
     <p v-if="report.scope_label" class="muted ability-scope">
-      {{ report.scope_label }}。未固定作业不纳入本批次。
+      {{ report.scope_label }}
     </p>
     <section v-if="!hasSnapshot" class="card ability-empty">
       <ChartNoAxesCombined :size="34" />
@@ -212,7 +205,7 @@ watch(
     </section>
     <template v-else>
       <div v-if="report.status === 'INSUFFICIENT_DATA'" class="alert warning">
-        当前有效评分证据不足。缺失章节保留为空，已有结果请结合题目数量与覆盖率阅读。
+        有效评分证据不足
       </div>
       <div
         v-if="difficultyModel && report.model_diagnostics?.converged === false"
@@ -221,26 +214,7 @@ watch(
       >
         模型优化尚未收敛，以下模型参考表现为暂定结果，请联系教师检查批次并重新生成。
       </div>
-      <section v-if="difficultyModel" class="card ability-model-explanation">
-        <h2>参考难度下的模型表现</h2>
-        <p>
-          模型以教师 1–5 级难度为先验，{{
-            fixedItemDifficulty
-              ? "本批次题目难度固定在教师先验；"
-              : "在冻结批次的全体评分证据上校准题目难度；"
-          }}
-          图中的模型参考表现，是参考难度 0 上的模型期望得分。
-        </p>
-        <p>
-          已评分题目均值 B0
-          记录本批次实际题目的得分表现；两者的差异来自题目难度、
-          模型拟合与正则化，不能直接解释为学习进步。
-        </p>
-        <p class="muted">
-          模型参考表现不代表掌握概率、置信区间或排名。证据较少时估计更依赖先验与正则化，
-          请结合题量、覆盖率及原始均值阅读；缺失证据不补零。
-        </p>
-      </section>
+
       <section class="card ability-overview">
         <div class="card-heading">
           <div>
@@ -394,60 +368,52 @@ watch(
                 {{ percentagePointDifference(chapter) }}
               </small>
             </div>
-            <p class="muted">0 ───────────────────── 1</p>
-          </div>
-          <div class="ability-reading">
-            <h3>如何阅读这张图</h3>
-            <p v-if="difficultyModel && chapters.length >= 3">
-              各章节按课程章节顺序排列，量尺统一为 0–1；蓝点为模型参考表现，
-              空心点与虚线为已评分题目均值 B0。
-            </p>
-            <p v-else-if="difficultyModel">
-              各章节使用统一的 0–1
-              刻度。蓝色条形表示模型参考表现，下方列出同一批证据的 B0
-              原始均值及差值。
-            </p>
-            <p v-else>
-              各章节按课程章节顺序排列，量尺统一为
-              0–1；数值是该章节已评分证据的加权表现。
-            </p>
-            <p>
-              <span v-if="chapters.length >= 3" class="ability-key"></span
-              >{{ valueLabel
-              }}{{
-                chapters.length >= 3
-                  ? "使用实心点；橙点表示证据较少。"
-                  : "使用条形图；证据量提示见下方明细。"
-              }}
-              {{
-                difficultyModel
-                  ? "原始零分仍显示为 0，模型值可能因正则化而不同。"
-                  : "真实的零分仍显示在 0 处。"
-              }}
-            </p>
-            <p>暂无有效证据的章节留空、不补零。未被作业覆盖的章节已隐藏。</p>
-            <p class="muted">
-              不同章节的题量、题型和覆盖率可能不同，结合下方明细理解数值。
-            </p>
           </div>
         </div>
         <p v-else class="ability-no-chapters muted">
           当前作业尚未覆盖可展示的章节。覆盖章节并产生评分后再查看。
         </p>
+        <div v-if="chapters.length" class="chart-foot">
+          <span
+            v-if="difficultyModel && chapters.length >= 3"
+            class="chart-legend"
+            >实线 D1 · 虚线 B0</span
+          >
+          <InfoDisclosure label="图表口径">
+            <p>
+              刻度为 0–1。橙色标记表示证据较少。缺失评分留空，未覆盖章节隐藏。
+            </p>
+          </InfoDisclosure>
+          <InfoDisclosure
+            v-if="difficultyModel"
+            class="ability-model-explanation"
+            label="模型说明"
+          >
+            <p>
+              模型以教师 1–5 级难度为先验，{{
+                fixedItemDifficulty
+                  ? "本批次题目难度固定在教师先验；"
+                  : "在冻结批次的全体评分证据上校准题目难度；"
+              }}
+              图中的模型参考表现，是参考难度 0 上的模型期望得分。
+            </p>
+            <p>
+              已评分题目均值 B0
+              记录本批次实际题目的得分表现；两者的差异来自题目难度、
+              模型拟合与正则化，不能直接解释为学习进步。
+            </p>
+            <p class="muted">
+              模型参考表现不代表掌握概率、置信区间或排名。证据较少时估计更依赖先验与正则化，
+              请结合题量、覆盖率及原始均值阅读；缺失证据不补零。
+            </p>
+          </InfoDisclosure>
+        </div>
       </section>
 
       <section v-if="chapters.length" class="card ability-evidence">
         <div class="card-heading">
           <div>
             <h2>章节证据明细</h2>
-            <p class="muted">
-              缺失的评分不计入均值；“—”表示没有可用数值。
-              {{
-                difficultyModel
-                  ? "题型列保留原始观察均值；差值为模型参考表现减去 B0。"
-                  : ""
-              }}
-            </p>
           </div>
         </div>
         <div class="ability-table-scroll">
@@ -657,19 +623,6 @@ watch(
 .ability-demo-link {
   margin-left: auto;
 }
-.ability-model-explanation {
-  margin-bottom: 24px;
-  padding: 22px 26px;
-  font-size: 14px;
-  line-height: 1.7;
-}
-.ability-model-explanation h2 {
-  font-size: 16px;
-  margin-bottom: 12px;
-}
-.ability-model-explanation p:last-child {
-  margin-bottom: 0;
-}
 .ability-demo {
   display: flex;
   align-items: center;
@@ -714,7 +667,7 @@ watch(
 }
 .ability-chart-layout {
   display: grid;
-  grid-template-columns: minmax(270px, 1.3fr) minmax(240px, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
   padding: 0 28px 18px;
   gap: 26px;
@@ -763,18 +716,7 @@ watch(
 .ability-point.low {
   fill: #c88713;
 }
-.ability-reading {
-  border-left: 3px solid #dce5fd;
-  padding: 6px 0 6px 22px;
-  max-width: 370px;
-  font-size: 13px;
-}
-.ability-reading h3 {
-  margin-bottom: 14px;
-}
-.ability-reading p:last-child {
-  margin-bottom: 0;
-}
+
 .ability-key {
   display: inline-block;
   width: 8px;
@@ -918,9 +860,6 @@ watch(
     grid-template-columns: 1fr;
     padding: 0 16px 24px;
     gap: 0;
-  }
-  .ability-reading {
-    max-width: none;
   }
 }
 </style>

@@ -93,7 +93,6 @@ onMounted(load);
     <header class="page-heading">
       <div>
         <h1>互评与复核</h1>
-        <p>先冻结答案与量表，再确认分配；所有异常信号交由教师复核。</p>
       </div>
       <button class="button" @click="load">刷新</button>
     </header>

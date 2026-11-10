@@ -12,6 +12,7 @@ import {
   Trash2,
   Eye,
   PencilLine,
+  Check,
 } from "@lucide/vue";
 import {
   request,
@@ -57,6 +58,7 @@ const locked = computed(
 );
 const issues = computed(() => validationMessages(errors.value));
 const maximumBudget = ref<number>();
+const supportedLanguages = ref<string[]>([]);
 const minimumBudget = computed(() => {
   const suite = form.value.test_suite;
   return suite
@@ -85,11 +87,12 @@ async function reload(versionId?: string) {
   loading.value = true;
   error.value = "";
   try {
-    maximumBudget.value = (
-      await request<{ maximum_budget_ms: number }>(
-        `/teacher/courses/${session.courseId}/judge-capabilities`,
-      )
-    ).maximum_budget_ms;
+    const capabilities = await request<{
+      maximum_budget_ms: number;
+      supported_languages: string[];
+    }>(`/teacher/courses/${session.courseId}/judge-capabilities`);
+    maximumBudget.value = capabilities.maximum_budget_ms;
+    supportedLanguages.value = capabilities.supported_languages;
     tags.value = (
       await request<{ items: typeof tags.value }>(
         `/teacher/courses/${session.courseId}/knowledge-points`,
@@ -117,7 +120,9 @@ async function reload(versionId?: string) {
 }
 function changeType() {
   form.value.test_suite =
-    type.value === "PROGRAMMING" ? newVersion(true).test_suite : null;
+    type.value === "PROGRAMMING"
+      ? newVersion(true, supportedLanguages.value).test_suite
+      : null;
   form.value.rubric = type.value === "PROGRAMMING" ? null : newVersion().rubric;
 }
 function displayError(e: unknown) {
@@ -744,14 +749,26 @@ watch(tab, () => {
                   {{ ["入门", "基础", "中等", "进阶", "挑战"][n - 1] }}
                 </option>
               </select></label
-            ><label>知识点 <span class="required">*</span></label>
-            <div class="tag-options">
-              <label v-for="tag in tags" :key="tag.id"
+            ><span id="knowledge-point-label" class="tag-options-heading"
+              >知识点 <span class="required">*</span></span
+            >
+            <div
+              class="tag-options"
+              role="group"
+              aria-labelledby="knowledge-point-label"
+            >
+              <label v-for="tag in tags" :key="tag.id" class="tag-option"
                 ><input
                   v-model="form.knowledge_point_ids"
                   type="checkbox"
                   :value="tag.id"
-                />{{ tag.name }}</label
+                  class="sr-only"
+                /><Check
+                  :size="16"
+                  aria-hidden="true"
+                  class="tag-option-check"
+                />
+                <span>{{ tag.name }}</span></label
               >
             </div>
             <div v-if="!locked" class="inline-input">

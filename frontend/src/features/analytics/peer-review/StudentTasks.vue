@@ -37,7 +37,6 @@ onMounted(load);
     <header class="page-heading">
       <div>
         <h1>我的互评任务</h1>
-        <p>独立阅读作品，按冻结量表逐项评分，并写出具体改进建议。</p>
       </div>
       <button class="button" :disabled="busy" :aria-busy="busy" @click="load">
         刷新任务

@@ -40,7 +40,6 @@ onMounted(load);
   <div class="page-heading">
     <div>
       <h1>课程概览</h1>
-      <p>从这里开始今天的教学准备。</p>
     </div>
     <RouterLink to="/teacher/problems/new" class="button primary"
       ><Plus :size="17" />创建题目</RouterLink
@@ -58,13 +57,11 @@ onMounted(load);
             label: '在用题目',
             value: data.problems,
             icon: LibraryBig,
-            note: '覆盖四种题型',
           },
           {
             label: '待完善草稿',
             value: data.drafts,
             icon: FilePenLine,
-            note: '冻结后可供作业引用',
           },
           {
             label: '课程学生',
@@ -76,7 +73,6 @@ onMounted(load);
             label: '教学班级',
             value: data.classes,
             icon: School,
-            note: '按学生当前班级统计',
           },
         ]"
         :key="s.label"
@@ -87,7 +83,9 @@ onMounted(load);
           ><component :is="s.icon" :size="19" />
         </div>
         <strong>{{ s.value }}</strong
-        ><small>{{ s.note }}</small>
+        ><small v-if="'note' in s && data.students_by_status.PENDING">{{
+          s.note
+        }}</small>
       </article>
     </section>
     <div class="overview-grid">
@@ -120,38 +118,20 @@ onMounted(load);
       <section class="card">
         <div class="card-heading">
           <h2>快捷操作</h2>
-          <span class="small-label">教学准备</span>
         </div>
-        <RouterLink to="/teacher/problems/new" class="quick-action"
+        <RouterLink to="/teacher/assignments" class="quick-action"
           ><span class="action-icon"><Plus :size="21" /></span>
           <div>
-            <strong>添加一道新题</strong>
-            <p>题干、参考答案与评分配置</p>
+            <strong>管理作业</strong>
           </div>
           <ArrowRight :size="18" /></RouterLink
         ><RouterLink to="/teacher/students/import" class="quick-action"
           ><span class="action-icon green"><Upload :size="20" /></span>
           <div>
             <strong>导入学生名单</strong>
-            <p>上传 CSV，预览后确认入库</p>
           </div>
           <ArrowRight :size="18"
         /></RouterLink>
-      </section>
-    </div>
-    <section class="notice">
-      <BookNotice />
-      <div>
-        <strong>让修改留有记录</strong>
-        <p>
-          草稿支持反复编辑；已冻结的题目需创建新版本。学生导入只添加或确认更新，不会移除名单之外的学生。
-        </p>
-      </div>
-    </section></template
-  >
+      </section></div
+  ></template>
 </template>
-<script lang="ts">
-import { defineComponent, h } from "vue";
-import { ShieldCheck } from "@lucide/vue";
-const BookNotice = defineComponent(() => () => h(ShieldCheck, { size: 23 }));
-</script>

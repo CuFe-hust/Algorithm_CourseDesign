@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import InfoDisclosure from "../../shared/InfoDisclosure.vue";
 import { ref, computed, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
-import { BarChart3, Layers, Info, FileSearch } from "@lucide/vue";
+import { BarChart3, Layers, FileSearch } from "@lucide/vue";
 import { request, post, errorText, ApiError } from "../../shared/api";
 import { session } from "../../shared/session";
 import { confirmAction } from "../../shared/confirm";
@@ -142,13 +143,6 @@ watch(assignment, () => {
   <header class="page-heading">
     <div>
       <h1>{{ teacher ? "逐题结果与学习分析" : "我的学习报告" }}</h1>
-      <p>
-        {{
-          teacher
-            ? "将真实评测与复核后的主观结果汇合，按题目保留每一项来源。"
-            : "查看本人逐题结果、数据覆盖和已记录的学习行为。"
-        }}
-      </p>
     </div>
     <button :disabled="busy" @click="load">刷新报告</button>
   </header>
@@ -197,7 +191,6 @@ watch(assignment, () => {
           {{ report.results_snapshot_version }}
         </p>
       </div>
-      <span class="badge type">真实来源快照 · 逐题候选</span>
     </div>
     <section class="report-metrics">
       <article class="card report-metric">
@@ -217,7 +210,6 @@ watch(assignment, () => {
           <BarChart3 :size="17" />
           {{ teacher ? "各题结果概览" : "我的题目表现" }}
         </h2>
-        <span class="small-label">按本题满分归一化</span>
       </div>
       <div class="report-chart">
         <div v-for="q in report.per_item" :key="q.id" class="result-bar">
@@ -241,14 +233,16 @@ watch(assignment, () => {
           }}</strong>
         </div>
       </div>
-      <p class="result-note">
-        {{
-          teacher
-            ? "图中为各题已知样本的均值，缺失不纳入计算；样本不足时不代表班级真实水平。"
-            : "每道题独立展示，待处理为缺失，实际零分保持为零。"
-        }}
-        不计算作业总分。
-      </p>
+      <InfoDisclosure class="chart-foot" label="计分口径">
+        <p>
+          {{
+            teacher
+              ? "图中为各题已知样本的均值，缺失不纳入计算；样本不足时不代表班级真实水平。"
+              : "每道题独立展示，待处理为缺失，实际零分保持为零。"
+          }}
+          不计算作业总分。
+        </p>
+      </InfoDisclosure>
     </section>
     <section class="card">
       <div class="card-heading">
@@ -336,32 +330,21 @@ watch(assignment, () => {
         </button>
       </div>
     </section>
-    <section class="card">
-      <div class="card-heading">
-        <h2>学习分析与数据边界</h2>
-        <span class="badge amber">知识掌握待接入</span>
-      </div>
-      <div class="model-pending">
-        <Info :size="20" />
-        <div>
-          <h3>章节表现已接入，知识掌握与经验难度仍待完善</h3>
-          <p>
-            章节表现支持原始均值 B0 和难度感知
-            D1，可从同一份课程快照生成。当前报告另提供逐题表现、覆盖情况和已记录的提交/撤回次数。不会从完成快慢推断学习态度或AI使用，也不以模拟结果补齐缺失。
-          </p>
-          <p>
-            本范围提交 {{ report.event_counts.SUBMITTED || 0 }} 次，撤回
-            {{ report.event_counts.WITHDRAWN || 0 }} 次。
-          </p>
-          <RouterLink
-            v-if="!teacher"
-            class="text-link"
-            :to="`/student/courses/${courseId}/ability`"
-            >查看个人章节表现 →</RouterLink
-          >
-        </div>
-      </div>
-    </section></template
+    <div class="chart-foot">
+      <RouterLink
+        v-if="!teacher"
+        class="button"
+        :to="`/student/courses/${courseId}/ability`"
+        >查看个人章节表现</RouterLink
+      >
+      <InfoDisclosure label="数据范围">
+        <p>知识掌握待接入。报告仅依据已固定的逐题结果与已记录的操作。</p>
+        <p>
+          本范围提交 {{ report.event_counts.SUBMITTED || 0 }} 次，撤回
+          {{ report.event_counts.WITHDRAWN || 0 }} 次。
+        </p>
+      </InfoDisclosure>
+    </div></template
   >
   <AbilityGeneration v-if="teacher" />
 </template>

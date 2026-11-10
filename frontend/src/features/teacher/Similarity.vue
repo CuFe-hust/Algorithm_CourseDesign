@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import InfoDisclosure from "../../shared/InfoDisclosure.vue";
 /**
  * Teacher view of code similarity for one assignment.
  *
@@ -261,9 +262,11 @@ onMounted(async () => {
   <div class="page-heading">
     <div>
       <h1>相似代码检测</h1>
-      <p class="muted">
-        只比较同一道题内、截止前每人最后一次有效提交。相似度是证据，不是抄袭判定。
-      </p>
+      <InfoDisclosure label="结果口径"
+        ><p>
+          只比较同一道题内、截止前每人最后一次有效提交。相似度是证据，不是抄袭判定。
+        </p></InfoDisclosure
+      >
     </div>
   </div>
 

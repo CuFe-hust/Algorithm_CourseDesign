@@ -74,7 +74,6 @@ onMounted(() => {
   <main class="center-page card course-picker">
     <div class="page-heading">
       <h1>选择课程</h1>
-      <p class="muted">选择一门课程进入。</p>
     </div>
     <div v-if="error" class="alert error" role="alert">
       {{ error }}

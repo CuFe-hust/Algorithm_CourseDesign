@@ -65,7 +65,10 @@ export interface Page<T> {
   limit: number;
   offset: number;
 }
-export function newVersion(programming = false): VersionInput {
+export function newVersion(
+  programming = false,
+  allowedLanguages: readonly string[] = ["python3"],
+): VersionInput {
   return {
     title: "",
     statement_md: "",
@@ -82,7 +85,7 @@ export function newVersion(programming = false): VersionInput {
       ? {
           cpu_limit_ms: 1000,
           memory_limit_kib: 262144,
-          allowed_languages: ["python3"],
+          allowed_languages: [...allowedLanguages],
           checker: "TEXT_TRIM_TRAILING",
           total_budget_ms: null,
           cases: [],
