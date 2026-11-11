@@ -1,0 +1,314 @@
+{
+  "baseline": "837fa388ed1c39ba9f8da6300a43cfb49c9784b1",
+  "python": "3.12.14",
+  "platform": "macOS-15.6.1-arm64-arm-64bit",
+  "is_synthetic": true,
+  "database_used": false,
+  "source_root": "/private/tmp/teacher-review-report-20261111",
+  "hashes": {
+    "backend/app/analysis/algorithms/review.py": "a610637bd0bcca8cf6e27fd103239385762219a831b8652f6451db90afc88971",
+    "backend/app/analysis/algorithms/baseline.py": "baa23a0846422c4d63a2d61d57cebbcc101ff33d2e826b26260fb7e2c403378d",
+    "backend/app/analysis/framework/contracts.py": "16395a8f451b81df9ec267c33bbf9d713ecc1da3f2ca3e756df6a52f64183f28"
+  },
+  "runs": [
+    {
+      "n": 20,
+      "seed": 20261027,
+      "method": "greedy_baseline",
+      "seconds": 0.0002574169775471091,
+      "tasks": 60,
+      "min_load": 2,
+      "max_load": 4,
+      "square_load": 182,
+      "constraints_passed": true
+    },
+    {
+      "n": 20,
+      "seed": 20261027,
+      "method": "min_cost_flow",
+      "seconds": 0.006718416989315301,
+      "tasks": 60,
+      "min_load": 3,
+      "max_load": 3,
+      "square_load": 180,
+      "constraints_passed": true
+    },
+    {
+      "n": 20,
+      "seed": 20261110,
+      "method": "greedy_baseline",
+      "seconds": 0.000385124993044883,
+      "tasks": 60,
+      "min_load": 2,
+      "max_load": 4,
+      "square_load": 182,
+      "constraints_passed": true
+    },
+    {
+      "n": 20,
+      "seed": 20261110,
+      "method": "min_cost_flow",
+      "seconds": 0.005409915989730507,
+      "tasks": 60,
+      "min_load": 3,
+      "max_load": 3,
+      "square_load": 180,
+      "constraints_passed": true
+    },
+    {
+      "n": 20,
+      "seed": 20261111,
+      "method": "greedy_baseline",
+      "seconds": 0.00012933299876749516,
+      "tasks": 60,
+      "min_load": 2,
+      "max_load": 4,
+      "square_load": 182,
+      "constraints_passed": true
+    },
+    {
+      "n": 20,
+      "seed": 20261111,
+      "method": "min_cost_flow",
+      "seconds": 0.00510104198474437,
+      "tasks": 60,
+      "min_load": 3,
+      "max_load": 3,
+      "square_load": 180,
+      "constraints_passed": true
+    },
+    {
+      "n": 100,
+      "seed": 20261027,
+      "method": "greedy_baseline",
+      "seconds": 0.00233595899771899,
+      "tasks": 300,
+      "min_load": 2,
+      "max_load": 4,
+      "square_load": 902,
+      "constraints_passed": true
+    },
+    {
+      "n": 100,
+      "seed": 20261027,
+      "method": "min_cost_flow",
+      "seconds": 0.4262263330165297,
+      "tasks": 300,
+      "min_load": 3,
+      "max_load": 3,
+      "square_load": 900,
+      "constraints_passed": true
+    },
+    {
+      "n": 100,
+      "seed": 20261110,
+      "method": "greedy_baseline",
+      "seconds": 0.0023143329890444875,
+      "tasks": 300,
+      "min_load": 2,
+      "max_load": 4,
+      "square_load": 902,
+      "constraints_passed": true
+    },
+    {
+      "n": 100,
+      "seed": 20261110,
+      "method": "min_cost_flow",
+      "seconds": 0.42391254199901596,
+      "tasks": 300,
+      "min_load": 3,
+      "max_load": 3,
+      "square_load": 900,
+      "constraints_passed": true
+    },
+    {
+      "n": 100,
+      "seed": 20261111,
+      "method": "greedy_baseline",
+      "seconds": 0.002272667014040053,
+      "tasks": 300,
+      "min_load": 2,
+      "max_load": 4,
+      "square_load": 902,
+      "constraints_passed": true
+    },
+    {
+      "n": 100,
+      "seed": 20261111,
+      "method": "min_cost_flow",
+      "seconds": 0.4365588339860551,
+      "tasks": 300,
+      "min_load": 3,
+      "max_load": 3,
+      "square_load": 900,
+      "constraints_passed": true
+    },
+    {
+      "n": 217,
+      "seed": 20261027,
+      "method": "greedy_baseline",
+      "seconds": 0.009005666011944413,
+      "tasks": 651,
+      "min_load": 2,
+      "max_load": 4,
+      "square_load": 1955,
+      "constraints_passed": true
+    },
+    {
+      "n": 217,
+      "seed": 20261027,
+      "method": "min_cost_flow",
+      "seconds": 4.423743874998763,
+      "tasks": 651,
+      "min_load": 3,
+      "max_load": 3,
+      "square_load": 1953,
+      "constraints_passed": true
+    },
+    {
+      "n": 217,
+      "seed": 20261110,
+      "method": "greedy_baseline",
+      "seconds": 0.008967124973423779,
+      "tasks": 651,
+      "min_load": 2,
+      "max_load": 4,
+      "square_load": 1955,
+      "constraints_passed": true
+    },
+    {
+      "n": 217,
+      "seed": 20261110,
+      "method": "min_cost_flow",
+      "seconds": 4.2696064169867896,
+      "tasks": 651,
+      "min_load": 3,
+      "max_load": 3,
+      "square_load": 1953,
+      "constraints_passed": true
+    },
+    {
+      "n": 217,
+      "seed": 20261111,
+      "method": "greedy_baseline",
+      "seconds": 0.008930916024837643,
+      "tasks": 651,
+      "min_load": 2,
+      "max_load": 4,
+      "square_load": 1955,
+      "constraints_passed": true
+    },
+    {
+      "n": 217,
+      "seed": 20261111,
+      "method": "min_cost_flow",
+      "seconds": 4.284610375005286,
+      "tasks": 651,
+      "min_load": 3,
+      "max_load": 3,
+      "square_load": 1953,
+      "constraints_passed": true
+    }
+  ],
+  "greedy_counterexample": {
+    "greedy": {
+      "feasible": true,
+      "edges": [
+        {
+          "answer_key": "a0",
+          "reviewer_key": "u0"
+        },
+        {
+          "answer_key": "a1",
+          "reviewer_key": "u0"
+        }
+      ],
+      "unmet_constraints": [],
+      "load_metrics": {
+        "u0": 2,
+        "u1": 0
+      }
+    },
+    "flow": {
+      "feasible": true,
+      "edges": [
+        {
+          "answer_key": "a0",
+          "reviewer_key": "u1"
+        },
+        {
+          "answer_key": "a1",
+          "reviewer_key": "u0"
+        }
+      ],
+      "unmet_constraints": [],
+      "load_metrics": {
+        "u0": 1,
+        "u1": 1
+      }
+    }
+  },
+  "aggregation": {
+    "weighted_mean": {
+      "scores": [
+        {
+          "answer_key": "a",
+          "normalized_score": "0.760000",
+          "valid_count": 3,
+          "dispersion": "0.4",
+          "reason": null
+        },
+        {
+          "answer_key": "missing",
+          "normalized_score": null,
+          "valid_count": 0,
+          "dispersion": null,
+          "reason": "MINIMUM_SAMPLES_NOT_MET"
+        }
+      ]
+    },
+    "weighted_median": {
+      "scores": [
+        {
+          "answer_key": "a",
+          "normalized_score": "0.800000",
+          "valid_count": 3,
+          "dispersion": "0.4",
+          "reason": null
+        },
+        {
+          "answer_key": "missing",
+          "normalized_score": null,
+          "valid_count": 0,
+          "dispersion": null,
+          "reason": "MINIMUM_SAMPLES_NOT_MET"
+        }
+      ]
+    }
+  },
+  "deviation": {
+    "signals": [
+      {
+        "object_key": "e3",
+        "kind": "SINGLE_REVIEW_DEVIATION",
+        "value": "0.8",
+        "explanation": "与其他评审者中位数偏离 -0.800000；阈值 0.2，仅作人工复核证据。"
+      }
+    ],
+    "sample_count": 4,
+    "missing_count": 0
+  },
+  "timing": {
+    "signals": [
+      {
+        "object_key": "t0",
+        "kind": "SHORT_REVIEW_DURATION",
+        "value": "0",
+        "explanation": "服务端打开至提交耗时 0 秒，小于本轮短时阈值 15.000 秒；不等同无效评价。"
+      }
+    ],
+    "sample_count": 5,
+    "missing_count": 1
+  },
+  "assertions_passed": true
+}
